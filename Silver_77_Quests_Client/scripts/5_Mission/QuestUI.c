@@ -969,6 +969,12 @@ class QuestUIMenu extends UIScriptedMenu
         
         m_AcceptButton.Enable(canAccept);
         m_CompleteButton.Enable(canComplete || canDeposit || canClaimReward);
+        
+        if (m_CloseButton)
+            m_CloseButton.Enable(true);
+        
+        if (m_CloseButtonText)
+            m_CloseButtonText.SetText("Закрыть рот и уйти");
     }
     
     override void OnShow()
