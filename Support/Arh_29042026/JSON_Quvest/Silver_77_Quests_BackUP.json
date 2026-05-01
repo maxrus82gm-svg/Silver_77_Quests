@@ -1,0 +1,254 @@
+{
+  "version": 2,
+  "quests": [
+    {
+      "id": "quest_hunter_1",
+      "name": "Картошечка с маслицем",
+      "description": "Слушай меня тут озадачил Маскимыч, говорит, жареху надо оформить. Где хочешь найди мне картошки 50 штук, 1 лисичку, 2 сироежки, 1 белый гриб, только чтоб свежее все! И это на тебе ножичек, что бы с корнями не вырывал!",
+      "repeatable": 1,
+      "cooldownSeconds": 43200,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "giveItems": [
+        {
+          "className": "SteakKnife",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "PotatoSeed",
+          "quantity": 50,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "PleurotusMushroom",
+          "quantity": 1,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "MacrolepiotaMushroom",
+          "quantity": 2,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "BoletusMushroom",
+          "quantity": 1,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 7,
+          "spawnOnGround": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_fisherman_1",
+      "name": "Рыба это вам не картошка!",
+      "description": "Слух, родной, принеси мне карпиков, штук 6, я тут застрял, на какое то время, с черного, привык к рыбке, а тут хер ее найдешь, вобщем неси, я не обижу. Где ловить!? Так на черном озеро есть!)",
+      "repeatable": 1,
+      "cooldownSeconds": 43200,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "giveItems": [
+        {
+          "className": "HuntingKnife",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "Carp",
+          "quantity": 6,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": ,
+          "spawnOnGround": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_Rasputin_1",
+      "name": "Взаимовыручка прежде всего!",
+      "description": "Здарова, я тут это, вспомнил про дружка своего, вот проведать решил. Если не сложно, заготовь мне 10 палок и дров 6 штук, я тебе патрон накину. Ну и это, выпей за дружбана моего. Ну и самое главное, вижу не сдешний. Тут 2 относительно безопасных поселений, хутор с лева от Ольши, и Черное Озеро. К озеру пойдёшь — гляди в оба, в лесу там заражённые шастают. А ежели в сторону Ольши двинешь, так с горки спустись метров на триста — сразу выйдешь куда надо, оно рядом. Только в саму Ольшу лишний раз не суйся пока… целее будешь.",
+      "repeatable": 0,
+      "cooldownSeconds": 250000,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "giveItems": [
+        {
+          "className": "DisinfectantAlcohol",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "WoodenStick",
+          "quantity": 2,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "Firewood",
+          "quantity": 2,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 3,
+          "spawnOnGround": 0
+        }
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "hunter_trigger",
+      "position": [
+        13092.814453125,
+        117.00776672363281,
+        13084.4853515625
+      ],
+      "radius": 2.0,
+      "focusHeight": 1.2000000476837159,
+      "focusRadius": 1.0,
+      "questIds": [
+        "quest_hunter_1"
+      ],
+      "hintText": "[F] Коля Ворон",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Mirek",
+      "npcPosition": [
+        13092.814453125,
+        117.00776672363281,
+        13084.4853515625
+      ],
+      "npcOrientation": [
+        380.0,
+        0.0,
+        0.0
+      ],
+      "npcLoadout": [
+        "FlatCap_BrownCheck",
+        "HuntingJacket_Brown",
+        "Jeans_Blue",
+        "WorkingGloves_Brown",
+        "HikingBootsLow_Black"
+      ],
+      "npcHandsItem": "FarmingHoe",
+      "npcBackItems": [
+        "HuntingBag",
+        "Izh43Shotgun"
+      ]
+    },
+    {
+      "id": "fisherman_trigger",
+      "position": [
+        13091.6630859375,
+        116.75563049316406,
+        13088.6376953125
+      ],
+      "radius": 2.0,
+      "focusHeight": 1.2000000476837159,
+      "focusRadius": 1.0,
+      "questIds": [
+        "quest_fisherman_1, quest_fisherman_2"
+      ],
+      "hintText": "[F] Рыбак Гаврила",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Boris",
+      "npcPosition": [
+        13091.6630859375,
+        116.75563049316406,
+        13088.6376953125
+      ],
+      "npcOrientation": [
+        75.0,
+        0.0,
+        0.0
+      ],
+      "npcLoadout": [
+        "BeanieHat_Green",
+        "Raincoat_Green",
+        "HunterPants_Summer",
+        "WorkingGloves_Black",
+        "Wellies_Green"
+      ],
+      "npcHandsItem": "FishingRod",
+      "npcBackItems": [
+        "DryBag_Green",
+        "Izh43Shotgun"
+      ]
+    },
+    {
+      "id": "Rasputin_1_trigger",
+      "position": [
+        12979.4,
+        212.68,
+        12761.7
+      ],
+      "radius": 2.0,
+      "focusHeight": 1.2,
+      "focusRadius": 1.0,
+      "questIds": [
+        "quest_Rasputin_1"
+      ],
+      "hintText": "[F] Федор (Распутин)",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Oliver",
+      "npcPosition": [
+        12979.4,
+        212.68,
+        12761.7
+      ],
+      "npcOrientation": [
+        130.0,
+        0.0,
+        0.0
+      ],
+      "npcLoadout": [
+        "FS_ForestOldCap_ColorBase",
+        "FS_Forest_Jacket",
+        "FS_RusVKPO_pants",
+        "WorkingGloves_Beige",
+        "CombatBoots_Grey"
+      ],
+      "npcHandsItem": "VEPR12u",
+      "npcBackItems": [
+        "FS_Eco_Orange_Bag"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quest JSON Workshop</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand">
+          <p class="eyebrow">Quest JSON Workshop</p>
+          <h1>Редактор квестов и триггеров</h1>
+          <p class="subtitle">
+            Импортируй сырые JSON-файлы, редактируй их по блокам и выгружай обратно в нужный формат.
+          </p>
+        </div>
+
+        <div class="topbar-meta">
+          <div class="meta-card">
+            <span class="meta-label">Файл</span>
+            <strong id="fileNameLabel">quests.json</strong>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Состояние</span>
+            <strong id="dirtyLabel">Сохранено</strong>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Ошибки</span>
+            <strong id="issueCountLabel">0</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="toolbar">
+        <div class="toolbar-actions">
+          <button id="newProjectButton" class="button ghost">Новый проект</button>
+          <button id="loadBaseButton" class="button ghost">Загрузить базу</button>
+          <button id="importButton" class="button">Импорт JSON</button>
+          <button id="validateButton" class="button ghost">Проверить</button>
+          <button id="copyButton" class="button ghost">Копировать JSON</button>
+          <button id="exportButton" class="button accent">Экспорт JSON</button>
+          <input id="importInput" type="file" accept=".json,application/json" hidden>
+        </div>
+
+        <label class="search-wrap">
+          <span>Поиск</span>
+          <input id="searchInput" type="search" placeholder="id, название, NPC, hint...">
+        </label>
+      </section>
+
+      <section id="banner" class="banner hidden" aria-live="polite"></section>
+
+      <main class="workspace">
+        <aside class="sidebar">
+          <section class="sidebar-card">
+            <div class="sidebar-head">
+              <div>
+                <p class="eyebrow">Список</p>
+                <h2>Квесты</h2>
+              </div>
+              <button id="addQuestButton" class="button small">+ Квест</button>
+            </div>
+            <div id="questList" class="entity-list"></div>
+          </section>
+
+          <section class="sidebar-card">
+            <div class="sidebar-head">
+              <div>
+                <p class="eyebrow">Список</p>
+                <h2>Триггеры</h2>
+              </div>
+              <button id="addTriggerButton" class="button small">+ Триггер</button>
+            </div>
+            <div id="triggerList" class="entity-list"></div>
+          </section>
+
+          <section class="sidebar-card">
+            <div class="sidebar-head">
+              <div>
+                <p class="eyebrow">Справочник</p>
+                <h2>Стаки</h2>
+              </div>
+              <button id="addStackRuleButton" class="button small">+ Стак</button>
+            </div>
+
+            <p class="sidebar-note">
+              Здесь можно вручную заполнять размер стака для нужных классов. Эти правила хранятся отдельно от JSON квестов.
+            </p>
+
+            <div class="sidebar-meta-row">
+              <span id="stackRulesStatusLabel" class="badge neutral">Не загружено</span>
+              <button id="saveStackRulesButton" type="button" class="button ghost small">Сохранить</button>
+            </div>
+
+            <div id="stackRuleList" class="stack-rule-list"></div>
+          </section>
+        </aside>
+
+        <section class="content">
+          <div id="editorPane" class="editor-pane"></div>
+
+          <section class="inspector-card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Сохранение</p>
+                <h2>Локальные пути</h2>
+              </div>
+              <span id="configStatusLabel" class="badge neutral">Не загружено</span>
+            </div>
+
+            <div class="field-grid single">
+              <div class="field">
+                <div class="field-label-row">
+                  <label>Save Path (куда сохранять основной JSON)</label>
+                </div>
+                <input id="savePathInput" type="text" placeholder="C:\...\Silver_77_Quests.json">
+                <small>При экспорте редактор будет перезаписывать файл по этому пути.</small>
+              </div>
+
+              <div class="field">
+                <div class="field-label-row">
+                  <label>Backup Path (куда класть резервную копию)</label>
+                </div>
+                <input id="backupPathInput" type="text" placeholder="C:\...\Silver_77_Quests_BackUP.json">
+                <small>При запуске через start-editor.cmd исходный файл будет копироваться сюда.</small>
+              </div>
+            </div>
+
+            <div class="toolbar-actions">
+              <button id="saveConfigButton" type="button" class="button ghost">Сохранить пути</button>
+            </div>
+          </section>
+
+          <div class="inspector-grid">
+            <section class="inspector-card">
+              <div class="card-head">
+                <div>
+                  <p class="eyebrow">Контроль</p>
+                  <h2>Актуальные проблемы</h2>
+                </div>
+                <span id="validationSummary" class="badge neutral">Нет данных</span>
+              </div>
+              <div id="validationList" class="validation-list"></div>
+            </section>
+
+            <section class="inspector-card">
+              <div class="card-head">
+                <div>
+                  <p class="eyebrow">Экспорт</p>
+                  <h2>JSON Preview</h2>
+                </div>
+                <span class="badge neutral">Только чтение</span>
+              </div>
+              <pre id="jsonPreview" class="json-preview"></pre>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+  </html>

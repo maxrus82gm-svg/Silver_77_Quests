@@ -1,0 +1,12 @@
+*.md
+*.txt
+*.bat
+Documentation\*
+key\*
+addons\*
+.vscode\*
+$PBOPREFIX$
+*.pbo
+*.bisign
+*.depbo*
+exclude.lst

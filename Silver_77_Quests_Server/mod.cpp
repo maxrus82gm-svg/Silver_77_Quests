@@ -1,0 +1,12 @@
+name = "Silver_77_Quests_Server";
+picture = "";
+actionName = "Website";
+action = "";
+description = "Private server logic for Silver 77 quest system";
+logo = "";
+logoOver = "";
+tooltip = "Silver_77_Quests_Server";
+tooltipOwned = "Silver_77_Quests_Server Owned";
+overview = "Private server-side quest logic, rewards, progress, and JSON loading for Silver 77 Quests.";
+author = "Silver77";
+authorID = "0";

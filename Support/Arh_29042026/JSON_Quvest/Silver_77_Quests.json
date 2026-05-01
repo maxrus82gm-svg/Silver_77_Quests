@@ -1,0 +1,456 @@
+{
+  "version": 3,
+  "quests": [
+    {
+      "id": "quest_hunter_1",
+      "name": "Картошечка с маслицем",
+      "description": "Слушай меня тут озадачил Маскимыч, говорит, жареху надо оформить. Где хочешь найди мне картошки 50 штук, 1 лисичку, 2 сироежки, 1 белый гриб, только чтоб свежее все! И это на тебе ножичек, что бы с корнями не вырывал!",
+      "repeatable": 1,
+      "cooldownSeconds": 43200,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "hunter_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "hunter_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "offer",
+          "dialogText": "Слушай, меня тут озадачил Маскимыч, говорит, жареху надо оформить, гости будут. Где хочешь найди мне картошки 120 штук, 2 лисички, 2 сыроежки, 2 белых гриба, только чтоб свежее все! И это, на тебе ножичек, что бы с корнями не вырывал! Я проверю потом, если Максимычу пожалуюсь, он такое решает быстро, еда это не шутка тут.",
+          "rewards": []
+        },
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "reward",
+          "dialogText": "Вот это ты меня выручил, большое спасибо тебе! Держи патрики!",
+          "rewards": [
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 8,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [
+        {
+          "className": "SteakKnife",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "PotatoSeed",
+          "quantity": 120,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "PleurotusMushroom",
+          "quantity": 2,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "MacrolepiotaMushroom",
+          "quantity": 2,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "BoletusMushroom",
+          "quantity": 2,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 7,
+          "spawnOnGround": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_fisherman_1",
+      "name": "Рыба это вам не картошка!",
+      "description": "Слух, родной, принеси мне карпиков, штук 6, я тут застрял, на какое то время, с черного, привык к рыбке, а тут хер ее найдешь, вобщем неси, я не обижу. Где ловить!? Так на черном озеро есть!)",
+      "repeatable": 1,
+      "cooldownSeconds": 43200,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "fisherman_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "fisherman_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "fisherman_trigger",
+          "actionType": "offer",
+          "dialogText": "Слух, родной, принеси мне карпиков, штук 6, я тут застрял, на какое то время, с черного, привык к рыбке, а тут хер ее найдешь, в общем неси, я не обижу. Где ловить!? Так на черном озеро есть!)",
+          "rewards": []
+        },
+        {
+          "triggerId": "fisherman_trigger",
+          "actionType": "reward",
+          "dialogText": "",
+          "rewards": [
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 8,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [
+        {
+          "className": "HuntingKnife",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "Carp",
+          "quantity": 6,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 0,
+          "spawnOnGround": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_Rasputin_1",
+      "name": "Взаимовыручка прежде всего!",
+      "description": "Здарова, я тут это, вспомнил про дружка своего, вот проведать решил. Если не сложно, заготовь мне 10 палок и дров 6 штук, я тебе патрон накину. Ну и это, выпей за дружбана моего. Ну и самое главное, вижу не сдешний. Тут 2 относительно безопасных поселений, хутор с лева от Ольши, и Черное Озеро. К озеру пойдёшь — гляди в оба, в лесу там заражённые шастают. А ежели в сторону Ольши двинешь, так с горки спустись метров на триста — сразу выйдешь куда надо, оно рядом. Только в саму Ольшу лишний раз не суйся пока… целее будешь.",
+      "repeatable": 0,
+      "cooldownSeconds": 250000,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "Rasputin_1_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "Rasputin_1_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "Rasputin_1_trigger",
+          "actionType": "offer",
+          "dialogText": "Здарова, я тут это, вспомнил про дружка своего, вот проведать решил. Если не сложно, заготовь мне 10 палок и дров 6 штук, я тебе патрон накину. Ну и это, выпей за дружбана моего. Ну и самое главное, вижу не сдешний. Тут 2 относительно безопасных поселений, хутор с лева от Ольши, и Черное Озеро. К озеру пойдёшь — гляди в оба, в лесу там заражённые шастают. А ежели в сторону Ольши двинешь, так с горки спустись метров на триста — сразу выйдешь куда надо, оно рядом. Только в саму Ольшу лишний раз не суйся пока… целее будешь.",
+          "rewards": []
+        },
+        {
+          "triggerId": "Rasputin_1_trigger",
+          "actionType": "reward",
+          "dialogText": "Спасибо чувак, не забуду, мне ту по грусти шевелиться даже не хочется, на выпей за братана, Васек этого достоин.",
+          "rewards": [
+            {
+              "className": "DisinfectantAlcohol",
+              "quantity": 1,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "WoodenStick",
+          "quantity": 10,
+          "removeOnComplete": 1,
+          "useItemQuantity": 1,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "Firewood",
+          "quantity": 6,
+          "removeOnComplete": 1,
+          "useItemQuantity": 1,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 3,
+          "spawnOnGround": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_fisherman_2",
+      "name": "Поставка медицины",
+      "description": "Дружище, с рыбой ты мне помог, огромное спасибо тебе. Но теперь, мне нужны бинты, 6 штук будет достаточно. У Максимыча, да и у всех барыг, дикие цены на них, оно и понятно, это же барыги, хоть и свои... Та и хер с ними. На тебе ножичек, пройдись по домам, насобирай тряпок побольше, может бухла найдешь, для дезинфекции, ничего не пропускай. А тут уже, обратно когда вернёшься, под лестницей стоит верстак. Там и инструкция есть, подскажет что использовать для изготовления бинтов. Ты главное в верстак все положи, что надо для изготовления бинтов, так удобней будет. Все жду с нетерпением.",
+      "repeatable": 1,
+      "cooldownSeconds": 80000,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "fisherman_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "fisherman_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "fisherman_trigger",
+          "actionType": "offer",
+          "dialogText": "Дружище, с рыбой ты мне помог, огромное спасибо тебе. Но теперь, мне нужны бинты, 6 штук будет достаточно. У Максимыча, да и у всех барыг, дикие цены на них, оно и понятно, это же барыги, хоть и свои... Та и хер с ними. На тебе ножичек, пройдись по домам, насобирай тряпок побольше, может бухла найдешь, для дезинфекции, ничего не пропускай. А тут уже, обратно когда вернёшься, под лестницей стоит верстак. Там и инструкция есть, подскажет что использовать для изготовления бинтов. Ты главное в верстак все положи, что надо для изготовления бинтов, так удобней будет. Все жду с нетерпением.",
+          "rewards": []
+        },
+        {
+          "triggerId": "fisherman_trigger",
+          "actionType": "reward",
+          "dialogText": "Вот это я понимаю,вот это я понимаю... Спасибо за исполнение просьбы. Держи 100 патронов, потратился наверно на зараженных.",
+          "rewards": [
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 10,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [
+        {
+          "className": "SteakKnife",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "BandageDressing",
+          "quantity": 6,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 1,
+          "spawnOnGround": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_hunter_2",
+      "name": "Поставка провизии",
+      "description": "Здорово, ты наверно знаешь где распутин сейчас, я тут ему приготовил картошки, отнеси ему если не сложно.",
+      "repeatable": 0,
+      "cooldownSeconds": 0,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "hunter_trigger"
+      ],
+      "completionTriggerIds": [
+        "Rasputin_1_trigger"
+      ],
+      "rewardTriggerIds": [
+        "hunter_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "offer",
+          "dialogText": "Здорово, ты наверно знаешь где Федя,  распутин который, на горе поди опять, бухает... Мда, даже как то не ловко его так, они друзьями были с Васей, не разлей вода, а тут такое, мда, гребаные собаки, ты там аккуратно сам, ружье на готове всегда держи, а то бухать за тбе не кому будет )) В общем так, я тут ему приготовил картошки, отнеси если не сложно.",
+          "rewards": []
+        },
+        {
+          "triggerId": "Rasputin_1_trigger",
+          "actionType": "completion",
+          "dialogText": "Ооо, спасибо тебе, и Ворону за заботу, скоро зайду к нему. Скажи что скоро занесу ему собакена интересного, псевдопес его зовут вроде. Ты если что их добудешь, барыгам местным не вздумай продавать, они тут совсем оборзели, не, ну а че за цены то! В общем на ВИБИЧ надо их нести, поднакопи, и вперед, одному ходить по началу не рекомендую, да и минимум с двухстволкой надо туда идти... А поготь, на тебе пару грибов, на жареху )",
+          "rewards": [
+            {
+              "className": "BoletusMushroom",
+              "quantity": 2,
+              "spawnOnGround": 0
+            }
+          ]
+        },
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "reward",
+          "dialogText": "Ну что, отнес, как он там, пропился? Трезвый говоришь, ну и ладненько. На тебе патриков немного.",
+          "rewards": [
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 30,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [
+        {
+          "className": "PotatoSeed",
+          "quantity": 12,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [],
+      "rewards": []
+    }
+  ],
+  "triggers": [
+    {
+      "id": "hunter_trigger",
+      "position": [
+        13092.814453125,
+        117.00776672363281,
+        13084.4853515625
+      ],
+      "radius": 2,
+      "focusHeight": 1.2000000476837158,
+      "focusRadius": 1,
+      "questIds": [
+        "quest_hunter_2",
+        "quest_hunter_1"
+      ],
+      "hintText": "[F] Коля Ворон",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Mirek",
+      "npcPosition": [
+        13092.814453125,
+        117.00776672363281,
+        13084.4853515625
+      ],
+      "npcOrientation": [
+        380,
+        0,
+        0
+      ],
+      "npcLoadout": [
+        "FlatCap_BrownCheck",
+        "HuntingJacket_Brown",
+        "Jeans_Blue",
+        "WorkingGloves_Brown",
+        "HikingBootsLow_Black"
+      ],
+      "npcHandsItem": "FarmingHoe",
+      "npcBackItems": [
+        "HuntingBag",
+        "Izh43Shotgun"
+      ]
+    },
+    {
+      "id": "fisherman_trigger",
+      "position": [
+        13091.6630859375,
+        116.75563049316406,
+        13088.6376953125
+      ],
+      "radius": 2,
+      "focusHeight": 1.2000000476837158,
+      "focusRadius": 1,
+      "questIds": [
+        "quest_fisherman_1",
+        "quest_fisherman_2"
+      ],
+      "hintText": "[F] Рыбак Гаврила",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Boris",
+      "npcPosition": [
+        13091.6630859375,
+        116.75563049316406,
+        13088.6376953125
+      ],
+      "npcOrientation": [
+        75,
+        0,
+        0
+      ],
+      "npcLoadout": [
+        "BeanieHat_Green",
+        "Raincoat_Green",
+        "HunterPants_Summer",
+        "WorkingGloves_Black",
+        "Wellies_Green"
+      ],
+      "npcHandsItem": "FishingRod",
+      "npcBackItems": [
+        "DryBag_Green",
+        "Izh43Shotgun"
+      ]
+    },
+    {
+      "id": "Rasputin_1_trigger",
+      "position": [
+        12979.4,
+        212.68,
+        12761.7
+      ],
+      "radius": 2,
+      "focusHeight": 1.2,
+      "focusRadius": 1,
+      "questIds": [
+        "quest_Rasputin_1",
+        "quest_hunter_2"
+      ],
+      "hintText": "[F] Федор (Распутин)",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Oliver",
+      "npcPosition": [
+        12979.4,
+        212.68,
+        12761.7
+      ],
+      "npcOrientation": [
+        130,
+        0,
+        0
+      ],
+      "npcLoadout": [
+        "FS_ForestOldCap_ColorBase",
+        "FS_Forest_Jacket",
+        "FS_RusVKPO_pants",
+        "WorkingGloves_Beige",
+        "CombatBoots_Grey"
+      ],
+      "npcHandsItem": "VEPR12u",
+      "npcBackItems": [
+        "FS_Eco_Orange_Bag"
+      ]
+    }
+  ]
+}

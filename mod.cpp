@@ -1,0 +1,12 @@
+name = "Silver_77_Quests";
+picture = "";
+actionName = "Website";
+action = "";
+description = "Quest system with JSON configuration";
+logo = "";
+logoOver = "";
+tooltip = "Silver_77_Quests";
+tooltipOwned = "Silver_77_Quests Owned";
+overview = "Powerful quest system for DayZ with JSON configuration. Create quests without recompiling!";
+author = "Silver77";
+authorID = "0";

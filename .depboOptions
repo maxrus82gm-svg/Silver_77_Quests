@@ -1,0 +1,12 @@
+-exclude=*.md
+-exclude=*.txt
+-exclude=*.bat
+-exclude=Documentation\*
+-exclude=key\*
+-exclude=addons\*
+-exclude=.vscode\*
+-exclude=$PBOPREFIX$
+-exclude=*.pbo
+-exclude=*.bisign
+-exclude=*.depbo*
+-exclude=exclude.lst
