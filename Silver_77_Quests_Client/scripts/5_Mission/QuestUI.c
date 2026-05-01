@@ -17,6 +17,7 @@ class QuestUIMenu extends UIScriptedMenu
     private ButtonWidget m_CloseButton;
     private TextWidget m_AcceptButtonText;
     private TextWidget m_CompleteButtonText;
+    private TextWidget m_CloseButtonText;
     private PlayerBase m_Player;
     private string m_SelectedQuestId;
     private ref array<string> m_VisibleQuestIds;
@@ -58,6 +59,7 @@ class QuestUIMenu extends UIScriptedMenu
         m_CloseButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CloseButton"));
         m_AcceptButtonText = TextWidget.Cast(layoutRoot.FindAnyWidget("AcceptButtonText"));
         m_CompleteButtonText = TextWidget.Cast(layoutRoot.FindAnyWidget("CompleteButtonText"));
+        m_CloseButtonText = TextWidget.Cast(layoutRoot.FindAnyWidget("CloseButtonText"));
         
         m_Player = PlayerBase.Cast(GetGame().GetPlayer());
         if (m_Player)
