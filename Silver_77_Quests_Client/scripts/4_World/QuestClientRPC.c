@@ -30,7 +30,7 @@ string Silver77_StoreQuestConfigSyncChunk(int chunkIndex, int totalChunks, strin
     }
     
     g_Silver77_QuestConfigSyncChunks.Set(chunkIndex, chunkPayload);
-    Print("[Silver_77_Quests] Received quest config chunk " + (chunkIndex + 1) + "/" + totalChunks + " (" + chunkPayload.Length() + " bytes)");
+    Print("[Silver_77_Quests] Received quest config chunk " + (chunkIndex + 1).ToString() + "/" + totalChunks.ToString() + " (" + chunkPayload.Length().ToString() + " bytes)");
     
     if (g_Silver77_QuestConfigSyncChunks.Count() < g_Silver77_QuestConfigSyncExpectedChunkCount)
         return "";
@@ -40,7 +40,7 @@ string Silver77_StoreQuestConfigSyncChunk(int chunkIndex, int totalChunks, strin
     {
         if (!g_Silver77_QuestConfigSyncChunks.Contains(i))
         {
-            Print("[Silver_77_Quests] ERROR: Missing quest config chunk " + i);
+            Print("[Silver_77_Quests] ERROR: Missing quest config chunk " + i.ToString());
             Silver77_ResetQuestConfigSyncBuffer();
             return "";
         }
@@ -86,7 +86,7 @@ modded class PlayerBase
         if (payload == "")
             return;
         
-        Print("[Silver_77_Quests] Reassembled quest config sync payload (" + payload.Length() + " bytes)");
+        Print("[Silver_77_Quests] Reassembled quest config sync payload (" + payload.Length().ToString() + " bytes)");
         Silver77_QuestConfig config = Silver77_LoadQuestConfigFromJson(payload);
         if (!config)
         {
@@ -103,7 +103,7 @@ modded class PlayerBase
             return;
         
         Print("[Silver_77_Quests][VERSION_CHECK] CLIENT TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3");
-        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA);
+        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA.ToString());
         Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: Received SILVER77_QUEST_RPC_PLAYER_DATA");
         
         Print("[Silver_77_Quests][VERSION_CHECK] CLIENT ABOUT_TO_READ_PARAM3");
@@ -115,11 +115,11 @@ modded class PlayerBase
             return;
         }
 
-        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: ctx.Read succeeded, chunkIndex=" + data.param1 + " totalChunks=" + data.param2 + " payload length=" + data.param3.Length());
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: ctx.Read succeeded, chunkIndex=" + data.param1.ToString() + " totalChunks=" + data.param2.ToString() + " payload length=" + data.param3.Length().ToString());
         
         if (data.param2 != 1)
         {
-            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Expected totalChunks=1, got " + data.param2);
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Expected totalChunks=1, got " + data.param2.ToString());
             return;
         }
         
@@ -130,7 +130,7 @@ modded class PlayerBase
         }
         
         string jsonPayload = data.param3;
-        Print("[Silver_77_Quests] Received quest progress sync payload (" + jsonPayload.Length() + " bytes)");
+        Print("[Silver_77_Quests] Received quest progress sync payload (" + jsonPayload.Length().ToString() + " bytes)");
         
         PlayerQuestData playerData = Silver77_LoadPlayerDataFromJson(jsonPayload);
         if (!playerData)
@@ -152,7 +152,7 @@ modded class PlayerBase
         if (playerData.progress)
             progressCount = playerData.progress.Count();
         
-        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: steamId=" + playerData.steamId + " progressCount=" + progressCount);
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: steamId=" + playerData.steamId + " progressCount=" + progressCount.ToString());
         
         if (playerData.progress)
         {
@@ -163,7 +163,7 @@ modded class PlayerBase
             }
         }
         
-        Print("[Silver_77_Quests] Decoded quest progress sync for " + playerData.steamId + " with " + progressCount + " quest entries");
+        Print("[Silver_77_Quests] Decoded quest progress sync for " + playerData.steamId + " with " + progressCount.ToString() + " quest entries");
         
         Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] Calling QuestClientManager.ApplySyncedPlayerData");
         QuestClientManager.ApplySyncedPlayerData(playerData);
