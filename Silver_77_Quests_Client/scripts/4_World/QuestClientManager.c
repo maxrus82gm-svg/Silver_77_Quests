@@ -551,6 +551,18 @@ class QuestClientManager
         return data;
     }
     
+    static bool HasSyncedPlayerData(PlayerBase player)
+    {
+        string steamId = GetPlayerSteamId(player);
+        if (steamId == "")
+            return false;
+        
+        if (!g_ClientPlayerQuestData)
+            return false;
+        
+        return g_ClientPlayerQuestData.Contains(steamId);
+    }
+    
     static PlayerQuestData GetPlayerData(PlayerBase player)
     {
         string steamId = GetPlayerSteamId(player);

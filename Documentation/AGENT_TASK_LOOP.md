@@ -206,82 +206,73 @@ Git контролирует только пользователь.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-TASK 042 — Синхронизация rewards в JSON
+TASK 047 — Защита QuestUI.Update() от обновления списка до player data sync
 
 Цель:
-Убрать расхождения между верхним quest.rewards и triggerActions[actionType="reward"].rewards в JSON_Quvest/Silver_77_Quests.json, чтобы журнал квестов показывал те же награды, которые фактически выдаёт сервер и показывает NPC-диалог.
+Доработать TASK 046: убедиться, что QuestUI.Update() не вызывает RefreshQuestList(), UpdateQuestDetails() и UpdateButtons() до получения синхронизированных player data.
+
+Контекст:
+В TASK 046 была добавлена функция HasSyncedPlayerData() и защита в QuestUI.Init().
+Но остаётся риск:
+- config sync может прийти раньше player data sync
+- тогда QuestUI.Update() увидит изменение g_ClientQuestConfigRevision
+- ветка config revision может вызвать RefreshQuestList()
+- RefreshQuestList() может снова обратиться к GetQuestStatus()
+- GetQuestStatus() может создать/показать дефолтные available-статусы до прихода player data
 
 Где работать:
-- JSON_Quvest/Silver_77_Quests.json
+- Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c
 
 Документы для сверки:
 - Documentation/QUEST_LOGIC_SPEC.md
 
 Тип задачи:
-- правка JSON
+- правка кода
 - менять только явно указанный файл
 
 Что сделать:
-1. Открыть Documentation/QUEST_LOGIC_SPEC.md и учитывать правила Offer / Completion / Reward.
-2. Открыть JSON_Quvest/Silver_77_Quests.json.
-3. Исправить только верхние массивы rewards у указанных квестов.
-4. Не менять triggerActions.
-5. Не менять objectives.
-6. Не менять offerTriggerIds.
-7. Не менять completionTriggerIds.
-8. Не менять rewardTriggerIds.
-9. Не менять тексты диалогов.
-10. Не менять порядок квестов.
-11. Не менять код.
-
-Исправления:
-
-1. quest_hunter_1:
-   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
-   - было: Ammo_12gaPellets x7
-   - должно быть: Ammo_12gaPellets x8
-
-2. quest_fisherman_2:
-   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
-   - было: Ammo_12gaPellets x1
-   - должно быть: Ammo_12gaPellets x10
-
-3. quest_hunter_2:
-   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
-   - было: []
-   - должно быть:
-     - Ammo_12gaPellets x30
-
-4. quest_Rasputin_1:
-   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
-   - было:
-     - Ammo_12gaPellets x3
-   - должно быть:
-     - DisinfectantAlcohol x1
+1. Открыть Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c.
+2. Найти функцию Update().
+3. В местах, где Update() реагирует на изменение:
+   - g_ClientQuestConfigRevision
+   - g_ClientQuestDataRevision
+   проверить наличие синхронизированных player data через QuestClientManager.HasSyncedPlayerData(m_Player).
+4. Если player data ещё нет:
+   - не вызывать RefreshQuestList()
+   - не вызывать UpdateQuestDetails()
+   - не вызывать UpdateButtons()
+   - показать в m_QuestDescription текст "Загрузка данных квестов..."
+   - оставить UI в режиме ожидания данных
+5. Если player data уже есть:
+   - сохранить текущую логику RefreshQuestList()
+   - сохранить текущую логику UpdateQuestDetails()
+   - сохранить текущую логику UpdateButtons()
+6. Не менять QuestClientManager.c, если HasSyncedPlayerData() уже есть и работает.
+7. Не менять серверный код.
+8. Не менять JSON.
+9. Не менять layout-файлы.
+10. Не менять QuestJournalUI.c.
 
 Важно:
-- изменить только JSON_Quvest/Silver_77_Quests.json
+- изменить только Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c
+- не менять серверный код
+- не менять JSON
 - не менять Documentation/QUEST_LOGIC_SPEC.md
 - не менять Documentation/AGENT_TASK_LOOP.md
-- не менять серверный код
-- не менять клиентский код
-- не менять triggerActions
-- не менять кириллицу
+- не менять layout-файлы
 - не перекодировать файл
-- перед правкой убедиться, что кириллица отображается нормально
-- если есть риск кодировки, остановиться и указать это в PROBLEMS
+- кириллицу не повредить
 - Git не трогать
 - commit/push не делать
 
 Критерии готовности:
-- верхний rewards у quest_hunter_1 совпадает с triggerActions reward
-- верхний rewards у quest_fisherman_2 совпадает с triggerActions reward
-- верхний rewards у quest_hunter_2 совпадает с triggerActions reward
-- верхний rewards у quest_Rasputin_1 совпадает с triggerActions reward
-- другие поля JSON не изменены
-- кириллица не повреждена
-- отчёт возвращён в чат
+- QuestUI.Init() защищён от показа дефолтных available-статусов
+- QuestUI.Update() тоже защищён от показа дефолтных available-статусов
+- RefreshQuestList() вызывается только когда player data уже синхронизирована
+- если player data ещё нет, UI показывает "Загрузка данных квестов..."
+- после прихода player data UI обновляется штатно
+- изменён только QuestUI.c
+- отчёт краткий, максимум 20–30 строк
 
 Формат отчёта:
 
@@ -324,31 +315,18 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- Открыт JSON_Quvest/Silver_77_Quests.json
-- Проверена кириллица — отображается нормально
-- Синхронизированы верхние rewards с triggerActions[actionType="reward"].rewards для 4 квестов:
-  - quest_hunter_1: quantity: 7 -> quantity: 8
-  - quest_fisherman_2: quantity: 1 -> quantity: 10
-  - quest_Rasputin_1: Ammo_12gaPellets x3 -> DisinfectantAlcohol x1
-  - quest_hunter_2: [] -> Ammo_12gaPellets x30
-- Проверено, что кириллица не повреждена после правок
-- Проверено, что другие поля не изменены
+- Добавлена защита в QuestUI.Update()
+- Добавлена проверка HasSyncedPlayerData() в начале Update()
+- Если player data ещё нет, UI показывает "Загрузка данных квестов..." и не обновляет список
+- Если player data есть, работает обычная логика обновления
+- Кириллица не повреждена
 
 CHANGED FILES:
-- JSON_Quvest/Silver_77_Quests.json
+- Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c
 
 DIFF:
-- quest_hunter_1:
-  - верхний rewards изменён с Ammo_12gaPellets x7 на Ammo_12gaPellets x8
-
-- quest_Rasputin_1:
-  - верхний rewards изменён с Ammo_12gaPellets x3 на DisinfectantAlcohol x1
-
-- quest_fisherman_2:
-  - верхний rewards изменён с Ammo_12gaPellets x1 на Ammo_12gaPellets x10
-
-- quest_hunter_2:
-  - верхний rewards изменён с пустого массива на Ammo_12gaPellets x30
+- В начало QuestUI.Update() добавлена проверка наличия синхронизированных player data
+- RefreshQuestList(), UpdateQuestDetails() и UpdateButtons() больше не вызываются до получения player data sync
 
 PROBLEMS:
 - Нет
@@ -357,10 +335,7 @@ QUESTIONS:
 - Нет
 
 CONCLUSION:
-- Верхние rewards всех 4 квестов синхронизированы с triggerActions[actionType="reward"].rewards
-- Журнал квестов должен показывать те же награды, что NPC-диалог и серверная выдача
-- Изменения применены только к верхним rewards
-- triggerActions, objectives, тексты, порядок квестов и кириллица не изменены
+- Update() теперь защищён от показа дефолтных available-статусов до получения player data sync
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
@@ -378,29 +353,24 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 042 REVIEW
+TASK 047 REVIEW
 
 Статус: предварительно принято.
 
-Проверка по отчёту агента выглядит корректно:
-- верхний rewards у quest_hunter_1 синхронизирован с triggerActions reward
-- верхний rewards у quest_fisherman_2 синхронизирован с triggerActions reward
-- верхний rewards у quest_hunter_2 синхронизирован с triggerActions reward
-- верхний rewards у quest_Rasputin_1 синхронизирован с triggerActions reward
-- triggerActions не менялись
-- objectives не менялись
-- тексты не менялись
-- порядок квестов не менялся
-- кириллица не повреждена
+Проверка по отчёту выглядит корректно:
+- QuestUI.Update() теперь проверяет HasSyncedPlayerData()
+- если player data ещё нет, UI показывает "Загрузка данных квестов..."
+- если player data ещё нет, Update() выходит через return
+- значит RefreshQuestList(), UpdateQuestDetails() и UpdateButtons() не должны вызываться до синхронизации player data
+- изменён только QuestUI.c
+- серверный код не менялся
+- JSON не менялся
+- layout-файлы не менялись
 
 Вывод:
-- TASK 042 можно считать выполненной по отчёту агента
+- TASK 047 выглядит выполненной
 - после commit/push нужно проверить фактический diff по GitHub
-- если diff подтвердит только эти изменения, TASK 042 будет принята окончательно
-
-Следующая задача:
-- commit/push делает пользователь
-- затем прислать актуальный hash для финальной проверки
+- если diff подтвердит только эту защиту, TASK 047 будет принята окончательно
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW

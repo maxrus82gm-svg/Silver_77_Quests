@@ -70,9 +70,18 @@ class QuestUIMenu extends UIScriptedMenu
         
         m_LastConfigRevision = g_ClientQuestConfigRevision;
         m_LastDataRevision = g_ClientQuestDataRevision;
-        RefreshQuestList();
-        UpdateQuestDetails();
-        UpdateButtons();
+        
+        if (m_Player && QuestClientManager.HasSyncedPlayerData(m_Player))
+        {
+            RefreshQuestList();
+            UpdateQuestDetails();
+            UpdateButtons();
+        }
+        else
+        {
+            if (m_QuestDescription)
+                m_QuestDescription.SetText("Загрузка данных квестов...");
+        }
         
         return layoutRoot;
     }
@@ -80,6 +89,13 @@ class QuestUIMenu extends UIScriptedMenu
     override void Update(float timeslice)
     {
         super.Update(timeslice);
+        
+        if (!m_Player || !QuestClientManager.HasSyncedPlayerData(m_Player))
+        {
+            if (m_QuestDescription)
+                m_QuestDescription.SetText("Загрузка данных квестов...");
+            return;
+        }
         
         if (m_WaitingForServer)
         {
