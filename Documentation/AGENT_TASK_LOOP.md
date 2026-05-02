@@ -207,44 +207,80 @@ Git контролирует только пользователь.
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 038 — Добавление QUEST_LOGIC_SPEC.md в правила агента
+TASK 042 — Синхронизация rewards в JSON
 
 Цель:
-Закрепить, что при задачах по логике квестов, JSON-квестам, редактору квестов или серверной/клиентской обработке квестов агент должен учитывать Documentation/QUEST_LOGIC_SPEC.md.
+Убрать расхождения между верхним quest.rewards и triggerActions[actionType="reward"].rewards в JSON_Quvest/Silver_77_Quests.json, чтобы журнал квестов показывал те же награды, которые фактически выдаёт сервер и показывает NPC-диалог.
 
 Где работать:
-- Documentation/AGENT_TASK_LOOP.md
+- JSON_Quvest/Silver_77_Quests.json
+
+Документы для сверки:
+- Documentation/QUEST_LOGIC_SPEC.md
+
+Тип задачи:
+- правка JSON
+- менять только явно указанный файл
 
 Что сделать:
-1. Открыть Documentation/AGENT_TASK_LOOP.md
-2. Найти уже существующий раздел:
-   # 🟥 БЛОК 4 — ПРАВИЛА ДЛЯ АГЕНТА
-3. Внутри списка "Агент должен:" добавить новое правило:
+1. Открыть Documentation/QUEST_LOGIC_SPEC.md и учитывать правила Offer / Completion / Reward.
+2. Открыть JSON_Quvest/Silver_77_Quests.json.
+3. Исправить только верхние массивы rewards у указанных квестов.
+4. Не менять triggerActions.
+5. Не менять objectives.
+6. Не менять offerTriggerIds.
+7. Не менять completionTriggerIds.
+8. Не менять rewardTriggerIds.
+9. Не менять тексты диалогов.
+10. Не менять порядок квестов.
+11. Не менять код.
 
-   Учитывать Documentation/QUEST_LOGIC_SPEC.md, если задача связана с логикой квестов, JSON-квестами, редактором квестов, Offer, Completion, Reward, requiredQuestIds, серверной обработкой квестов или клиентской логикой отображения квестов.
+Исправления:
 
-4. Добавить это правило как новый пункт списка.
-5. Остальные пункты списка аккуратно перенумеровать.
-6. Не создавать второй заголовок БЛОКА 4.
-7. Не дублировать раздел БЛОК 4.
-8. Не менять БЛОК 1, БЛОК 2, БЛОК 3, БЛОК 5, БЛОК 6.
-9. Не менять Documentation/QUEST_LOGIC_SPEC.md.
-10. Не менять код.
-11. Не менять JSON.
-12. Вернуть краткий отчёт в чат.
+1. quest_hunter_1:
+   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
+   - было: Ammo_12gaPellets x7
+   - должно быть: Ammo_12gaPellets x8
+
+2. quest_fisherman_2:
+   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
+   - было: Ammo_12gaPellets x1
+   - должно быть: Ammo_12gaPellets x10
+
+3. quest_hunter_2:
+   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
+   - было: []
+   - должно быть:
+     - Ammo_12gaPellets x30
+
+4. quest_Rasputin_1:
+   - верхний rewards должен совпадать с triggerActions[actionType="reward"].rewards
+   - было:
+     - Ammo_12gaPellets x3
+   - должно быть:
+     - DisinfectantAlcohol x1
 
 Важно:
-- изменить только Documentation/AGENT_TASK_LOOP.md
-- не менять архитектуру
-- не делать рефакторинг
+- изменить только JSON_Quvest/Silver_77_Quests.json
+- не менять Documentation/QUEST_LOGIC_SPEC.md
+- не менять Documentation/AGENT_TASK_LOOP.md
+- не менять серверный код
+- не менять клиентский код
+- не менять triggerActions
+- не менять кириллицу
+- не перекодировать файл
+- перед правкой убедиться, что кириллица отображается нормально
+- если есть риск кодировки, остановиться и указать это в PROBLEMS
 - Git не трогать
 - commit/push не делать
 
 Критерии готовности:
-- в БЛОК 4 добавлено правило про Documentation/QUEST_LOGIC_SPEC.md
-- заголовок БЛОКА 4 остался только один
-- другие блоки не изменены
-- Documentation/QUEST_LOGIC_SPEC.md не изменён
+- верхний rewards у quest_hunter_1 совпадает с triggerActions reward
+- верхний rewards у quest_fisherman_2 совпадает с triggerActions reward
+- верхний rewards у quest_hunter_2 совпадает с triggerActions reward
+- верхний rewards у quest_Rasputin_1 совпадает с triggerActions reward
+- другие поля JSON не изменены
+- кириллица не повреждена
 - отчёт возвращён в чат
 
 Формат отчёта:
@@ -266,6 +302,9 @@ PROBLEMS:
 QUESTIONS:
 - только реальные вопросы
 
+CONCLUSION:
+- общий вывод
+
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -282,31 +321,50 @@ QUESTIONS:
 ## НАЧАЛО ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-### DONE:
-- Проверены все предметные упоминания картошки в `JSON_Quvest/Silver_77_Quests.json`
-- Подтверждено, что картошка везде использует `PotatoSeed`
-- Изменён порядок квестов у `hunter_trigger`
-- `quest_hunter_1` теперь стоит первым
-- `quest_hunter_2` теперь стоит вторым
+AGENT REPORT
 
-### CHANGED FILES:
-- `JSON_Quvest/Silver_77_Quests.json`
+DONE:
+- Прочитан Documentation/QUEST_LOGIC_SPEC.md
+- Прочитан JSON_Quvest/Silver_77_Quests.json
+- Найден клиентский код отображения наград в UI
+- Проверена функция GetQuestActionRewards() в QuestClientManager.c
+- Проверена функция GetVisibleRewardItems() в QuestUI.c
+- Проверен QuestJournalUI.c
+- Проверен hardcoded CreateDefaultQuestConfig() в QuestServerManager.c
+- Проверены квесты quest_hunter_1, quest_fisherman_2, quest_hunter_2, quest_Rasputin_1
+- Кириллица отображается нормально
 
-### DIFF:
-- У `hunter_trigger.questIds` изменён порядок:
-  - было: `quest_hunter_2`, `quest_hunter_1`
-  - стало: `quest_hunter_1`, `quest_hunter_2`
-
-### PROBLEMS:
+CHANGED FILES:
 - Нет
 
-### QUESTIONS:
+ANALYSIS:
+- Диалог NPC использует GetVisibleRewardItems()
+- GetVisibleRewardItems() для Reward-этапа вызывает QuestClientManager.GetQuestActionRewards(quest, triggerId, "reward")
+- GetQuestActionRewards() сначала берёт triggerActions[actionType].rewards
+- Если actionType = "reward" и action.rewards пустой или отсутствует, используется верхний quest.rewards
+- Эта логика совпадает с серверной логикой выдачи наград
+- Журнал квестов QuestJournalUI.c напрямую показывает только верхний quest.rewards
+- Журнал квестов не использует triggerActions[actionType="reward"].rewards
+- Поэтому NPC-диалог показывает фактическую награду корректно, а журнал может показывать неверную награду
+
+PROBLEMS:
+Критичные:
 - Нет
 
-### ВЫВОД:
-- JSON по картошке уже был корректен
-- Подозрительный порядок квестов Ворона исправлен
-- Следующий шаг — собрать моды и проверить Ворона, Рыбака и квесты с `PotatoSeed` в игре
+Некритичные:
+- quest_hunter_1: журнал показывает Ammo_12gaPellets x7, диалог NPC и сервер используют Ammo_12gaPellets x8
+- quest_fisherman_2: журнал показывает Ammo_12gaPellets x1, диалог NPC и сервер используют Ammo_12gaPellets x10
+- quest_hunter_2: журнал не показывает финальную награду, диалог NPC и сервер используют Ammo_12gaPellets x30
+- quest_Rasputin_1: журнал показывает Ammo_12gaPellets x3, диалог NPC и сервер используют DisinfectantAlcohol x1
+- Игрок может видеть разные награды в журнале и в NPC-диалоге
+
+QUESTIONS:
+- Нет
+
+CONCLUSION:
+- NPC-диалог совпадает с серверной выдачей наград
+- Журнал квестов не совпадает с серверной выдачей наград, если верхний quest.rewards отличается от triggerActions reward
+- Следующей задачей нужно либо синхронизировать JSON rewards, либо изменить журнал, чтобы он использовал ту же reward-логику, что NPC-диалог и сервер
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
@@ -324,22 +382,29 @@ QUESTIONS:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 037 REVIEW
+TASK 041 REVIEW
 
 Статус: принято.
 
 Проверка выполнена корректно:
-- создан `Documentation/QUEST_LOGIC_SPEC.md`
-- документ описывает модель `requiredQuestIds` / Offer / Completion / Reward
-- зафиксирована изоляция квестов
-- зафиксированы правила для JSON, редактора и игрового кода
-- другие рабочие файлы не менялись
+- найден клиентский код отображения наград
+- подтверждено, что NPC-диалог использует GetQuestActionRewards()
+- подтверждено, что NPC-диалог показывает награды по той же логике, что серверная выдача
+- подтверждено, что QuestJournalUI.c показывает только верхний quest.rewards
+- подтверждено, что журнал не использует triggerActions reward
+- файлы не изменялись
 
-Замечание:
-- документ желательно позже переформатировать в нормальный Markdown с читаемыми переносами строк
-- в `AGENT_TASK_LOOP.md` нужно добавить правило, что при задачах по логике квестов агент должен учитывать `Documentation/QUEST_LOGIC_SPEC.md`
+Выводы:
+- серверная выдача наград и NPC-диалог согласованы
+- журнал квестов может показывать неправильные награды
+- причина расхождения: верхний quest.rewards отличается от triggerActions[actionType="reward"].rewards
+- проблема не критична для выдачи награды, но критична для доверия к UI
 
-Следующая задача: TASK 038.
+Рекомендация:
+- сначала безопаснее синхронизировать JSON: привести верхний rewards к фактическим triggerActions reward
+- позже можно отдельной задачей улучшить QuestJournalUI.c, чтобы журнал использовал ту же функцию выбора наград, что NPC-диалог
+
+Следующая задача: TASK 042.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW

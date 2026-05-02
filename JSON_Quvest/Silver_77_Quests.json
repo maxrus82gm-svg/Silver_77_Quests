@@ -81,7 +81,7 @@
       "rewards": [
         {
           "className": "Ammo_12gaPellets",
-          "quantity": 7,
+          "quantity": 8,
           "spawnOnGround": 0
         }
       ]
@@ -204,8 +204,8 @@
       ],
       "rewards": [
         {
-          "className": "Ammo_12gaPellets",
-          "quantity": 3,
+          "className": "DisinfectantAlcohol",
+          "quantity": 1,
           "spawnOnGround": 0
         }
       ]
@@ -266,7 +266,7 @@
       "rewards": [
         {
           "className": "Ammo_12gaPellets",
-          "quantity": 1,
+          "quantity": 10,
           "spawnOnGround": 0
         }
       ]
@@ -338,7 +338,13 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": []
+      "rewards": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 30,
+          "spawnOnGround": 0
+        }
+      ]
     }
   ],
   "triggers": [
