@@ -324,47 +324,43 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- Прочитан Documentation/QUEST_LOGIC_SPEC.md
-- Прочитан JSON_Quvest/Silver_77_Quests.json
-- Найден клиентский код отображения наград в UI
-- Проверена функция GetQuestActionRewards() в QuestClientManager.c
-- Проверена функция GetVisibleRewardItems() в QuestUI.c
-- Проверен QuestJournalUI.c
-- Проверен hardcoded CreateDefaultQuestConfig() в QuestServerManager.c
-- Проверены квесты quest_hunter_1, quest_fisherman_2, quest_hunter_2, quest_Rasputin_1
-- Кириллица отображается нормально
+- Открыт JSON_Quvest/Silver_77_Quests.json
+- Проверена кириллица — отображается нормально
+- Синхронизированы верхние rewards с triggerActions[actionType="reward"].rewards для 4 квестов:
+  - quest_hunter_1: quantity: 7 -> quantity: 8
+  - quest_fisherman_2: quantity: 1 -> quantity: 10
+  - quest_Rasputin_1: Ammo_12gaPellets x3 -> DisinfectantAlcohol x1
+  - quest_hunter_2: [] -> Ammo_12gaPellets x30
+- Проверено, что кириллица не повреждена после правок
+- Проверено, что другие поля не изменены
 
 CHANGED FILES:
-- Нет
+- JSON_Quvest/Silver_77_Quests.json
 
-ANALYSIS:
-- Диалог NPC использует GetVisibleRewardItems()
-- GetVisibleRewardItems() для Reward-этапа вызывает QuestClientManager.GetQuestActionRewards(quest, triggerId, "reward")
-- GetQuestActionRewards() сначала берёт triggerActions[actionType].rewards
-- Если actionType = "reward" и action.rewards пустой или отсутствует, используется верхний quest.rewards
-- Эта логика совпадает с серверной логикой выдачи наград
-- Журнал квестов QuestJournalUI.c напрямую показывает только верхний quest.rewards
-- Журнал квестов не использует triggerActions[actionType="reward"].rewards
-- Поэтому NPC-диалог показывает фактическую награду корректно, а журнал может показывать неверную награду
+DIFF:
+- quest_hunter_1:
+  - верхний rewards изменён с Ammo_12gaPellets x7 на Ammo_12gaPellets x8
+
+- quest_Rasputin_1:
+  - верхний rewards изменён с Ammo_12gaPellets x3 на DisinfectantAlcohol x1
+
+- quest_fisherman_2:
+  - верхний rewards изменён с Ammo_12gaPellets x1 на Ammo_12gaPellets x10
+
+- quest_hunter_2:
+  - верхний rewards изменён с пустого массива на Ammo_12gaPellets x30
 
 PROBLEMS:
-Критичные:
 - Нет
-
-Некритичные:
-- quest_hunter_1: журнал показывает Ammo_12gaPellets x7, диалог NPC и сервер используют Ammo_12gaPellets x8
-- quest_fisherman_2: журнал показывает Ammo_12gaPellets x1, диалог NPC и сервер используют Ammo_12gaPellets x10
-- quest_hunter_2: журнал не показывает финальную награду, диалог NPC и сервер используют Ammo_12gaPellets x30
-- quest_Rasputin_1: журнал показывает Ammo_12gaPellets x3, диалог NPC и сервер используют DisinfectantAlcohol x1
-- Игрок может видеть разные награды в журнале и в NPC-диалоге
 
 QUESTIONS:
 - Нет
 
 CONCLUSION:
-- NPC-диалог совпадает с серверной выдачей наград
-- Журнал квестов не совпадает с серверной выдачей наград, если верхний quest.rewards отличается от triggerActions reward
-- Следующей задачей нужно либо синхронизировать JSON rewards, либо изменить журнал, чтобы он использовал ту же reward-логику, что NPC-диалог и сервер
+- Верхние rewards всех 4 квестов синхронизированы с triggerActions[actionType="reward"].rewards
+- Журнал квестов должен показывать те же награды, что NPC-диалог и серверная выдача
+- Изменения применены только к верхним rewards
+- triggerActions, objectives, тексты, порядок квестов и кириллица не изменены
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
@@ -382,29 +378,29 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 041 REVIEW
+TASK 042 REVIEW
 
-Статус: принято.
+Статус: предварительно принято.
 
-Проверка выполнена корректно:
-- найден клиентский код отображения наград
-- подтверждено, что NPC-диалог использует GetQuestActionRewards()
-- подтверждено, что NPC-диалог показывает награды по той же логике, что серверная выдача
-- подтверждено, что QuestJournalUI.c показывает только верхний quest.rewards
-- подтверждено, что журнал не использует triggerActions reward
-- файлы не изменялись
+Проверка по отчёту агента выглядит корректно:
+- верхний rewards у quest_hunter_1 синхронизирован с triggerActions reward
+- верхний rewards у quest_fisherman_2 синхронизирован с triggerActions reward
+- верхний rewards у quest_hunter_2 синхронизирован с triggerActions reward
+- верхний rewards у quest_Rasputin_1 синхронизирован с triggerActions reward
+- triggerActions не менялись
+- objectives не менялись
+- тексты не менялись
+- порядок квестов не менялся
+- кириллица не повреждена
 
-Выводы:
-- серверная выдача наград и NPC-диалог согласованы
-- журнал квестов может показывать неправильные награды
-- причина расхождения: верхний quest.rewards отличается от triggerActions[actionType="reward"].rewards
-- проблема не критична для выдачи награды, но критична для доверия к UI
+Вывод:
+- TASK 042 можно считать выполненной по отчёту агента
+- после commit/push нужно проверить фактический diff по GitHub
+- если diff подтвердит только эти изменения, TASK 042 будет принята окончательно
 
-Рекомендация:
-- сначала безопаснее синхронизировать JSON: привести верхний rewards к фактическим triggerActions reward
-- позже можно отдельной задачей улучшить QuestJournalUI.c, чтобы журнал использовал ту же функцию выбора наград, что NPC-диалог
-
-Следующая задача: TASK 042.
+Следующая задача:
+- commit/push делает пользователь
+- затем прислать актуальный hash для финальной проверки
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
