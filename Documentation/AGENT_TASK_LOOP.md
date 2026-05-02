@@ -207,50 +207,23 @@ Git контролирует только пользователь.
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 056 — Исправить script error в QuestClientRPC.c на VERSION_CHECK RPC_ID логе
+Выполни текущую задачу из БЛОКА 1.
 
-Цель:
-Исправить ошибку выполнения в клиентском обработчике Silver77_HandleQuestPlayerData, которая видна в RPT как:
-Silver_77_Quests/scripts/4_World/questclientrpc.c:111 Function Silver77_HandleQuestPlayerData
-Silver_77_Quests/scripts/4_World/questclientrpc.c:66 Function OnRPC
+TASK 059:
+- править только Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
+- в OnRPC в case SILVER77_QUEST_RPC_PLAYER_DATA временно НЕ вызывать Silver77_HandleQuestPlayerData(ctx)
+- вместо вызова поставить:
+  Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] PLAYER_DATA_RPC_CASE_HIT");
+  return;
 
-Контекст:
-После TASK 055 live клиентский PBO актуальный, обработчик Silver77_HandleQuestPlayerData вызывается.
-Но в RPT нет VERSION_CHECK строк, вместо этого появляется call stack на questclientrpc.c:111.
-Вероятная причина: строка Print склеивает string + int:
-Print("[Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA);
-Enforce Script может падать/ругаться на конкатенации string + int.
-
-Где работать:
-- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
-
-Тип задачи:
-- минимальная правка
-- только клиент
-- бизнес-логику не менять
-
-Что сделать:
-1. В Silver77_HandleQuestPlayerData заменить лог RPC_ID на безопасный вариант:
-   Print("[Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA.ToString());
-   или временно убрать этот конкретный лог, если ToString недоступен.
-2. Проверить весь QuestClientRPC.c на другие Print, где string склеивается напрямую с int.
-3. Если есть похожие места:
-   - data.param1
-   - data.param2
-   - data.param3.Length()
-   привести их к безопасной строковой форме через ToString(), либо разбить на несколько Print.
-4. Не менять порядок OnRPC.
-5. Не менять Param3.
-6. Не менять RPC формат.
-7. Не менять JSON.
-8. Не менять layout.
-9. Не менять серверный код.
-10. Git не трогать.
-
-Критерии готовности:
-- QuestClientRPC.c больше не содержит опасных string + int в VERSION_CHECK/CLIENT_PROGRESS_DEBUG Print.
-- Логика RPC не изменена.
-- Отчёт краткий.
+- case SILVER77_QUEST_RPC_CONFIG_DATA не менять
+- функцию Silver77_HandleQuestPlayerData не удалять
+- внутри Silver77_HandleQuestPlayerData ничего не менять
+- Param3/ctx.Read не менять внутри функции
+- сервер не трогать
+- JSON/layout не трогать
+- Git не трогать
+- отчёт кратко
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ

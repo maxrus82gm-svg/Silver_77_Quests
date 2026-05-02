@@ -2247,7 +2247,7 @@ class QuestServerManager
         if (data.progress)
             progressCount = data.progress.Count();
         
-        Print("[Silver_77_Quests][PROGRESS_DEBUG] SendPlayerDataToClient: steamId=" + data.steamId + " progressCount=" + progressCount);
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] SendPlayerDataToClient: steamId=" + data.steamId + " progressCount=" + progressCount.ToString());
         
         if (data.progress)
         {
@@ -2263,11 +2263,11 @@ class QuestServerManager
             return;
         
         Print("[Silver_77_Quests][VERSION_CHECK] SERVER TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3");
-        Print("[Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=" + payload.Length());
-        Print("[Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA);
+        Print("[Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=" + payload.Length().ToString());
+        Print("[Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA.ToString());
         
         GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA, new Param3<int, int, string>(0, 1, payload), true, player.GetIdentity());
-        Print("[Silver_77_Quests] Sent quest progress to client: " + data.steamId + " (" + payload.Length() + " bytes)");
+        Print("[Silver_77_Quests] Sent quest progress to client: " + data.steamId + " (" + payload.Length().ToString() + " bytes)");
     }
     
     static void ApplySyncedConfig(Silver77_QuestConfig config)

@@ -63,7 +63,7 @@ modded class PlayerBase
                 return;
             
             case SILVER77_QUEST_RPC_PLAYER_DATA:
-                Silver77_HandleQuestPlayerData(ctx);
+                Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] PLAYER_DATA_RPC_CASE_HIT");
                 return;
         }
         
@@ -102,11 +102,9 @@ modded class PlayerBase
         if (GetGame().IsDedicatedServer())
             return;
         
-        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3");
-        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA.ToString());
-        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: Received SILVER77_QUEST_RPC_PLAYER_DATA");
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ENTER_PLAYER_DATA_HANDLER");
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ABOUT_TO_READ_PLAYER_DATA_PARAM3");
         
-        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT ABOUT_TO_READ_PARAM3");
         Param3<int, int, string> data = new Param3<int, int, string>(0, 0, "");
         if (!ctx.Read(data))
         {
