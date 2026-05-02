@@ -142,7 +142,7 @@
       "rewards": [
         {
           "className": "Ammo_12gaPellets",
-          "quantity": 0,
+          "quantity": 8,
           "spawnOnGround": 0
         }
       ]
