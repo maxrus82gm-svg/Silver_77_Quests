@@ -7,11 +7,19 @@ const string SILVER77_QUEST_CLIENT_CONFIG_SYNC_PATH = "$profile:Silver_77_Quests
 const string SILVER77_QUEST_CLIENT_PLAYER_SYNC_PATH = "$profile:Silver_77_Quests/client_synced_player_data.json";
 ref map<int, string> g_Silver77_QuestConfigSyncChunks;
 int g_Silver77_QuestConfigSyncExpectedChunkCount = 0;
+ref map<int, string> g_Silver77_PlayerDataSyncChunks;
+int g_Silver77_PlayerDataSyncExpectedChunkCount = 0;
 
 void Silver77_ResetQuestConfigSyncBuffer()
 {
     g_Silver77_QuestConfigSyncChunks = new map<int, string>;
     g_Silver77_QuestConfigSyncExpectedChunkCount = 0;
+}
+
+void Silver77_ResetPlayerDataSyncBuffer()
+{
+    g_Silver77_PlayerDataSyncChunks = new map<int, string>;
+    g_Silver77_PlayerDataSyncExpectedChunkCount = 0;
 }
 
 string Silver77_StoreQuestConfigSyncChunk(int chunkIndex, int totalChunks, string chunkPayload)
@@ -52,6 +60,44 @@ string Silver77_StoreQuestConfigSyncChunk(int chunkIndex, int totalChunks, strin
     return payload;
 }
 
+string Silver77_StorePlayerDataSyncChunk(int chunkIndex, int totalChunks, string chunkPayload)
+{
+    if (chunkIndex < 0 || totalChunks <= 0 || chunkIndex >= totalChunks || chunkPayload == "")
+    {
+        Print("[Silver_77_Quests] ERROR: Invalid player data chunk received");
+        Silver77_ResetPlayerDataSyncBuffer();
+        return "";
+    }
+    
+    if (!g_Silver77_PlayerDataSyncChunks || g_Silver77_PlayerDataSyncExpectedChunkCount != totalChunks || (chunkIndex == 0 && g_Silver77_PlayerDataSyncChunks.Count() > 0))
+    {
+        Silver77_ResetPlayerDataSyncBuffer();
+        g_Silver77_PlayerDataSyncExpectedChunkCount = totalChunks;
+    }
+    
+    g_Silver77_PlayerDataSyncChunks.Set(chunkIndex, chunkPayload);
+    Print("[Silver_77_Quests] Received player data chunk " + (chunkIndex + 1).ToString() + "/" + totalChunks.ToString() + " (" + chunkPayload.Length().ToString() + " bytes)");
+    
+    if (g_Silver77_PlayerDataSyncChunks.Count() < g_Silver77_PlayerDataSyncExpectedChunkCount)
+        return "";
+    
+    string payload = "";
+    for (int i = 0; i < g_Silver77_PlayerDataSyncExpectedChunkCount; i++)
+    {
+        if (!g_Silver77_PlayerDataSyncChunks.Contains(i))
+        {
+            Print("[Silver_77_Quests] ERROR: Missing player data chunk " + i.ToString());
+            Silver77_ResetPlayerDataSyncBuffer();
+            return "";
+        }
+        
+        payload += g_Silver77_PlayerDataSyncChunks.Get(i);
+    }
+    
+    Silver77_ResetPlayerDataSyncBuffer();
+    return payload;
+}
+
 modded class PlayerBase
 {
     override void OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
@@ -63,7 +109,22 @@ modded class PlayerBase
                 return;
             
             case SILVER77_QUEST_RPC_PLAYER_DATA:
-                Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] PLAYER_DATA_RPC_CASE_HIT");
+                if (GetGame().IsDedicatedServer())
+                    return;
+                
+                Param3<int, int, string> data = new Param3<int, int, string>(0, 0, "");
+                if (!ctx.Read(data))
+                {
+                    Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: ctx.Read Param3 failed directly in OnRPC player data case");
+                    return;
+                }
+                
+                string payload = Silver77_StorePlayerDataSyncChunk(data.param1, data.param2, data.param3);
+                if (payload == "")
+                    return;
+                
+                Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: Reassembled player data payload");
+                Silver77_HandleQuestPlayerDataPayload(payload);
                 return;
         }
         
@@ -95,6 +156,54 @@ modded class PlayerBase
         }
         
         QuestClientManager.ApplySyncedConfig(config);
+    }
+    
+    private void Silver77_HandleQuestPlayerDataPayload(string jsonPayload)
+    {
+        if (jsonPayload == "")
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Empty jsonPayload");
+            return;
+        }
+        
+        Print("[Silver_77_Quests] Received quest progress sync payload (" + jsonPayload.Length().ToString() + " bytes)");
+        
+        PlayerQuestData playerData = Silver77_LoadPlayerDataFromJson(jsonPayload);
+        if (!playerData)
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Silver77_LoadPlayerDataFromJson returned null");
+            Print("[Silver_77_Quests] ERROR: Failed to decode quest progress sync payload");
+            return;
+        }
+
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: PlayerQuestData deserialized successfully");
+
+        if (playerData.steamId == "" && GetIdentity())
+        {
+            playerData.steamId = GetIdentity().GetId();
+            Print("[Silver_77_Quests] WARNING: Synced player progress had empty steamId, applied local identity fallback: " + playerData.steamId);
+        }
+
+        int progressCount = 0;
+        if (playerData.progress)
+            progressCount = playerData.progress.Count();
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: steamId=" + playerData.steamId + " progressCount=" + progressCount.ToString());
+        
+        if (playerData.progress)
+        {
+            foreach (PlayerQuestProgress progress : playerData.progress)
+            {
+                if (progress)
+                    Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: received questId=" + progress.questId + " status=" + progress.status);
+            }
+        }
+        
+        Print("[Silver_77_Quests] Decoded quest progress sync for " + playerData.steamId + " with " + progressCount.ToString() + " quest entries");
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] Calling QuestClientManager.ApplySyncedPlayerData");
+        QuestClientManager.ApplySyncedPlayerData(playerData);
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] QuestClientManager.ApplySyncedPlayerData completed");
     }
     
     private void Silver77_HandleQuestPlayerData(ParamsReadContext ctx)

@@ -207,23 +207,148 @@ Git контролирует только пользователь.
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-Выполни текущую задачу из БЛОКА 1.
+БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 059:
-- править только Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
-- в OnRPC в case SILVER77_QUEST_RPC_PLAYER_DATA временно НЕ вызывать Silver77_HandleQuestPlayerData(ctx)
-- вместо вызова поставить:
-  Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] PLAYER_DATA_RPC_CASE_HIT");
-  return;
+TASK 064 — Перевести player data RPC на chunked sync как config sync
 
-- case SILVER77_QUEST_RPC_CONFIG_DATA не менять
-- функцию Silver77_HandleQuestPlayerData не удалять
-- внутри Silver77_HandleQuestPlayerData ничего не менять
-- Param3/ctx.Read не менять внутри функции
-- сервер не трогать
-- JSON/layout не трогать
-- Git не трогать
-- отчёт кратко
+Цель:
+Исправить ошибку клиента:
+Reason: !!! String CORRUPTED - FIX OnStoreLoad() !!!
+Silver_77_Quests/scripts/4_World/questclientrpc.c:70 Function OnRPC
+
+Контекст:
+Серверный лог подтверждает:
+- Received quest progress request RPC
+- SendPlayerDataToClient вызывается
+- SERVER ABOUT_TO_SEND_PARAM3 payloadLength=1324
+- Sent quest progress to client
+
+Клиентский лог подтверждает:
+- клиент получает RPC
+- падает в questclientrpc.c:70 Function OnRPC
+- причина: String CORRUPTED при чтении строки из RPC
+
+Вывод:
+Проблема не в UI, не в журнале, не в HasSyncedPlayerData и не в старом PBO.
+Проблема в передаче player data JSON одной строкой через RPC.
+Нужно сделать player data sync чанками по аналогии с config sync.
+
+Где работать:
+1. Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
+2. Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
+
+Что сделать:
+
+SERVER:
+1. Найти текущую прямую отправку player data:
+   RPCSingleParam(... SILVER77_QUEST_RPC_PLAYER_DATA ... new Param3<int,int,string>(0,1,payload) ...)
+
+2. Не отправлять весь player data payload одной строкой.
+
+3. Добавить или использовать функцию:
+   SendPlayerDataPayloadChunks(PlayerBase player, string payload)
+
+4. Логика SendPlayerDataPayloadChunks должна быть по аналогии с SendQuestConfigPayloadChunks:
+   - разбить payload на chunks
+   - отправлять каждый chunk через Param3<int,int,string>
+   - param1 = chunkIndex
+   - param2 = totalChunks
+   - param3 = chunkPayload
+
+5. Размер чанка:
+   - использовать тот же размер, что и config sync, если там уже есть константа
+   - если отдельной константы нет, использовать безопасный размер 512
+
+6. Сохранить существующие server debug logs:
+   - SendPlayerDataToClient
+   - progressCount
+   - sending questId/status
+   - payloadLength
+   - RPC_ID_PLAYER_DATA
+
+7. Добавить лог отправки чанков player data:
+   [Silver_77_Quests] Sent quest progress to client in X chunks (Y bytes)
+
+CLIENT:
+8. В QuestClientRPC.c добавить отдельные глобальные буферы для player data:
+   ref map<int, string> g_Silver77_PlayerDataSyncChunks;
+   int g_Silver77_PlayerDataSyncExpectedChunkCount = 0;
+
+9. Добавить функцию:
+   Silver77_ResetPlayerDataSyncBuffer()
+
+10. Добавить функцию:
+   string Silver77_StorePlayerDataSyncChunk(int chunkIndex, int totalChunks, string chunkPayload)
+
+11. Логика Silver77_StorePlayerDataSyncChunk должна быть по аналогии с Silver77_StoreQuestConfigSyncChunk:
+   - проверка chunkIndex
+   - проверка totalChunks
+   - проверка chunkPayload != ""
+   - reset buffer при новой последовательности
+   - сохранение chunk
+   - если ещё не все chunks пришли, вернуть ""
+   - если все chunks пришли, собрать payload в правильном порядке
+   - если chunk отсутствует, логировать ошибку и reset
+   - после сборки reset и вернуть payload
+
+12. В OnRPC case SILVER77_QUEST_RPC_PLAYER_DATA:
+   - читать Param3<int,int,string> прямо внутри case
+   - ParamsReadContext не передавать в helper
+   - если ctx.Read failed:
+     Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: ctx.Read Param3 failed directly in OnRPC player data case");
+     return;
+   - после успешного чтения вызвать:
+     string payload = Silver77_StorePlayerDataSyncChunk(data.param1, data.param2, data.param3);
+   - если payload == "":
+     return;
+   - если payload собран:
+     Silver77_HandleQuestPlayerDataPayload(payload);
+     return;
+
+13. Silver77_HandleQuestPlayerDataPayload(string jsonPayload) оставить для десериализации и ApplySyncedPlayerData.
+
+14. Старую Silver77_HandleQuestPlayerData(ParamsReadContext ctx) не вызывать.
+
+НЕ МЕНЯТЬ:
+1. Config sync не ломать.
+2. case SILVER77_QUEST_RPC_CONFIG_DATA не менять, кроме если нужно только не конфликтующее имя/общая константа чанка.
+3. Серверную бизнес-логику progress не менять.
+4. JSON не менять.
+5. Layout не менять.
+6. Git не трогать.
+7. AGENT_TASK_LOOP.md и QUEST_LOGIC_SPEC.md не менять, кроме вставки этого БЛОКА 1 пользователем.
+8. Не делать рефакторинг.
+9. Не удалять файлы.
+10. Не переименовывать файлы.
+
+Критерии готовности:
+1. Player data больше не отправляется одной строкой.
+2. Player data отправляется чанками через Param3<int,int,string>.
+3. Клиент собирает player data chunks отдельно от config chunks.
+4. ctx.Read выполняется прямо внутри OnRPC case.
+5. ParamsReadContext не передаётся в helper.
+6. После сборки полного payload вызывается Silver77_HandleQuestPlayerDataPayload(payload).
+7. Config sync продолжает работать отдельно.
+
+Формат отчёта:
+
+AGENT REPORT
+
+DONE:
+- что сделано
+
+CHANGED FILES:
+- список файлов
+
+DIFF:
+- кратко по изменениям
+
+PROBLEMS:
+- реальные проблемы, если есть
+
+CONCLUSION:
+- краткий вывод
+
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ

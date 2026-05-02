@@ -2266,8 +2266,7 @@ class QuestServerManager
         Print("[Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=" + payload.Length().ToString());
         Print("[Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA.ToString());
         
-        GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA, new Param3<int, int, string>(0, 1, payload), true, player.GetIdentity());
-        Print("[Silver_77_Quests] Sent quest progress to client: " + data.steamId + " (" + payload.Length().ToString() + " bytes)");
+        SendPlayerDataPayloadChunks(player, payload);
     }
     
     static void ApplySyncedConfig(Silver77_QuestConfig config)
@@ -2350,6 +2349,33 @@ class QuestServerManager
         }
         
         Print("[Silver_77_Quests] Sent quest config to client in " + totalChunks + " chunks (" + payloadLength + " bytes)");
+    }
+    
+    private static void SendPlayerDataPayloadChunks(PlayerBase player, string payload)
+    {
+        if (!player || !player.GetIdentity() || payload == "")
+            return;
+        
+        int payloadLength = payload.Length();
+        int totalChunks = payloadLength / SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
+        if ((payloadLength % SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE) != 0)
+            totalChunks++;
+        
+        if (totalChunks <= 0)
+            totalChunks = 1;
+        
+        for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++)
+        {
+            int offset = chunkIndex * SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
+            int chunkLength = payloadLength - offset;
+            if (chunkLength > SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE)
+                chunkLength = SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
+            
+            string chunkPayload = payload.Substring(offset, chunkLength);
+            GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA, new Param3<int, int, string>(chunkIndex, totalChunks, chunkPayload), true, player.GetIdentity());
+        }
+        
+        Print("[Silver_77_Quests] Sent quest progress to client in " + totalChunks.ToString() + " chunks (" + payloadLength.ToString() + " bytes)");
     }
 
     private static string SerializePlayerDataForClient(PlayerQuestData data)
