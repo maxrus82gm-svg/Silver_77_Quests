@@ -135,7 +135,7 @@
           "className": "Carp",
           "quantity": 6,
           "removeOnComplete": 1,
-          "useItemQuantity": 0,
+          "useItemQuantity": 1,
           "allowPartialTurnIn": 1
         }
       ],
@@ -259,7 +259,7 @@
           "className": "BandageDressing",
           "quantity": 6,
           "removeOnComplete": 1,
-          "useItemQuantity": 0,
+          "useItemQuantity": 1,
           "allowPartialTurnIn": 1
         }
       ],
@@ -353,8 +353,8 @@
       "focusHeight": 1.2000000476837158,
       "focusRadius": 1,
       "questIds": [
-        "quest_hunter_2",
-        "quest_hunter_1"
+        "quest_hunter_1",
+        "quest_hunter_2"
       ],
       "hintText": "[F] Коля Ворон",
       "spawnNpc": 1,
