@@ -30,6 +30,12 @@ class CfgMods
         
         class defs
         {
+            class gameScriptModule
+            {
+                value = "";
+                files[] = {"Silver_77_Quests/scripts/3_Game"};
+            };
+            
             class worldScriptModule
             {
                 value = "";
