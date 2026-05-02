@@ -206,80 +206,91 @@ Git контролирует только пользователь.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-TASK 047 — Защита QuestUI.Update() от обновления списка до player data sync
+
+TASK 052 — Исправить чтение RPC payload для PlayerQuestData на клиенте
 
 Цель:
-Доработать TASK 046: убедиться, что QuestUI.Update() не вызывает RefreshQuestList(), UpdateQuestDetails() и UpdateButtons() до получения синхронизированных player data.
+Исправить ошибку ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA, из-за которой клиент получает RPC, но не может прочитать JSON payload с PlayerQuestData.
 
 Контекст:
-В TASK 046 была добавлена функция HasSyncedPlayerData() и защита в QuestUI.Init().
-Но остаётся риск:
-- config sync может прийти раньше player data sync
-- тогда QuestUI.Update() увидит изменение g_ClientQuestConfigRevision
-- ветка config revision может вызвать RefreshQuestList()
-- RefreshQuestList() может снова обратиться к GetQuestStatus()
-- GetQuestStatus() может создать/показать дефолтные available-статусы до прихода player data
+Server log показывает, что сервер отправляет правильные данные:
+- quest_hunter_1: active
+- quest_fisherman_1: completed
+- quest_Rasputin_1: available
+- quest_fisherman_2: active
+- quest_hunter_2: active
+
+Client log после TASK 051 показывает:
+- RPC Handler: Received SILVER77_QUEST_RPC_PLAYER_DATA
+- ERROR: ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA
+- значит клиент не может прочитать payload из ParamsReadContext
+- проблема происходит до JsonSerializer.ReadFromString()
+- UI поэтому продолжает видеть available-статусы
 
 Где работать:
-- Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c
-
-Документы для сверки:
-- Documentation/QUEST_LOGIC_SPEC.md
+- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
+- при необходимости для сверки:
+  - Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
+  - Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c
 
 Тип задачи:
 - правка кода
-- менять только явно указанный файл
+- минимальное исправление
+- менять только необходимые файлы
 
-Что сделать:
-1. Открыть Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c.
-2. Найти функцию Update().
-3. В местах, где Update() реагирует на изменение:
-   - g_ClientQuestConfigRevision
-   - g_ClientQuestDataRevision
-   проверить наличие синхронизированных player data через QuestClientManager.HasSyncedPlayerData(m_Player).
-4. Если player data ещё нет:
-   - не вызывать RefreshQuestList()
-   - не вызывать UpdateQuestDetails()
-   - не вызывать UpdateButtons()
-   - показать в m_QuestDescription текст "Загрузка данных квестов..."
-   - оставить UI в режиме ожидания данных
-5. Если player data уже есть:
-   - сохранить текущую логику RefreshQuestList()
-   - сохранить текущую логику UpdateQuestDetails()
-   - сохранить текущую логику UpdateButtons()
-6. Не менять QuestClientManager.c, если HasSyncedPlayerData() уже есть и работает.
-7. Не менять серверный код.
-8. Не менять JSON.
-9. Не менять layout-файлы.
-10. Не менять QuestJournalUI.c.
+Что проверить:
+1. Открыть серверную функцию SendPlayerDataToClient().
+2. Проверить, каким типом сервер отправляет payload:
+   - string напрямую
+   - Param1<string>
+   - другой Param
+3. Открыть клиентский handler SILVER77_QUEST_RPC_PLAYER_DATA в QuestClientRPC.c.
+4. Проверить, каким типом клиент сейчас читает ctx.Read.
+5. Исправить чтение на клиенте так, чтобы тип совпадал с серверной отправкой.
+6. Если сервер отправляет Param1<string>, клиент должен читать Param1<string>, например:
+   - Param1<string> payloadParam
+   - ctx.Read(payloadParam)
+   - string jsonPayload = payloadParam.param1
+7. После успешного чтения payload вызвать существующую десериализацию через JsonSerializer.ReadFromString().
+8. После успешной десериализации вызвать QuestClientManager.ApplySyncedPlayerData(data).
+9. Оставить debug-логи:
+   - ctx.Read success/fail
+   - payload length
+   - data.steamId
+   - progress Count
+   - ApplySyncedPlayerData called
+10. Не менять бизнес-логику квестов.
+11. Не менять server load/save progress.
+12. Не менять JSON.
+13. Не менять layout-файлы.
+14. Не менять Documentation/QUEST_LOGIC_SPEC.md.
+15. Не менять Documentation/AGENT_TASK_LOOP.md.
 
 Важно:
-- изменить только Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c
-- не менять серверный код
-- не менять JSON
-- не менять Documentation/QUEST_LOGIC_SPEC.md
-- не менять Documentation/AGENT_TASK_LOOP.md
-- не менять layout-файлы
-- не перекодировать файл
-- кириллицу не повредить
+- исправить именно чтение RPC payload
+- не делать рефакторинг
+- не менять архитектуру
+- не чистить debug-логи пока не проверим результат в игре
 - Git не трогать
 - commit/push не делать
+- отчёт краткий: максимум 20–30 строк
+- без больших вставок кода
 
 Критерии готовности:
-- QuestUI.Init() защищён от показа дефолтных available-статусов
-- QuestUI.Update() тоже защищён от показа дефолтных available-статусов
-- RefreshQuestList() вызывается только когда player data уже синхронизирована
-- если player data ещё нет, UI показывает "Загрузка данных квестов..."
-- после прихода player data UI обновляется штатно
-- изменён только QuestUI.c
-- отчёт краткий, максимум 20–30 строк
+- ctx.Read больше не должен падать для SILVER77_QUEST_RPC_PLAYER_DATA
+- клиент должен получить jsonPayload
+- JsonSerializer.ReadFromString должен получить непустой payload
+- ApplySyncedPlayerData должен получить PlayerQuestData с progress Count = 5
+- HasSyncedPlayerData после RPC должен стать true
+- GetQuestStatus должен начать возвращать server statuses
+- отчёт возвращён в чат
 
 Формат отчёта:
 
 AGENT REPORT
 
 DONE:
-- что сделано
+- что проверено/исправлено
 
 CHANGED FILES:
 - какие файлы изменены
@@ -315,18 +326,26 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- Добавлена защита в QuestUI.Update()
-- Добавлена проверка HasSyncedPlayerData() в начале Update()
-- Если player data ещё нет, UI показывает "Загрузка данных квестов..." и не обновляет список
-- Если player data есть, работает обычная логика обновления
-- Кириллица не повреждена
+- Проверена серверная отправка SILVER77_QUEST_RPC_PLAYER_DATA
+- Подтверждено, что сервер отправляет new Param1<string>(payload)
+- Проверено клиентское чтение RPC payload
+- Клиент уже читал Param1<string>, но создавал параметр как new Param1<string>("")
+- Изменено клиентское чтение на Param1<string> payloadParam без предварительной инициализации
+- После ctx.Read payload извлекается через payloadParam.param1
+- jsonPayload передаётся в Silver77_LoadPlayerDataFromJson()
+- PlayerQuestData десериализуется через JsonSerializer.ReadFromString()
+- После десериализации вызывается QuestClientManager.ApplySyncedPlayerData(playerData)
+- Debug-логи сохранены для проверки
 
 CHANGED FILES:
-- Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c
+- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
 
 DIFF:
-- В начало QuestUI.Update() добавлена проверка наличия синхронизированных player data
-- RefreshQuestList(), UpdateQuestDetails() и UpdateButtons() больше не вызываются до получения player data sync
+- Param1<string> data = new Param1<string>("") заменено на Param1<string> payloadParam
+- Переменная data переименована в payloadParam
+- Добавлено извлечение string jsonPayload = payloadParam.param1
+- Логи обновлены для jsonPayload
+- Silver77_LoadPlayerDataFromJson теперь получает jsonPayload
 
 PROBLEMS:
 - Нет
@@ -335,8 +354,9 @@ QUESTIONS:
 - Нет
 
 CONCLUSION:
-- Update() теперь защищён от показа дефолтных available-статусов до получения player data sync
-
+- Исправлено чтение RPC payload на клиенте
+- Ожидается, что ctx.Read больше не будет падать
+- Клиент должен начать применять PlayerQuestData от сервера
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -353,24 +373,32 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 047 REVIEW
+TASK 052 REVIEW
 
 Статус: предварительно принято.
 
 Проверка по отчёту выглядит корректно:
-- QuestUI.Update() теперь проверяет HasSyncedPlayerData()
-- если player data ещё нет, UI показывает "Загрузка данных квестов..."
-- если player data ещё нет, Update() выходит через return
-- значит RefreshQuestList(), UpdateQuestDetails() и UpdateButtons() не должны вызываться до синхронизации player data
-- изменён только QuestUI.c
-- серверный код не менялся
+- серверная отправка использует Param1<string>
+- клиентское чтение также осталось через Param1<string>
+- исправлена инициализация RPC-параметра на клиенте
+- payload теперь должен читаться через payloadParam.param1
+- JsonSerializer.ReadFromString остаётся для десериализации payload
+- ApplySyncedPlayerData должен вызываться после успешной десериализации
+- бизнес-логика квестов не менялась
 - JSON не менялся
 - layout-файлы не менялись
 
+Что проверить в игре:
+- исчезла ли ошибка ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA
+- появляется ли payload length больше 0
+- вызывается ли ApplySyncedPlayerData
+- становится ли HasSyncedPlayerData true
+- возвращает ли GetQuestStatus реальные статусы active/completed
+
 Вывод:
-- TASK 047 выглядит выполненной
-- после commit/push нужно проверить фактический diff по GitHub
-- если diff подтвердит только эту защиту, TASK 047 будет принята окончательно
+- TASK 052 выглядит выполненной
+- нужна сборка клиентского мода и тест в игре
+- если клиентские логи подтвердят успешный ctx.Read и ApplySyncedPlayerData, TASK 052 можно будет принять окончательно
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW

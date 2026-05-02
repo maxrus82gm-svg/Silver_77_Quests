@@ -147,6 +147,12 @@ class QuestUIMenu extends UIScriptedMenu
         if (!m_QuestList)
             return;
         
+        bool hasSynced = false;
+        if (m_Player)
+            hasSynced = QuestClientManager.HasSyncedPlayerData(m_Player);
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] QuestUI.RefreshQuestList: called, g_ClientQuestDataRevision=" + g_ClientQuestDataRevision + " HasSyncedPlayerData=" + hasSynced);
+        
         string previousQuestId = m_SelectedQuestId;
         int selectedRow = -1;
         string currentTriggerId = GetCurrentTriggerId();

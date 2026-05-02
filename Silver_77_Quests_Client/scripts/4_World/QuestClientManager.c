@@ -558,9 +558,14 @@ class QuestClientManager
             return false;
         
         if (!g_ClientPlayerQuestData)
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] HasSyncedPlayerData: g_ClientPlayerQuestData is null for steamId=" + steamId);
             return false;
+        }
         
-        return g_ClientPlayerQuestData.Contains(steamId);
+        bool contains = g_ClientPlayerQuestData.Contains(steamId);
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] HasSyncedPlayerData: steamId=" + steamId + " contains=" + contains);
+        return contains;
     }
     
     static PlayerQuestData GetPlayerData(PlayerBase player)
@@ -572,11 +577,23 @@ class QuestClientManager
         if (!g_ClientPlayerQuestData)
             g_ClientPlayerQuestData = new map<string, ref PlayerQuestData>;
         
-        if (!g_ClientPlayerQuestData.Contains(steamId))
+        bool existsBeforeCreate = g_ClientPlayerQuestData.Contains(steamId);
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] GetPlayerData: steamId=" + steamId + " existsBeforeCreate=" + existsBeforeCreate);
+        
+        if (!existsBeforeCreate)
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] GetPlayerData: WARNING - creating new PlayerQuestData for steamId=" + steamId);
             g_ClientPlayerQuestData.Insert(steamId, CreatePlayerData(steamId));
+        }
         
         PlayerQuestData data = g_ClientPlayerQuestData.Get(steamId);
         EnsurePlayerProgress(data);
+        
+        int progressCount = 0;
+        if (data && data.progress)
+            progressCount = data.progress.Count();
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] GetPlayerData: returning data with progressCount=" + progressCount);
+        
         return data;
     }
     
@@ -702,11 +719,17 @@ class QuestClientManager
     
     static string GetQuestStatus(PlayerBase player, string questId)
     {
+        string steamId = GetPlayerSteamId(player);
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
-        if (progress)
-            return progress.status;
         
+        if (progress)
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] GetQuestStatus: questId=" + questId + " steamId=" + steamId + " found progress, status=" + progress.status);
+            return progress.status;
+        }
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] GetQuestStatus: WARNING - questId=" + questId + " steamId=" + steamId + " progress NOT found, returning available");
         return "available";
     }
     
@@ -1103,19 +1126,50 @@ class QuestClientManager
         if (!data || data.steamId == "")
             return;
         
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ApplySyncedPlayerData: START steamId=" + data.steamId);
+        
+        int progressCountBefore = 0;
+        if (data.progress)
+            progressCountBefore = data.progress.Count();
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ApplySyncedPlayerData: progressCountBefore=" + progressCountBefore);
+        
+        if (data.progress)
+        {
+            foreach (PlayerQuestProgress debugProgress : data.progress)
+            {
+                if (debugProgress)
+                    Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ApplySyncedPlayerData: BEFORE EnsurePlayerProgress questId=" + debugProgress.questId + " status=" + debugProgress.status);
+            }
+        }
+        
         if (!g_ClientPlayerQuestData)
             g_ClientPlayerQuestData = new map<string, ref PlayerQuestData>;
         
         EnsurePlayerProgress(data);
+        
+        int progressCountAfter = 0;
+        if (data.progress)
+            progressCountAfter = data.progress.Count();
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ApplySyncedPlayerData: progressCountAfter=" + progressCountAfter);
+        
+        if (data.progress)
+        {
+            foreach (PlayerQuestProgress debugProgress2 : data.progress)
+            {
+                if (debugProgress2)
+                    Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ApplySyncedPlayerData: AFTER EnsurePlayerProgress questId=" + debugProgress2.questId + " status=" + debugProgress2.status);
+            }
+        }
+        
         g_ClientPlayerQuestData.Set(data.steamId, data);
         g_ClientQuestDataRevision++;
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ApplySyncedPlayerData: stored in g_ClientPlayerQuestData, new g_ClientQuestDataRevision=" + g_ClientQuestDataRevision);
 
-        int progressCount = 0;
         int nonZeroObjectiveProgressCount = 0;
         int stageVisitCount = 0;
         if (data.progress)
         {
-            progressCount = data.progress.Count();
             foreach (PlayerQuestProgress progress : data.progress)
             {
                 if (!progress)
@@ -1135,6 +1189,6 @@ class QuestClientManager
             }
         }
 
-        Print("[Silver_77_Quests] Applied synced player progress: " + data.steamId + ", quests=" + progressCount + ", nonZeroObjectiveProgress=" + nonZeroObjectiveProgressCount + ", stageVisits=" + stageVisitCount);
+        Print("[Silver_77_Quests] Applied synced player progress: " + data.steamId + ", quests=" + progressCountAfter + ", nonZeroObjectiveProgress=" + nonZeroObjectiveProgressCount + ", stageVisits=" + stageVisitCount);
     }
 }

@@ -974,6 +974,7 @@ class QuestServerManager
         
         if (!g_ServerPlayerQuestData.Contains(steamId))
         {
+            Print("[Silver_77_Quests][PROGRESS_DEBUG] GetPlayerData: steamId not in memory, calling LoadPlayerData for " + steamId);
             PlayerQuestData data = null;
             if (GetGame().IsServer())
                 data = LoadPlayerData(steamId);
@@ -981,6 +982,14 @@ class QuestServerManager
                 data = CreatePlayerData(steamId);
             
             g_ServerPlayerQuestData.Insert(steamId, data);
+        }
+        else
+        {
+            PlayerQuestData existingData = g_ServerPlayerQuestData.Get(steamId);
+            int progressCount = 0;
+            if (existingData && existingData.progress)
+                progressCount = existingData.progress.Count();
+            Print("[Silver_77_Quests][PROGRESS_DEBUG] GetPlayerData: steamId found in memory for " + steamId + " with " + progressCount + " progress entries");
         }
         
         PlayerQuestData playerData = g_ServerPlayerQuestData.Get(steamId);
@@ -1003,9 +1012,31 @@ class QuestServerManager
         PlayerQuestData data = new PlayerQuestData();
         string filePath = "$profile:Silver_77_Quests/players/" + steamId + ".json";
         
-        if (FileExist(filePath))
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: steamId=" + steamId);
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: filePath=" + filePath);
+        
+        bool fileExists = FileExist(filePath);
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: FileExist=" + fileExists);
+        
+        if (fileExists)
         {
             JsonFileLoader<PlayerQuestData>.JsonLoadFile(filePath, data);
+            
+            int loadedProgressCount = 0;
+            if (data.progress)
+                loadedProgressCount = data.progress.Count();
+            
+            Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: JsonLoadFile completed, loaded " + loadedProgressCount + " progress entries");
+            
+            if (data.progress)
+            {
+                foreach (PlayerQuestProgress progress : data.progress)
+                {
+                    if (progress)
+                        Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: loaded questId=" + progress.questId + " status=" + progress.status);
+                }
+            }
+            
             if (data.steamId == "")
                 data.steamId = steamId;
             
@@ -1015,6 +1046,7 @@ class QuestServerManager
             return data;
         }
         
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: file not found, creating new PlayerQuestData");
         data = CreatePlayerData(steamId);
         SavePlayerData(data);
         return data;
@@ -1032,6 +1064,22 @@ class QuestServerManager
             MakeDirectory("$profile:Silver_77_Quests/players");
         
         string filePath = "$profile:Silver_77_Quests/players/" + data.steamId + ".json";
+        
+        int progressCount = 0;
+        if (data.progress)
+            progressCount = data.progress.Count();
+        
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] SavePlayerData: steamId=" + data.steamId + " filePath=" + filePath + " progressCount=" + progressCount);
+        
+        if (data.progress)
+        {
+            foreach (PlayerQuestProgress progress : data.progress)
+            {
+                if (progress)
+                    Print("[Silver_77_Quests][PROGRESS_DEBUG] SavePlayerData: saving questId=" + progress.questId + " status=" + progress.status);
+            }
+        }
+        
         JsonFileLoader<PlayerQuestData>.JsonSaveFile(filePath, data);
     }
     
@@ -1676,13 +1724,21 @@ class QuestServerManager
         if (!quest)
             return false;
         
+        string steamId = GetPlayerSteamId(player);
+        PlayerQuestData data = GetPlayerData(player);
+        PlayerQuestProgress progress = GetOrCreateProgress(data, questId);
+        
+        string statusBefore = "";
+        if (progress)
+            statusBefore = progress.status;
+        
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: steamId=" + steamId + " questId=" + questId + " triggerId=" + triggerId + " statusBefore=" + statusBefore);
+        
         foreach (Silver77_QuestItem giveItem : quest.giveItems)
         {
             SpawnQuestItem(player, giveItem);
         }
         
-        PlayerQuestData data = GetPlayerData(player);
-        PlayerQuestProgress progress = GetOrCreateProgress(data, questId);
         if (progress)
         {
             progress.status = "active";
@@ -1691,6 +1747,8 @@ class QuestServerManager
             ClearStageVisits(progress);
             RecordStageVisit(progress, triggerId, "offer");
         }
+        
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: statusAfter=" + progress.status + " calling SavePlayerData");
         
         SavePlayerData(data);
         g_ServerQuestDataRevision++;
@@ -2184,6 +2242,21 @@ class QuestServerManager
         PlayerQuestData data = GetPlayerData(player);
         if (!data)
             return;
+        
+        int progressCount = 0;
+        if (data.progress)
+            progressCount = data.progress.Count();
+        
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] SendPlayerDataToClient: steamId=" + data.steamId + " progressCount=" + progressCount);
+        
+        if (data.progress)
+        {
+            foreach (PlayerQuestProgress progress : data.progress)
+            {
+                if (progress)
+                    Print("[Silver_77_Quests][PROGRESS_DEBUG] SendPlayerDataToClient: sending questId=" + progress.questId + " status=" + progress.status);
+            }
+        }
         
         string payload = SerializePlayerDataForClient(data);
         if (payload == "")

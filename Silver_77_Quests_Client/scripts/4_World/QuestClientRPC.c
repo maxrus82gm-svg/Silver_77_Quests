@@ -102,21 +102,29 @@ modded class PlayerBase
         if (GetGame().IsDedicatedServer())
             return;
         
-        Param1<string> data = new Param1<string>("");
-        if (!ctx.Read(data))
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: Received SILVER77_QUEST_RPC_PLAYER_DATA");
+        
+        Param1<string> payloadParam;
+        if (!ctx.Read(payloadParam))
         {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA");
             Print("[Silver_77_Quests] ERROR: Failed to read quest progress sync RPC");
             return;
         }
 
-        Print("[Silver_77_Quests] Received quest progress sync payload (" + data.param1.Length() + " bytes)");
+        string jsonPayload = payloadParam.param1;
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: ctx.Read succeeded, payload length=" + jsonPayload.Length());
+        Print("[Silver_77_Quests] Received quest progress sync payload (" + jsonPayload.Length() + " bytes)");
         
-        PlayerQuestData playerData = Silver77_LoadPlayerDataFromJson(data.param1);
+        PlayerQuestData playerData = Silver77_LoadPlayerDataFromJson(jsonPayload);
         if (!playerData)
         {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Silver77_LoadPlayerDataFromJson returned null");
             Print("[Silver_77_Quests] ERROR: Failed to decode quest progress sync payload");
             return;
         }
+
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: PlayerQuestData deserialized successfully");
 
         if (playerData.steamId == "" && GetIdentity())
         {
@@ -127,9 +135,23 @@ modded class PlayerBase
         int progressCount = 0;
         if (playerData.progress)
             progressCount = playerData.progress.Count();
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: steamId=" + playerData.steamId + " progressCount=" + progressCount);
+        
+        if (playerData.progress)
+        {
+            foreach (PlayerQuestProgress progress : playerData.progress)
+            {
+                if (progress)
+                    Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: received questId=" + progress.questId + " status=" + progress.status);
+            }
+        }
+        
         Print("[Silver_77_Quests] Decoded quest progress sync for " + playerData.steamId + " with " + progressCount + " quest entries");
         
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] Calling QuestClientManager.ApplySyncedPlayerData");
         QuestClientManager.ApplySyncedPlayerData(playerData);
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] QuestClientManager.ApplySyncedPlayerData completed");
     }
     
     private void Silver77_EnsureClientSyncDirectory()
@@ -169,11 +191,22 @@ modded class PlayerBase
     
     private PlayerQuestData Silver77_LoadPlayerDataFromJson(string jsonPayload)
     {
-        if (!Silver77_WriteSyncJsonFile(SILVER77_QUEST_CLIENT_PLAYER_SYNC_PATH, jsonPayload))
+        if (jsonPayload == "")
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Empty jsonPayload in Silver77_LoadPlayerDataFromJson");
             return null;
+        }
         
         PlayerQuestData data = new PlayerQuestData();
-        JsonFileLoader<PlayerQuestData>.JsonLoadFile(SILVER77_QUEST_CLIENT_PLAYER_SYNC_PATH, data);
+        JsonSerializer serializer = new JsonSerializer();
+        
+        if (!serializer.ReadFromString(data, jsonPayload, null))
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: JsonSerializer.ReadFromString failed for PlayerQuestData");
+            return null;
+        }
+        
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: JsonSerializer.ReadFromString succeeded for PlayerQuestData");
         return data;
     }
 }
