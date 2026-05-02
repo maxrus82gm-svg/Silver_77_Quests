@@ -207,105 +207,48 @@ Git контролирует только пользователь.
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 052 — Исправить чтение RPC payload для PlayerQuestData на клиенте
+TASK 054 — Runtime-проверка версии player data RPC и RPC ID
 
 Цель:
-Исправить ошибку ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA, из-за которой клиент получает RPC, но не может прочитать JSON payload с PlayerQuestData.
-
-Контекст:
-Server log показывает, что сервер отправляет правильные данные:
-- quest_hunter_1: active
-- quest_fisherman_1: completed
-- quest_Rasputin_1: available
-- quest_fisherman_2: active
-- quest_hunter_2: active
-
-Client log после TASK 051 показывает:
-- RPC Handler: Received SILVER77_QUEST_RPC_PLAYER_DATA
-- ERROR: ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA
-- значит клиент не может прочитать payload из ParamsReadContext
-- проблема происходит до JsonSerializer.ReadFromString()
-- UI поэтому продолжает видеть available-статусы
-
-Где работать:
-- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
-- при необходимости для сверки:
-  - Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
-  - Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c
+Диагностически проверить, какие версии server/client PBO реально запущены, и совпадает ли RPC ID для SILVER77_QUEST_RPC_PLAYER_DATA.
 
 Тип задачи:
-- правка кода
-- минимальное исправление
-- менять только необходимые файлы
+- только диагностика
+- минимальная правка логов
+- бизнес-логику не менять
 
-Что проверить:
-1. Открыть серверную функцию SendPlayerDataToClient().
-2. Проверить, каким типом сервер отправляет payload:
-   - string напрямую
-   - Param1<string>
-   - другой Param
-3. Открыть клиентский handler SILVER77_QUEST_RPC_PLAYER_DATA в QuestClientRPC.c.
-4. Проверить, каким типом клиент сейчас читает ctx.Read.
-5. Исправить чтение на клиенте так, чтобы тип совпадал с серверной отправкой.
-6. Если сервер отправляет Param1<string>, клиент должен читать Param1<string>, например:
-   - Param1<string> payloadParam
-   - ctx.Read(payloadParam)
-   - string jsonPayload = payloadParam.param1
-7. После успешного чтения payload вызвать существующую десериализацию через JsonSerializer.ReadFromString().
-8. После успешной десериализации вызвать QuestClientManager.ApplySyncedPlayerData(data).
-9. Оставить debug-логи:
-   - ctx.Read success/fail
-   - payload length
-   - data.steamId
-   - progress Count
-   - ApplySyncedPlayerData called
-10. Не менять бизнес-логику квестов.
-11. Не менять server load/save progress.
-12. Не менять JSON.
-13. Не менять layout-файлы.
-14. Не менять Documentation/QUEST_LOGIC_SPEC.md.
-15. Не менять Documentation/AGENT_TASK_LOOP.md.
+Где работать:
+- Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
+- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
+- файл, где объявлены RPC constants/ids
 
-Важно:
-- исправить именно чтение RPC payload
-- не делать рефакторинг
-- не менять архитектуру
-- не чистить debug-логи пока не проверим результат в игре
-- Git не трогать
-- commit/push не делать
-- отчёт краткий: максимум 20–30 строк
-- без больших вставок кода
+Что сделать:
+1. На сервере в SendPlayerDataToClient(), прямо перед отправкой SILVER77_QUEST_RPC_PLAYER_DATA, добавить Print:
+   [Silver_77_Quests][VERSION_CHECK] SERVER TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3
 
-Критерии готовности:
-- ctx.Read больше не должен падать для SILVER77_QUEST_RPC_PLAYER_DATA
-- клиент должен получить jsonPayload
-- JsonSerializer.ReadFromString должен получить непустой payload
-- ApplySyncedPlayerData должен получить PlayerQuestData с progress Count = 5
-- HasSyncedPlayerData после RPC должен стать true
-- GetQuestStatus должен начать возвращать server statuses
-- отчёт возвращён в чат
+2. На сервере рядом вывести payload length:
+   [Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=<length>
 
-Формат отчёта:
+3. На сервере вывести числовое значение SILVER77_QUEST_RPC_PLAYER_DATA:
+   [Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=<id>
 
-AGENT REPORT
+4. На клиенте в Silver77_HandleQuestPlayerData(), в самом начале, добавить Print:
+   [Silver_77_Quests][VERSION_CHECK] CLIENT TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3
 
-DONE:
-- что проверено/исправлено
+5. На клиенте перед ctx.Read добавить Print:
+   [Silver_77_Quests][VERSION_CHECK] CLIENT ABOUT_TO_READ_PARAM3
 
-CHANGED FILES:
+6. На клиенте вывести числовое значение SILVER77_QUEST_RPC_PLAYER_DATA:
+   [Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=<id>
+
+7. Логику чтения, отправки, статусов, JSON и UI не менять.
+
+8. Не менять AGENT_TASK_LOOP.md, QUEST_LOGIC_SPEC.md, JSON, layout.
+9. Git не трогать, commit/push не делать.
+
+Отчёт краткий:
 - какие файлы изменены
-
-DIFF:
-- кратко что изменилось
-
-PROBLEMS:
-- только реальные проблемы
-
-QUESTIONS:
-- только реальные вопросы
-
-CONCLUSION:
-- общий вывод
+- какие VERSION_CHECK строки добавлены
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
@@ -326,26 +269,30 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- Проверена серверная отправка SILVER77_QUEST_RPC_PLAYER_DATA
-- Подтверждено, что сервер отправляет new Param1<string>(payload)
-- Проверено клиентское чтение RPC payload
-- Клиент уже читал Param1<string>, но создавал параметр как new Param1<string>("")
-- Изменено клиентское чтение на Param1<string> payloadParam без предварительной инициализации
-- После ctx.Read payload извлекается через payloadParam.param1
-- jsonPayload передаётся в Silver77_LoadPlayerDataFromJson()
-- PlayerQuestData десериализуется через JsonSerializer.ReadFromString()
-- После десериализации вызывается QuestClientManager.ApplySyncedPlayerData(playerData)
-- Debug-логи сохранены для проверки
+- Проверен рабочий формат config sync: Param3<int, int, string>
+- Изменена серверная отправка player data RPC с Param1<string> на Param3<int, int, string>
+- Server теперь отправляет new Param3<int, int, string>(0, 1, payload)
+- param1 = 0, chunkIndex
+- param2 = 1, totalChunks
+- param3 = payload, serialized PlayerQuestData JSON
+- Изменено клиентское чтение player data RPC с Param1<string> на Param3<int, int, string>
+- Client теперь читает Param3<int, int, string>(0, 0, "")
+- Payload извлекается из data.param3
+- Добавлена проверка totalChunks == 1
+- Добавлена проверка непустого payload
+- После успешного чтения оставлена десериализация через JsonSerializer.ReadFromString
+- После десериализации вызывается QuestClientManager.ApplySyncedPlayerData
+- Debug-логи сохранены
 
 CHANGED FILES:
+- Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
 - Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
 
 DIFF:
-- Param1<string> data = new Param1<string>("") заменено на Param1<string> payloadParam
-- Переменная data переименована в payloadParam
-- Добавлено извлечение string jsonPayload = payloadParam.param1
-- Логи обновлены для jsonPayload
-- Silver77_LoadPlayerDataFromJson теперь получает jsonPayload
+- Server: new Param1<string>(payload) заменён на new Param3<int, int, string>(0, 1, payload)
+- Client: Param1<string> заменён на Param3<int, int, string>
+- Client: payload теперь берётся из data.param3
+- Client: добавлены проверки totalChunks и empty payload
 
 PROBLEMS:
 - Нет
@@ -354,9 +301,10 @@ QUESTIONS:
 - Нет
 
 CONCLUSION:
-- Исправлено чтение RPC payload на клиенте
-- Ожидается, что ctx.Read больше не будет падать
+- Player data RPC переведён на рабочий формат Param3<int, int, string>, аналогичный config sync
+- Ожидается, что ctx.Read failed исчезнет
 - Клиент должен начать применять PlayerQuestData от сервера
+
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -373,33 +321,38 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 052 REVIEW
+TASK 053 REVIEW
 
 Статус: предварительно принято.
 
 Проверка по отчёту выглядит корректно:
-- серверная отправка использует Param1<string>
-- клиентское чтение также осталось через Param1<string>
-- исправлена инициализация RPC-параметра на клиенте
-- payload теперь должен читаться через payloadParam.param1
-- JsonSerializer.ReadFromString остаётся для десериализации payload
-- ApplySyncedPlayerData должен вызываться после успешной десериализации
+- player data sync переведён с Param1<string> на Param3<int, int, string>
+- использована схема, аналогичная рабочему config sync
+- сервер отправляет Param3<int, int, string>(0, 1, payload)
+- клиент читает Param3<int, int, string>(0, 0, "")
+- payload берётся из data.param3
+- JsonSerializer.ReadFromString остаётся для десериализации PlayerQuestData
+- ApplySyncedPlayerData вызывается после успешной десериализации
 - бизнес-логика квестов не менялась
 - JSON не менялся
 - layout-файлы не менялись
 
+Важно:
+- теперь нужно собрать и серверный, и клиентский мод
+- потому что TASK 053 изменила обе стороны RPC
+- если собрать только клиент, сервер продолжит отправлять старый формат
+- если собрать только сервер, клиент продолжит читать старый формат
+
 Что проверить в игре:
 - исчезла ли ошибка ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA
-- появляется ли payload length больше 0
+- появился ли payload length больше 0
 - вызывается ли ApplySyncedPlayerData
-- становится ли HasSyncedPlayerData true
-- возвращает ли GetQuestStatus реальные статусы active/completed
+- становятся ли статусы active/completed
+- перестал ли UI показывать все квесты как available
 
 Вывод:
-- TASK 052 выглядит выполненной
-- нужна сборка клиентского мода и тест в игре
-- если клиентские логи подтвердят успешный ctx.Read и ApplySyncedPlayerData, TASK 052 можно будет принять окончательно
-
+- TASK 053 выглядит выполненной
+- нужна сборка обоих модов и тест в игре
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

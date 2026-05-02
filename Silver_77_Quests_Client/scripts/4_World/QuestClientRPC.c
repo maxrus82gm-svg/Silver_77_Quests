@@ -102,18 +102,34 @@ modded class PlayerBase
         if (GetGame().IsDedicatedServer())
             return;
         
+        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3");
+        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA);
         Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] RPC Handler: Received SILVER77_QUEST_RPC_PLAYER_DATA");
         
-        Param1<string> payloadParam;
-        if (!ctx.Read(payloadParam))
+        Print("[Silver_77_Quests][VERSION_CHECK] CLIENT ABOUT_TO_READ_PARAM3");
+        Param3<int, int, string> data = new Param3<int, int, string>(0, 0, "");
+        if (!ctx.Read(data))
         {
             Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: ctx.Read failed for SILVER77_QUEST_RPC_PLAYER_DATA");
             Print("[Silver_77_Quests] ERROR: Failed to read quest progress sync RPC");
             return;
         }
 
-        string jsonPayload = payloadParam.param1;
-        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: ctx.Read succeeded, payload length=" + jsonPayload.Length());
+        Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] SUCCESS: ctx.Read succeeded, chunkIndex=" + data.param1 + " totalChunks=" + data.param2 + " payload length=" + data.param3.Length());
+        
+        if (data.param2 != 1)
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Expected totalChunks=1, got " + data.param2);
+            return;
+        }
+        
+        if (data.param3 == "")
+        {
+            Print("[Silver_77_Quests][CLIENT_PROGRESS_DEBUG] ERROR: Empty payload in player data RPC");
+            return;
+        }
+        
+        string jsonPayload = data.param3;
         Print("[Silver_77_Quests] Received quest progress sync payload (" + jsonPayload.Length() + " bytes)");
         
         PlayerQuestData playerData = Silver77_LoadPlayerDataFromJson(jsonPayload);

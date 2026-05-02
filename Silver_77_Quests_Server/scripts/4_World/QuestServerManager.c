@@ -2262,7 +2262,11 @@ class QuestServerManager
         if (payload == "")
             return;
         
-        GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA, new Param1<string>(payload), true, player.GetIdentity());
+        Print("[Silver_77_Quests][VERSION_CHECK] SERVER TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3");
+        Print("[Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=" + payload.Length());
+        Print("[Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA);
+        
+        GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA, new Param3<int, int, string>(0, 1, payload), true, player.GetIdentity());
         Print("[Silver_77_Quests] Sent quest progress to client: " + data.steamId + " (" + payload.Length() + " bytes)");
     }
     
