@@ -56,18 +56,18 @@ modded class PlayerBase
 {
     override void OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
     {
-        super.OnRPC(sender, rpc_type, ctx);
-        
         switch (rpc_type)
         {
             case SILVER77_QUEST_RPC_CONFIG_DATA:
                 Silver77_HandleQuestConfigData(ctx);
-                break;
+                return;
             
             case SILVER77_QUEST_RPC_PLAYER_DATA:
                 Silver77_HandleQuestPlayerData(ctx);
-                break;
+                return;
         }
+        
+        super.OnRPC(sender, rpc_type, ctx);
     }
     
     private void Silver77_HandleQuestConfigData(ParamsReadContext ctx)

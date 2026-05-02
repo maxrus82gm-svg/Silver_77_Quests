@@ -207,48 +207,69 @@ Git контролирует только пользователь.
 ## НАЧАЛО ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 054 — Runtime-проверка версии player data RPC и RPC ID
+TASK 055 — Обработать quest RPC до super.OnRPC, чтобы ParamsReadContext не читался раньше нашего handler
 
 Цель:
-Диагностически проверить, какие версии server/client PBO реально запущены, и совпадает ли RPC ID для SILVER77_QUEST_RPC_PLAYER_DATA.
+Проверить и исправить возможную причину ctx.Read failed для SILVER77_QUEST_RPC_PLAYER_DATA: super.OnRPC вызывается до обработки quest RPC и может сдвигать/читать ParamsReadContext.
 
-Тип задачи:
-- только диагностика
-- минимальная правка логов
-- бизнес-логику не менять
+Контекст:
+- live PBO из Steam проверен: QuestClientRPC.c содержит VERSION_CHECK и Param3-чтение.
+- Клиентский live PBO актуальный.
+- Сервер отправляет player data RPC.
+- Клиент получает SILVER77_QUEST_RPC_PLAYER_DATA, но ctx.Read падает.
+- В QuestClientRPC.c сейчас override OnRPC вызывает super.OnRPC(sender, rpc_type, ctx) до switch.
+- Если super или другой modded OnRPC читает ctx, наш handler получает уже прочитанный ParamsReadContext.
 
 Где работать:
-- Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
 - Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
-- файл, где объявлены RPC constants/ids
+
+Тип задачи:
+- минимальная правка кода
+- только клиент
+- бизнес-логику квестов не менять
 
 Что сделать:
-1. На сервере в SendPlayerDataToClient(), прямо перед отправкой SILVER77_QUEST_RPC_PLAYER_DATA, добавить Print:
-   [Silver_77_Quests][VERSION_CHECK] SERVER TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3
+1. В override OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx) перенести обработку наших RPC до вызова super.OnRPC.
+2. Для SILVER77_QUEST_RPC_CONFIG_DATA:
+   - вызвать Silver77_HandleQuestConfigData(ctx)
+   - после этого сделать return
+3. Для SILVER77_QUEST_RPC_PLAYER_DATA:
+   - вызвать Silver77_HandleQuestPlayerData(ctx)
+   - после этого сделать return
+4. Если rpc_type не наш — только тогда вызвать super.OnRPC(sender, rpc_type, ctx)
+5. Сохранить VERSION_CHECK и CLIENT_PROGRESS_DEBUG логи.
+6. Не менять формат RPC.
+7. Не менять Param3.
+8. Не менять JSON.
+9. Не менять layout.
+10. Не менять серверный код.
+11. Не менять AGENT_TASK_LOOP.md и QUEST_LOGIC_SPEC.md.
+12. Git не трогать, commit/push не делать.
 
-2. На сервере рядом вывести payload length:
-   [Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=<length>
+Критерии готовности:
+- QuestClientRPC.c изменён только в порядке вызова OnRPC.
+- Наши RPC обрабатываются до super.OnRPC.
+- Для наших RPC используется return после обработки.
+- Отчёт краткий.
 
-3. На сервере вывести числовое значение SILVER77_QUEST_RPC_PLAYER_DATA:
-   [Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=<id>
+Формат отчёта:
 
-4. На клиенте в Silver77_HandleQuestPlayerData(), в самом начале, добавить Print:
-   [Silver_77_Quests][VERSION_CHECK] CLIENT TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3
+AGENT REPORT
 
-5. На клиенте перед ctx.Read добавить Print:
-   [Silver_77_Quests][VERSION_CHECK] CLIENT ABOUT_TO_READ_PARAM3
+DONE:
+- что изменено
 
-6. На клиенте вывести числовое значение SILVER77_QUEST_RPC_PLAYER_DATA:
-   [Silver_77_Quests][VERSION_CHECK] CLIENT RPC_ID_PLAYER_DATA=<id>
-
-7. Логику чтения, отправки, статусов, JSON и UI не менять.
-
-8. Не менять AGENT_TASK_LOOP.md, QUEST_LOGIC_SPEC.md, JSON, layout.
-9. Git не трогать, commit/push не делать.
-
-Отчёт краткий:
+CHANGED FILES:
 - какие файлы изменены
-- какие VERSION_CHECK строки добавлены
+
+DIFF:
+- кратко
+
+PROBLEMS:
+- реальные проблемы
+
+CONCLUSION:
+- вывод
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
