@@ -659,9 +659,27 @@
 
         function parseLayout(content, viewportRect) {
             const lines = content.split(/\r?\n/);
+            const lineOffsets = [];
+            const newlineLengths = [];
             const blockStack = [];
             const allNodes = [];
             let rootNode = null;
+
+            let offsetCursor = 0;
+            lines.forEach(lineText => {
+                lineOffsets.push(offsetCursor);
+                offsetCursor += lineText.length;
+
+                if (content.slice(offsetCursor, offsetCursor + 2) === '\r\n') {
+                    newlineLengths.push(2);
+                    offsetCursor += 2;
+                } else if (content[offsetCursor] === '\n' || content[offsetCursor] === '\r') {
+                    newlineLengths.push(1);
+                    offsetCursor += 1;
+                } else {
+                    newlineLengths.push(0);
+                }
+            });
 
             function getCurrentNodeFromStack() {
                 for (let index = blockStack.length - 1; index >= 0; index--) {
@@ -681,6 +699,10 @@
                     const newNode = {
                         id: allNodes.length,
                         sourceOrder: allNodes.length,
+                        sourceStartLine: i + 1,
+                        sourceEndLine: i + 1,
+                        sourceStartOffset: lineOffsets[i],
+                        sourceEndOffset: lineOffsets[i] + lines[i].length + newlineLengths[i],
                         type: classMatch[1],
                         name: classMatch[2],
                         position: null,
@@ -805,7 +827,11 @@
                 }
 
                 if (line === '}') {
-                    blockStack.pop();
+                    const closedBlock = blockStack.pop();
+                    if (closedBlock && closedBlock.kind === 'node') {
+                        closedBlock.node.sourceEndLine = i + 1;
+                        closedBlock.node.sourceEndOffset = lineOffsets[i] + lines[i].length + newlineLengths[i];
+                    }
                 }
             }
 
@@ -883,6 +909,54 @@
             updateSelectionUI();
         }
 
+        function getSourceEditorLineHeight() {
+            const computedStyle = window.getComputedStyle(sourceEditor);
+            const lineHeight = parseFloat(computedStyle.lineHeight);
+            if (Number.isFinite(lineHeight)) {
+                return lineHeight;
+            }
+            const fontSize = parseFloat(computedStyle.fontSize);
+            if (Number.isFinite(fontSize)) {
+                return fontSize * 1.45;
+            }
+            return 19;
+        }
+
+        function revealNodeSource(node) {
+            if (!node) {
+                return;
+            }
+
+            const startOffset = Math.max(0, Math.min(node.sourceStartOffset || 0, sourceEditor.value.length));
+            const endOffset = Math.max(
+                startOffset,
+                Math.min(
+                    node.sourceEndOffset || startOffset,
+                    sourceEditor.value.length
+                )
+            );
+            const lineHeight = getSourceEditorLineHeight();
+            const visibleLineCount = Math.max(1, sourceEditor.clientHeight / lineHeight);
+            const sourceStartLine = Math.max(1, node.sourceStartLine || 1);
+            const centeredScrollTop = Math.max(0, ((sourceStartLine - 1) - (visibleLineCount / 2)) * lineHeight);
+
+            try {
+                sourceEditor.focus({ preventScroll: true });
+            } catch (error) {
+                sourceEditor.focus();
+            }
+
+            sourceEditor.setSelectionRange(startOffset, endOffset);
+            sourceEditor.scrollTop = centeredScrollTop;
+            sourceEditorStatus.textContent = `Highlighted ${node.name} at lines ${sourceStartLine}-${Math.max(sourceStartLine, node.sourceEndLine || sourceStartLine)}.`;
+        }
+
+        function selectAndRevealNodeSource(nodeId) {
+            setSelectedNode(nodeId);
+            const node = getNodeById(nodeId);
+            revealNodeSource(node);
+        }
+
         function updateSelectionUI() {
             const selectedNode = getNodeById(state.selectedNodeId);
 
@@ -930,6 +1004,7 @@
                     <dt>Exact</dt><dd>${escapeHtml(`${node.hexactpos},${node.vexactpos} / ${node.hexactsize},${node.vexactsize}`)}</dd>
                     <dt>Font</dt><dd>${escapeHtml(node.font || '(none)')}</dd>
                     <dt>Text align</dt><dd>${escapeHtml(`${textAlign} / ${textVAlign}`)}</dd>
+                    <dt>Source lines</dt><dd>${escapeHtml(`${node.sourceStartLine || '?'}-${node.sourceEndLine || '?'}`)}</dd>
                     <dt>Z-order</dt><dd>${String(getNodeZOrder(node))}</dd>
                 </dl>
             `;
@@ -983,6 +1058,7 @@
                     <span class="element-row-rect">${escapeHtml(formatRect(node.finalRect))}</span>
                 `;
                 button.addEventListener('click', () => setSelectedNode(node.id));
+                button.addEventListener('dblclick', () => selectAndRevealNodeSource(node.id));
                 elementList.appendChild(button);
             });
 
@@ -1068,6 +1144,10 @@
                 div.addEventListener('click', event => {
                     event.stopPropagation();
                     setSelectedNode(node.id);
+                });
+                div.addEventListener('dblclick', event => {
+                    event.stopPropagation();
+                    selectAndRevealNodeSource(node.id);
                 });
                 container.appendChild(div);
             });

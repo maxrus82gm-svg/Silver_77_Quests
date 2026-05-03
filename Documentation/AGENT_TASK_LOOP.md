@@ -254,21 +254,28 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 070 — Добавить нижний встроенный редактор .layout source в DayZ layout viewer
+TASK 071 — Source reveal: двойной клик по элементу поднимает его код в нижнем source editor
 
 Цель:
-Доработать DayZ_layout/dayz_layout_viewer.html так, чтобы viewer стал не только read-only визуальным просмотрщиком, но и локальной песочницей для ручной проверки правок .layout кода.
+Доработать DayZ_layout/dayz_layout_viewer.html так, чтобы пользователь мог быстро находить код визуального элемента в нижнем source editor.
 
 Важно:
-Это НЕ полноценный редактор файловой системы.
-Это НЕ автосохранение.
-Это НЕ генератор layout.
-Это локальный source editor внутри HTML-страницы.
+Нужно не “телепортировать пользователя к коду”, а сделать так, чтобы нужный кусок кода сам поднимался в нижнем source editor.
 
-Главная идея:
-Пользователь загружает .layout файл, видит его исходный текст в нижней панели, может временно изменить текст, нажать Apply / Refresh preview и увидеть обновлённый визуальный результат.
+Пользователь остаётся в том же интерфейсе:
+- visual preview сверху/по центру
+- inspector справа
+- source editor снизу
 
-Исходный .layout файл на диске НЕ изменяется.
+При двойном клике по visual element или element list:
+1. выбранный node подсвечивается в preview
+2. inspector показывает node
+3. нижний source editor прокручивается внутри textarea
+4. нужный блок кода оказывается примерно в центре видимой области textarea
+5. соответствующий блок кода выделяется
+
+То есть действие должно ощущаться так:
+“я кликнул элемент — его код сам появился снизу перед глазами”.
 
 Где работать:
 Разрешено менять:
@@ -292,310 +299,320 @@ TASK 070 — Добавить нижний встроенный редактор
 Их нельзя изменять, форматировать или пересохранять.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 1 — РАСПОЛОЖЕНИЕ CODE EDITOR
+ЧАСТЬ 1 — УТОЧНИТЬ РАСПОЛОЖЕНИЕ SOURCE EDITOR
 --------------------------------------------------------------------------------
 
-Нужно добавить source editor НЕ слева.
+Source editor уже добавлен снизу.
+Нужно проверить и при необходимости поправить его расположение.
 
-Правильное расположение:
-- сверху: toolbar / controls
-- середина: visual preview + inspector справа
-- низ: широкая панель source editor
+Требования:
 
-То есть editor должен быть внизу, под основной рабочей областью viewer-а.
+1. Source editor должен находиться сразу под основным workspace:
+   - workspace = visual preview + sidebar/inspector
+   - сразу под ним source editor
+   - без большого визуального разрыва
 
-Желаемая структура:
+2. Source editor должен быть по ширине рабочего окна viewer-а.
+   Он не должен быть узкой боковой панелью.
 
-<div class="workspace">
-  <section class="viewer-card">
-    visual-container
-  </section>
+3. Textarea должна занимать всю ширину source editor panel.
 
-  <aside class="sidebar">
-    element list
-    inspector
-    sanity checks
-  </aside>
-</div>
+4. Высота textarea должна быть достаточной, чтобы при reveal source было видно контекст:
+   - минимум 320px
+   - лучше около 360px
+   - resize: vertical оставить
 
-<section class="source-editor-panel">
-  textarea с .layout кодом
-</section>
+5. Source editor должен быть удобен для чтения:
+   - monospace font
+   - стабильный line-height
+   - tab-size: 4
+   - код не должен визуально ломаться
 
-Почему editor снизу:
-- visual preview остаётся широким
-- inspector справа остаётся на месте
-- .layout код удобно смотреть на всю ширину
-- меньше риска сломать текущую рабочую компоновку viewer-а
+Рекомендуемый CSS:
 
---------------------------------------------------------------------------------
-ЧАСТЬ 2 — SOURCE EDITOR PANEL
---------------------------------------------------------------------------------
+#source-editor {
+    width: 100%;
+    min-height: 360px;
+    resize: vertical;
+    font: 13px/1.45 Consolas, "Courier New", monospace;
+    tab-size: 4;
+    white-space: pre;
+    overflow: auto;
+}
 
-Добавить внизу отдельную панель:
-
-Заголовок:
-Source .layout editor
-
-Внутри:
-- textarea
-- кнопки управления
-- статус изменений
-
-Минимальные элементы:
-
-1. textarea:
-   id="source-editor"
-
-2. Кнопка:
-   Apply / Refresh preview
-
-3. Кнопка:
-   Reset to loaded source
-
-4. Кнопка:
-   Copy source
-
-5. Статус:
-   - Loaded source
-   - Edited / not applied
-   - Applied
-   - No file loaded
-
-Textarea:
-- должна занимать всю ширину доступной области
-- высота примерно 260-360px
-- monospace font
-- tab-size: 4
-- resize: vertical
-- white-space: pre
-- overflow: auto
+Если сейчас source-card имеет большой margin-top, уменьшить до разумного:
+margin-top: 10px или 12px.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 3 — СОСТОЯНИЯ SOURCE
+ЧАСТЬ 2 — SOURCE POSITION TRACKING
 --------------------------------------------------------------------------------
 
-Нужно хранить минимум 2 версии текста:
+Нужно научить parseLayout запоминать, где в source editor находится каждый node.
 
-1. originalSource
-Текст, который был получен после загрузки и декодирования файла.
+Каждый node должен получить поля:
 
-2. editorSource
-Текущий текст из textarea.
+- sourceStartLine
+- sourceEndLine
+- sourceStartOffset
+- sourceEndOffset
 
-Можно хранить в state:
+Где:
+- sourceStartLine — номер строки, где начинается WidgetClass node
+- sourceEndLine — номер строки, где заканчивается node
+- sourceStartOffset — индекс символа в полном source text, где начинается node
+- sourceEndOffset — индекс символа в полном source text, где заканчивается node
 
-state.originalSource = ""
-state.decodedContent = ""
-state.editorDirty = false
+Нумерация строк внутри кода может быть 0-based.
+В inspector показывать 1-based, чтобы человеку было понятнее.
+
+Пример:
+
+TextWidgetClass AcceptButtonText {
+ position 0 0
+ size 1 1
+ text "ВЗЯТЬ КВЕСТ"
+}
+
+Для AcceptButtonText:
+- sourceStartLine = строка с "TextWidgetClass AcceptButtonText {"
+- sourceEndLine = строка с закрывающей "}"
+- sourceStartOffset = offset начала строки
+- sourceEndOffset = offset конца строки с закрывающей скобкой
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 3 — LINE START OFFSETS
+--------------------------------------------------------------------------------
+
+Чтобы корректно делать setSelectionRange, нужно посчитать offset начала каждой строки.
+
+Добавить функцию, например:
+
+function getLineInfo(content) {
+    const lines = [];
+    const lineStartOffsets = [];
+    const regex = /(.*?)(\r\n|\n|\r|$)/g;
+    let match;
+    let offset = 0;
+
+    while ((match = regex.exec(content)) && match[0].length > 0) {
+        lines.push(match[1]);
+        lineStartOffsets.push(offset);
+        offset += match[0].length;
+    }
+
+    return { lines, lineStartOffsets };
+}
 
 Важно:
-После загрузки файла:
-- decodedContent = декодированный текст файла
-- originalSource = decodedContent
-- textarea.value = decodedContent
-- preview строится из textarea.value или decodedContent
-
-После ручного изменения textarea:
-- editorDirty = true
-- status = Edited / not applied
-
-После Apply:
-- взять текст из textarea.value
-- state.decodedContent = textarea.value
-- parseLayout(state.decodedContent, viewportRect)
-- renderLayout(...)
-- element list обновить
-- inspector обновить
-- sanity checks сбросить или обновить
-- editorDirty = false
-- status = Applied
-
-После Reset:
-- textarea.value = state.originalSource
-- state.decodedContent = state.originalSource
-- editorDirty = false
-- preview перестроить из originalSource
-
---------------------------------------------------------------------------------
-ЧАСТЬ 4 — APPLY / REFRESH PREVIEW
---------------------------------------------------------------------------------
-
-Кнопка Apply / Refresh preview должна:
-
-1. Взять текущий текст из textarea.
-2. Запустить текущую pipeline:
-   - parseLayout(editorText, viewportRect)
-   - renderLayout(...)
-   - renderElementList(...)
-   - updateSelectionUI(...)
-3. Не читать файл заново.
-4. Не сохранять файл.
-5. Не менять encoding.
-6. Работать даже если файл уже не выбран, но текст есть в textarea.
-
-Важно:
-После Apply source editor становится источником правды для preview.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 5 — RESET TO LOADED SOURCE
---------------------------------------------------------------------------------
-
-Кнопка Reset должна:
-
-1. Проверить, есть ли state.originalSource.
-2. Если source есть:
-   - textarea.value = state.originalSource
-   - state.decodedContent = state.originalSource
-   - editorDirty = false
-   - перестроить preview
-3. Если source нет:
-   - показать статус "No loaded source"
-
-Reset НЕ должен читать файл заново.
-Reset НЕ должен писать на диск.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 6 — COPY SOURCE
---------------------------------------------------------------------------------
-
-Кнопка Copy source должна:
-
-1. Скопировать textarea.value в clipboard.
-2. Если clipboard API недоступен:
-   - выделить textarea
-   - показать понятный статус / alert
-
-Copy source НЕ должен создавать файл.
-Copy source НЕ должен сохранять файл.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 7 — ENCODING И SOURCE EDITOR
---------------------------------------------------------------------------------
-
-Сейчас viewer имеет Encoding select:
-- UTF-8
-- Windows-1251
-
-При загрузке файла:
-- файл декодируется выбранной кодировкой
-- результат попадает в source editor
-
-При смене encoding:
-- если есть исходные fileBytes:
-  - перечитать bytes выбранной кодировкой
-  - обновить originalSource
-  - обновить textarea
-  - перестроить preview
-
-Важно:
-Если пользователь уже внёс ручные изменения и editorDirty = true:
-- перед сменой encoding желательно предупредить confirm:
-  "Editor has unapplied changes. Re-decode file and discard editor changes?"
-- если пользователь отменил — не менять source
+- желательно учитывать \n и \r\n
+- sourceStartOffset/sourceEndOffset должны соответствовать реальному textarea.value
+- если CRLF чуть сместит selection, это не критично, но лучше сделать аккуратно
 
 Минимально допустимо:
-- при смене encoding перечитывать файл и сбрасывать editor с понятным статусом
+- использовать content.split(/\r?\n/)
+- считать newline length как 1
+- но предпочтительнее вариант с regex выше
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 8 — НЕ ЛОМАТЬ ТЕКУЩИЕ ФУНКЦИИ
+ЧАСТЬ 4 — BLOCKSTACK И ЗАКРЫТИЕ NODE
 --------------------------------------------------------------------------------
 
-Нужно сохранить уже рабочие возможности viewer-а:
+В текущем viewer уже есть blockStack с kind node/group.
+Нужно использовать его для определения конца node.
 
-- Encoding select
-- UTF-8 / Windows-1251 decoding
-- viewport presets
-- renderScale
-- Show debug labels
-- Show borders
-- Show grid
-- element list
-- inspector panel
-- selected node highlight
-- Copy selected info
-- Run sanity checks
-- blockStack parser для node/group blocks
-- finalRect math
-- z-order
-- TextWidgetClass render
+Логика:
 
-Не переписывать всё с нуля.
-Не ломать finalRect math.
-Не менять смысл exact-флагов.
+1. Когда найден новый WidgetClass:
+   - создать node
+   - записать:
+     node.sourceStartLine = i
+     node.sourceStartOffset = lineStartOffsets[i]
+   - push:
+     blockStack.push({ kind: "node", node })
 
-Напоминание:
-exact = 1 → пиксели
-exact = 0 → доля parentRect / проценты
+2. Когда найдена отдельная строка "{":
+   - push:
+     blockStack.push({ kind: "group" })
 
---------------------------------------------------------------------------------
-ЧАСТЬ 9 — СИНТАКСИЧЕСКИЕ ОШИБКИ В РЕДАКТОРЕ
---------------------------------------------------------------------------------
+3. Когда найдена строка "}":
+   - const closingBlock = blockStack.pop()
+   - если closingBlock.kind === "node":
+       closingBlock.node.sourceEndLine = i
+       closingBlock.node.sourceEndOffset = lineStartOffsets[i] + rawLine.length
+   - если closingBlock.kind === "group":
+       просто закрыли group
 
-Если пользователь в textarea сломал .layout синтаксис:
+Важно:
+- не путать group-блок и node-блок
+- именно node-блок должен получить sourceEndLine/sourceEndOffset
+- отдельная строка "{" не создаёт node
+- отдельная строка "}" закрывает либо group, либо node
 
-Viewer не должен падать.
-
-Минимально:
-- parseLayout должен отработать насколько возможно
-- если nodes.length === 0:
-  показать статус "No widgets parsed"
-- inspector/list очистить или показать empty state
-- в console можно вывести warning
-
-Желательно:
-- показывать статус "Parsed X widgets"
+Если sourceEndOffset не найден, fallback:
+- sourceEndLine = sourceStartLine
+- sourceEndOffset = sourceStartOffset + длина первой строки
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 10 — UI СТАТУСЫ
+ЧАСТЬ 5 — REVEAL SOURCE, А НЕ TELEPORT
 --------------------------------------------------------------------------------
 
-Добавить/обновить статусы:
+Функция должна не уводить пользователя куда-то по странице, а прокручивать именно нижний source editor.
 
-1. Loaded file:
-- имя файла
-- encoding
+Добавить функцию:
 
-2. Source editor status:
-- No file loaded
-- Loaded source
-- Edited / not applied
-- Applied
-- Reset to loaded source
-- Copied source
+function revealNodeSource(nodeId) {
+    const node = getNodeById(nodeId);
+    if (!node || typeof node.sourceStartOffset !== "number") {
+        return;
+    }
 
-3. Parse status:
-- Parsed X widgets
-- No widgets parsed
+    setSelectedNode(node.id);
 
-Статусы нужны, чтобы пользователь понимал:
-- применены ли изменения
-- из какого текста строится preview
-- сколько элементов распознано
+    sourceEditor.setSelectionRange(node.sourceStartOffset, node.sourceEndOffset);
+
+    scrollSourceEditorToLine(node.sourceStartLine);
+
+    try {
+        sourceEditor.focus({ preventScroll: true });
+    } catch (error) {
+        sourceEditor.focus();
+    }
+}
+
+Смысл:
+- найти node
+- выбрать node в viewer
+- выделить его source block в textarea
+- прокрутить textarea, чтобы sourceStartLine оказался примерно в центре
+- не скроллить всю страницу к source editor специально
+- основной scroll должен происходить внутри textarea через sourceEditor.scrollTop
+
+Важно:
+Если focus() двигает всю страницу слишком сильно, использовать:
+sourceEditor.focus({ preventScroll: true })
+
+Если preventScroll не поддерживается, fallback:
+sourceEditor.focus()
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 11 — READ-ONLY БЕЗОПАСНОСТЬ
+ЧАСТЬ 6 — SCROLL SOURCE EDITOR TO CENTER
 --------------------------------------------------------------------------------
 
-Это критично.
+Добавить функцию:
+
+function scrollSourceEditorToLine(lineIndex) {
+    const computed = window.getComputedStyle(sourceEditor);
+    const lineHeight = parseFloat(computed.lineHeight) || 18;
+    const targetTop = lineIndex * lineHeight;
+    sourceEditor.scrollTop = Math.max(0, targetTop - sourceEditor.clientHeight / 2);
+}
+
+Требование:
+После двойного клика нужная строка должна оказаться примерно в центре видимой области textarea.
+
+Это важно:
+Пользователь должен видеть не только одну строку, а контекст вокруг блока.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 7 — DOUBLE CLICK EVENTS
+--------------------------------------------------------------------------------
+
+Добавить двойной клик:
+
+1. На visual DOM element:
+
+div.addEventListener("dblclick", event => {
+    event.stopPropagation();
+    revealNodeSource(node.id);
+});
+
+2. На строку element list:
+
+button.addEventListener("dblclick", event => {
+    event.preventDefault();
+    revealNodeSource(node.id);
+});
+
+Одинарный клик должен сохранить старое поведение:
+- выбрать node
+- показать inspector
+
+Двойной клик:
+- выбрать node
+- поднять его код в нижнем source editor
+- выделить source block
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 8 — INSPECTOR SOURCE INFO
+--------------------------------------------------------------------------------
+
+В inspector добавить информацию о source-позиции выбранного node:
+
+Source:
+- start line
+- end line
+
+Показывать человеку 1-based:
+
+Source lines:
+12–28
+
+Если sourceEndLine неизвестен:
+Source line:
+12
+
+Также добавить кнопку в inspector:
+Jump to source
+
+Но формулировка кнопки может быть:
+Reveal source
+Show source
+Показать код
+
+Кнопка вызывает:
+revealNodeSource(selectedNode.id)
+
+Важно:
+Название может быть любое, но смысл — поднять соответствующий source block в нижнем editor.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 9 — APPLY И SOURCE OFFSETS
+--------------------------------------------------------------------------------
+
+После Apply / Refresh preview из textarea:
+- parseLayout должен заново посчитать sourceStartLine/sourceEndLine/sourceStartOffset/sourceEndOffset уже для нового текста
+- reveal source должен работать по обновлённому тексту
+- старые offsets нельзя использовать после изменения source
+
+После Reset:
+- offsets тоже пересчитываются
+
+После Encoding reload:
+- offsets тоже пересчитываются
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 10 — READ-ONLY SAFETY
+--------------------------------------------------------------------------------
+
+Сохранить read-only безопасность.
 
 Нельзя:
-- сохранять изменения в исходный .layout файл
-- автоматически скачивать файл
-- создавать новый .layout
-- писать в File System Access API
-- использовать localStorage для автосохранения
-- менять реальные .layout файлы проекта
-- менять файлы мода
+- сохранять source в реальный .layout
+- скачивать файл автоматически
+- использовать File System Access API
+- писать в localStorage
+- менять реальные .layout файлы
+- менять мод
+- менять JSON
 
 Можно:
-- редактировать текст в textarea
+- выделять код в textarea
+- копировать source
 - строить preview из textarea
-- копировать текст в clipboard
-- в будущем можно сделать Download/Export, но НЕ в этой задаче
+- использовать reveal source
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 12 — ПРОВЕРКИ
+ЧАСТЬ 11 — ПРОВЕРКИ
 --------------------------------------------------------------------------------
 
 Проверить вручную:
@@ -603,34 +620,45 @@ Viewer не должен падать.
 1. Загрузить:
 P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 
-2. Выбрать правильный Encoding:
-Windows-1251, если UTF-8 даёт кракозябры.
+2. Выбрать правильную кодировку, если нужно:
+Windows-1251
 
-3. Убедиться:
-- код появился в нижнем source editor
-- preview построился
-- element list работает
-- inspector работает
+3. Двойной клик по визуальному элементу:
+- DescriptionText
+- QuestListbox
+- AcceptButtonText
 
-4. Изменить в source editor какой-нибудь безопасный текст, например:
-"КВЕСТЫ"
-на:
-"КВЕСТЫ TEST"
+Ожидание:
+- выбранный элемент подсвечивается
+- inspector показывает выбранный node
+- textarea получает выделение нужного блока
+- нужный блок кода поднялся в видимую область нижнего editor
+- sourceStartLine примерно в центре textarea
+- вся страница не должна специально улетать вниз
 
-5. Нажать Apply / Refresh preview.
+4. Двойной клик по элементу в Element List:
+- QuestPanel
+- RoutePanel
+- CloseButtonText
 
-6. Убедиться:
-- preview обновился
-- реальный файл на диске не изменился
-- element list / inspector остались рабочими
+Ожидание:
+- код соответствующего node поднимается в source editor
+- выделяется нужный блок
+- inspector показывает правильный node
 
-7. Нажать Reset to loaded source.
+5. Нажать кнопку Reveal source / Show source в inspector.
+Ожидание:
+- работает так же, как double click
 
-8. Убедиться:
-- текст вернулся к оригинальному
-- preview вернулся
+6. Изменить текст в textarea.
+7. Нажать Apply / Refresh preview.
+8. Двойной клик по изменённому элементу.
+9. Убедиться, что reveal source работает по новому source.
 
-9. Проверить QuestJournal.layout:
+10. Нажать Reset.
+11. Убедиться, что reveal source работает по original source.
+
+12. Проверить:
 P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
 --------------------------------------------------------------------------------
@@ -647,42 +675,51 @@ P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
 4. JSON не изменён.
 
-5. Добавлен нижний source editor.
+5. Source editor находится снизу, под workspace.
 
-6. Source editor расположен снизу, а не слева.
+6. Source editor занимает ширину рабочего viewer-а.
 
-7. После загрузки файла source появляется в textarea.
+7. Textarea удобная по высоте и ширине.
 
-8. Apply / Refresh preview строит preview из текущего текста textarea.
+8. Node содержит:
+- sourceStartLine
+- sourceEndLine
+- sourceStartOffset
+- sourceEndOffset
 
-9. Reset возвращает original loaded source.
+9. Double click по visual element вызывает reveal source.
 
-10. Copy source копирует текущий текст textarea.
+10. Double click по element list row вызывает reveal source.
 
-11. При ручном редактировании показывается Edited / not applied.
+11. Source block выделяется через setSelectionRange.
 
-12. Ничего не сохраняется на диск автоматически.
+12. Textarea прокручивается так, чтобы нужная строка была примерно в центре.
 
-13. Encoding select продолжает работать.
+13. Важно:
+код поднимается внутри нижнего textarea, а не пользователь телепортируется всей страницей вниз.
 
-14. Viewport / scale / inspector / element list / sanity checks продолжают работать.
+14. Inspector показывает source lines.
 
-15. finalRect math не сломан.
+15. В inspector есть кнопка Reveal source / Show source / Показать код.
 
-16. В отчёте указано:
-- как работает загрузка source
-- как работает Apply
-- как работает Reset
-- как обеспечено read-only поведение
+16. Apply / Reset пересчитывают source offsets.
+
+17. Ничего не сохраняется на диск.
+
+18. Encoding / viewport / inspector / sanity checks продолжают работать.
+
+19. finalRect math не сломан.
+
+20. Source editor layout не ломает workspace.
 
 Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- как текущий viewer был устроен до правки
-- куда добавлен source editor
+- как была реализована текущая связь node/source
 - какие риски были учтены
+- как сделано, чтобы код поднимался в textarea, а не страница скроллилась вниз
 
 DONE:
 - что сделано
@@ -694,16 +731,18 @@ DIFF:
 - кратко
 
 CHECKS:
-- загрузка QuestMenu.layout
-- редактирование текста
-- Apply preview
+- double click visual element
+- double click element list
+- Reveal source button
+- source selection
+- scroll to center inside textarea
+- Apply после ручной правки
 - Reset
-- Copy source
 - read-only safety
 
 PROBLEMS:
 - реальные проблемы, если есть
-- предположения, если поведение браузера/encoding не подтверждено
+- предположения, если поведение textarea/selection не подтверждено
 
 CONCLUSION:
 - краткий вывод
