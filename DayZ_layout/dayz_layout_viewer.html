@@ -41,30 +41,22 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const xmlContent = e.target.result;
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
-
+                const content = e.target.result;
                 const container = document.getElementById('visual-container');
                 container.innerHTML = '';
 
-                const elements = xmlDoc.querySelectorAll('*');
-                elements.forEach(el => {
-                    const pos = el.querySelector('position') || {};
-                    const size = el.querySelector('size') || {};
-                    const color = el.querySelector('color') || {};
+                // Регулярные выражения для извлечения данных
+                const regex = /class\s+[^\n]*?\{[^\}]*?position\s*\[\]\s*=\s*\{([^\}]+)\}[^\}]*?size\s*\[\]\s*=\s*\{([^\}]+)\}[^\}]*?color\s*\[\]\s*=\s*\{([^\}]+)\}/g;
+                let match;
 
-                    const x = parseFloat(pos.getAttribute?.('x')) || 0;
-                    const y = parseFloat(pos.getAttribute?.('y')) || 0;
-                    const w = parseFloat(size.getAttribute?.('w')) || 0;
-                    const h = parseFloat(size.getAttribute?.('h')) || 0;
+                while ((match = regex.exec(content)) !== null) {
+                    const [_, pos, size, col] = match;
+                    
+                    const [x, y] = pos.split(',').map(parseFloat).map(v => isNaN(v) ? 0 : v);
+                    const [w, h] = size.split(',').map(parseFloat).map(v => isNaN(v) ? 0 : v);
+                    const [r, g, b, a] = col.split(',').map(parseFloat).map((v, i) => isNaN(v) ? (i === 3 ? 1 : 0) : v);
 
-                    if (w <= 0 || h <= 0) return;
-
-                    const r = parseInt(color.getAttribute?.('r')) || 0;
-                    const g = parseInt(color.getAttribute?.('g')) || 0;
-                    const b = parseInt(color.getAttribute?.('b')) || 0;
-                    const a = parseFloat(color.getAttribute?.('a')) || 1;
+                    if (w <= 0 || h <= 0) continue;
 
                     const div = document.createElement('div');
                     div.className = 'ui-element';
@@ -73,10 +65,10 @@
                     div.style.width = w + 'px';
                     div.style.height = h + 'px';
                     div.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
-
-                    div.title = `x:${x} y:${y} w:${w} h:${h}`;
+                    div.title = `x:${x} y:${y} w:${w} h:${h} | rgba(${r},${g},${b},${a})`;
+                    
                     container.appendChild(div);
-                });
+                }
             };
             reader.readAsText(file);
         });
