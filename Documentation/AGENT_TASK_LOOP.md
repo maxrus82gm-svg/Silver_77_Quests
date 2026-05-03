@@ -254,57 +254,19 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 072 — Перекомпоновать интерфейс DayZ Layout Viewer по схеме пользователя: 1/2/3
+TASK 073 — Локализовать интерфейс DayZ Layout Viewer на русский язык
 
 Цель:
-Исправить компоновку интерфейса в DayZ_layout/dayz_layout_viewer.html.
+Перевести пользовательский интерфейс DayZ_layout/dayz_layout_viewer.html на русский язык.
 
-Сейчас source reveal работает хорошо:
-- double click по visual element работает
-- double click по element list работает
-- source block выделяется
-- нужный код прокручивается внутри textarea
-
-Но сама компоновка интерфейса неудобная:
-Source Editor визуально оторван от preview/workspace и находится как отдельный блок ниже, из-за чего рабочая связка “вижу элемент → вижу код → меняю → Apply” ощущается разорванной.
-
-Пользователь прислал скрин с разметкой зон:
-
-ЗОНА 1:
-- основная визуальная рабочая область / preview
-- должна находиться слева сверху
-- должна занимать основную ширину левой рабочей области
-
-ЗОНА 2:
-- правая колонка
-- Element List
-- Inspector
-- Sanity Checks
-- должна быть отдельной вертикальной правой колонкой
-
-ЗОНА 3:
-- Source Editor
-- должен быть снизу под ЗОНОЙ 1
-- должен быть частью левой рабочей области
-- должен быть по ширине ЗОНЫ 1
-- НЕ должен быть отдельным оторванным блоком на всю страницу где-то ниже
-
-Главная требуемая схема:
-
-main-workspace
-├─ left-work-area
-│  ├─ zone-1-preview
-│  └─ zone-3-source-editor
-│
-└─ right-sidebar
-   ├─ element-list
-   ├─ inspector
-   └─ sanity-checks
-
-То есть:
-- слева большая рабочая колонка
-- справа узкая служебная колонка
-- внутри левой колонки сверху preview, снизу source editor
+Важно:
+Это косметическая UI-задача.
+Не менять логику viewer-а.
+Не менять парсер.
+Не менять finalRect math.
+Не менять source reveal.
+Не менять encoding / viewport / inspector / sanity checks logic.
+Не менять реальные .layout файлы.
 
 Где работать:
 ТОЛЬКО:
@@ -320,291 +282,243 @@ DayZ_layout/dayz_layout_viewer.html
 - любые файлы мода
 - Git
 
-Реальные файлы для read-only проверки:
-- P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
-- P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
-
-Эти файлы можно только загружать и читать через viewer.
-Их нельзя изменять, форматировать или пересохранять.
-
 --------------------------------------------------------------------------------
-ЧАСТЬ 1 — ОСНОВНАЯ КОМПОНОВКА 1/2/3
+ЧТО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-Нужно перестроить HTML/CSS так, чтобы интерфейс соответствовал схеме:
+Перевести видимые пользователю подписи интерфейса на русский.
 
-1 — Preview / Visual Workspace
-2 — Right Sidebar
-3 — Source Editor
+Примеры замен:
 
-Текущий source editor не должен идти отдельной секцией после всей workspace.
-Он должен быть перенесён внутрь левой рабочей колонки под preview.
+Title:
+DayZ .layout Viewer
+→ Просмотрщик DayZ .layout
 
-Рекомендуемая HTML-структура:
+Description:
+Read-only preview: inspect DayZ widget hierarchy, decoded text, final rects, and sanity checks without changing source layouts.
+→ Режим просмотра: анализ и предпросмотр DayZ .layout без изменения исходных файлов.
 
-<div class="main-workspace">
-    <div class="left-work-area">
-        <section class="viewer-card">
-            <div class="viewer-shell">
-                <div id="visual-container"></div>
-            </div>
-        </section>
+Toolbar:
+Layout file
+→ Файл layout
 
-        <section class="source-card">
-            <div class="panel-header">Source Editor</div>
-            <div class="source-toolbar">
-                ...
-            </div>
-            <textarea id="source-editor"></textarea>
-        </section>
-    </div>
+Encoding
+→ Кодировка
 
-    <aside class="sidebar">
-        <section class="panel-section">
-            Element List
-        </section>
+Viewport
+→ Экран
 
-        <section class="panel-section">
-            Inspector
-        </section>
+Scale
+→ Масштаб
 
-        <section class="panel-section">
-            Sanity Checks
-        </section>
-    </aside>
-</div>
+Show debug labels
+→ Имена элементов
+
+Show borders
+→ Рамки
+
+Show grid
+→ Сетка
+
+Copy selected info
+→ Копировать выбранное
+
+Run sanity checks
+→ Проверить layout
+
+Loaded:
+→ Загружен:
+
+Selected:
+→ Выбран:
+
+Element List
+→ Список элементов
+
+Filter by name or type
+→ Фильтр по имени или типу
+
+Inspector
+→ Инспектор
+
+Sanity Checks
+→ Проверки
+
+Source Editor
+→ Редактор исходного кода
+
+Apply / Refresh preview
+→ Применить / обновить предпросмотр
+
+Reset
+→ Сбросить
+
+Copy source
+→ Копировать код
+
+Reveal source
+→ Показать код
+
+No file loaded.
+→ Файл не загружен.
+
+No node selected.
+→ Элемент не выбран.
+
+No source loaded.
+→ Код не загружен.
+
+Source editor has unapplied changes.
+→ Есть неприменённые изменения.
+
+Source editor synced with ...
+→ Редактор синхронизирован с ...
+
+Current source copied.
+→ Код скопирован.
+
+Preview matches current source editor text.
+→ Предпросмотр соответствует текущему коду редактора.
+
+Load a .layout file to inspect its node tree.
+→ Загрузите .layout файл, чтобы увидеть дерево элементов.
+
+Select a widget in the viewport or element list.
+→ Выберите элемент в предпросмотре или списке.
+
+Run checks after loading QuestMenu.layout or QuestJournal.layout.
+→ Запустите проверку после загрузки QuestMenu.layout или QuestJournal.layout.
+
+Footer:
+© 2026 Silver_77_Quests. Read-only viewer only: no layout files are rewritten, formatted, or regenerated.
+→ © 2026 Silver_77_Quests. Только просмотр: layout-файлы не перезаписываются, не форматируются и не генерируются.
+
+--------------------------------------------------------------------------------
+INSPECTOR LABELS
+--------------------------------------------------------------------------------
+
+Перевести подписи в Inspector:
+
+Name → Имя
+Type → Тип
+Parent → Родитель
+Depth → Глубина
+finalRect → Итоговый прямоугольник
+Position → Позиция
+Size → Размер
+Alignment → Выравнивание
+Exact → Exact-флаги
+Font → Шрифт
+Text align → Выравнивание текста
+Source lines → Строки кода
+Z-order → Z-порядок
+Text → Текст
+Props → Свойства
 
 Важно:
-- Source Editor должен быть внутри left-work-area.
-- Sidebar должен быть соседней правой колонкой.
-- Source Editor не должен находиться после sidebar как отдельный блок всей страницы.
+Не менять сами технические значения:
+- QuestPanel
+- TextWidgetClass
+- finalRect числа
+- left_ref
+- center_ref
+- hexactpos
+- пути шрифтов
+- имена node
+
+Переводить только подписи интерфейса.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 2 — CSS GRID / FLEX
+ELEMENT LIST
 --------------------------------------------------------------------------------
 
-Можно использовать CSS Grid.
+Можно оставить типы короткими техническими:
+FRAME / PANEL / TEXT / BUTTON
 
-Рекомендуемая логика:
+Но заголовки и placeholder перевести:
+Element List → Список элементов
+Filter by name or type → Фильтр по имени или типу
 
-.main-workspace {
-    display: grid;
-    grid-template-columns: minmax(760px, 1fr) 360px;
-    gap: 18px;
-    align-items: start;
-}
-
-.left-work-area {
-    display: grid;
-    grid-template-rows: minmax(420px, auto) auto;
-    gap: 12px;
-    min-width: 0;
-}
-
-.sidebar {
-    display: grid;
-    grid-template-rows: minmax(220px, 1fr) auto auto;
-    align-self: stretch;
-}
-
-Смысл:
-- левая колонка широкая
-- правая колонка узкая
-- source editor живёт внутри левой колонки
-- source editor по ширине совпадает с preview area
-
-Можно адаптировать размеры под текущий CSS, но итоговая структура должна соответствовать схеме 1/2/3.
+Имена элементов не переводить:
+QuestPanel, DescriptionText, AcceptButtonText — оставить как есть.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 3 — SOURCE EDITOR POSITION
+SANITY CHECKS
 --------------------------------------------------------------------------------
 
-Source Editor должен:
+Перевести видимые тексты sanity checks, если они есть.
 
-1. Начинаться сразу под preview / viewer-card.
-2. Быть визуально частью той же левой рабочей области.
-3. Иметь ширину ровно левой колонки.
-4. Не растягиваться под правую колонку.
-5. Не быть отдельным full-width блоком на всю страницу.
-6. Не создавать большой разрыв между preview и editor.
+Примеры:
+PASS → ОК
+WARN → ВНИМАНИЕ
+Missing node → Элемент не найден
+Expected → Ожидалось
+Actual → Фактически
+Delta → Разница
 
-Если сейчас .source-card стоит после .workspace, его нужно перенести внутрь left-work-area.
-
-Если сейчас .source-card имеет большой margin-top, убрать или уменьшить:
-margin-top: 0 или 10px.
-
-Так как source-card будет внутри left-work-area, gap между preview и source editor лучше задавать через left-work-area gap.
+Если перевод sanity checks может затронуть много логики, можно перевести только заголовки и кнопки, а сами технические результаты оставить как есть.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 4 — PREVIEW AREA
+SOURCE EDITOR
 --------------------------------------------------------------------------------
 
-Preview area должна остаться рабочей.
+Перевести только интерфейс редактора:
+Source Editor → Редактор исходного кода
+Apply / Refresh preview → Применить / обновить предпросмотр
+Reset → Сбросить
+Copy source → Копировать код
 
-Не ломать:
-- visual-container
-- viewer-shell
-- viewport presets
-- renderScale
-- grid
-- show borders
-- show debug labels
-- click selection
-- double click reveal source
-
-Preview должен оставаться в ЗОНЕ 1.
-
-Если preview сейчас слишком маленький из-за новой сетки, можно поправить:
-- min-height viewer-card / viewer-shell
-- overflow: auto
-- min-width: 0 для grid children
-
-Но не ломать render math.
+Код внутри textarea НЕ переводить и НЕ менять.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 5 — RIGHT SIDEBAR
+ЧТО НЕ ДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-Правая колонка — ЗОНА 2.
+Не переводить:
+- имена классов WidgetClass
+- имена node
+- имена переменных
+- значения свойств .layout
+- содержимое textarea
+- текст внутри реального .layout
+- пути файлов
+- технические enum значения:
+  left_ref
+  top_ref
+  center_ref
+  hexactpos
+  vexactsize
 
-Она должна содержать:
-- Element List
-- Inspector
-- Sanity Checks
-
-Требования:
-1. Sidebar справа от preview/source.
-2. Sidebar не должен быть под source editor.
-3. Sidebar не должен растягивать source editor.
-4. Sidebar должен сохранять текущую функциональность:
-   - список элементов
-   - фильтр
-   - selected row
-   - inspector
-   - Reveal source button
-   - sanity checks
-
-Если высота sidebar больше или меньше левой области — это нормально.
-Главное — он должен быть справа как служебная колонка.
+Не менять:
+- CSS layout без необходимости
+- HTML structure без необходимости
+- JS logic без необходимости
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 6 — SOURCE REVEAL UX
---------------------------------------------------------------------------------
-
-Source reveal уже работает.
-Нужно сохранить его поведение.
-
-При double click по visual element или element list:
-- selected node обновляется
-- inspector обновляется
-- source editor внутри нижней левой зоны прокручивается
-- нужный код выделяется
-- sourceStartLine оказывается примерно в центре textarea
-- страница не должна специально улетать вниз
-
-Важно:
-Код должен “подниматься” внутри textarea.
-Пользователь не должен “телепортироваться” всей страницей к отдельному нижнему блоку.
-
-Если после изменения layout focus({ preventScroll: true }) или scrollTop ломаются — исправить минимально.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 7 — НЕ ТРОГАТЬ ЛОГИКУ, ЕСЛИ НЕ НУЖНО
---------------------------------------------------------------------------------
-
-Эта задача про компоновку интерфейса.
-
-Не менять без необходимости:
-- parseLayout
-- blockStack
-- sourceStartLine/sourceEndLine/sourceStartOffset/sourceEndOffset
-- calculateFinalRects
-- exact-флаги
-- viewport math
-- z-order
-- encoding
-- sanity checks
-- Apply / Reset / Copy source logic
-
-Напоминание:
-exact = 1 → пиксели
-exact = 0 → доля parentRect / проценты
-
-Если нужно изменить JS только из-за переноса DOM-элементов — можно.
-Но не переписывать engine.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 8 — RESPONSIVE / SMALL SCREEN
---------------------------------------------------------------------------------
-
-Сохранить адаптивность.
-
-Если экран узкий, можно делать:
-@media (max-width: 1280px) {
-    .main-workspace {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        order: 2;
-    }
-
-    .left-work-area {
-        order: 1;
-    }
-}
-
-Но на широком экране основная схема должна быть:
-- слева preview + source editor
-- справа sidebar
-
---------------------------------------------------------------------------------
-ЧАСТЬ 9 — ПРОВЕРКИ
+ПРОВЕРКИ
 --------------------------------------------------------------------------------
 
 Проверить вручную:
 
 1. Открыть viewer.
-
-2. Загрузить:
-P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
-
-3. Проверить визуально:
-- preview находится в зоне 1 слева сверху
-- sidebar находится в зоне 2 справа
-- source editor находится в зоне 3 снизу под preview
-- source editor НЕ растянут под sidebar
-- source editor имеет ширину preview/левой колонки
-
-4. Загрузить:
-P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
-
+2. Убедиться, что интерфейс на русском.
+3. Загрузить QuestMenu.layout.
+4. Выбрать Windows-1251.
 5. Проверить:
-- Windows-1251 работает
 - preview работает
-- element list работает
+- список элементов работает
 - inspector работает
-- Reveal source button работает
-- double click visual element работает
-- double click element list работает
+- Reveal source / Показать код работает
 - Apply / Refresh preview работает
 - Reset работает
+- Copy source работает
+- sanity checks запускаются
 
-6. Проверить reveal:
-- double click по DescriptionText
-- source editor в зоне 3 прокрутился внутри textarea
-- нужный код выделен
-- страница не улетела вниз
-
-7. Проверить, что finalRect sanity values не изменились:
-QuestPanel при viewport 1280x720:
-x=180 y=80 w=920 h=560
-
-QuestListbox:
-x=210 y=162 w=330 h=250
-
-AcceptButtonText:
-x=570 y=500 w=220 h=48
+6. Убедиться:
+- .layout код в textarea не изменён
+- имена элементов не переведены
+- технические значения не переведены
+- реальный файл не изменён
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
@@ -613,44 +527,33 @@ x=570 y=500 w=220 h=48
 1. Изменён только:
 DayZ_layout/dayz_layout_viewer.html
 
-2. Documentation/AGENT_TASK_LOOP.md не изменён.
+2. Реальные .layout файлы не изменены.
 
-3. Реальные .layout файлы проекта не изменены.
+3. Файлы мода не изменены.
 
-4. Файлы мода не изменены.
+4. JSON не изменён.
 
-5. JSON не изменён.
+5. Интерфейс viewer-а переведён на русский.
 
-6. Интерфейс соответствует схеме 1/2/3:
-- зона 1 preview слева сверху
-- зона 2 sidebar справа
-- зона 3 source editor слева снизу под preview
+6. Технические имена node/class/property не переведены.
 
-7. Source Editor находится внутри левой рабочей колонки.
+7. Source editor code не изменяется.
 
-8. Source Editor не находится отдельным блоком на всю страницу после sidebar.
+8. Viewer logic не сломана.
 
-9. Ширина Source Editor соответствует ширине preview/левой колонки.
+9. Reveal source работает.
 
-10. Sidebar остаётся справа.
+10. Apply / Reset / Copy source работают.
 
-11. Reveal source продолжает работать.
-
-12. Apply / Reset / Copy source продолжают работать.
-
-13. Inspector / Element List / Sanity Checks продолжают работать.
-
-14. finalRect math не изменён без необходимости.
-
-15. Отчёт вернуть только в чат.
+11. Отчёт вернуть в чат.
 
 Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- что было не так с текущей компоновкой
-- как была выбрана новая структура 1/2/3
+- что было переведено
+- что специально не переводилось
 
 DONE:
 - что сделано
@@ -662,13 +565,12 @@ DIFF:
 - кратко
 
 CHECKS:
-- preview zone 1
-- sidebar zone 2
-- source editor zone 3
+- загрузка layout
+- кодировка
+- inspector
 - reveal source
-- Apply / Reset
-- inspector/list
-- sanity values
+- apply/reset/copy
+- sanity checks
 
 PROBLEMS:
 - реальные проблемы, если есть
