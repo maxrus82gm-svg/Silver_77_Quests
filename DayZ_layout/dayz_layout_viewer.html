@@ -47,42 +47,34 @@
 
                 // Построчный stack-парсер для .layout файлов DayZ
                 const lines = content.split('\n');
-                const stack = []; // стек для отслеживания вложенности
-                const elements = []; // найденные UI-элементы
+                const nodeStack = []; // стек узлов (настоящий стек)
+                const elements = []; // найденные UI-элементы для визуализации
                 
-                let currentElement = null;
-                let braceCount = 0;
-                let inElement = false;
-
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i].trim();
-                    
-                    // Отслеживаем открывающие фигурные скобки
-                    const openBraces = (line.match(/\{/g) || []).length;
-                    const closeBraces = (line.match(/\}/g) || []).length;
-                    
-                    braceCount += openBraces - closeBraces;
                     
                     // Ищем начало нового UI-элемента (класс с именем)
                     const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
                     if (classMatch) {
-                        currentElement = {
+                        // Создаем новый узел и добавляем в стек
+                        const newNode = {
                             type: classMatch[1],
                             name: classMatch[2],
                             position: null,
                             size: null,
-                            color: null,
-                            depth: braceCount - 1 // глубина вложенности
+                            color: null
                         };
-                        inElement = true;
+                        nodeStack.push(newNode);
                     }
                     
-                    // Если мы внутри элемента, ищем его свойства
-                    if (inElement && currentElement) {
+                    // Если стек не пустой, ищем свойства в текущем узле (последнем в стеке)
+                    if (nodeStack.length > 0) {
+                        const currentNode = nodeStack[nodeStack.length - 1];
+                        
                         // Парсим position (формат: position x y)
                         const posMatch = line.match(/^\s*position\s+([\d\.]+)\s+([\d\.]+)/);
                         if (posMatch) {
-                            currentElement.position = {
+                            currentNode.position = {
                                 x: parseFloat(posMatch[1]) || 0,
                                 y: parseFloat(posMatch[2]) || 0
                             };
@@ -91,7 +83,7 @@
                         // Парсим size (формат: size w h)
                         const sizeMatch = line.match(/^\s*size\s+([\d\.]+)\s+([\d\.]+)/);
                         if (sizeMatch) {
-                            currentElement.size = {
+                            currentNode.size = {
                                 w: parseFloat(sizeMatch[1]) || 0,
                                 h: parseFloat(sizeMatch[2]) || 0
                             };
@@ -100,7 +92,7 @@
                         // Парсим color (формат: color r g b a)
                         const colorMatch = line.match(/^\s*color\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)/);
                         if (colorMatch) {
-                            currentElement.color = {
+                            currentNode.color = {
                                 r: parseFloat(colorMatch[1]) || 0,
                                 g: parseFloat(colorMatch[2]) || 0,
                                 b: parseFloat(colorMatch[3]) || 0,
@@ -109,15 +101,16 @@
                         }
                     }
                     
-                    // Если встретили закрывающую скобку и вышли из текущего элемента
-                    if (closeBraces > 0 && currentElement && braceCount < currentElement.depth) {
-                        // Сохраняем элемент, если у него есть position и size
-                        if (currentElement.position && currentElement.size && 
-                            currentElement.size.w > 0 && currentElement.size.h > 0) {
-                            elements.push({...currentElement});
+                    // Обрабатываем закрывающую фигурную скобку
+                    if (line === '}') {
+                        // Извлекаем узел из стека
+                        const finishedNode = nodeStack.pop();
+                        
+                        // Если у уз��а есть position и size - сохраняем для визуализации
+                        if (finishedNode && finishedNode.position && finishedNode.size && 
+                            finishedNode.size.w > 0 && finishedNode.size.h > 0) {
+                            elements.push({...finishedNode});
                         }
-                        currentElement = null;
-                        inElement = false;
                     }
                 }
 
