@@ -254,36 +254,26 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 069 — Улучшить DayZ layout viewer: кодировка, debug controls, inspector и проверка реальных QuestMenu/QuestJournal
+TASK 070 — Добавить нижний встроенный редактор .layout source в DayZ layout viewer
 
 Цель:
-Довести DayZ_layout/dayz_layout_viewer.html до удобного инструмента проверки реальных layout-файлов проекта.
+Доработать DayZ_layout/dayz_layout_viewer.html так, чтобы viewer стал не только read-only визуальным просмотрщиком, но и локальной песочницей для ручной проверки правок .layout кода.
 
-После TASK 068 базовая геометрия стала лучше:
-- viewport presets есть
-- renderScale есть
-- visual-container = viewport * renderScale
-- finalRect math в целом рабочая
-- z-order улучшен
-- TextWidgetClass стал рендериться через flex
-- font size извлекается из metronXX
+Важно:
+Это НЕ полноценный редактор файловой системы.
+Это НЕ автосохранение.
+Это НЕ генератор layout.
+Это локальный source editor внутри HTML-страницы.
 
-Но по ручной проверке viewer всё ещё неудобен:
-- QuestJournal.layout выглядит уже достаточно близко
-- QuestMenu.layout выглядит хаотично
-- кириллица отображается как �����
-- debug labels мешают визуальному сравнению с игрой
-- нет inspector-панели для проверки конкретных элементов
-- трудно понять, проблема в math, z-order, text render или в кодировке
+Главная идея:
+Пользователь загружает .layout файл, видит его исходный текст в нижней панели, может временно изменить текст, нажать Apply / Refresh preview и увидеть обновлённый визуальный результат.
 
-Главная цель TASK 069:
-Не переписывать layout engine заново.
-Добавить инструменты диагностики и исправить кодировку/отладочное отображение, чтобы можно было точно понять, какие элементы считаются правильно, а какие нет.
+Исходный .layout файл на диске НЕ изменяется.
 
 Где работать:
 Разрешено менять:
 1. DayZ_layout/dayz_layout_viewer.html
-2. Documentation/AGENT_TASK_LOOP.md — только для записи краткого отчёта в БЛОК 2 / БЛОК 3 / статуса задачи, если требуется по агентскому процессу.
+2. Documentation/AGENT_TASK_LOOP.md — только если нужно записать краткий отчёт в разрешённые блоки агентского цикла.
 
 Запрещено менять:
 - Documentation/QUEST_LOGIC_SPEC.md
@@ -298,386 +288,356 @@ TASK 069 — Улучшить DayZ layout viewer: кодировка, debug cont
 - P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 - P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
-Важно:
-Эти .layout файлы можно только читать через viewer / FileReader.
-Их нельзя изменять.
-Их нельзя форматировать.
-Их нельзя сохранять.
+Эти файлы можно только загружать и читать.
+Их нельзя изменять, форматировать или пересохранять.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 1 — КОДИРОВКА / КИРИЛЛИЦА
+ЧАСТЬ 1 — РАСПОЛОЖЕНИЕ CODE EDITOR
 --------------------------------------------------------------------------------
 
-Проблема:
-В QuestMenu.layout текст сейчас отображается как:
-�����
+Нужно добавить source editor НЕ слева.
 
-Это означает проблему с декодированием кириллицы.
-Вероятно, файл может быть не UTF-8, а Windows-1251 / ANSI.
+Правильное расположение:
+- сверху: toolbar / controls
+- середина: visual preview + inspector справа
+- низ: широкая панель source editor
 
-Что сделать:
+То есть editor должен быть внизу, под основной рабочей областью viewer-а.
 
-1. Добавить select "Encoding":
-   - UTF-8
-   - Windows-1251
+Желаемая структура:
 
-2. По умолчанию поставить:
-   - Windows-1251
+<div class="workspace">
+  <section class="viewer-card">
+    visual-container
+  </section>
 
-3. При чтении файла использовать:
-   reader.readAsText(file, selectedEncoding)
-
-Пример:
-if (encoding === "windows-1251") {
-    reader.readAsText(file, "windows-1251");
-} else {
-    reader.readAsText(file, "utf-8");
-}
-
-4. При смене encoding:
-   - перечитать выбранный file заново
-   - перерендерить viewer
-
-Важно:
-Браузер FileReader умеет readAsText(file, encoding).
-Нам не нужен backend.
-Нам не нужно сохранять файл.
-Нам нужно только корректно прочитать текст.
-
-Критерий:
-Русский текст в viewer должен отображаться читаемо:
-- ЖУРНАЛ КВЕСТОВ
-- ЗАКРЫТЬ
-- ВЗЯТЬ КВЕСТ
-- УЖЕ АКТИВЕН
-- ЭТАП НЕДОСТУПЕН
-- диалоговые тексты
-
-Если выбран неправильный encoding, пользователь сможет переключить select.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 2 — DEBUG LABELS CONTROL
---------------------------------------------------------------------------------
-
-Проблема:
-Debug labels node.name полезны, но сейчас они мешают визуальному сравнению с игрой.
-На скрине QuestMenu labels накладываются на текст и создают ощущение хаоса.
-
-Что сделать:
-
-1. Добавить checkbox:
-   Show debug labels
-
-2. По умолчанию:
-   checked = false
-
-3. Если Show debug labels выключен:
-   - не показывать node.name labels на визуальных блоках
-   - не мешать настоящему node.text
-
-4. Если Show debug labels включен:
-   - показывать node.name маленьким overlay
-   - label должен быть полупрозрачный
-   - label не должен заменять игровой текст
-
-5. Добавить checkbox:
-   Show borders
-
-6. По умолчанию:
-   checked = true
-
-7. Если Show borders выключен:
-   - убрать debug dashed borders у элементов без color
-   - оставить реальные цветные панели/кнопки
-   - текстовые элементы без фона должны выглядеть ближе к игре
-
-8. Добавить checkbox:
-   Show grid
-
-9. По умолчанию:
-   checked = true
-
-10. Если Show grid выключен:
-   - убрать grid background у visual-container
-
-Цель:
-Пользователь должен уметь переключаться между:
-- debug mode
-- visual comparison mode
-
---------------------------------------------------------------------------------
-ЧАСТЬ 3 — ELEMENT INSPECTOR
---------------------------------------------------------------------------------
-
-Проблема:
-Сейчас без inspector невозможно быстро понять:
-- где конкретно элемент находится
-- какой у него parent
-- какие у него exact-флаги
-- какой finalRect получился
-- почему элемент съехал
-
-Что сделать:
-
-1. Добавить боковую или нижнюю inspector-панель.
-
-Минимальный layout страницы:
-- сверху controls
-- слева/центр visual-container
-- справа inspector
-- снизу или справа список элементов
-
-Можно сделать просто:
-<div class="viewer-layout">
-  <div id="visual-container"></div>
-  <aside id="inspector-panel"></aside>
+  <aside class="sidebar">
+    element list
+    inspector
+    sanity checks
+  </aside>
 </div>
-<div id="element-list"></div>
 
-2. Добавить список элементов.
+<section class="source-editor-panel">
+  textarea с .layout кодом
+</section>
 
-Для каждого node показывать:
-- name
-- type
-- parentName
-- finalRect x/y/w/h
-
-3. При клике по элементу в списке:
-- выбрать node
-- подсветить соответствующий DOM-блок
-- показать свойства в inspector
-
-4. При клике по DOM-блоку:
-- выбрать node
-- подсветить его
-- показать свойства в inspector
-- остановить всплытие, чтобы клик по child выбирал child, а не parent
-
-5. Выбранный элемент:
-- получает visible outline, например 2px solid cyan
-- получает высокий z-index только как selected overlay
-- не ломает основную z-order логику
-
-6. Inspector должен показывать:
-
-Основное:
-- name
-- type
-- parentName
-- id
-- sourceOrder
-- depth
-
-Geometry:
-- position x/y
-- size w/h
-- finalRect x/y/w/h
-- halign
-- valign
-- hexactpos
-- vexactpos
-- hexactsize
-- vexactsize
-
-Text:
-- text
-- font
-- props["text halign"]
-- props["text valign"]
-
-Color:
-- color r/g/b/a
-- computed rgba
-
-Props:
-- props JSON или таблицей key/value
-
-7. Добавить кнопку:
-Copy selected info
-
-Она должна копировать в clipboard текст примерно:
-
-Name: QuestListbox
-Type: TextListboxWidgetClass
-Parent: QuestPanel
-Position: 30, 82
-Size: 330, 250
-FinalRect: 210, 162, 330, 250
-Flags: hexactpos=1 vexactpos=1 hexactsize=1 vexactsize=1
-Align: left_ref / top_ref
-
-Если clipboard API недоступен:
-- показать alert или textarea fallback
-- не сохранять файл
+Почему editor снизу:
+- visual preview остаётся широким
+- inspector справа остаётся на месте
+- .layout код удобно смотреть на всю ширину
+- меньше риска сломать текущую рабочую компоновку viewer-а
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 4 — SANITY CHECK PANEL
+ЧАСТЬ 2 — SOURCE EDITOR PANEL
 --------------------------------------------------------------------------------
 
-Проблема:
-Нужно быстро проверять ключевые элементы QuestMenu.layout и QuestJournal.layout.
+Добавить внизу отдельную панель:
 
-Что сделать:
+Заголовок:
+Source .layout editor
 
-1. Добавить кнопку:
-Run sanity checks
+Внутри:
+- textarea
+- кнопки управления
+- статус изменений
 
-2. Sanity checks не должны менять файлы.
-Они должны только анализировать текущие nodes.
+Минимальные элементы:
 
-3. Для QuestMenu.layout проверять наличие:
-- QuestMenuRoot
-- QuestPanel
-- QuestListbox
-- DescriptionPanel
-- RoutePanel
-- DialogPanel
-- AcceptButton
-- CompleteButton
-- CloseButton
-- AcceptButtonText
-- CompleteButtonText
-- CloseButtonText
+1. textarea:
+   id="source-editor"
 
-4. Для QuestJournal.layout проверять наличие:
-- QuestJournalPanel
-- TitleText
-- QuestListbox
-- DescriptionText
-- CloseButton
-- CloseButtonText
+2. Кнопка:
+   Apply / Refresh preview
 
-5. Для выбранного viewport 1280x720 ожидания для QuestMenu:
+3. Кнопка:
+   Reset to loaded source
 
-QuestPanel:
-expected:
-x=180
-y=80
-w=920
-h=560
+4. Кнопка:
+   Copy source
 
-QuestListbox:
-expected:
-x=210
-y=162
-w=330
-h=250
+5. Статус:
+   - Loaded source
+   - Edited / not applied
+   - Applied
+   - No file loaded
 
-AcceptButton:
-expected:
-x=570
-y=500
-w=220
-h=48
+Textarea:
+- должна занимать всю ширину доступной области
+- высота примерно 260-360px
+- monospace font
+- tab-size: 4
+- resize: vertical
+- white-space: pre
+- overflow: auto
 
-AcceptButtonText:
-expected:
-x=570
-y=500
-w=220
-h=48
+--------------------------------------------------------------------------------
+ЧАСТЬ 3 — СОСТОЯНИЯ SOURCE
+--------------------------------------------------------------------------------
 
-6. Sanity panel должен показывать:
-- PASS / WARN
-- expected
-- actual
-- delta
+Нужно хранить минимум 2 версии текста:
 
-7. Допуск:
-- delta <= 1 px считать PASS
+1. originalSource
+Текст, который был получен после загрузки и декодирования файла.
 
-8. Если элемент не найден:
-- WARN: missing node
+2. editorSource
+Текущий текст из textarea.
+
+Можно хранить в state:
+
+state.originalSource = ""
+state.decodedContent = ""
+state.editorDirty = false
 
 Важно:
-Sanity checks — это инструмент диагностики, а не hardcode layout.
-Не использовать sanity values для изменения finalRect.
-Они только сравнивают результат.
+После загрузки файла:
+- decodedContent = декодированный текст файла
+- originalSource = decodedContent
+- textarea.value = decodedContent
+- preview строится из textarea.value или decodedContent
+
+После ручного изменения textarea:
+- editorDirty = true
+- status = Edited / not applied
+
+После Apply:
+- взять текст из textarea.value
+- state.decodedContent = textarea.value
+- parseLayout(state.decodedContent, viewportRect)
+- renderLayout(...)
+- element list обновить
+- inspector обновить
+- sanity checks сбросить или обновить
+- editorDirty = false
+- status = Applied
+
+После Reset:
+- textarea.value = state.originalSource
+- state.decodedContent = state.originalSource
+- editorDirty = false
+- preview перестроить из originalSource
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 5 — TEXT RENDER CHECK
+ЧАСТЬ 4 — APPLY / REFRESH PREVIEW
 --------------------------------------------------------------------------------
 
-Проблема:
-Даже если finalRect верный, текст может выглядеть неверно.
+Кнопка Apply / Refresh preview должна:
 
-Что проверить / улучшить:
-
-1. TextWidgetClass:
-- node.text должен отображаться
-- если text отсутствует, debug name показывать только при Show debug labels
-- использовать text halign / text valign
-- использовать font size из metronXX
-- не использовать transform translate(-50%, -50%)
-
-2. MultilineTextWidgetClass:
-- использовать white-space: pre-wrap
-- overflow hidden
-- text-align из props
-- vertical align через flex
-
-3. Цвет текста:
-Если node.color есть:
-- использовать colorToRgba(node.color)
-
-Если node.color нет:
-- подобрать readable default:
-  rgba(240,240,240,0.95) на тёмном фоне
-
-4. Для кнопок:
-- ButtonWidgetClass рисует фон/рамку
-- child TextWidgetClass должен быть выше кнопки
-- текст кнопки должен быть читаем
-
---------------------------------------------------------------------------------
-ЧАСТЬ 6 — НЕ ЛОМАТЬ ТЕКУЩУЮ МАТЕМАТИКУ
---------------------------------------------------------------------------------
+1. Взять текущий текст из textarea.
+2. Запустить текущую pipeline:
+   - parseLayout(editorText, viewportRect)
+   - renderLayout(...)
+   - renderElementList(...)
+   - updateSelectionUI(...)
+3. Не читать файл заново.
+4. Не сохранять файл.
+5. Не менять encoding.
+6. Работать даже если файл уже не выбран, но текст есть в textarea.
 
 Важно:
-Не переписывать finalRect math без необходимости.
-Сейчас exact-логика уже считается правильной:
+После Apply source editor становится источником правды для preview.
 
+--------------------------------------------------------------------------------
+ЧАСТЬ 5 — RESET TO LOADED SOURCE
+--------------------------------------------------------------------------------
+
+Кнопка Reset должна:
+
+1. Проверить, есть ли state.originalSource.
+2. Если source есть:
+   - textarea.value = state.originalSource
+   - state.decodedContent = state.originalSource
+   - editorDirty = false
+   - перестроить preview
+3. Если source нет:
+   - показать статус "No loaded source"
+
+Reset НЕ должен читать файл заново.
+Reset НЕ должен писать на диск.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 6 — COPY SOURCE
+--------------------------------------------------------------------------------
+
+Кнопка Copy source должна:
+
+1. Скопировать textarea.value в clipboard.
+2. Если clipboard API недоступен:
+   - выделить textarea
+   - показать понятный статус / alert
+
+Copy source НЕ должен создавать файл.
+Copy source НЕ должен сохранять файл.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 7 — ENCODING И SOURCE EDITOR
+--------------------------------------------------------------------------------
+
+Сейчас viewer имеет Encoding select:
+- UTF-8
+- Windows-1251
+
+При загрузке файла:
+- файл декодируется выбранной кодировкой
+- результат попадает в source editor
+
+При смене encoding:
+- если есть исходные fileBytes:
+  - перечитать bytes выбранной кодировкой
+  - обновить originalSource
+  - обновить textarea
+  - перестроить preview
+
+Важно:
+Если пользователь уже внёс ручные изменения и editorDirty = true:
+- перед сменой encoding желательно предупредить confirm:
+  "Editor has unapplied changes. Re-decode file and discard editor changes?"
+- если пользователь отменил — не менять source
+
+Минимально допустимо:
+- при смене encoding перечитывать файл и сбрасывать editor с понятным статусом
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 8 — НЕ ЛОМАТЬ ТЕКУЩИЕ ФУНКЦИИ
+--------------------------------------------------------------------------------
+
+Нужно сохранить уже рабочие возможности viewer-а:
+
+- Encoding select
+- UTF-8 / Windows-1251 decoding
+- viewport presets
+- renderScale
+- Show debug labels
+- Show borders
+- Show grid
+- element list
+- inspector panel
+- selected node highlight
+- Copy selected info
+- Run sanity checks
+- blockStack parser для node/group blocks
+- finalRect math
+- z-order
+- TextWidgetClass render
+
+Не переписывать всё с нуля.
+Не ломать finalRect math.
+Не менять смысл exact-флагов.
+
+Напоминание:
 exact = 1 → пиксели
-exact = 0 → доля parentRect
-
-Сохранять:
-- root через общую формулу
-- center_ref + localX/localY
-- no clamp child inside parent
-- finalRect * renderScale
-- viewportRect передаётся в parseLayout / calculateFinalRects
-
-Если агент обнаружит ошибку в math:
-- сначала указать её в ANALYSIS
-- потом исправить минимально
-- не переписывать весь viewer
+exact = 0 → доля parentRect / проценты
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 7 — ОТЧЁТ В AGENT_TASK_LOOP.md
+ЧАСТЬ 9 — СИНТАКСИЧЕСКИЕ ОШИБКИ В РЕДАКТОРЕ
 --------------------------------------------------------------------------------
 
-Агенту разрешено после выполнения записать краткий отчёт в:
-Documentation/AGENT_TASK_LOOP.md
+Если пользователь в textarea сломал .layout синтаксис:
 
-Но только:
-- БЛОК 2 — AGENT REPORT
-- БЛОК 3 — REVIEW / ANALYSIS, если в доке так принято
-- БЛОК 1 — перевести в "Нет активной задачи" только если задача реально выполнена
+Viewer не должен падать.
 
-Запрещено:
-- менять правила БЛОКА 4 без отдельного указания
-- менять БЛОК 6 без отдельного указания
-- удалять историю
-- переписывать старые задачи
-- менять QUEST_LOGIC_SPEC.md
+Минимально:
+- parseLayout должен отработать насколько возможно
+- если nodes.length === 0:
+  показать статус "No widgets parsed"
+- inspector/list очистить или показать empty state
+- в console можно вывести warning
 
-Если не уверен, лучше не трогать документацию и вернуть отчёт в чат.
+Желательно:
+- показывать статус "Parsed X widgets"
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 10 — UI СТАТУСЫ
+--------------------------------------------------------------------------------
+
+Добавить/обновить статусы:
+
+1. Loaded file:
+- имя файла
+- encoding
+
+2. Source editor status:
+- No file loaded
+- Loaded source
+- Edited / not applied
+- Applied
+- Reset to loaded source
+- Copied source
+
+3. Parse status:
+- Parsed X widgets
+- No widgets parsed
+
+Статусы нужны, чтобы пользователь понимал:
+- применены ли изменения
+- из какого текста строится preview
+- сколько элементов распознано
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 11 — READ-ONLY БЕЗОПАСНОСТЬ
+--------------------------------------------------------------------------------
+
+Это критично.
+
+Нельзя:
+- сохранять изменения в исходный .layout файл
+- автоматически скачивать файл
+- создавать новый .layout
+- писать в File System Access API
+- использовать localStorage для автосохранения
+- менять реальные .layout файлы проекта
+- менять файлы мода
+
+Можно:
+- редактировать текст в textarea
+- строить preview из textarea
+- копировать текст в clipboard
+- в будущем можно сделать Download/Export, но НЕ в этой задаче
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 12 — ПРОВЕРКИ
+--------------------------------------------------------------------------------
+
+Проверить вручную:
+
+1. Загрузить:
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+
+2. Выбрать правильный Encoding:
+Windows-1251, если UTF-8 даёт кракозябры.
+
+3. Убедиться:
+- код появился в нижнем source editor
+- preview построился
+- element list работает
+- inspector работает
+
+4. Изменить в source editor какой-нибудь безопасный текст, например:
+"КВЕСТЫ"
+на:
+"КВЕСТЫ TEST"
+
+5. Нажать Apply / Refresh preview.
+
+6. Убедиться:
+- preview обновился
+- реальный файл на диске не изменился
+- element list / inspector остались рабочими
+
+7. Нажать Reset to loaded source.
+
+8. Убедиться:
+- текст вернулся к оригинальному
+- preview вернулся
+
+9. Проверить QuestJournal.layout:
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
 --------------------------------------------------------------------------------
 
-1. Изменены только допустимые файлы:
+1. Изменён только:
 - DayZ_layout/dayz_layout_viewer.html
 - Documentation/AGENT_TASK_LOOP.md, если агент записал отчёт
 
@@ -687,59 +647,42 @@ Documentation/AGENT_TASK_LOOP.md
 
 4. JSON не изменён.
 
-5. Viewer остаётся read-only.
+5. Добавлен нижний source editor.
 
-6. Добавлен encoding select:
-- UTF-8
-- Windows-1251
+6. Source editor расположен снизу, а не слева.
 
-7. Кириллица может отображаться корректно при выборе Windows-1251.
+7. После загрузки файла source появляется в textarea.
 
-8. Добавлен Show debug labels checkbox.
+8. Apply / Refresh preview строит preview из текущего текста textarea.
 
-9. Debug labels можно отключить.
+9. Reset возвращает original loaded source.
 
-10. Добавлен Show borders checkbox.
+10. Copy source копирует текущий текст textarea.
 
-11. Добавлен Show grid checkbox.
+11. При ручном редактировании показывается Edited / not applied.
 
-12. Добавлен element list.
+12. Ничего не сохраняется на диск автоматически.
 
-13. Добавлен inspector panel.
+13. Encoding select продолжает работать.
 
-14. Клик по DOM-блоку выбирает node.
+14. Viewport / scale / inspector / element list / sanity checks продолжают работать.
 
-15. Клик по списку выбирает node.
+15. finalRect math не сломан.
 
-16. Selected node подсвечивается.
-
-17. Inspector показывает finalRect, position, size, flags, align, text, font, props.
-
-18. Есть Copy selected info.
-
-19. Есть Run sanity checks.
-
-20. Sanity checks показывают expected/actual/delta для ключевых элементов.
-
-21. TextWidgetClass продолжает отображать node.text.
-
-22. MultilineTextWidgetClass отображается как multiline/pre-wrap.
-
-23. finalRect math не сломан.
-
-24. В отчёте указано:
-- что найдено
-- что исправлено
-- как проверялось
-- что ещё может отличаться от настоящего DayZ runtime
+16. В отчёте указано:
+- как работает загрузка source
+- как работает Apply
+- как работает Reset
+- как обеспечено read-only поведение
 
 Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- что было найдено
-- какие причины текущих визуальных расхождений подтверждены
+- как текущий viewer был устроен до правки
+- куда добавлен source editor
+- какие риски были учтены
 
 DONE:
 - что сделано
@@ -751,15 +694,16 @@ DIFF:
 - кратко
 
 CHECKS:
-- Encoding
-- QuestMenu sanity
-- QuestJournal sanity
-- Text render
-- Inspector/list clicks
+- загрузка QuestMenu.layout
+- редактирование текста
+- Apply preview
+- Reset
+- Copy source
+- read-only safety
 
 PROBLEMS:
 - реальные проблемы, если есть
-- предположения, если поведение DayZ не подтверждено
+- предположения, если поведение браузера/encoding не подтверждено
 
 CONCLUSION:
 - краткий вывод
@@ -1356,118 +1300,589 @@ UI начал показывать корректное состояние, на
 ================================================================================
 
 
-Этот блок содержит ручные подсказки от пользователя по UI, текстам и визуальному поведению.
+БЛОК 6 — ОПЫТ / ПОДСКАЗКИ ПОЛЬЗОВАТЕЛЯ
 
-Агент должен учитывать этот блок, если задача связана с:
-- UI
-- layout-файлами
-- текстами
-- визуальными элементами
-- восстановлением кириллицы
 --------------------------------------------------------------------------------
-ОПЫТ ПО DayZ .layout VIEWER:
+ОБЩИЙ РЕЖИМ РАБОТЫ С АГЕНТОМ
+--------------------------------------------------------------------------------
+
+- Полная задача всегда находится в БЛОКЕ 1.
+- В чат агенту отправляется только короткая команда:
+  "Выполни текущую задачу из БЛОКА 1."
+- Агент должен читать задачу из БЛОКА 1 и выполнять только её.
+- Если задача аналитическая — агент ничего не меняет.
+- Если задача требует правки — агент меняет только явно разрешённые файлы.
+- Git контролирует пользователь.
+- Агент не должен делать коммиты без отдельного указания.
+- Агент не должен менять документацию, если это явно не разрешено задачей.
+- Если агенту разрешено писать отчёт в Documentation/AGENT_TASK_LOOP.md, он может менять только разрешённые блоки:
+  - БЛОК 1 — статус задачи
+  - БЛОК 2 — AGENT REPORT
+  - БЛОК 3 — REVIEW / ANALYSIS, если это предусмотрено задачей
+- Агент не должен менять БЛОК 4 / БЛОК 5 / БЛОК 6 без отдельного указания.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО DayZ .layout VIEWER
 --------------------------------------------------------------------------------
 
 - DayZ .layout в проекте НЕ XML.
 - Нельзя использовать DOMParser.
-- Нельзя использовать формат position[] = {x,y}, size[] = {w,h}, color[] = {r,g,b,a}.
-- Реальный формат проекта:
-  position 30 82
-  size 330 250
-  color 0.0824 0.0824 0.0824 0.96
+- Нельзя использовать формат:
+  position[] = {x, y}
+  size[] = {w, h}
+  color[] = {r, g, b, a}
 
-- Начало виджета:
+- Реальный формат DayZ .layout в проекте такой:
+
+  FrameWidgetClass QuestMenuRoot {
+   ignorepointer 0
+   color 0.1765 0.1765 0.1765 0.9
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   {
+    PanelWidgetClass QuestPanel {
+     position 0 0
+     size 920 560
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+    }
+   }
+  }
+
+- Начало виджета выглядит так:
+
   <WidgetClassType> <ElementName> {
 
-  Примеры:
+- Примеры:
+
   FrameWidgetClass QuestMenuRoot {
   PanelWidgetClass QuestPanel {
   TextListboxWidgetClass QuestListbox {
   ButtonWidgetClass AcceptButton {
   TextWidgetClass AcceptButtonText {
+  MultilineTextWidgetClass DescriptionText {
 
-- Отдельная строка "{" не создаёт node.
+- Свойства идут отдельными строками:
+
+  position 30 82
+  size 330 250
+  color 0.0824 0.0824 0.0824 0.96
+  text "ВЗЯТЬ КВЕСТ"
+  font "gui/fonts/metron22"
+  ignorepointer 0
+  halign left_ref
+  valign top_ref
+  hexactpos 1
+  vexactpos 1
+  hexactsize 1
+  vexactsize 1
+  "text halign" center
+  "text valign" center
+
+- Отдельная строка "{" НЕ создаёт node.
   Это только начало блока children.
 
-- Строка "}" закрывает текущий node.
+- Отдельная строка "}" закрывает текущий блок.
 
-- Для парсинга нужен stack nodes:
-  новый WidgetClass → создать node, связать с parent, nodes.push, stack.push
-  строка } → stack.pop
-  свойства → писать в stack[stack.length - 1]
+- Для корректного парсинга нужен blockStack, а не простой nodeStack.
 
-- Нельзя использовать один currentElement для вложенного layout.
-  Он ломает parent/children, потому что каждый новый вложенный виджет перезаписывает текущий элемент.
+- Причина:
+  В реальных .layout есть отдельные child-блоки:
 
-- Для визуального отображения нужны absX / absY:
-  child.absX = parent.absX + child.position.x
-  child.absY = parent.absY + child.position.y
+  PanelWidgetClass QuestPanel {
+   position 0 0
+   size 920 560
+   {
+    TextWidgetClass TitleText {
+     ...
+    }
+   }
+  }
 
-- Если у node нет position, это не ошибка:
-  local position считать как 0,0
-  children всё равно нужно обрабатывать.
+  Если делать nodeStack.pop() на каждую "}", можно закрыть не тот node.
+  Поэтому stack должен различать:
+  - node block
+  - group block
 
-- Если у node нет color:
-  использовать transparent background + видимую рамку.
-  Не использовать random color, потому что визуал должен быть стабильным между обновлениями.
+- Правильная идея:
 
-- DayZ layout viewer должен быть read-only:
-  ничего не сохранять
-  ничего не генерировать
-  не изменять .layout
-  не форматировать .layout
+  blockStack.push({ kind: "node", node })
+  blockStack.push({ kind: "group" })
+
+  При поиске текущего parent нужно брать последний blockStack item с kind === "node".
 
 --------------------------------------------------------------------------------
-ПОДСКАЗКИ:
+ОПЫТ ПО DayZ .layout: PIXELS / PERCENT / FINAL RECT
 --------------------------------------------------------------------------------
 
-- В `QuestMenu.layout` нижняя серая кнопка / полоса в диалоговом окне должна иметь текст:
-  `Закрыть рот и уйти`
+- DayZ layout нельзя считать только как:
+  absX = parent.absX + position.x
+  absY = parent.absY + position.y
 
-- По проверке в игре нижняя серая кнопка диалога раньше была видна только при наведении мышки.
-  Без наведения кнопка почти или полностью не была видна.
-  Текст `Закрыть рот и уйти` на ней не отображался.
-  Нужно было сравнить стили и структуру `CloseButton` / `CloseButtonText` с рабочими кнопками `AcceptButton` / `AcceptButtonText` и `CompleteButton` / `CompleteButtonText`.
+- Правильная модель:
 
-- Если агент не уверен в назначении UI-элемента, он должен указать это в `QUESTIONS`, а не исправлять текст самостоятельно.
+  parentRect + local position + local size + align + exact flags = finalRect
 
-- По проверке в игре после TASK 023 нижняя кнопка диалога работает:
-  текст `Закрыть рот и уйти` отображается,
-  кнопка видна,
-  кнопка закрывает диалог.
+- parseLayout() должен только читать .layout и строить дерево nodes.
+- computeFinalRects() должен считать итоговые прямоугольники.
+- renderLayout() должен только рисовать готовые finalRect.
 
-- Причина проблемы была в `QuestUI.c`:
-  `CloseButton` и `CloseButtonText` не были полноценно обработаны в `UpdateButtons()`.
+- renderLayout НЕ должен сам придумывать координаты.
+- renderLayout НЕ должен менять смысл position/size.
+- renderLayout НЕ должен содержать layout math.
+- renderLayout должен рисовать:
 
-- Для похожих UI-проблем сначала сравнивать проблемный элемент с рабочими аналогами:
-  `AcceptButton` / `AcceptButtonText`,
-  `CompleteButton` / `CompleteButtonText`,
-  `CloseButton` / `CloseButtonText`,
-  а затем проверять обработку этих элементов в коде.
-  
-  --------------------------------------------------------------------------------
-ОПЫТ ПО CLIENT-SERVER SYNC:
+  node.finalRect.x * renderScale
+  node.finalRect.y * renderScale
+  node.finalRect.w * renderScale
+  node.finalRect.h * renderScale
+
+- В проекте принято правило:
+
+  exact = 1 → значение в пикселях
+  exact = 0 → значение как доля parentRect / проценты
+
+- То есть:
+
+  hexactpos 1 = position.x в пикселях
+  vexactpos 1 = position.y в пикселях
+  hexactsize 1 = size.w в пикселях
+  vexactsize 1 = size.h в пикселях
+
+  hexactpos 0 = position.x как доля ширины parentRect
+  vexactpos 0 = position.y как доля высоты parentRect
+  hexactsize 0 = size.w как доля ширины parentRect
+  vexactsize 0 = size.h как доля высоты parentRect
+
+- Пример пиксельного элемента:
+
+  TextListboxWidgetClass QuestListbox {
+   position 30 82
+   size 330 250
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+  }
+
+  Значит:
+  localX = 30 px
+  localY = 82 px
+  width = 330 px
+  height = 250 px
+
+- Пример относительного root:
+
+  FrameWidgetClass QuestMenuRoot {
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+  }
+
+  Это НЕ 1px x 1px.
+  Это 100% parent / viewport.
+
+  Если viewport = 1280x720:
+  finalRect.w = 1280
+  finalRect.h = 720
+
+- Для size:
+
+  if hexactsize == 1:
+      width = node.size.w
+  else:
+      width = parentRect.w * node.size.w
+
+  if vexactsize == 1:
+      height = node.size.h
+  else:
+      height = parentRect.h * node.size.h
+
+- Для position:
+
+  if hexactpos == 1:
+      localX = node.position.x
+  else:
+      localX = parentRect.w * node.position.x
+
+  if vexactpos == 1:
+      localY = node.position.y
+  else:
+      localY = parentRect.h * node.position.y
+
+- Для halign:
+
+  left_ref:
+      x = parentRect.x + localX
+
+  center_ref:
+      x = parentRect.x + (parentRect.w - width) / 2 + localX
+
+  right_ref:
+      x = parentRect.x + parentRect.w - width - localX
+
+- Для valign:
+
+  top_ref:
+      y = parentRect.y + localY
+
+  center_ref:
+      y = parentRect.y + (parentRect.h - height) / 2 + localY
+
+  bottom_ref:
+      y = parentRect.y + parentRect.h - height - localY
+
+- Нельзя принудительно clamp/обрезать child внутри parentRect на этапе layout math.
+
+- Причина:
+  Элемент может выходить за пределы parent.
+  Обрезка/clip — это отдельное поведение контейнера.
+  Если насильно менять x/y/w/h, finalRect перестаёт соответствовать layout.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО VIEWPORT
 --------------------------------------------------------------------------------
 
-- При проблемах с квестовыми статусами сначала проверять не UI, а цепочку server/client sync:
-  request → server load → server send → client receive → ctx.Read → deserialize → ApplySyncedPlayerData → UI update.
+- Center_ref зависит от размера viewport.
+- Если viewport отличается от игрового окна, элемент будет центрироваться иначе.
+- Поэтому viewer должен иметь viewport presets.
 
-- Если серверный progress правильный, но UI показывает available, это не всегда проблема UI.
-  Сначала проверить, дошёл ли server sync до клиента и был ли вызван ApplySyncedPlayerData.
+- Полезные presets:
+  1000x600
+  1280x720
+  1366x768
+  1600x900
+  1920x1080
+  2560x1440
 
-- Ошибка:
-  Reason: !!! String CORRUPTED - FIX OnStoreLoad() !!!
-  при чтении RPC означает риск повреждения string payload.
-  В таком случае не передавать JSON одной строкой, а использовать chunked sync.
+- visual-container должен иметь размер:
 
-- Для похожих модов и будущих систем:
-  config, player progress, dialog data, NPC data, inventory snapshots и другие JSON payload передавать чанками через Param3<int,int,string>.
+  width = viewportWidth * renderScale
+  height = viewportHeight * renderScale
 
-- ParamsReadContext читать прямо в OnRPC case.
-  В helper-функции передавать уже обычные значения, например string payload.
+- renderScale влияет только на отображение в браузере.
+- renderScale НЕ должен влиять на finalRect.
 
-- TASK 064 подтвердил рабочий подход:
-  player data sync чанками решил проблему, и UI начал показывать реальные статусы квестов.
+--------------------------------------------------------------------------------
+ОПЫТ ПО Z-ORDER / ПЕРЕКРЫТИЮ
+--------------------------------------------------------------------------------
+
+- Parent должен быть ниже child.
+- Children должны быть поверх parent.
+- TextWidgetClass должен быть поверх PanelWidgetClass / ButtonWidgetClass.
+- Но текст не должен хаотично перекрывать всё без учёта порядка.
+- Нужен стабильный порядок:
+
+  depth + sourceOrder + controlled text priority
+
+- При парсинге полезно сохранять:
+
+  node.sourceOrder = allNodes.length
+  node.depth = parent ? parent.depth + 1 : 0
+
+- Возможная формула:
+
+  z = depth * 100000 + sourceOrder * 10 + textPriority
+
+- TextWidgetClass / MultilineTextWidgetClass могут иметь небольшой приоритет, чтобы текст был поверх кнопки/панели.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО TEXT WIDGET
+--------------------------------------------------------------------------------
+
+- Debug label node.name и игровой текст node.text — разные вещи.
+- Debug label нужен только для отладки.
+- Игровой текст должен браться из node.text.
+
+- Для TextWidgetClass:
+  - отображать node.text, если он есть
+  - если node.text нет, node.name показывать только в debug mode
+  - background по умолчанию transparent
+  - border только debug
+  - использовать "text halign"
+  - использовать "text valign"
+  - использовать font size из metronXX, если возможно
+
+- Для MultilineTextWidgetClass:
+  - отображать node.text, если он есть
+  - использовать white-space: pre-wrap
+  - overflow hidden
+  - text-align по "text halign"
+  - vertical align по "text valign"
+
+- Нельзя всегда рисовать текст через:
+  fixed 12px + transform translate(-50%, -50%)
+
+- Лучше использовать flex-layer внутри finalRect:
+
+  display: flex
+  justify-content: center / flex-start / flex-end
+  align-items: center / flex-start / flex-end
+
+- Если font содержит metron22:
+  font-size примерно 22px
+
+- Если font содержит metron18:
+  font-size примерно 18px
+
+- Если font содержит metron16:
+  font-size примерно 16px
+
+- Если font содержит metron14:
+  font-size примерно 14px
+
+- Если font содержит metron12:
+  font-size примерно 12px
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО КОДИРОВКАМ .layout
+--------------------------------------------------------------------------------
+
+- В проекте разные .layout файлы могут быть сохранены в разных кодировках.
+
+- Примеры:
+  QuestJournal.layout может корректно открываться как UTF-8.
+  QuestMenu.layout может корректно открываться как Windows-1251.
+
+- Нельзя считать, что все .layout файлы проекта имеют одну кодировку.
+
+- Viewer должен позволять выбирать encoding вручную:
+  - UTF-8
+  - Windows-1251
+
+- Если русский текст отображается как:
+  �����
+  или как кракозябры,
+  нужно переключить Encoding и перечитать файл.
+
+- Не менять кодировку реального .layout файла автоматически.
+- Не пересохранять .layout без отдельной задачи.
+- Не пытаться “починить” исходник, если задача только про viewer.
+
+- Для браузерного viewer можно использовать:
+
+  TextDecoder("utf-8")
+  TextDecoder("windows-1251")
+
+- При смене Encoding viewer должен заново декодировать выбранный файл из исходных bytes, а не пытаться перекодировать уже испорченную строку.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО DAYZ QUEST MENU / QUEST JOURNAL
+--------------------------------------------------------------------------------
+
+- QuestJournal.layout уже отображается достаточно близко к игре после:
+  - viewport presets
+  - correct finalRect
+  - Windows-1251 / UTF-8 selector
+  - debug controls
+  - text render через flex
+
+- QuestMenu.layout сложнее, потому что в нём больше вложенных панелей:
+  - QuestPanel
+  - QuestListbox
+  - DescriptionPanel
+  - DescriptionPanelLabel
+  - DescriptionText
+  - RoutePanel
+  - RoutePanelLabel
+  - TriggerRouteListbox
+  - DialogPanel
+  - DialogPanelLabel
+  - DialogText
+  - AcceptButton
+  - AcceptButtonText
+  - CompleteButton
+  - CompleteButtonText
+  - CloseButton
+  - CloseButtonText
+
+- Если QuestMenu выглядит хаотично:
+  1. Проверить Encoding.
+  2. Выключить Show debug labels.
+  3. Оставить Show borders включённым.
+  4. Проверить viewport 1280x720.
+  5. Запустить Run sanity checks.
+  6. Смотреть finalRect конкретных элементов в Inspector.
+
+- Для QuestMenu.layout при viewport 1280x720 sanity-check:
+
+  QuestPanel:
+  x = 180
+  y = 80
+  w = 920
+  h = 560
+
+  QuestListbox:
+  x = 210
+  y = 162
+  w = 330
+  h = 250
+
+  AcceptButton:
+  x = 570
+  y = 500
+  w = 220
+  h = 48
+
+  AcceptButtonText:
+  x = 570
+  y = 500
+  w = 220
+  h = 48
+
+- Для QuestJournal.layout при viewport 1280x720 sanity-check:
+
+  QuestJournalPanel:
+  x = 180
+  y = 80
+  w = 920
+  h = 560
+
+  QuestListbox:
+  x = 210
+  y = 162
+  w = 330
+  h = 386
+
+  DescriptionText:
+  x = 570
+  y = 162
+  w = 500
+  h = 386
+
+  CloseButtonText:
+  x = 570
+  y = 570
+  w = 500
+  h = 48
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО ИНСПЕКТОРУ VIEWER-А
+--------------------------------------------------------------------------------
+
+- Inspector нужен, чтобы не гадать по картинке.
+- Если элемент кажется “не там”, нужно смотреть:
+  - name
+  - type
+  - parentName
+  - position
+  - size
+  - finalRect
+  - halign / valign
+  - hexactpos / vexactpos
+  - hexactsize / vexactsize
+  - text
+  - font
+  - props
+
+- Element List нужен для быстрого выбора node.
+- Клик по DOM-блоку должен выбирать node.
+- Клик по списку должен выбирать node.
+- Selected node должен подсвечиваться.
+
+- Copy selected info полезен для передачи данных в чат или агенту.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО PLACEHOLDER-ТЕКСТАМ В МЕНЮ
+--------------------------------------------------------------------------------
+
+- Некоторые тексты в .layout могут быть не финальным игровым текстом, а placeholder / default text.
+
+- Пример:
+  "Выберите квест из списка"
+
+- Такой текст может лежать прямо в TextWidgetClass / MultilineTextWidgetClass.
+- Это нормально, если он находится внутри DescriptionPanel / DescriptionText.
+- Логика:
+  пока квест не выбран, DescriptionText показывает подсказку.
+
+- Не надо сразу считать это ошибкой позиционирования.
+- Нужно проверить:
+  - какой node содержит этот text
+  - какой у node parent
+  - какой finalRect
+  - заменяется ли этот текст игровым кодом после выбора квеста
+
+- Если текст находится в DescriptionText внутри DescriptionPanel — это ожидаемо.
+- Если текст находится в неправильном parent или finalRect — тогда это проблема layout.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО READ-ONLY РЕЖИМУ
+--------------------------------------------------------------------------------
+
+- DayZ layout viewer должен быть read-only.
+- Он может:
+  - читать выбранный .layout
+  - парсить его
+  - строить visual render
+  - показывать inspector
+  - копировать selected info в clipboard
+  - запускать sanity checks
+
+- Он НЕ должен:
+  - сохранять .layout
+  - форматировать .layout
+  - изменять .layout
+  - менять кодировку исходного файла
+  - генерировать layout-код
+  - делать export
+  - писать в файлы мода
+  - менять JSON
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО РАБОТЕ С РЕАЛЬНЫМИ ФАЙЛАМИ ДЛЯ ПРОВЕРКИ
+--------------------------------------------------------------------------------
+
+- Реальные файлы для read-only проверки viewer-а:
+
+  P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+  P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+
+- Эти файлы можно использовать как input для viewer.
+- Эти файлы нельзя менять без отдельной задачи.
+- Эти файлы нельзя пересохранять ради исправления кодировки без отдельной задачи.
+- Если нужно проверить кодировку — делать это только через Encoding selector viewer-а.
+
+--------------------------------------------------------------------------------
+ОПЫТ ПО ТЕКУЩЕМУ СОСТОЯНИЮ VIEWER-А
+--------------------------------------------------------------------------------
+
+- После TASK 069 viewer стал рабочим инструментом диагностики:
+  - Encoding selector
+  - viewport presets
+  - renderScale
+  - Show debug labels
+  - Show borders
+  - Show grid
+  - element list
+  - inspector panel
+  - selected node highlight
+  - copy selected info
+  - sanity checks
+  - blockStack parser для node/group blocks
+
+- Viewer уже можно использовать для предметного анализа меню.
+- Дальнейшие задачи по меню желательно делать через inspector:
+  не “кажется съехало”, а:
+  - какой node
+  - какой parent
+  - какой finalRect
+  - какой expected finalRect
+  - какой text
+  - какая кодировка
 
 ================================================================================
 # КОНЕЦ ФАЙЛА
