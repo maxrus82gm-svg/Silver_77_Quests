@@ -1,6 +1,6 @@
 FrameWidgetClass QuestMenuRoot {
  ignorepointer 0
-color 0.2706 0.2784 0.2784 0.7
+ color 0.1765 0.1765 0.1765 0.9
  position 0 0
  size 1 1
  halign center_ref
@@ -12,9 +12,9 @@ color 0.2706 0.2784 0.2784 0.7
  {
   PanelWidgetClass QuestPanel {
    ignorepointer 0
-   color 0.3020 0.3608 0.3686 0.5
+   color 0.0824 0.0824 0.0824 0.96
    position 0 0
-   size 1300 840
+   size 920 560
    halign center_ref
    valign center_ref
    hexactpos 1
@@ -25,8 +25,15 @@ color 0.2706 0.2784 0.2784 0.7
     TextWidgetClass TitleText {
      ignorepointer 1
      position 0 20
-     text "≈—“‹ –¿¡Œ“≈Õ ¿"
-     font "gui/fonts/metron22"
+     size 920 42
+     halign center_ref
+     valign top_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text " ¬≈—“€"
+     font "gui/fonts/metron28"
      "exact text" 1
      "size to text h" 0
      "size to text v" 0
@@ -35,9 +42,8 @@ color 0.2706 0.2784 0.2784 0.7
     }
     TextListboxWidgetClass QuestListbox {
      ignorepointer 0
-     color 0.2275 0.2314 0.2314 0.96
      position 30 82
-     size 330 200
+     size 330 250
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -279,7 +285,7 @@ color 0.2706 0.2784 0.2784 0.7
        hexactsize 0
        vexactsize 0
        text "«‡Í˚Ú¸ ÓÚ Ë ÛÈÚË"
-       font "gui/fonts/metron16"
+       font "gui/fonts/metron22"
        "exact text" 1
        "size to text h" 0
        "size to text v" 0
