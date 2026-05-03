@@ -1,405 +1,559 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Визуальный просмотр .layout файлов DayZ</title>
+    <title>DayZ .layout Viewer</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 30px; background: #f5f5f5; }
-        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        #file-input { margin: 20px 0; }
+        body {
+            font-family: "Segoe UI", sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+            color: #2c3e50;
+        }
+
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        #file-input {
+            margin: 20px 0;
+        }
+
+        .viewer-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin: 12px 0 20px;
+        }
+
+        .viewer-controls label {
+            font-size: 14px;
+        }
+
+        .viewer-controls select,
+        .viewer-controls input {
+            font: inherit;
+            padding: 4px 8px;
+        }
+
         #visual-container {
             position: relative;
-            width: 1000px; height: 600px;
-            border: 2px solid #34495e; background: #fff; overflow: hidden; margin-top: 20px;
+            border: 2px solid #34495e;
+            background: #fff;
+            overflow: hidden;
+            margin-top: 20px;
             background-image: linear-gradient(#ccc 1px, transparent 1px),
-                            linear-gradient(90deg, #ccc 1px, transparent 1px);
+                              linear-gradient(90deg, #ccc 1px, transparent 1px);
             background-size: 20px 20px;
         }
+
         .ui-element {
             position: absolute;
-            border: 1px solid black;
             box-sizing: border-box;
-            opacity: 0.7;
+            opacity: 0.78;
         }
-        footer { margin-top: 30px; color: #7f8c8d; font-size: 0.9em; }
+
+        .ui-debug-label {
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+            color: #666;
+            background: rgba(255, 255, 255, 0.55);
+            padding: 1px 3px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
-    <h1>Визуальный просмотрщик .layout файлов (только чтение)</h1>
-    <p><strong>Внимание:</strong> Загрузите .layout файл для визуализации UI-элементов.</p>
-    
-    <label for="file-input">Выберите .layout файл:</label>
+    <h1>DayZ .layout Viewer</h1>
+    <p><strong>Read-only preview:</strong> load a <code>.layout</code> file to inspect viewport-relative DayZ UI placement.</p>
+
+    <label for="file-input">Select .layout file:</label>
     <input type="file" id="file-input" accept=".layout" />
-    
+
+    <div class="viewer-controls">
+        <label for="viewport-preset">Viewport:</label>
+        <select id="viewport-preset">
+            <option value="1280x720" selected>1280 x 720</option>
+            <option value="1366x768">1366 x 768</option>
+            <option value="1600x900">1600 x 900</option>
+            <option value="1920x1080">1920 x 1080</option>
+            <option value="2560x1440">2560 x 1440</option>
+        </select>
+
+        <label for="render-scale">Scale:</label>
+        <input type="number" id="render-scale" min="0.25" max="2" step="0.05" value="0.75" />
+    </div>
+
     <div id="visual-container"></div>
 
     <script>
-        document.getElementById('file-input').addEventListener('change', function(e) {
+        const fileInput = document.getElementById('file-input');
+        const viewportPresetSelect = document.getElementById('viewport-preset');
+        const renderScaleInput = document.getElementById('render-scale');
+        const container = document.getElementById('visual-container');
+
+        const VIEWPORT_PRESETS = {
+            '1280x720': { w: 1280, h: 720 },
+            '1366x768': { w: 1366, h: 768 },
+            '1600x900': { w: 1600, h: 900 },
+            '1920x1080': { w: 1920, h: 1080 },
+            '2560x1440': { w: 2560, h: 1440 }
+        };
+
+        const DEFAULT_VIEWPORT_KEY = '1280x720';
+        let currentLayoutContent = '';
+
+        function getViewportRect() {
+            const preset = VIEWPORT_PRESETS[viewportPresetSelect.value] || VIEWPORT_PRESETS[DEFAULT_VIEWPORT_KEY];
+            return { x: 0, y: 0, w: preset.w, h: preset.h };
+        }
+
+        function getRenderScale() {
+            const value = parseFloat(renderScaleInput.value);
+            if (!Number.isFinite(value) || value <= 0) {
+                return 0.75;
+            }
+            return Math.min(2, Math.max(0.25, value));
+        }
+
+        function applyViewportToContainer(targetContainer, viewportRect, renderScale) {
+            targetContainer.style.width = (viewportRect.w * renderScale) + 'px';
+            targetContainer.style.height = (viewportRect.h * renderScale) + 'px';
+            targetContainer.style.backgroundSize = (20 * renderScale) + 'px ' + (20 * renderScale) + 'px';
+        }
+
+        function isTextNode(node) {
+            return node.type === 'TextWidgetClass' || node.type === 'MultilineTextWidgetClass';
+        }
+
+        function getNodeDepth(node) {
+            let depth = 0;
+            let current = node;
+            while (current.parent) {
+                depth++;
+                current = current.parent;
+            }
+            return depth;
+        }
+
+        function getTextPriority(node) {
+            if (!isTextNode(node)) {
+                return 0;
+            }
+            return node.type === 'MultilineTextWidgetClass' ? 1 : 2;
+        }
+
+        function getNodeZOrder(node) {
+            return (getNodeDepth(node) * 100000) + (node.sourceOrder * 10) + getTextPriority(node);
+        }
+
+        function getNodeProp(node, propName, fallback = '') {
+            const value = node.props[propName];
+            return typeof value === 'string' ? value.trim().replace(/^"(.*)"$/, '$1') : fallback;
+        }
+
+        function mapTextAlignToFlex(value) {
+            switch ((value || 'left').toLowerCase()) {
+                case 'center':
+                    return 'center';
+                case 'right':
+                    return 'flex-end';
+                default:
+                    return 'flex-start';
+            }
+        }
+
+        function mapTextVAlignToFlex(value) {
+            switch ((value || 'top').toLowerCase()) {
+                case 'center':
+                    return 'center';
+                case 'bottom':
+                    return 'flex-end';
+                default:
+                    return 'flex-start';
+            }
+        }
+
+        function mapTextAlignToCss(value) {
+            switch ((value || 'left').toLowerCase()) {
+                case 'center':
+                    return 'center';
+                case 'right':
+                    return 'right';
+                default:
+                    return 'left';
+            }
+        }
+
+        function extractFontSize(fontName) {
+            const match = (fontName || '').match(/metron(\d+)/i);
+            if (!match) {
+                return 14;
+            }
+            return parseInt(match[1], 10) || 14;
+        }
+
+        function colorToRgba(color, alphaMultiplier = 1) {
+            if (!color) {
+                return 'rgba(255, 255, 255, 0.92)';
+            }
+            const alpha = Math.max(0, Math.min(1, color.a * alphaMultiplier));
+            return `rgba(${Math.round(color.r * 255)}, ${Math.round(color.g * 255)}, ${Math.round(color.b * 255)}, ${alpha})`;
+        }
+
+        function parseLayout(content, viewportRect) {
+            const lines = content.split('\n');
+            const nodeStack = [];
+            const allNodes = [];
+            let rootNode = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
+
+                if (classMatch) {
+                    const parentNode = nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null;
+                    const newNode = {
+                        id: allNodes.length,
+                        sourceOrder: allNodes.length,
+                        type: classMatch[1],
+                        name: classMatch[2],
+                        position: null,
+                        size: null,
+                        color: null,
+                        text: null,
+                        font: null,
+                        halign: 'left_ref',
+                        valign: 'top_ref',
+                        hexactpos: 0,
+                        vexactpos: 0,
+                        hexactsize: 0,
+                        vexactsize: 0,
+                        ignorepointer: 0,
+                        props: {},
+                        parent: parentNode,
+                        parentId: parentNode ? parentNode.id : -1,
+                        parentName: parentNode ? parentNode.name : null,
+                        children: [],
+                        finalRect: { x: 0, y: 0, w: 0, h: 0 }
+                    };
+
+                    if (parentNode) {
+                        parentNode.children.push(newNode);
+                    } else {
+                        rootNode = newNode;
+                    }
+
+                    allNodes.push(newNode);
+                    nodeStack.push(newNode);
+                }
+
+                if (nodeStack.length > 0) {
+                    const currentNode = nodeStack[nodeStack.length - 1];
+
+                    const posMatch = line.match(/^\s*position\s+([-\d\.]+)\s+([-\d\.]+)/);
+                    if (posMatch) {
+                        currentNode.position = {
+                            x: parseFloat(posMatch[1]) || 0,
+                            y: parseFloat(posMatch[2]) || 0
+                        };
+                    }
+
+                    const sizeMatch = line.match(/^\s*size\s+([-\d\.]+)\s+([-\d\.]+)/);
+                    if (sizeMatch) {
+                        currentNode.size = {
+                            w: parseFloat(sizeMatch[1]) || 0,
+                            h: parseFloat(sizeMatch[2]) || 0
+                        };
+                    }
+
+                    const colorMatch = line.match(/^\s*color\s+([-\d\.]+)\s+([-\d\.]+)\s+([-\d\.]+)\s+([-\d\.]+)/);
+                    if (colorMatch) {
+                        currentNode.color = {
+                            r: parseFloat(colorMatch[1]) || 0,
+                            g: parseFloat(colorMatch[2]) || 0,
+                            b: parseFloat(colorMatch[3]) || 0,
+                            a: parseFloat(colorMatch[4]) || 1
+                        };
+                    }
+
+                    const textMatch = line.match(/^\s*text\s+(?:"([^"]*)"|(\S.*))$/);
+                    if (textMatch) {
+                        currentNode.text = textMatch[1] || textMatch[2] || '';
+                    }
+
+                    const fontMatch = line.match(/^\s*font\s+(?:"([^"]*)"|(\S.*))$/);
+                    if (fontMatch) {
+                        currentNode.font = fontMatch[1] || fontMatch[2] || '';
+                    }
+
+                    const halignMatch = line.match(/^\s*halign\s+(\w+)/);
+                    if (halignMatch) {
+                        currentNode.halign = halignMatch[1];
+                    }
+
+                    const valignMatch = line.match(/^\s*valign\s+(\w+)/);
+                    if (valignMatch) {
+                        currentNode.valign = valignMatch[1];
+                    }
+
+                    const hexactposMatch = line.match(/^\s*hexactpos\s+(\d+)/);
+                    if (hexactposMatch) {
+                        currentNode.hexactpos = parseInt(hexactposMatch[1], 10) || 0;
+                    }
+
+                    const vexactposMatch = line.match(/^\s*vexactpos\s+(\d+)/);
+                    if (vexactposMatch) {
+                        currentNode.vexactpos = parseInt(vexactposMatch[1], 10) || 0;
+                    }
+
+                    const hexactsizeMatch = line.match(/^\s*hexactsize\s+(\d+)/);
+                    if (hexactsizeMatch) {
+                        currentNode.hexactsize = parseInt(hexactsizeMatch[1], 10) || 0;
+                    }
+
+                    const vexactsizeMatch = line.match(/^\s*vexactsize\s+(\d+)/);
+                    if (vexactsizeMatch) {
+                        currentNode.vexactsize = parseInt(vexactsizeMatch[1], 10) || 0;
+                    }
+
+                    const ignorepointerMatch = line.match(/^\s*ignorepointer\s+(\d+)/);
+                    if (ignorepointerMatch) {
+                        currentNode.ignorepointer = parseInt(ignorepointerMatch[1], 10) || 0;
+                    }
+
+                    const quotedPropMatch = line.match(/^\s*"([^"]+)"\s+(\S.*)$/);
+                    if (quotedPropMatch) {
+                        currentNode.props[quotedPropMatch[1]] = quotedPropMatch[2].trim();
+                    }
+
+                    const normalPropMatch = line.match(/^\s*(\w+)\s+(\S.*)$/);
+                    if (normalPropMatch && !['position', 'size', 'color', 'text', 'font', 'ignorepointer', 'halign', 'valign', 'hexactpos', 'vexactpos', 'hexactsize', 'vexactsize'].includes(normalPropMatch[1])) {
+                        currentNode.props[normalPropMatch[1]] = normalPropMatch[2].trim();
+                    }
+                }
+
+                if (line === '}') {
+                    nodeStack.pop();
+                }
+            }
+
+            function calculateFinalRects(node, parentRect = viewportRect) {
+                if (!node.position || !node.size) {
+                    node.finalRect = { x: parentRect.x, y: parentRect.y, w: 0, h: 0 };
+                    node.children.forEach(child => calculateFinalRects(child, node.finalRect));
+                    return;
+                }
+
+                let x = node.position.x;
+                let y = node.position.y;
+                let w = node.size.w;
+                let h = node.size.h;
+
+                if (node.hexactsize === 0 && parentRect.w > 0) {
+                    w = parentRect.w * w;
+                }
+
+                if (node.vexactsize === 0 && parentRect.h > 0) {
+                    h = parentRect.h * h;
+                }
+
+                if (node.hexactpos === 0 && parentRect.w > 0) {
+                    x = parentRect.w * x;
+                }
+
+                if (node.vexactpos === 0 && parentRect.h > 0) {
+                    y = parentRect.h * y;
+                }
+
+                if (node.halign === 'center_ref') {
+                    x = parentRect.x + (parentRect.w - w) / 2 + x;
+                } else if (node.halign === 'right_ref') {
+                    x = parentRect.x + parentRect.w - w - x;
+                } else {
+                    x = parentRect.x + x;
+                }
+
+                if (node.valign === 'center_ref') {
+                    y = parentRect.y + (parentRect.h - h) / 2 + y;
+                } else if (node.valign === 'bottom_ref') {
+                    y = parentRect.y + parentRect.h - h - y;
+                } else {
+                    y = parentRect.y + y;
+                }
+
+                node.finalRect = { x, y, w, h };
+                node.children.forEach(child => calculateFinalRects(child, node.finalRect));
+            }
+
+            if (rootNode) {
+                calculateFinalRects(rootNode, viewportRect);
+            }
+
+            allNodes.forEach(node => {
+                if (!node.finalRect.w || !node.finalRect.h) {
+                    calculateFinalRects(node, viewportRect);
+                }
+            });
+
+            return { nodes: allNodes, root: rootNode, viewportRect };
+        }
+
+        function renderLayout(targetContainer, layoutData, renderOptions) {
+            targetContainer.innerHTML = '';
+            const renderScale = renderOptions.renderScale;
+            const viewportRect = renderOptions.viewportRect;
+            applyViewportToContainer(targetContainer, viewportRect, renderScale);
+
+            const sortedNodes = [...layoutData.nodes].sort((a, b) => getNodeZOrder(a) - getNodeZOrder(b));
+
+            sortedNodes.forEach(node => {
+                if (!node.finalRect || node.finalRect.w <= 0 || node.finalRect.h <= 0) {
+                    return;
+                }
+
+                const nodeIsText = isTextNode(node);
+                const div = document.createElement('div');
+                div.className = 'ui-element';
+                div.style.left = (node.finalRect.x * renderScale) + 'px';
+                div.style.top = (node.finalRect.y * renderScale) + 'px';
+                div.style.width = (node.finalRect.w * renderScale) + 'px';
+                div.style.height = (node.finalRect.h * renderScale) + 'px';
+                div.style.zIndex = String(getNodeZOrder(node));
+
+                if (nodeIsText) {
+                    div.style.backgroundColor = 'transparent';
+                    div.style.border = node.color ? '1px solid rgba(255, 255, 255, 0.12)' : '1px dashed rgba(102, 102, 102, 0.35)';
+                } else if (node.color) {
+                    div.style.backgroundColor = colorToRgba(node.color);
+                    div.style.border = '1px solid rgba(0, 0, 0, 0.3)';
+                } else {
+                    div.style.backgroundColor = 'transparent';
+                    div.style.border = '1px dashed rgba(102, 102, 102, 0.5)';
+                }
+
+                if (nodeIsText && node.text) {
+                    const textHAlign = getNodeProp(node, 'text halign', 'left');
+                    const textVAlign = getNodeProp(node, 'text valign', 'top');
+                    const textWrap = node.type === 'MultilineTextWidgetClass' || getNodeProp(node, 'wrap', '0') === '1';
+                    const textLayer = document.createElement('div');
+                    textLayer.style.position = 'absolute';
+                    textLayer.style.inset = '0';
+                    textLayer.style.display = 'flex';
+                    textLayer.style.justifyContent = mapTextAlignToFlex(textHAlign);
+                    textLayer.style.alignItems = mapTextVAlignToFlex(textVAlign);
+                    textLayer.style.overflow = 'hidden';
+                    textLayer.style.pointerEvents = 'none';
+
+                    const textElement = document.createElement('div');
+                    textElement.textContent = node.text;
+                    textElement.style.width = textWrap ? '100%' : 'auto';
+                    textElement.style.maxWidth = '100%';
+                    textElement.style.fontSize = (extractFontSize(node.font) * renderScale) + 'px';
+                    textElement.style.fontFamily = '"Segoe UI", Tahoma, sans-serif';
+                    textElement.style.lineHeight = '1.1';
+                    textElement.style.color = node.color ? colorToRgba(node.color) : 'rgba(255, 255, 255, 0.92)';
+                    textElement.style.textAlign = mapTextAlignToCss(textHAlign);
+                    textElement.style.whiteSpace = textWrap ? 'pre-wrap' : 'nowrap';
+                    textElement.style.wordBreak = textWrap ? 'break-word' : 'normal';
+                    textElement.style.overflow = 'hidden';
+                    textElement.style.textOverflow = 'clip';
+                    textElement.style.pointerEvents = 'none';
+                    textLayer.appendChild(textElement);
+                    div.appendChild(textLayer);
+                }
+
+                const debugLabel = document.createElement('div');
+                debugLabel.className = 'ui-debug-label';
+                debugLabel.textContent = node.name;
+                debugLabel.style.fontSize = Math.max(8, Math.round(9 * Math.min(renderScale, 1))) + 'px';
+                div.appendChild(debugLabel);
+
+                let tooltip = `${node.type} ${node.name}`;
+                if (node.parentName) {
+                    tooltip += `\nParent: ${node.parentName}`;
+                }
+                tooltip += `\nPosition: ${node.finalRect.x},${node.finalRect.y}`;
+                tooltip += `\nSize: ${node.finalRect.w}x${node.finalRect.h}`;
+                tooltip += `\nZ-order: ${getNodeZOrder(node)}`;
+                if (node.position) {
+                    tooltip += `\nLocal position: ${node.position.x},${node.position.y}`;
+                }
+                if (node.size) {
+                    tooltip += `\nLocal size: ${node.size.w}x${node.size.h}`;
+                }
+                tooltip += `\nhalign: ${node.halign}, valign: ${node.valign}`;
+                tooltip += `\nexactpos: ${node.hexactpos},${node.vexactpos}`;
+                tooltip += `\nexactsize: ${node.hexactsize},${node.vexactsize}`;
+                if (node.text) {
+                    tooltip += `\nText: "${node.text}"`;
+                    tooltip += `\ntext align: ${getNodeProp(node, 'text halign', 'left')} / ${getNodeProp(node, 'text valign', 'top')}`;
+                }
+                if (node.font) {
+                    tooltip += `\nFont: ${node.font}`;
+                }
+
+                div.title = tooltip;
+                targetContainer.appendChild(div);
+            });
+
+            console.log(`Nodes: ${layoutData.nodes.length}`);
+            console.log(`Viewport: ${viewportRect.w}x${viewportRect.h}, scale: ${renderScale}`);
+            if (layoutData.root) {
+                console.log(`Root: ${layoutData.root.type} "${layoutData.root.name}"`);
+                console.log(`Root finalRect: ${JSON.stringify(layoutData.root.finalRect)}`);
+            }
+        }
+
+        function renderCurrentLayout() {
+            const viewportRect = getViewportRect();
+            const renderScale = getRenderScale();
+            renderScaleInput.value = renderScale.toFixed(2).replace(/\.00$/, '');
+            applyViewportToContainer(container, viewportRect, renderScale);
+            container.innerHTML = '';
+
+            if (!currentLayoutContent) {
+                return;
+            }
+
+            const layoutData = parseLayout(currentLayoutContent, viewportRect);
+            renderLayout(container, layoutData, { viewportRect, renderScale });
+        }
+
+        fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file) {
+                return;
+            }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                const container = document.getElementById('visual-container');
-                container.innerHTML = '';
-
-                // Точный парсер .layout файлов DayZ с поддержкой всех свойств позиционирования
-                function parseLayout(content) {
-                    const lines = content.split('\n');
-                    const nodeStack = [];
-                    const allNodes = [];
-                    let rootNode = null;
-                    
-                    for (let i = 0; i < lines.length; i++) {
-                        const line = lines[i].trim();
-                        
-                        // Ищем начало нового UI-элемента
-                        const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
-                        if (classMatch) {
-                            const parentNode = nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null;
-                            const newNode = {
-                                id: allNodes.length,
-                                type: classMatch[1],
-                                name: classMatch[2],
-                                position: null,
-                                size: null,
-                                color: null,
-                                text: null,
-                                font: null,
-                                halign: 'left_ref',
-                                valign: 'top_ref',
-                                hexactpos: 0,
-                                vexactpos: 0,
-                                hexactsize: 0,
-                                vexactsize: 0,
-                                ignorepointer: 0,
-                                props: {},
-                                parent: parentNode,
-                                parentId: parentNode ? parentNode.id : -1,
-                                parentName: parentNode ? parentNode.name : null,
-                                children: [],
-                                finalRect: { x: 0, y: 0, w: 0, h: 0 }
-                            };
-                            
-                            if (parentNode) {
-                                parentNode.children.push(newNode);
-                            } else {
-                                rootNode = newNode;
-                            }
-                            
-                            allNodes.push(newNode);
-                            nodeStack.push(newNode);
-                        }
-                        
-                        // Парсим свойства текущего узла
-                        if (nodeStack.length > 0) {
-                            const currentNode = nodeStack[nodeStack.length - 1];
-                            
-                            // Основные свойства
-                            const posMatch = line.match(/^\s*position\s+([\d\.]+)\s+([\d\.]+)/);
-                            if (posMatch) {
-                                currentNode.position = {
-                                    x: parseFloat(posMatch[1]) || 0,
-                                    y: parseFloat(posMatch[2]) || 0
-                                };
-                            }
-                            
-                            const sizeMatch = line.match(/^\s*size\s+([\d\.]+)\s+([\d\.]+)/);
-                            if (sizeMatch) {
-                                currentNode.size = {
-                                    w: parseFloat(sizeMatch[1]) || 0,
-                                    h: parseFloat(sizeMatch[2]) || 0
-                                };
-                            }
-                            
-                            const colorMatch = line.match(/^\s*color\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)/);
-                            if (colorMatch) {
-                                currentNode.color = {
-                                    r: parseFloat(colorMatch[1]) || 0,
-                                    g: parseFloat(colorMatch[2]) || 0,
-                                    b: parseFloat(colorMatch[3]) || 0,
-                                    a: parseFloat(colorMatch[4]) || 1
-                                };
-                            }
-                            
-                            const textMatch = line.match(/^\s*text\s+(?:"([^"]*)"|(\S.*))$/);
-                            if (textMatch) {
-                                currentNode.text = textMatch[1] || textMatch[2] || '';
-                            }
-                            
-                            const fontMatch = line.match(/^\s*font\s+(?:"([^"]*)"|(\S.*))$/);
-                            if (fontMatch) {
-                                currentNode.font = fontMatch[1] || fontMatch[2] || '';
-                            }
-                            
-                            // Свойства позиционирования DayZ
-                            const halignMatch = line.match(/^\s*halign\s+(\w+)/);
-                            if (halignMatch) {
-                                currentNode.halign = halignMatch[1];
-                            }
-                            
-                            const valignMatch = line.match(/^\s*valign\s+(\w+)/);
-                            if (valignMatch) {
-                                currentNode.valign = valignMatch[1];
-                            }
-                            
-                            const hexactposMatch = line.match(/^\s*hexactpos\s+(\d+)/);
-                            if (hexactposMatch) {
-                                currentNode.hexactpos = parseInt(hexactposMatch[1]) || 0;
-                            }
-                            
-                            const vexactposMatch = line.match(/^\s*vexactpos\s+(\d+)/);
-                            if (vexactposMatch) {
-                                currentNode.vexactpos = parseInt(vexactposMatch[1]) || 0;
-                            }
-                            
-                            const hexactsizeMatch = line.match(/^\s*hexactsize\s+(\d+)/);
-                            if (hexactsizeMatch) {
-                                currentNode.hexactsize = parseInt(hexactsizeMatch[1]) || 0;
-                            }
-                            
-                            const vexactsizeMatch = line.match(/^\s*vexactsize\s+(\d+)/);
-                            if (vexactsizeMatch) {
-                                currentNode.vexactsize = parseInt(vexactsizeMatch[1]) || 0;
-                            }
-                            
-                            const ignorepointerMatch = line.match(/^\s*ignorepointer\s+(\d+)/);
-                            if (ignorepointerMatch) {
-                                currentNode.ignorepointer = parseInt(ignorepointerMatch[1]) || 0;
-                            }
-                            
-                            // Дополнительные свойства
-                            const quotedPropMatch = line.match(/^\s*"([^"]+)"\s+(\S.*)$/);
-                            if (quotedPropMatch) {
-                                currentNode.props[quotedPropMatch[1]] = quotedPropMatch[2].trim();
-                            }
-                            
-                            const normalPropMatch = line.match(/^\s*(\w+)\s+(\S.*)$/);
-                            if (normalPropMatch && !['position', 'size', 'color', 'text', 'font', 'ignorepointer', 'halign', 'valign', 'hexactpos', 'vexactpos', 'hexactsize', 'vexactsize'].includes(normalPropMatch[1])) {
-                                currentNode.props[normalPropMatch[1]] = normalPropMatch[2].trim();
-                            }
-                        }
-                        
-                        // Обрабатываем закрывающую фигурную скобку
-                        if (line === '}') {
-                            nodeStack.pop();
-                        }
-                    }
-                    
-                    // Вычисляем finalRect для всех узлов с учетом родительских rect и свойств позиционирования
-                    function calculateFinalRects(node, parentRect = { x: 0, y: 0, w: 1000, h: 600 }) {
-                        if (!node.position || !node.size) {
-                            node.finalRect = { x: parentRect.x, y: parentRect.y, w: 0, h: 0 };
-                            node.children.forEach(child => calculateFinalRects(child, node.finalRect));
-                            return;
-                        }
-                        
-                        let x = node.position.x;
-                        let y = node.position.y;
-                        let w = node.size.w;
-                        let h = node.size.h;
-                        
-                        // Обработка exactsize: exact = 1 означает пиксели, exact = 0 означает долю от parentRect
-                        if (node.hexactsize === 1) {
-                            w = w; // уже в пикселях
-                        } else if (node.hexactsize === 0 && parentRect.w > 0) {
-                            w = parentRect.w * w; // доля от ширины родителя
-                        }
-                        
-                        if (node.vexactsize === 1) {
-                            h = h; // уже в пикселях
-                        } else if (node.vexactsize === 0 && parentRect.h > 0) {
-                            h = parentRect.h * h; // доля от высоты родителя
-                        }
-                        
-                        // Обработка exactpos: exact = 1 означает пиксели, exact = 0 означает долю от parentRect
-                        if (node.hexactpos === 1) {
-                            x = x; // уже в пикселях
-                        } else if (node.hexactpos === 0 && parentRect.w > 0) {
-                            x = parentRect.w * x; // доля от ширины родителя
-                        }
-                        
-                        if (node.vexactpos === 1) {
-                            y = y; // уже в пикселях
-                        } else if (node.vexactpos === 0 && parentRect.h > 0) {
-                            y = parentRect.h * y; // доля от высоты родителя
-                        }
-                        
-                        // Обработка выравнивания (halign/valign) с добавлением localX/localY
-                        if (node.halign === 'center_ref') {
-                            x = parentRect.x + (parentRect.w - w) / 2 + x;
-                        } else if (node.halign === 'right_ref') {
-                            x = parentRect.x + parentRect.w - w - x;
-                        } else { // left_ref
-                            x = parentRect.x + x;
-                        }
-                        
-                        if (node.valign === 'center_ref') {
-                            y = parentRect.y + (parentRect.h - h) / 2 + y;
-                        } else if (node.valign === 'bottom_ref') {
-                            y = parentRect.y + parentRect.h - h - y;
-                        } else { // top_ref
-                            y = parentRect.y + y;
-                        }
-                        
-                        // Убираем принудительный clamp/обрезание child внутри parentRect
-                        // (DayZ позволяет элементам выходить за границы родителя)
-                        
-                        node.finalRect = { x, y, w, h };
-                        
-                        // Рекурсивно вычисляем для детей
-                        node.children.forEach(child => {
-                            calculateFinalRects(child, node.finalRect);
-                        });
-                    }
-                    
-                    // Вычисляем finalRect для всех узлов, начиная с root
-                    // Root с size 1 1 exactsize 0 будет считаться через общую формулу как 100% viewport
-                    if (rootNode) {
-                        calculateFinalRects(rootNode, { x: 0, y: 0, w: 1000, h: 600 });
-                    }
-                    
-                    // Вычисляем finalRect для остальных узлов (если root не найден)
-                    allNodes.forEach(node => {
-                        if (!node.finalRect.w || !node.finalRect.h) {
-                            calculateFinalRects(node, { x: 0, y: 0, w: 1000, h: 600 });
-                        }
-                    });
-                    
-                    return { nodes: allNodes, root: rootNode };
-                }
-                
-                // Функция рендеринга с точным позиционированием через finalRect
-                function renderLayout(container, layoutData) {
-                    container.innerHTML = '';
-                    const renderScale = 1.0; // убираем жёсткий *2
-                    
-                    // Сортируем узлы по z-order: родители ниже, дети выше, текст выше панелей/кнопок
-                    const sortedNodes = [...layoutData.nodes].sort((a, b) => {
-                        // Текстовые элементы выше остальных
-                        const aIsText = a.type.includes('Text');
-                        const bIsText = b.type.includes('Text');
-                        if (aIsText && !bIsText) return 1;
-                        if (!aIsText && bIsText) return -1;
-                        
-                        // Дети выше родителей (глубже в иерархии = выше)
-                        const aDepth = getNodeDepth(a);
-                        const bDepth = getNodeDepth(b);
-                        return aDepth - bDepth;
-                    });
-                    
-                    function getNodeDepth(node) {
-                        let depth = 0;
-                        let current = node;
-                        while (current.parent) {
-                            depth++;
-                            current = current.parent;
-                        }
-                        return depth;
-                    }
-                    
-                    sortedNodes.forEach(node => {
-                        // Пропускаем узлы без finalRect или с нулевым размером
-                        if (!node.finalRect || node.finalRect.w <= 0 || node.finalRect.h <= 0) {
-                            return;
-                        }
-                        
-                        const div = document.createElement('div');
-                        div.className = 'ui-element';
-                        div.style.position = 'absolute';
-                        div.style.left = (node.finalRect.x * renderScale) + 'px';
-                        div.style.top = (node.finalRect.y * renderScale) + 'px';
-                        div.style.width = (node.finalRect.w * renderScale) + 'px';
-                        div.style.height = (node.finalRect.h * renderScale) + 'px';
-                        
-                        // Если color нет: прозрачный фон + видимая граница
-                        if (node.color) {
-                            div.style.backgroundColor = `rgba(${Math.round(node.color.r * 255)}, ${Math.round(node.color.g * 255)}, ${Math.round(node.color.b * 255)}, ${node.color.a})`;
-                            div.style.border = '1px solid rgba(0, 0, 0, 0.3)';
-                        } else {
-                            div.style.backgroundColor = 'transparent';
-                            div.style.border = '1px dashed rgba(102, 102, 102, 0.5)';
-                        }
-                        
-                        // Для текстовых элементов отображаем настоящий текст
-                        if ((node.type === 'TextWidgetClass' || node.type === 'MultilineTextWidgetClass') && node.text) {
-                            const textElement = document.createElement('div');
-                            textElement.textContent = node.text;
-                            textElement.style.position = 'absolute';
-                            textElement.style.top = '50%';
-                            textElement.style.left = '50%';
-                            textElement.style.transform = 'translate(-50%, -50%)';
-                            textElement.style.fontSize = '12px';
-                            textElement.style.color = '#000';
-                            textElement.style.textAlign = 'center';
-                            textElement.style.pointerEvents = 'none';
-                            textElement.style.whiteSpace = 'nowrap';
-                            textElement.style.overflow = 'hidden';
-                            textElement.style.maxWidth = '90%';
-                            div.appendChild(textElement);
-                        }
-                        
-                        // Добавляем debug label (не заменяет игровой текст)
-                        const debugLabel = document.createElement('div');
-                        debugLabel.textContent = node.name;
-                        debugLabel.style.position = 'absolute';
-                        debugLabel.style.bottom = '2px';
-                        debugLabel.style.right = '2px';
-                        debugLabel.style.fontSize = '9px';
-                        debugLabel.style.color = '#666';
-                        debugLabel.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-                        debugLabel.style.padding = '1px 3px';
-                        debugLabel.style.borderRadius = '2px';
-                        debugLabel.style.pointerEvents = 'none';
-                        debugLabel.style.zIndex = '1000';
-                        div.appendChild(debugLabel);
-                        
-                        // Формируем tooltip с детальной информацией
-                        let tooltip = `${node.type} ${node.name}`;
-                        if (node.parentName) {
-                            tooltip += `\nРодитель: ${node.parentName}`;
-                        }
-                        tooltip += `\nПозиция: ${node.finalRect.x},${node.finalRect.y}`;
-                        tooltip += `\nРазмер: ${node.finalRect.w}x${node.finalRect.h}`;
-                        if (node.position) {
-                            tooltip += `\nОтн. позиция: ${node.position.x},${node.position.y}`;
-                        }
-                        if (node.size) {
-                            tooltip += `\nОтн. размер: ${node.size.w}x${node.size.h}`;
-                        }
-                        tooltip += `\nhalign: ${node.halign}, valign: ${node.valign}`;
-                        tooltip += `\nexactpos: ${node.hexactpos},${node.vexactpos}`;
-                        tooltip += `\nexactsize: ${node.hexactsize},${node.vexactsize}`;
-                        if (node.text) {
-                            tooltip += `\nТекст: "${node.text}"`;
-                        }
-                        if (node.font) {
-                            tooltip += `\nШрифт: ${node.font}`;
-                        }
-                        
-                        div.title = tooltip;
-                        container.appendChild(div);
-                    });
-                    
-                    console.log(`Найдено узлов: ${layoutData.nodes.length}`);
-                    if (layoutData.root) {
-                        console.log(`Корневой узел: ${layoutData.root.type} "${layoutData.root.name}"`);
-                        console.log(`Root finalRect: ${JSON.stringify(layoutData.root.finalRect)}`);
-                    }
-                }
-                
-                // Парсим и рендерим layout
-                const layoutData = parseLayout(content);
-                renderLayout(container, layoutData);
+            reader.onload = function(loadEvent) {
+                currentLayoutContent = loadEvent.target.result;
+                renderCurrentLayout();
             };
             reader.readAsText(file);
         });
+
+        viewportPresetSelect.addEventListener('change', renderCurrentLayout);
+        renderScaleInput.addEventListener('input', renderCurrentLayout);
+        renderScaleInput.addEventListener('change', renderCurrentLayout);
+        renderCurrentLayout();
     </script>
 
     <footer>
-        &copy; 2026 Silver_77_Quests. Только для просмотра. Никакие данные не сохраняются.
+        &copy; 2026 Silver_77_Quests. Read-only viewer, no layout data is saved.
     </footer>
 </body>
 </html>
