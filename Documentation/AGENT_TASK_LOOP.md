@@ -254,372 +254,492 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 068 — Улучшить DayZ layout viewer: viewport presets, z-order и точнее text render
-
-Контекст:
-По результатам анализа TASK 067:
-
-Геометрия finalRect в DayZ_layout/dayz_layout_viewer.html уже в целом корректна:
-- exact = 1 трактуется как пиксели
-- exact = 0 трактуется как доля parentRect
-- center_ref / right_ref / bottom_ref применяются после расчёта local position и size
-- renderLayout близок к правильной модели: DOM-геометрия берётся из finalRect * renderScale
-- QuestPanel, QuestListbox и AcceptButtonText геометрически считаются корректно для viewport 1000x600
-
-Главные оставшиеся проблемы:
-1. Viewport жёстко задан как 1000x600.
-2. visual-container тоже жёстко зафиксирован как 1000x600.
-3. z-order приблизительный: “весь текст выше всего” и только depth, без стабильного order.
-4. TextWidgetClass / MultilineTextWidgetClass отображаются как rough preview:
-   - font не используется
-   - "text halign" не используется
-   - "text valign" не используется
-   - nowrap стоит всегда
-   - fixed 12px
-   - нет нормальной обработки multiline / wrap
-   - debug label может мешать визуальному восприятию
+TASK 069 — Улучшить DayZ layout viewer: кодировка, debug controls, inspector и проверка реальных QuestMenu/QuestJournal
 
 Цель:
-Улучшить viewer без переписывания ядра.
-Не ломать finalRect math.
-Сфокусироваться только на:
-- viewport presets
-- размер visual-container = viewport * renderScale
-- z-order depth + order + controlled type priority
-- более точное отображение text widgets
+Довести DayZ_layout/dayz_layout_viewer.html до удобного инструмента проверки реальных layout-файлов проекта.
+
+После TASK 068 базовая геометрия стала лучше:
+- viewport presets есть
+- renderScale есть
+- visual-container = viewport * renderScale
+- finalRect math в целом рабочая
+- z-order улучшен
+- TextWidgetClass стал рендериться через flex
+- font size извлекается из metronXX
+
+Но по ручной проверке viewer всё ещё неудобен:
+- QuestJournal.layout выглядит уже достаточно близко
+- QuestMenu.layout выглядит хаотично
+- кириллица отображается как �����
+- debug labels мешают визуальному сравнению с игрой
+- нет inspector-панели для проверки конкретных элементов
+- трудно понять, проблема в math, z-order, text render или в кодировке
+
+Главная цель TASK 069:
+Не переписывать layout engine заново.
+Добавить инструменты диагностики и исправить кодировку/отладочное отображение, чтобы можно было точно понять, какие элементы считаются правильно, а какие нет.
 
 Где работать:
-ТОЛЬКО:
-DayZ_layout/dayz_layout_viewer.html
+Разрешено менять:
+1. DayZ_layout/dayz_layout_viewer.html
+2. Documentation/AGENT_TASK_LOOP.md — только для записи краткого отчёта в БЛОК 2 / БЛОК 3 / статуса задачи, если требуется по агентскому процессу.
 
 Запрещено менять:
-- Documentation/AGENT_TASK_LOOP.md
 - Documentation/QUEST_LOGIC_SPEC.md
 - Silver_77_Quests_Client/
 - Silver_77_Quests_Server/
-- любые .layout файлы проекта
-- любые .json файлы
-- любые файлы вне DayZ_layout/
+- реальные .layout файлы проекта
+- реальные .json файлы
+- любые файлы мода
 - Git
 
-Что НЕ делать:
-- НЕ переписывать parseLayout с нуля
-- НЕ менять смысл exact-флагов
-- НЕ возвращать DOMParser/XML
-- НЕ возвращать position[] / size[] / color[]
-- НЕ делать Export
-- НЕ делать Generate
-- НЕ сохранять файлы
-- НЕ использовать внешние библиотеки/CDN
-- НЕ использовать random color
-- НЕ трогать файлы мода
-- НЕ менять .layout проекта
-
---------------------------------------------------------------------------------
-ЧАСТЬ 1 — VIEWPORT PRESETS
---------------------------------------------------------------------------------
-
-Проблема:
-Сейчас viewer жёстко считает viewport как 1000x600.
-Это ограничивает точность, потому что center_ref зависит от viewport.
-
-Нужно сделать:
-1. Добавить явные константы/состояние:
-   let viewportWidth = 1000;
-   let viewportHeight = 600;
-   let renderScale = 1.0;
-
-2. Добавить UI select для viewport preset:
-   - 1000x600
-   - 1280x720
-   - 1920x1080
-
-3. При смене viewport preset:
-   - обновлять viewportWidth / viewportHeight
-   - заново пересчитать finalRect
-   - заново отрендерить layout
-
-4. visual-container должен иметь размер:
-   width = viewportWidth * renderScale
-   height = viewportHeight * renderScale
-
-5. computeFinalRects должен получать viewportRect:
-   { x: 0, y: 0, w: viewportWidth, h: viewportHeight }
-
-6. Root size 1 1 exactsize 0 должен по общей формуле становиться размером выбранного viewport.
+Реальные файлы для read-only проверки:
+- P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+- P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
 Важно:
-Не hardcode 1000x600 внутри calculateFinalRects.
-1000x600 может быть дефолтным preset, но не должен быть зашит глубоко в math.
+Эти .layout файлы можно только читать через viewer / FileReader.
+Их нельзя изменять.
+Их нельзя форматировать.
+Их нельзя сохранять.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 2 — RENDER SCALE
---------------------------------------------------------------------------------
-
-Проблема:
-Сейчас renderScale может быть константой.
-Нужно управлять масштабом отображения, не влияя на layout math.
-
-Нужно сделать:
-1. Добавить UI select для renderScale:
-   - 50%
-   - 75%
-   - 100%
-
-2. При смене renderScale:
-   - НЕ пересчитывать layout math обязательно
-   - можно просто перерендерить layout
-   - DOM размеры должны быть finalRect * renderScale
-
-3. renderScale не должен влиять на finalRect.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 3 — Z-ORDER
+ЧАСТЬ 1 — КОДИРОВКА / КИРИЛЛИЦА
 --------------------------------------------------------------------------------
 
 Проблема:
-Текущий z-order приблизительный:
-- весь текст поднимается выше всего
-- siblings одного уровня не имеют стабильного исходного order
-- depth учитывается грубо
+В QuestMenu.layout текст сейчас отображается как:
+�����
 
-Нужно сделать:
-1. При создании node добавить:
-   node.order = allNodes.length
-   node.depth = parentNode ? parentNode.depth + 1 : 0
+Это означает проблему с декодированием кириллицы.
+Вероятно, файл может быть не UTF-8, а Windows-1251 / ANSI.
 
-2. Рассчитывать zIndex стабильно:
+Что сделать:
 
-function getNodeZIndex(node) {
-    let z = node.depth * 1000 + node.order;
+1. Добавить select "Encoding":
+   - UTF-8
+   - Windows-1251
 
-    if (node.type === "TextWidgetClass") {
-        z += 10000;
-    }
+2. По умолчанию поставить:
+   - Windows-1251
 
-    if (node.type === "MultilineTextWidgetClass") {
-        z += 9000;
-    }
+3. При чтении файла использовать:
+   reader.readAsText(file, selectedEncoding)
 
-    return z;
+Пример:
+if (encoding === "windows-1251") {
+    reader.readAsText(file, "windows-1251");
+} else {
+    reader.readAsText(file, "utf-8");
 }
 
-3. В renderLayout:
-   - можно append в исходном порядке nodes
-   - каждому div ставить div.style.zIndex = getNodeZIndex(node)
-   - либо сортировать по getNodeZIndex ascending
+4. При смене encoding:
+   - перечитать выбранный file заново
+   - перерендерить viewer
 
-4. Parent должен быть ниже child.
-5. Child должен быть выше parent.
-6. Текст должен быть выше кнопки/панели, но порядок должен быть стабильным.
-7. Не делать “весь text абсолютно поверх всего без order”.
+Важно:
+Браузер FileReader умеет readAsText(file, encoding).
+Нам не нужен backend.
+Нам не нужно сохранять файл.
+Нам нужно только корректно прочитать текст.
 
---------------------------------------------------------------------------------
-ЧАСТЬ 4 — TEXT WIDGET RENDER
---------------------------------------------------------------------------------
+Критерий:
+Русский текст в viewer должен отображаться читаемо:
+- ЖУРНАЛ КВЕСТОВ
+- ЗАКРЫТЬ
+- ВЗЯТЬ КВЕСТ
+- УЖЕ АКТИВЕН
+- ЭТАП НЕДОСТУПЕН
+- диалоговые тексты
 
-Проблема:
-TextWidgetClass сейчас рисуется фиксированным 12px, всегда center через transform, nowrap.
-Это rough preview.
-
-Нужно улучшить TextWidgetClass и MultilineTextWidgetClass.
-
-1. Для TextWidgetClass:
-- использовать node.text, если есть
-- если node.text нет, можно показывать node.name как debug fallback
-- background transparent
-- border очень лёгкий debug, например dashed rgba(255,255,255,0.2)
-- не рисовать тяжёлый цветной прямоугольник для текста, если color отсутствует
-- text должен быть поверх кнопок/панелей
-- overflow hidden
-
-2. Для MultilineTextWidgetClass:
-- использовать node.text, если есть
-- white-space: pre-wrap
-- overflow hidden
-- background transparent
-- border лёгкий debug
-
-3. Учитывать text alignment props:
-props["text halign"]
-props["text valign"]
-
-Поддержать минимум:
-
-"text halign" center:
-justify-content: center
-text-align: center
-
-"text halign" left:
-justify-content: flex-start
-text-align: left
-
-"text halign" right:
-justify-content: flex-end
-text-align: right
-
-"text valign" center:
-align-items: center
-
-"text valign" top:
-align-items: flex-start
-
-"text valign" bottom:
-align-items: flex-end
-
-Рекомендуемый CSS для text div:
-display: flex;
-box-sizing: border-box;
-padding: 2px;
-overflow: hidden;
-
-4. Убрать постоянный transform translate(-50%, -50%) для текста.
-Вместо этого использовать flex alignment внутри finalRect.
-
-5. Учитывать font:
-DayZ font невозможно идеально повторить, но можно сделать приближение.
-
-Если node.font содержит:
-- metron22 → font-size: 22px
-- metron18 → font-size: 18px
-- metron16 → font-size: 16px
-- metron14 → font-size: 14px
-- metron12 → font-size: 12px
-
-Если не удалось определить:
-font-size: 14px
-
-6. Для обычных PanelWidgetClass / ButtonWidgetClass:
-- debug label node.name оставить маленьким
-- debug label не должен мешать игровому тексту
-- можно сделать debug labels более прозрачными
-- желательно сделать возможность отключить debug labels через checkbox
+Если выбран неправильный encoding, пользователь сможет переключить select.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 5 — DEBUG LABELS
+ЧАСТЬ 2 — DEBUG LABELS CONTROL
 --------------------------------------------------------------------------------
 
 Проблема:
-node.name полезен для отладки, но может мешать визуальному сравнению с игрой.
+Debug labels node.name полезны, но сейчас они мешают визуальному сравнению с игрой.
+На скрине QuestMenu labels накладываются на текст и создают ощущение хаоса.
 
-Нужно сделать:
+Что сделать:
+
 1. Добавить checkbox:
-   Show debug names
+   Show debug labels
 
-2. По умолчанию можно оставить включённым.
-3. Если выключено:
-   - не показывать debug label node.name на Panel/Button/Listbox
-   - TextWidgetClass всё равно должен показывать настоящий node.text
+2. По умолчанию:
+   checked = false
 
-4. Debug label не должен заменять игровой текст.
+3. Если Show debug labels выключен:
+   - не показывать node.name labels на визуальных блоках
+   - не мешать настоящему node.text
+
+4. Если Show debug labels включен:
+   - показывать node.name маленьким overlay
+   - label должен быть полупрозрачный
+   - label не должен заменять игровой текст
+
+5. Добавить checkbox:
+   Show borders
+
+6. По умолчанию:
+   checked = true
+
+7. Если Show borders выключен:
+   - убрать debug dashed borders у элементов без color
+   - оставить реальные цветные панели/кнопки
+   - текстовые элементы без фона должны выглядеть ближе к игре
+
+8. Добавить checkbox:
+   Show grid
+
+9. По умолчанию:
+   checked = true
+
+10. Если Show grid выключен:
+   - убрать grid background у visual-container
+
+Цель:
+Пользователь должен уметь переключаться между:
+- debug mode
+- visual comparison mode
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 6 — CHECKS
+ЧАСТЬ 3 — ELEMENT INSPECTOR
 --------------------------------------------------------------------------------
 
-После изменений проверить логикой:
+Проблема:
+Сейчас без inspector невозможно быстро понять:
+- где конкретно элемент находится
+- какой у него parent
+- какие у него exact-флаги
+- какой finalRect получился
+- почему элемент съехал
 
-Для QuestMenu.layout при viewport 1000x600:
+Что сделать:
+
+1. Добавить боковую или нижнюю inspector-панель.
+
+Минимальный layout страницы:
+- сверху controls
+- слева/центр visual-container
+- справа inspector
+- снизу или справа список элементов
+
+Можно сделать просто:
+<div class="viewer-layout">
+  <div id="visual-container"></div>
+  <aside id="inspector-panel"></aside>
+</div>
+<div id="element-list"></div>
+
+2. Добавить список элементов.
+
+Для каждого node показывать:
+- name
+- type
+- parentName
+- finalRect x/y/w/h
+
+3. При клике по элементу в списке:
+- выбрать node
+- подсветить соответствующий DOM-блок
+- показать свойства в inspector
+
+4. При клике по DOM-блоку:
+- выбрать node
+- подсветить его
+- показать свойства в inspector
+- остановить всплытие, чтобы клик по child выбирал child, а не parent
+
+5. Выбранный элемент:
+- получает visible outline, например 2px solid cyan
+- получает высокий z-index только как selected overlay
+- не ломает основную z-order логику
+
+6. Inspector должен показывать:
+
+Основное:
+- name
+- type
+- parentName
+- id
+- sourceOrder
+- depth
+
+Geometry:
+- position x/y
+- size w/h
+- finalRect x/y/w/h
+- halign
+- valign
+- hexactpos
+- vexactpos
+- hexactsize
+- vexactsize
+
+Text:
+- text
+- font
+- props["text halign"]
+- props["text valign"]
+
+Color:
+- color r/g/b/a
+- computed rgba
+
+Props:
+- props JSON или таблицей key/value
+
+7. Добавить кнопку:
+Copy selected info
+
+Она должна копировать в clipboard текст примерно:
+
+Name: QuestListbox
+Type: TextListboxWidgetClass
+Parent: QuestPanel
+Position: 30, 82
+Size: 330, 250
+FinalRect: 210, 162, 330, 250
+Flags: hexactpos=1 vexactpos=1 hexactsize=1 vexactsize=1
+Align: left_ref / top_ref
+
+Если clipboard API недоступен:
+- показать alert или textarea fallback
+- не сохранять файл
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 4 — SANITY CHECK PANEL
+--------------------------------------------------------------------------------
+
+Проблема:
+Нужно быстро проверять ключевые элементы QuestMenu.layout и QuestJournal.layout.
+
+Что сделать:
+
+1. Добавить кнопку:
+Run sanity checks
+
+2. Sanity checks не должны менять файлы.
+Они должны только анализировать текущие nodes.
+
+3. Для QuestMenu.layout проверять наличие:
+- QuestMenuRoot
+- QuestPanel
+- QuestListbox
+- DescriptionPanel
+- RoutePanel
+- DialogPanel
+- AcceptButton
+- CompleteButton
+- CloseButton
+- AcceptButtonText
+- CompleteButtonText
+- CloseButtonText
+
+4. Для QuestJournal.layout проверять наличие:
+- QuestJournalPanel
+- TitleText
+- QuestListbox
+- DescriptionText
+- CloseButton
+- CloseButtonText
+
+5. Для выбранного viewport 1280x720 ожидания для QuestMenu:
 
 QuestPanel:
-finalRect должен быть:
-x=40
-y=20
-w=920
-h=560
-
-QuestListbox:
-x=70
-y=102
-w=330
-h=250
-
-AcceptButtonText:
-x=430
-y=440
-w=220
-h=48
-
-Для QuestMenu.layout при viewport 1280x720:
-
-QuestPanel:
+expected:
 x=180
 y=80
 w=920
 h=560
 
 QuestListbox:
+expected:
 x=210
 y=162
 w=330
 h=250
 
-AcceptButtonText:
+AcceptButton:
+expected:
 x=570
 y=500
 w=220
 h=48
 
-В отчёте указать:
-- какой viewport был использован
-- какие finalRect получились для QuestPanel / QuestListbox / AcceptButtonText
-- совпали ли они с ожидаемыми sanity-check значениями
+AcceptButtonText:
+expected:
+x=570
+y=500
+w=220
+h=48
+
+6. Sanity panel должен показывать:
+- PASS / WARN
+- expected
+- actual
+- delta
+
+7. Допуск:
+- delta <= 1 px считать PASS
+
+8. Если элемент не найден:
+- WARN: missing node
+
+Важно:
+Sanity checks — это инструмент диагностики, а не hardcode layout.
+Не использовать sanity values для изменения finalRect.
+Они только сравнивают результат.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 5 — TEXT RENDER CHECK
+--------------------------------------------------------------------------------
+
+Проблема:
+Даже если finalRect верный, текст может выглядеть неверно.
+
+Что проверить / улучшить:
+
+1. TextWidgetClass:
+- node.text должен отображаться
+- если text отсутствует, debug name показывать только при Show debug labels
+- использовать text halign / text valign
+- использовать font size из metronXX
+- не использовать transform translate(-50%, -50%)
+
+2. MultilineTextWidgetClass:
+- использовать white-space: pre-wrap
+- overflow hidden
+- text-align из props
+- vertical align через flex
+
+3. Цвет текста:
+Если node.color есть:
+- использовать colorToRgba(node.color)
+
+Если node.color нет:
+- подобрать readable default:
+  rgba(240,240,240,0.95) на тёмном фоне
+
+4. Для кнопок:
+- ButtonWidgetClass рисует фон/рамку
+- child TextWidgetClass должен быть выше кнопки
+- текст кнопки должен быть читаем
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 6 — НЕ ЛОМАТЬ ТЕКУЩУЮ МАТЕМАТИКУ
+--------------------------------------------------------------------------------
+
+Важно:
+Не переписывать finalRect math без необходимости.
+Сейчас exact-логика уже считается правильной:
+
+exact = 1 → пиксели
+exact = 0 → доля parentRect
+
+Сохранять:
+- root через общую формулу
+- center_ref + localX/localY
+- no clamp child inside parent
+- finalRect * renderScale
+- viewportRect передаётся в parseLayout / calculateFinalRects
+
+Если агент обнаружит ошибку в math:
+- сначала указать её в ANALYSIS
+- потом исправить минимально
+- не переписывать весь viewer
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 7 — ОТЧЁТ В AGENT_TASK_LOOP.md
+--------------------------------------------------------------------------------
+
+Агенту разрешено после выполнения записать краткий отчёт в:
+Documentation/AGENT_TASK_LOOP.md
+
+Но только:
+- БЛОК 2 — AGENT REPORT
+- БЛОК 3 — REVIEW / ANALYSIS, если в доке так принято
+- БЛОК 1 — перевести в "Нет активной задачи" только если задача реально выполнена
+
+Запрещено:
+- менять правила БЛОКА 4 без отдельного указания
+- менять БЛОК 6 без отдельного указания
+- удалять историю
+- переписывать старые задачи
+- менять QUEST_LOGIC_SPEC.md
+
+Если не уверен, лучше не трогать документацию и вернуть отчёт в чат.
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
 --------------------------------------------------------------------------------
 
-1. Изменён только:
-DayZ_layout/dayz_layout_viewer.html
+1. Изменены только допустимые файлы:
+- DayZ_layout/dayz_layout_viewer.html
+- Documentation/AGENT_TASK_LOOP.md, если агент записал отчёт
 
-2. Documentation/AGENT_TASK_LOOP.md не изменён.
+2. Реальные .layout файлы проекта не изменены.
 
 3. Файлы мода не изменены.
 
-4. .layout файлы проекта не изменены.
+4. JSON не изменён.
 
-5. JSON не изменён.
+5. Viewer остаётся read-only.
 
-6. Viewer остаётся read-only.
+6. Добавлен encoding select:
+- UTF-8
+- Windows-1251
 
-7. Нет DOMParser.
+7. Кириллица может отображаться корректно при выборе Windows-1251.
 
-8. Нет position[] / size[] / color[].
+8. Добавлен Show debug labels checkbox.
 
-9. Нет random color.
+9. Debug labels можно отключить.
 
-10. finalRect math не сломан.
+10. Добавлен Show borders checkbox.
 
-11. exact = 1 всё ещё пиксели.
+11. Добавлен Show grid checkbox.
 
-12. exact = 0 всё ещё доля parentRect.
+12. Добавлен element list.
 
-13. Добавлен viewport preset select или явная управляемая viewport настройка.
+13. Добавлен inspector panel.
 
-14. visual-container размер = viewport * renderScale.
+14. Клик по DOM-блоку выбирает node.
 
-15. Добавлен renderScale select или управляемая настройка.
+15. Клик по списку выбирает node.
 
-16. z-order использует depth + order + controlled text priority.
+16. Selected node подсвечивается.
 
-17. TextWidgetClass отображает node.text через flex alignment.
+17. Inspector показывает finalRect, position, size, flags, align, text, font, props.
 
-18. MultilineTextWidgetClass отображает node.text как pre-wrap.
+18. Есть Copy selected info.
 
-19. text halign / text valign учитываются хотя бы для center/left/right/top/bottom.
+19. Есть Run sanity checks.
 
-20. font size приблизительно извлекается из metronXX.
+20. Sanity checks показывают expected/actual/delta для ключевых элементов.
 
-21. Debug labels можно отключить или они не мешают text render.
+21. TextWidgetClass продолжает отображать node.text.
 
-22. В отчёте есть CHECKS по QuestPanel / QuestListbox / AcceptButtonText.
+22. MultilineTextWidgetClass отображается как multiline/pre-wrap.
+
+23. finalRect math не сломан.
+
+24. В отчёте указано:
+- что найдено
+- что исправлено
+- как проверялось
+- что ещё может отличаться от настоящего DayZ runtime
 
 Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- что было найдено перед правками
+- что было найдено
+- какие причины текущих визуальных расхождений подтверждены
 
 DONE:
 - что сделано
@@ -631,10 +751,11 @@ DIFF:
 - кратко
 
 CHECKS:
-- viewport
-- QuestPanel expected/final
-- QuestListbox expected/final
-- AcceptButtonText expected/final
+- Encoding
+- QuestMenu sanity
+- QuestJournal sanity
+- Text render
+- Inspector/list clicks
 
 PROBLEMS:
 - реальные проблемы, если есть

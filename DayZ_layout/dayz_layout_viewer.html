@@ -5,85 +5,338 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DayZ .layout Viewer</title>
     <style>
+        :root {
+            --bg: #eef2f6;
+            --panel: #ffffff;
+            --border: #c8d2dd;
+            --border-strong: #34495e;
+            --text: #22313f;
+            --muted: #66788a;
+            --accent: #1677c6;
+            --accent-soft: rgba(22, 119, 198, 0.14);
+            --selected: #ffb020;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: "Segoe UI", sans-serif;
-            margin: 30px;
-            background: #f5f5f5;
-            color: #2c3e50;
+            margin: 24px;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: var(--bg);
+            color: var(--text);
         }
 
         h1 {
-            border-bottom: 2px solid #3498db;
+            margin: 0 0 10px;
             padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
         }
 
-        #file-input {
-            margin: 20px 0;
+        p {
+            margin: 0 0 16px;
         }
 
-        .viewer-controls {
+        .toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px 14px;
             align-items: center;
-            margin: 12px 0 20px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--panel);
         }
 
-        .viewer-controls label {
+        .toolbar label,
+        .toolbar span {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .toolbar input[type="file"],
+        .toolbar select,
+        .toolbar input[type="number"],
+        .toolbar button {
+            font: inherit;
+        }
+
+        .toolbar select,
+        .toolbar input[type="number"] {
+            min-width: 92px;
+            padding: 5px 8px;
+        }
+
+        .toolbar button {
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #f8fbfe;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .toolbar button:hover {
+            border-color: var(--accent);
+            background: #f0f7ff;
+        }
+
+        .toolbar .check-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: 2px;
+        }
+
+        .status-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            margin: 12px 0 16px;
+            color: var(--muted);
             font-size: 14px;
         }
 
-        .viewer-controls select,
-        .viewer-controls input {
-            font: inherit;
-            padding: 4px 8px;
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(640px, 1fr) 360px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .viewer-card,
+        .sidebar {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .viewer-card {
+            padding: 14px;
+        }
+
+        .viewer-shell {
+            overflow: auto;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #dfe7ef;
         }
 
         #visual-container {
             position: relative;
-            border: 2px solid #34495e;
-            background: #fff;
+            border: 2px solid var(--border-strong);
+            background: #ffffff;
             overflow: hidden;
-            margin-top: 20px;
-            background-image: linear-gradient(#ccc 1px, transparent 1px),
-                              linear-gradient(90deg, #ccc 1px, transparent 1px);
+            background-image: linear-gradient(rgba(96, 125, 139, 0.25) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(96, 125, 139, 0.25) 1px, transparent 1px);
             background-size: 20px 20px;
+        }
+
+        #visual-container.grid-hidden {
+            background-image: none;
         }
 
         .ui-element {
             position: absolute;
-            box-sizing: border-box;
-            opacity: 0.78;
+            opacity: 0.82;
+            cursor: pointer;
+            transition: box-shadow 0.08s ease, outline-color 0.08s ease;
+        }
+
+        .ui-element.borders-hidden {
+            border-color: transparent !important;
+        }
+
+        .ui-element:hover {
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+        }
+
+        .ui-element.selected {
+            outline: 2px solid var(--selected);
+            outline-offset: -2px;
+            box-shadow: 0 0 0 1px rgba(34, 49, 63, 0.35), 0 0 0 3px rgba(255, 176, 32, 0.2);
+        }
+
+        .ui-text-layer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            overflow: hidden;
+            pointer-events: none;
         }
 
         .ui-debug-label {
             position: absolute;
             right: 2px;
             bottom: 2px;
-            color: #666;
-            background: rgba(255, 255, 255, 0.55);
+            color: #5d6d7e;
+            background: rgba(255, 255, 255, 0.62);
             padding: 1px 3px;
             border-radius: 2px;
             pointer-events: none;
             z-index: 1;
         }
 
+        .ui-debug-label.hidden {
+            display: none;
+        }
+
+        .sidebar {
+            display: grid;
+            grid-template-rows: minmax(220px, 1fr) auto auto;
+        }
+
+        .panel-section {
+            border-top: 1px solid var(--border);
+        }
+
+        .panel-section:first-child {
+            border-top: none;
+        }
+
+        .panel-header {
+            padding: 12px 14px 10px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            background: #f8fbfe;
+        }
+
+        .panel-body {
+            padding: 10px 12px 12px;
+        }
+
+        #element-search {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 7px 9px;
+            font: inherit;
+        }
+
+        #element-list {
+            max-height: 360px;
+            overflow: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fbfdff;
+        }
+
+        .element-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 7px 10px;
+            border: none;
+            border-bottom: 1px solid #edf2f7;
+            background: transparent;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .element-row:last-child {
+            border-bottom: none;
+        }
+
+        .element-row:hover {
+            background: #f1f7fd;
+        }
+
+        .element-row.selected {
+            background: var(--accent-soft);
+            color: #0d4673;
+        }
+
+        .element-row-type {
+            flex: 0 0 auto;
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .element-row-name {
+            font-weight: 600;
+        }
+
+        .element-row-rect {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .inspector-grid {
+            display: grid;
+            grid-template-columns: 112px 1fr;
+            gap: 6px 10px;
+            font-size: 13px;
+        }
+
+        .inspector-grid dt {
+            color: var(--muted);
+        }
+
+        .inspector-grid dd {
+            margin: 0;
+            word-break: break-word;
+        }
+
+        #selected-text-preview,
+        #sanity-results {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fbfdff;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .empty-state {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
         footer {
-            margin-top: 30px;
+            margin-top: 20px;
             color: #7f8c8d;
             font-size: 0.9em;
+        }
+
+        @media (max-width: 1280px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                grid-template-rows: auto auto auto;
+            }
+
+            #element-list {
+                max-height: 260px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>DayZ .layout Viewer</h1>
-    <p><strong>Read-only preview:</strong> load a <code>.layout</code> file to inspect viewport-relative DayZ UI placement.</p>
+    <p><strong>Read-only preview:</strong> inspect DayZ widget hierarchy, decoded text, final rects, and sanity checks without changing source layouts.</p>
 
-    <label for="file-input">Select .layout file:</label>
-    <input type="file" id="file-input" accept=".layout" />
+    <div class="toolbar">
+        <label for="file-input">Layout file</label>
+        <input type="file" id="file-input" accept=".layout" />
 
-    <div class="viewer-controls">
-        <label for="viewport-preset">Viewport:</label>
+        <label for="encoding-select">Encoding</label>
+        <select id="encoding-select">
+            <option value="utf-8" selected>UTF-8</option>
+            <option value="windows-1251">Windows-1251</option>
+        </select>
+
+        <label for="viewport-preset">Viewport</label>
         <select id="viewport-preset">
             <option value="1280x720" selected>1280 x 720</option>
             <option value="1366x768">1366 x 768</option>
@@ -92,17 +345,75 @@
             <option value="2560x1440">2560 x 1440</option>
         </select>
 
-        <label for="render-scale">Scale:</label>
+        <label for="render-scale">Scale</label>
         <input type="number" id="render-scale" min="0.25" max="2" step="0.05" value="0.75" />
+
+        <label class="check-group"><input type="checkbox" id="toggle-debug-labels" checked /> Show debug labels</label>
+        <label class="check-group"><input type="checkbox" id="toggle-borders" checked /> Show borders</label>
+        <label class="check-group"><input type="checkbox" id="toggle-grid" checked /> Show grid</label>
+
+        <button type="button" id="copy-selected-button">Copy selected info</button>
+        <button type="button" id="run-sanity-button">Run sanity checks</button>
     </div>
 
-    <div id="visual-container"></div>
+    <div class="status-row">
+        <span id="loaded-file-status">No file loaded.</span>
+        <span id="selection-status">No node selected.</span>
+    </div>
+
+    <div class="workspace">
+        <section class="viewer-card">
+            <div class="viewer-shell">
+                <div id="visual-container"></div>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <section class="panel-section">
+                <div class="panel-header">Element List</div>
+                <div class="panel-body">
+                    <input type="text" id="element-search" placeholder="Filter by name or type" />
+                    <div id="element-list">
+                        <div class="panel-body empty-state">Load a layout to inspect its node tree.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-section">
+                <div class="panel-header">Inspector</div>
+                <div class="panel-body">
+                    <div id="inspector-panel" class="empty-state">Select a widget in the viewport or element list.</div>
+                    <div id="selected-text-preview" style="display: none;"></div>
+                </div>
+            </section>
+
+            <section class="panel-section">
+                <div class="panel-header">Sanity Checks</div>
+                <div class="panel-body">
+                    <div id="sanity-results" class="empty-state">Run checks after loading QuestMenu.layout or QuestJournal.layout.</div>
+                </div>
+            </section>
+        </aside>
+    </div>
 
     <script>
         const fileInput = document.getElementById('file-input');
+        const encodingSelect = document.getElementById('encoding-select');
         const viewportPresetSelect = document.getElementById('viewport-preset');
         const renderScaleInput = document.getElementById('render-scale');
+        const toggleDebugLabelsInput = document.getElementById('toggle-debug-labels');
+        const toggleBordersInput = document.getElementById('toggle-borders');
+        const toggleGridInput = document.getElementById('toggle-grid');
+        const copySelectedButton = document.getElementById('copy-selected-button');
+        const runSanityButton = document.getElementById('run-sanity-button');
+        const elementSearchInput = document.getElementById('element-search');
+        const loadedFileStatus = document.getElementById('loaded-file-status');
+        const selectionStatus = document.getElementById('selection-status');
         const container = document.getElementById('visual-container');
+        const elementList = document.getElementById('element-list');
+        const inspectorPanel = document.getElementById('inspector-panel');
+        const selectedTextPreview = document.getElementById('selected-text-preview');
+        const sanityResults = document.getElementById('sanity-results');
 
         const VIEWPORT_PRESETS = {
             '1280x720': { w: 1280, h: 720 },
@@ -112,11 +423,17 @@
             '2560x1440': { w: 2560, h: 1440 }
         };
 
-        const DEFAULT_VIEWPORT_KEY = '1280x720';
-        let currentLayoutContent = '';
+        const state = {
+            fileName: '',
+            fileBytes: null,
+            decodedContent: '',
+            layoutData: null,
+            selectedNodeId: null,
+            sanityReport: null
+        };
 
         function getViewportRect() {
-            const preset = VIEWPORT_PRESETS[viewportPresetSelect.value] || VIEWPORT_PRESETS[DEFAULT_VIEWPORT_KEY];
+            const preset = VIEWPORT_PRESETS[viewportPresetSelect.value] || VIEWPORT_PRESETS['1280x720'];
             return { x: 0, y: 0, w: preset.w, h: preset.h };
         }
 
@@ -128,10 +445,23 @@
             return Math.min(2, Math.max(0.25, value));
         }
 
-        function applyViewportToContainer(targetContainer, viewportRect, renderScale) {
-            targetContainer.style.width = (viewportRect.w * renderScale) + 'px';
-            targetContainer.style.height = (viewportRect.h * renderScale) + 'px';
-            targetContainer.style.backgroundSize = (20 * renderScale) + 'px ' + (20 * renderScale) + 'px';
+        function applyViewportToContainer(viewportRect, renderScale) {
+            container.style.width = (viewportRect.w * renderScale) + 'px';
+            container.style.height = (viewportRect.h * renderScale) + 'px';
+            container.style.backgroundSize = (20 * renderScale) + 'px ' + (20 * renderScale) + 'px';
+            container.classList.toggle('grid-hidden', !toggleGridInput.checked);
+        }
+
+        function decodeLayoutBytes(bytes, encoding) {
+            if (!bytes) {
+                return '';
+            }
+            try {
+                return new TextDecoder(encoding).decode(bytes);
+            } catch (error) {
+                console.warn('Decoding failed, falling back to UTF-8', error);
+                return new TextDecoder('utf-8').decode(bytes);
+            }
         }
 
         function isTextNode(node) {
@@ -213,18 +543,38 @@
             return `rgba(${Math.round(color.r * 255)}, ${Math.round(color.g * 255)}, ${Math.round(color.b * 255)}, ${alpha})`;
         }
 
+        function formatRect(rect) {
+            if (!rect) {
+                return '0,0 0x0';
+            }
+            return `${roundValue(rect.x)},${roundValue(rect.y)} ${roundValue(rect.w)}x${roundValue(rect.h)}`;
+        }
+
+        function roundValue(value) {
+            return Math.round(value * 100) / 100;
+        }
+
         function parseLayout(content, viewportRect) {
-            const lines = content.split('\n');
-            const nodeStack = [];
+            const lines = content.split(/\r?\n/);
+            const blockStack = [];
             const allNodes = [];
             let rootNode = null;
+
+            function getCurrentNodeFromStack() {
+                for (let index = blockStack.length - 1; index >= 0; index--) {
+                    if (blockStack[index].kind === 'node') {
+                        return blockStack[index].node;
+                    }
+                }
+                return null;
+            }
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
 
                 if (classMatch) {
-                    const parentNode = nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null;
+                    const parentNode = getCurrentNodeFromStack();
                     const newNode = {
                         id: allNodes.length,
                         sourceOrder: allNodes.length,
@@ -257,12 +607,15 @@
                     }
 
                     allNodes.push(newNode);
-                    nodeStack.push(newNode);
+                    blockStack.push({ kind: 'node', node: newNode });
                 }
 
-                if (nodeStack.length > 0) {
-                    const currentNode = nodeStack[nodeStack.length - 1];
+                if (!classMatch && line === '{') {
+                    blockStack.push({ kind: 'group' });
+                }
 
+                const currentNode = getCurrentNodeFromStack();
+                if (currentNode) {
                     const posMatch = line.match(/^\s*position\s+([-\d\.]+)\s+([-\d\.]+)/);
                     if (posMatch) {
                         currentNode.position = {
@@ -340,13 +693,16 @@
                     }
 
                     const normalPropMatch = line.match(/^\s*(\w+)\s+(\S.*)$/);
-                    if (normalPropMatch && !['position', 'size', 'color', 'text', 'font', 'ignorepointer', 'halign', 'valign', 'hexactpos', 'vexactpos', 'hexactsize', 'vexactsize'].includes(normalPropMatch[1])) {
+                    if (
+                        normalPropMatch &&
+                        !['position', 'size', 'color', 'text', 'font', 'ignorepointer', 'halign', 'valign', 'hexactpos', 'vexactpos', 'hexactsize', 'vexactsize'].includes(normalPropMatch[1])
+                    ) {
                         currentNode.props[normalPropMatch[1]] = normalPropMatch[2].trim();
                     }
                 }
 
                 if (line === '}') {
-                    nodeStack.pop();
+                    blockStack.pop();
                 }
             }
 
@@ -411,14 +767,134 @@
             return { nodes: allNodes, root: rootNode, viewportRect };
         }
 
-        function renderLayout(targetContainer, layoutData, renderOptions) {
-            targetContainer.innerHTML = '';
-            const renderScale = renderOptions.renderScale;
-            const viewportRect = renderOptions.viewportRect;
-            applyViewportToContainer(targetContainer, viewportRect, renderScale);
+        function getNodeById(nodeId) {
+            if (!state.layoutData) {
+                return null;
+            }
+            return state.layoutData.nodes.find(node => node.id === nodeId) || null;
+        }
+
+        function setSelectedNode(nodeId) {
+            const node = getNodeById(nodeId);
+            state.selectedNodeId = node ? node.id : null;
+            updateSelectionUI();
+        }
+
+        function updateSelectionUI() {
+            const selectedNode = getNodeById(state.selectedNodeId);
+
+            container.querySelectorAll('.ui-element').forEach(element => {
+                const isSelected = String(state.selectedNodeId) === element.dataset.nodeId;
+                element.classList.toggle('selected', isSelected);
+            });
+
+            elementList.querySelectorAll('.element-row').forEach(button => {
+                const isSelected = String(state.selectedNodeId) === button.dataset.nodeId;
+                button.classList.toggle('selected', isSelected);
+            });
+
+            if (!selectedNode) {
+                selectionStatus.textContent = 'No node selected.';
+                inspectorPanel.className = 'empty-state';
+                inspectorPanel.textContent = 'Select a widget in the viewport or element list.';
+                selectedTextPreview.style.display = 'none';
+                selectedTextPreview.textContent = '';
+                return;
+            }
+
+            selectionStatus.textContent = `Selected: ${selectedNode.type} ${selectedNode.name}`;
+            renderInspector(selectedNode);
+        }
+
+        function renderInspector(node) {
+            const textAlign = getNodeProp(node, 'text halign', 'left');
+            const textVAlign = getNodeProp(node, 'text valign', 'top');
+            const propEntries = Object.entries(node.props)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join('\n');
+
+            inspectorPanel.className = '';
+            inspectorPanel.innerHTML = `
+                <dl class="inspector-grid">
+                    <dt>Name</dt><dd>${escapeHtml(node.name)}</dd>
+                    <dt>Type</dt><dd>${escapeHtml(node.type)}</dd>
+                    <dt>Parent</dt><dd>${escapeHtml(node.parentName || '(root)')}</dd>
+                    <dt>Depth</dt><dd>${String(getNodeDepth(node))}</dd>
+                    <dt>finalRect</dt><dd>${escapeHtml(formatRect(node.finalRect))}</dd>
+                    <dt>Position</dt><dd>${escapeHtml(node.position ? `${node.position.x}, ${node.position.y}` : '(none)')}</dd>
+                    <dt>Size</dt><dd>${escapeHtml(node.size ? `${node.size.w} x ${node.size.h}` : '(none)')}</dd>
+                    <dt>Alignment</dt><dd>${escapeHtml(`${node.halign} / ${node.valign}`)}</dd>
+                    <dt>Exact</dt><dd>${escapeHtml(`${node.hexactpos},${node.vexactpos} / ${node.hexactsize},${node.vexactsize}`)}</dd>
+                    <dt>Font</dt><dd>${escapeHtml(node.font || '(none)')}</dd>
+                    <dt>Text align</dt><dd>${escapeHtml(`${textAlign} / ${textVAlign}`)}</dd>
+                    <dt>Z-order</dt><dd>${String(getNodeZOrder(node))}</dd>
+                </dl>
+            `;
+
+            if (node.text || propEntries) {
+                const chunks = [];
+                if (node.text) {
+                    chunks.push(`Text:\n${node.text}`);
+                }
+                if (propEntries) {
+                    chunks.push(`Props:\n${propEntries}`);
+                }
+                selectedTextPreview.style.display = 'block';
+                selectedTextPreview.textContent = chunks.join('\n\n');
+            } else {
+                selectedTextPreview.style.display = 'none';
+                selectedTextPreview.textContent = '';
+            }
+        }
+
+        function renderElementList() {
+            if (!state.layoutData) {
+                elementList.innerHTML = '<div class="panel-body empty-state">Load a layout to inspect its node tree.</div>';
+                return;
+            }
+
+            const filter = elementSearchInput.value.trim().toLowerCase();
+            const nodes = [...state.layoutData.nodes].sort((a, b) => a.sourceOrder - b.sourceOrder);
+            const rows = nodes.filter(node => {
+                if (!filter) {
+                    return true;
+                }
+                return node.name.toLowerCase().includes(filter) || node.type.toLowerCase().includes(filter);
+            });
+
+            if (rows.length === 0) {
+                elementList.innerHTML = '<div class="panel-body empty-state">No widgets match the current filter.</div>';
+                return;
+            }
+
+            elementList.innerHTML = '';
+            rows.forEach(node => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'element-row';
+                button.dataset.nodeId = String(node.id);
+                button.style.paddingLeft = (10 + getNodeDepth(node) * 16) + 'px';
+                button.innerHTML = `
+                    <span class="element-row-type">${escapeHtml(shortType(node.type))}</span>
+                    <span class="element-row-name">${escapeHtml(node.name)}</span>
+                    <span class="element-row-rect">${escapeHtml(formatRect(node.finalRect))}</span>
+                `;
+                button.addEventListener('click', () => setSelectedNode(node.id));
+                elementList.appendChild(button);
+            });
+
+            updateSelectionUI();
+        }
+
+        function shortType(typeName) {
+            return typeName.replace('WidgetClass', '');
+        }
+
+        function renderLayout(layoutData, renderScale) {
+            container.innerHTML = '';
+            applyViewportToContainer(layoutData.viewportRect, renderScale);
 
             const sortedNodes = [...layoutData.nodes].sort((a, b) => getNodeZOrder(a) - getNodeZOrder(b));
-
             sortedNodes.forEach(node => {
                 if (!node.finalRect || node.finalRect.w <= 0 || node.finalRect.h <= 0) {
                     return;
@@ -427,11 +903,16 @@
                 const nodeIsText = isTextNode(node);
                 const div = document.createElement('div');
                 div.className = 'ui-element';
+                div.dataset.nodeId = String(node.id);
                 div.style.left = (node.finalRect.x * renderScale) + 'px';
                 div.style.top = (node.finalRect.y * renderScale) + 'px';
                 div.style.width = (node.finalRect.w * renderScale) + 'px';
                 div.style.height = (node.finalRect.h * renderScale) + 'px';
                 div.style.zIndex = String(getNodeZOrder(node));
+
+                if (!toggleBordersInput.checked) {
+                    div.classList.add('borders-hidden');
+                }
 
                 if (nodeIsText) {
                     div.style.backgroundColor = 'transparent';
@@ -449,13 +930,9 @@
                     const textVAlign = getNodeProp(node, 'text valign', 'top');
                     const textWrap = node.type === 'MultilineTextWidgetClass' || getNodeProp(node, 'wrap', '0') === '1';
                     const textLayer = document.createElement('div');
-                    textLayer.style.position = 'absolute';
-                    textLayer.style.inset = '0';
-                    textLayer.style.display = 'flex';
+                    textLayer.className = 'ui-text-layer';
                     textLayer.style.justifyContent = mapTextAlignToFlex(textHAlign);
                     textLayer.style.alignItems = mapTextVAlignToFlex(textVAlign);
-                    textLayer.style.overflow = 'hidden';
-                    textLayer.style.pointerEvents = 'none';
 
                     const textElement = document.createElement('div');
                     textElement.textContent = node.text;
@@ -477,83 +954,297 @@
 
                 const debugLabel = document.createElement('div');
                 debugLabel.className = 'ui-debug-label';
+                if (!toggleDebugLabelsInput.checked) {
+                    debugLabel.classList.add('hidden');
+                }
                 debugLabel.textContent = node.name;
                 debugLabel.style.fontSize = Math.max(8, Math.round(9 * Math.min(renderScale, 1))) + 'px';
                 div.appendChild(debugLabel);
 
-                let tooltip = `${node.type} ${node.name}`;
-                if (node.parentName) {
-                    tooltip += `\nParent: ${node.parentName}`;
-                }
-                tooltip += `\nPosition: ${node.finalRect.x},${node.finalRect.y}`;
-                tooltip += `\nSize: ${node.finalRect.w}x${node.finalRect.h}`;
-                tooltip += `\nZ-order: ${getNodeZOrder(node)}`;
-                if (node.position) {
-                    tooltip += `\nLocal position: ${node.position.x},${node.position.y}`;
-                }
-                if (node.size) {
-                    tooltip += `\nLocal size: ${node.size.w}x${node.size.h}`;
-                }
-                tooltip += `\nhalign: ${node.halign}, valign: ${node.valign}`;
-                tooltip += `\nexactpos: ${node.hexactpos},${node.vexactpos}`;
-                tooltip += `\nexactsize: ${node.hexactsize},${node.vexactsize}`;
-                if (node.text) {
-                    tooltip += `\nText: "${node.text}"`;
-                    tooltip += `\ntext align: ${getNodeProp(node, 'text halign', 'left')} / ${getNodeProp(node, 'text valign', 'top')}`;
-                }
-                if (node.font) {
-                    tooltip += `\nFont: ${node.font}`;
-                }
-
-                div.title = tooltip;
-                targetContainer.appendChild(div);
+                div.title = buildTooltip(node);
+                div.addEventListener('click', event => {
+                    event.stopPropagation();
+                    setSelectedNode(node.id);
+                });
+                container.appendChild(div);
             });
 
-            console.log(`Nodes: ${layoutData.nodes.length}`);
-            console.log(`Viewport: ${viewportRect.w}x${viewportRect.h}, scale: ${renderScale}`);
-            if (layoutData.root) {
-                console.log(`Root: ${layoutData.root.type} "${layoutData.root.name}"`);
-                console.log(`Root finalRect: ${JSON.stringify(layoutData.root.finalRect)}`);
+            container.addEventListener('click', clearSelectionOnViewportClick, { once: true });
+            updateSelectionUI();
+        }
+
+        function clearSelectionOnViewportClick(event) {
+            if (event.target === container) {
+                setSelectedNode(null);
             }
         }
 
-        function renderCurrentLayout() {
-            const viewportRect = getViewportRect();
-            const renderScale = getRenderScale();
-            renderScaleInput.value = renderScale.toFixed(2).replace(/\.00$/, '');
-            applyViewportToContainer(container, viewportRect, renderScale);
-            container.innerHTML = '';
+        function buildTooltip(node) {
+            const lines = [
+                `${node.type} ${node.name}`,
+                `Position: ${roundValue(node.finalRect.x)},${roundValue(node.finalRect.y)}`,
+                `Size: ${roundValue(node.finalRect.w)}x${roundValue(node.finalRect.h)}`,
+                `Z-order: ${getNodeZOrder(node)}`,
+                `halign: ${node.halign}, valign: ${node.valign}`,
+                `exactpos: ${node.hexactpos},${node.vexactpos}`,
+                `exactsize: ${node.hexactsize},${node.vexactsize}`
+            ];
 
-            if (!currentLayoutContent) {
+            if (node.parentName) {
+                lines.splice(1, 0, `Parent: ${node.parentName}`);
+            }
+            if (node.text) {
+                lines.push(`Text: "${node.text}"`);
+                lines.push(`text align: ${getNodeProp(node, 'text halign', 'left')} / ${getNodeProp(node, 'text valign', 'top')}`);
+            }
+            if (node.font) {
+                lines.push(`Font: ${node.font}`);
+            }
+            return lines.join('\n');
+        }
+
+        function renderSanityResults(report) {
+            if (!report) {
+                sanityResults.className = 'empty-state';
+                sanityResults.textContent = 'Run checks after loading QuestMenu.layout or QuestJournal.layout.';
                 return;
             }
 
-            const layoutData = parseLayout(currentLayoutContent, viewportRect);
-            renderLayout(container, layoutData, { viewportRect, renderScale });
+            const lines = [];
+            lines.push(`Profile: ${report.profile}`);
+            lines.push(`Viewport: ${report.viewport.w}x${report.viewport.h}`);
+            lines.push('');
+            report.results.forEach(result => {
+                const icon = result.status === 'ok' ? '[OK]' : result.status === 'warn' ? '[WARN]' : '[FAIL]';
+                lines.push(`${icon} ${result.label}: ${result.message}`);
+            });
+
+            sanityResults.className = '';
+            sanityResults.textContent = lines.join('\n');
         }
 
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
+        function findNodeByName(name) {
+            if (!state.layoutData) {
+                return null;
+            }
+            return state.layoutData.nodes.find(node => node.name === name) || null;
+        }
+
+        function compareRect(node, expectedRect) {
+            if (!node || !node.finalRect) {
+                return false;
+            }
+            return ['x', 'y', 'w', 'h'].every(key => Math.abs(node.finalRect[key] - expectedRect[key]) < 0.001);
+        }
+
+        function runSanityChecks() {
+            if (!state.layoutData || !state.layoutData.root) {
+                state.sanityReport = {
+                    profile: 'No layout loaded',
+                    viewport: getViewportRect(),
+                    results: [{ status: 'warn', label: 'Load layout', message: 'Open QuestMenu.layout or QuestJournal.layout first.' }]
+                };
+                renderSanityResults(state.sanityReport);
+                return;
+            }
+
+            const viewport = state.layoutData.viewportRect;
+            const rootName = state.layoutData.root.name;
+            const results = [];
+
+            if (rootName === 'QuestMenuRoot') {
+                const questPanel = findNodeByName('QuestPanel');
+                const questListbox = findNodeByName('QuestListbox');
+                const acceptButtonText = findNodeByName('AcceptButtonText');
+                const closeButtonText = findNodeByName('CloseButtonText');
+
+                results.push({
+                    status: compareRect(questPanel, { x: (viewport.w - 920) / 2, y: (viewport.h - 560) / 2, w: 920, h: 560 }) ? 'ok' : 'fail',
+                    label: 'QuestPanel',
+                    message: questPanel ? `finalRect ${formatRect(questPanel.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: compareRect(questListbox, { x: ((viewport.w - 920) / 2) + 30, y: ((viewport.h - 560) / 2) + 82, w: 330, h: 250 }) ? 'ok' : 'fail',
+                    label: 'QuestListbox',
+                    message: questListbox ? `finalRect ${formatRect(questListbox.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: compareRect(acceptButtonText, { x: ((viewport.w - 920) / 2) + 390, y: ((viewport.h - 560) / 2) + 420, w: 220, h: 48 }) ? 'ok' : 'fail',
+                    label: 'AcceptButtonText',
+                    message: acceptButtonText ? `finalRect ${formatRect(acceptButtonText.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: closeButtonText && closeButtonText.text === 'Закрыть рот и уйти' ? 'ok' : 'warn',
+                    label: 'CloseButtonText text',
+                    message: closeButtonText ? `"${closeButtonText.text}"` : 'Widget not found'
+                });
+
+                results.push({
+                    status: acceptButtonText && getNodeProp(acceptButtonText, 'text halign', 'left') === 'center' && getNodeProp(acceptButtonText, 'text valign', 'top') === 'center' ? 'ok' : 'warn',
+                    label: 'AcceptButtonText alignment',
+                    message: acceptButtonText ? `${getNodeProp(acceptButtonText, 'text halign', 'left')} / ${getNodeProp(acceptButtonText, 'text valign', 'top')}` : 'Widget not found'
+                });
+
+                state.sanityReport = { profile: 'QuestMenu', viewport, results };
+            } else if (rootName === 'QuestJournalRoot') {
+                const journalPanel = findNodeByName('QuestJournalPanel');
+                const questListbox = findNodeByName('QuestListbox');
+                const descriptionText = findNodeByName('DescriptionText');
+                const closeButtonText = findNodeByName('CloseButtonText');
+
+                results.push({
+                    status: compareRect(journalPanel, { x: (viewport.w - 920) / 2, y: (viewport.h - 560) / 2, w: 920, h: 560 }) ? 'ok' : 'fail',
+                    label: 'QuestJournalPanel',
+                    message: journalPanel ? `finalRect ${formatRect(journalPanel.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: compareRect(questListbox, { x: ((viewport.w - 920) / 2) + 30, y: ((viewport.h - 560) / 2) + 82, w: 330, h: 386 }) ? 'ok' : 'fail',
+                    label: 'QuestListbox',
+                    message: questListbox ? `finalRect ${formatRect(questListbox.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: compareRect(descriptionText, { x: ((viewport.w - 920) / 2) + 390, y: ((viewport.h - 560) / 2) + 82, w: 500, h: 386 }) ? 'ok' : 'fail',
+                    label: 'DescriptionText',
+                    message: descriptionText ? `finalRect ${formatRect(descriptionText.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: closeButtonText && closeButtonText.finalRect.w === 500 && closeButtonText.finalRect.h === 48 ? 'ok' : 'warn',
+                    label: 'CloseButtonText size',
+                    message: closeButtonText ? `finalRect ${formatRect(closeButtonText.finalRect)}` : 'Widget not found'
+                });
+
+                state.sanityReport = { profile: 'QuestJournal', viewport, results };
+            } else {
+                state.sanityReport = {
+                    profile: rootName,
+                    viewport,
+                    results: [{ status: 'warn', label: 'Unsupported profile', message: 'Current layout is not QuestMenuRoot or QuestJournalRoot.' }]
+                };
+            }
+
+            renderSanityResults(state.sanityReport);
+        }
+
+        async function copySelectedInfo() {
+            const selectedNode = getNodeById(state.selectedNodeId);
+            if (!selectedNode) {
+                selectionStatus.textContent = 'No node selected to copy.';
+                return;
+            }
+
+            const text = [
+                `name: ${selectedNode.name}`,
+                `type: ${selectedNode.type}`,
+                `parent: ${selectedNode.parentName || '(root)'}`,
+                `finalRect: ${JSON.stringify(selectedNode.finalRect)}`,
+                `position: ${selectedNode.position ? JSON.stringify(selectedNode.position) : 'null'}`,
+                `size: ${selectedNode.size ? JSON.stringify(selectedNode.size) : 'null'}`,
+                `halign/valign: ${selectedNode.halign} / ${selectedNode.valign}`,
+                `exactpos/exactsize: ${selectedNode.hexactpos},${selectedNode.vexactpos} / ${selectedNode.hexactsize},${selectedNode.vexactsize}`,
+                `font: ${selectedNode.font || ''}`,
+                `text: ${selectedNode.text || ''}`
+            ].join('\n');
+
+            try {
+                await navigator.clipboard.writeText(text);
+                selectionStatus.textContent = `Copied: ${selectedNode.type} ${selectedNode.name}`;
+            } catch (error) {
+                const helper = document.createElement('textarea');
+                helper.value = text;
+                document.body.appendChild(helper);
+                helper.select();
+                document.execCommand('copy');
+                helper.remove();
+                selectionStatus.textContent = `Copied: ${selectedNode.type} ${selectedNode.name}`;
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function refreshLayoutFromState() {
+            const viewportRect = getViewportRect();
+            const renderScale = getRenderScale();
+            renderScaleInput.value = renderScale.toFixed(2).replace(/\.00$/, '');
+            applyViewportToContainer(viewportRect, renderScale);
+
+            if (!state.decodedContent) {
+                container.innerHTML = '';
+                renderElementList();
+                renderSanityResults(state.sanityReport);
+                updateSelectionUI();
+                return;
+            }
+
+            state.layoutData = parseLayout(state.decodedContent, viewportRect);
+
+            if (!getNodeById(state.selectedNodeId)) {
+                state.selectedNodeId = state.layoutData.root ? state.layoutData.root.id : null;
+            }
+
+            renderLayout(state.layoutData, renderScale);
+            renderElementList();
+            updateSelectionUI();
+            renderSanityResults(state.sanityReport);
+        }
+
+        function updateDecodedContent() {
+            state.decodedContent = decodeLayoutBytes(state.fileBytes, encodingSelect.value);
+            state.layoutData = null;
+            state.sanityReport = null;
+            loadedFileStatus.textContent = state.fileName
+                ? `Loaded: ${state.fileName} (${encodingSelect.value})`
+                : 'No file loaded.';
+            refreshLayoutFromState();
+        }
+
+        fileInput.addEventListener('change', event => {
+            const file = event.target.files[0];
             if (!file) {
                 return;
             }
 
+            state.fileName = file.name;
             const reader = new FileReader();
-            reader.onload = function(loadEvent) {
-                currentLayoutContent = loadEvent.target.result;
-                renderCurrentLayout();
+            reader.onload = loadEvent => {
+                state.fileBytes = new Uint8Array(loadEvent.target.result);
+                updateDecodedContent();
             };
-            reader.readAsText(file);
+            reader.readAsArrayBuffer(file);
         });
 
-        viewportPresetSelect.addEventListener('change', renderCurrentLayout);
-        renderScaleInput.addEventListener('input', renderCurrentLayout);
-        renderScaleInput.addEventListener('change', renderCurrentLayout);
-        renderCurrentLayout();
+        encodingSelect.addEventListener('change', () => {
+            if (state.fileBytes) {
+                updateDecodedContent();
+            }
+        });
+
+        viewportPresetSelect.addEventListener('change', refreshLayoutFromState);
+        renderScaleInput.addEventListener('input', refreshLayoutFromState);
+        renderScaleInput.addEventListener('change', refreshLayoutFromState);
+        toggleDebugLabelsInput.addEventListener('change', refreshLayoutFromState);
+        toggleBordersInput.addEventListener('change', refreshLayoutFromState);
+        toggleGridInput.addEventListener('change', refreshLayoutFromState);
+        elementSearchInput.addEventListener('input', renderElementList);
+        copySelectedButton.addEventListener('click', copySelectedInfo);
+        runSanityButton.addEventListener('click', runSanityChecks);
+
+        refreshLayoutFromState();
     </script>
 
     <footer>
-        &copy; 2026 Silver_77_Quests. Read-only viewer, no layout data is saved.
+        &copy; 2026 Silver_77_Quests. Read-only viewer only: no layout files are rewritten, formatted, or regenerated.
     </footer>
 </body>
 </html>
