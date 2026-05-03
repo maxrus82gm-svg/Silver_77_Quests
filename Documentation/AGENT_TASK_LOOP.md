@@ -254,241 +254,36 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 065 FIX 7 — Довести ядро DayZ layout viewer: parentId/parentName/text/font/props и безопасные absX/absY
+Статус:
+Нет активной задачи.
 
-Контекст:
-Предыдущий шаг стал ближе к цели.
-В DayZ_layout/dayz_layout_viewer.html уже появились:
-- parseLayout(content)
-- allNodes / rootNode
-- parent / children
-- absX / absY
-- renderLayout(container, layoutData)
-
-Но результат ещё не принят полностью.
-
-Что нужно исправить:
-1. Node сейчас неполный.
-2. Не хватает parentId / parentName.
-3. Не парсятся text и font.
-4. Не сохраняются props.
-5. calculateAbsolutePositions опасно делает return, если у node нет position.
-6. renderLayout не показывает имя элемента на самом блоке.
-7. Если color нет, сейчас используется заливка по умолчанию, а нужен transparent + видимая рамка.
-
-Где работать:
-ТОЛЬКО:
-DayZ_layout/dayz_layout_viewer.html
-
-Запрещено менять:
-- Documentation/AGENT_TASK_LOOP.md
-- Documentation/QUEST_LOGIC_SPEC.md
-- Silver_77_Quests_Client/
-- Silver_77_Quests_Server/
-- любые .layout файлы проекта
-- любые .json файлы
-- любые файлы вне DayZ_layout/
-- Git
-
-Что сделать:
-
-1. В структуру каждого node добавить поля:
-   - parentId
-   - parentName
-   - text
-   - font
-   - props
-
-Node должен иметь минимум такую структуру:
-
-{
-  id: number,
-  type: string,
-  name: string,
-  parent: object или null,
-  parentId: number или null,
-  parentName: string,
-  children: [],
-  position: null или { x:number, y:number },
-  size: null или { w:number, h:number },
-  color: null или { r:number, g:number, b:number, a:number },
-  text: "",
-  font: "",
-  props: {},
-  absX: 0,
-  absY: 0
-}
-
-2. При создании node:
-   - parent = nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null
-   - parentId = parent ? parent.id : null
-   - parentName = parent ? parent.name : ""
-   - если parent есть, добавить node в parent.children
-   - добавить node в allNodes
-   - push node в nodeStack
-
-3. Парсить text:
-
-Формат:
-text "ВЗЯТЬ КВЕСТ"
+Последняя завершённая задача:
+TASK 065 FIX 7 — Довести ядро DayZ layout viewer: parentId/parentName/text/font/props и безопасные absX/absY.
 
 Результат:
-currentNode.text = "ВЗЯТЬ КВЕСТ"
+Выполнено и принято как ядро viewer-а.
 
-Регулярка:
-line.match(/^text\s+"(.*)"$/)
+В DayZ_layout/dayz_layout_viewer.html:
+- добавлены parentId / parentName
+- добавлены text / font / props
+- парсятся text и font
+- парсятся quoted props вида "text halign" center
+- calculateAbsolutePositions больше не делает return при отсутствии position
+- renderLayout использует absX / absY
+- на визуальных блоках появляется подпись node.name
+- random color убран
+- если color нет: transparent + dashed border
+- DOMParser не используется
+- position[] / size[] / color[] не используются
 
-4. Парсить font:
-
-Формат:
-font "gui/fonts/metron22"
-
-Результат:
-currentNode.font = "gui/fonts/metron22"
-
-Регулярка:
-line.match(/^font\s+"(.*)"$/)
-
-5. Парсить свойства в кавычках:
-
-Формат:
-"exact text" 1
-"text halign" center
-"text valign" center
-
-Результат:
-currentNode.props["exact text"] = "1"
-currentNode.props["text halign"] = "center"
-currentNode.props["text valign"] = "center"
-
-Регулярка:
-line.match(/^"([^"]+)"\s+(.*)$/)
-
-6. Парсить обычные свойства в props:
-
-Формат:
-ignorepointer 0
-halign left_ref
-valign top_ref
-hexactpos 1
-vexactpos 1
-hexactsize 1
-vexactsize 1
-
-Результат:
-currentNode.props.ignorepointer = "0"
-currentNode.props.halign = "left_ref"
-currentNode.props.valign = "top_ref"
-currentNode.props.hexactpos = "1"
-currentNode.props.vexactpos = "1"
-currentNode.props.hexactsize = "1"
-currentNode.props.vexactsize = "1"
-
-Регулярка:
-line.match(/^([A-Za-z0-9_]+)\s+(.*)$/)
-
-Важно:
-position, size, color, text, font должны записываться в отдельные поля.
-Остальные свойства — в props.
-
-7. Исправить calculateAbsolutePositions.
-
-Сейчас нельзя делать:
-if (!node.position) return;
-
-Почему:
-Если у parent нет position, дети всё равно должны обрабатываться.
-
-Правильно:
-- localX = node.position ? node.position.x : 0
-- localY = node.position ? node.position.y : 0
-- node.absX = parentAbsX + localX
-- node.absY = parentAbsY + localY
-- потом обязательно пройти по children
-
-Пример:
-
-function calculateAbsolutePositions(node, parentAbsX = 0, parentAbsY = 0) {
-    const localX = node.position ? node.position.x : 0;
-    const localY = node.position ? node.position.y : 0;
-
-    node.absX = parentAbsX + localX;
-    node.absY = parentAbsY + localY;
-
-    node.children.forEach(child => {
-        calculateAbsolutePositions(child, node.absX, node.absY);
-    });
-}
-
-8. Исправить renderLayout.
-
-Для каждого div нужно показывать имя элемента на блоке:
-- div.textContent = node.name
-
-Если node.type === "TextWidgetClass" и node.text не пустой:
-- div.textContent = node.name + ": " + node.text
-
-9. Если у node нет color:
-- backgroundColor = "transparent"
-- border должен быть видимый
-- НЕ использовать random color
-- НЕ использовать плотную серую заливку
-
-10. Tooltip/title должен показывать:
-- type
-- name
-- parentName
-- position
-- absolute position
-- size
-- text
-- font
-
-11. Не делать пока:
-- большой UI-инспектор
-- полноценную панель свойств
-- сложный список элементов
-- экспорт
-- генерацию layout-кода
-
-Это будет отдельной задачей после принятия ядра.
-
-Критерии готовности:
-1. Изменён только DayZ_layout/dayz_layout_viewer.html.
-2. AGENT_TASK_LOOP.md не изменён.
-3. Файлы мода не изменены.
-4. Node содержит parentId, parentName, text, font, props.
-5. text и font парсятся.
-6. quoted props парсятся.
-7. обычные props парсятся.
-8. calculateAbsolutePositions не делает return при отсутствии position.
-9. renderLayout использует absX/absY.
-10. На визуальных блоках видны имена элементов.
-11. Если color нет — transparent + visible border.
-12. Нет DOMParser.
-13. Нет position[] / size[] / color[].
-14. Нет random color.
-15. Нет сохранения файлов.
-16. Нет генерации layout-кода.
-
-Формат отчёта:
-
-AGENT REPORT
-
-DONE:
-- что сделано
-
-CHANGED FILES:
-- какие файлы изменены
-
-DIFF:
-- кратко
-
-PROBLEMS:
-- реальные проблемы, если есть
-
-CONCLUSION:
-- краткий вывод
+Примечание:
+Viewer ещё не завершён полностью. Следующий логичный шаг — отдельная задача TASK 066 на UI-инспектор:
+- список элементов
+- панель свойств
+- клик по visual div
+- клик по списку
+- кнопка Обновить
+- масштаб 50/75/100/125
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -510,41 +305,38 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- Player data RPC переведён на chunked sync по аналогии с config sync.
-- Сервер больше не отправляет весь player data JSON одной строкой через RPC.
-- Добавлена серверная отправка player data чанками через Param3<int,int,string>.
-- param1 = chunkIndex.
-- param2 = totalChunks.
-- param3 = chunkPayload.
-- Использован безопасный размер чанка 512 байт / размер config sync.
-- На клиенте добавлен отдельный buffer для player data chunks.
-- Клиент собирает player data payload отдельно от config payload.
-- ctx.Read выполняется прямо внутри OnRPC case SILVER77_QUEST_RPC_PLAYER_DATA.
-- ParamsReadContext не передаётся в helper-функции.
-- После сборки полного payload вызывается Silver77_HandleQuestPlayerDataPayload(payload).
-- Config sync не затронут.
-- Серверная бизнес-логика progress не менялась.
-- JSON и layout не менялись.
+- Расширена структура node в DayZ layout viewer.
+- Добавлены parentId и parentName.
+- Добавлены поля text, font и props.
+- Реализован парсинг text.
+- Реализован парсинг font.
+- Реализован парсинг quoted props, например "text halign" center.
+- Реализован парсинг дополнительных normal props.
+- Исправлен calculateAbsolutePositions: отсутствие position больше не останавливает обход children.
+- renderLayout теперь использует absX / absY.
+- На визуальных блоках отображается имя node.name.
+- Если color отсутствует, используется transparent background + видимая dashed border.
+- random color убран.
+- DOMParser не используется.
+- position[] / size[] / color[] не используются.
+- Export / Generate / Save не добавлялись.
 
 CHANGED FILES:
-- Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
-- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
+- DayZ_layout/dayz_layout_viewer.html
 
 DIFF:
-- Server: прямая отправка Param3<int,int,string>(0,1,payload) заменена на SendPlayerDataPayloadChunks(player, payload).
-- Server: добавлена отправка player data чанками.
-- Client: добавлены g_Silver77_PlayerDataSyncChunks и g_Silver77_PlayerDataSyncExpectedChunkCount.
-- Client: добавлены Silver77_ResetPlayerDataSyncBuffer() и Silver77_StorePlayerDataSyncChunk().
-- Client: OnRPC case SILVER77_QUEST_RPC_PLAYER_DATA теперь читает chunk, собирает payload и только после сборки вызывает обработчик payload.
+- Расширена модель node.
+- Добавлен парсинг text/font/props.
+- Исправлен расчёт absolute position.
+- Улучшен renderLayout для отображения имён и прозрачных блоков без color.
 
 PROBLEMS:
-- Нет.
+- В одном из коммитов снова фигурировали изменения Documentation/AGENT_TASK_LOOP.md. Если это было сделано агентом, это нарушение ограничения. Для чистого технического коммита желательно оставить изменённым только DayZ_layout/dayz_layout_viewer.html.
 
 CONCLUSION:
-- TASK 064 выполнен.
-- Ошибка “String CORRUPTED - FIX OnStoreLoad()” устранена.
-- Player data sync работает через chunked RPC.
-- В игре подтверждено: UI получает реальные статусы квестов и показывает “УЖЕ АКТИВЕН”.
+- TASK 065 FIX 7 принят как завершение ядра DayZ layout viewer.
+- Viewer уже имеет рабочую основу: парсер реального DayZ .layout, дерево parent/children, absX/absY, text/font/props и базовый визуальный render.
+- Следующий шаг — отдельная задача TASK 066 на UI-инспектор.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
@@ -562,47 +354,49 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 064 REVIEW
+TASK 065 FIX 7 REVIEW
 
 Статус:
-Принято.
+Принято как ядро viewer-а.
 
-Что было:
-Клиент падал при чтении player data RPC:
+Что было сделано хорошо:
+- Viewer больше не пытается читать .layout как XML.
+- Viewer больше не использует ошибочный формат position[] / size[] / color[].
+- Используется реальный текстовый формат DayZ .layout:
+  position 30 82
+  size 330 250
+  color 0.0824 0.0824 0.0824 0.96
+- Парсер строит иерархию через stack.
+- Узлы получили parentId / parentName.
+- Узлы получили text / font / props.
+- Появился расчёт absX / absY.
+- renderLayout использует absolute position.
+- На блоках отображается имя элемента.
+- Если color отсутствует, используется transparent + видимая рамка.
+- random color убран.
 
-Reason: !!! String CORRUPTED - FIX OnStoreLoad() !!!
-Silver_77_Quests/scripts/4_World/questclientrpc.c:70 Function OnRPC
+Важный вывод:
+Текущий viewer уже можно считать рабочим ядром для дальнейшей разработки. Он ещё не полноценный UI-инспектор, но основная модель данных теперь правильная.
 
-Сервер при этом корректно:
-- получал quest progress request RPC;
-- загружал player progress из JSON;
-- видел реальные статусы active/completed;
-- сериализовал PlayerQuestData;
-- отправлял payload клиенту.
+Что ещё не завершено:
+- Нет полноценного списка элементов.
+- Нет панели свойств.
+- Нет выбора элемента кликом по списку.
+- Нет выбора элемента кликом по visual div.
+- Нет кнопки Обновить.
+- Нет масштаба 50/75/100/125.
 
-Проблема:
-Player data JSON отправлялся одной строкой через RPC.
-Для DayZ/Enforce такой способ оказался ненадёжным: строка повреждалась при передаче/чтении RPC.
+Следующий рекомендуемый шаг:
+TASK 066 — добавить UI-инспектор к DayZ layout viewer:
+- список элементов
+- панель свойств
+- click select visual div
+- click select list row
+- кнопка Обновить
+- масштаб просмотра
 
-Решение:
-Player data sync переведён на chunked sync по аналогии с config sync.
-
-Итоговая архитектура:
-- сервер режет player data payload на chunks;
-- каждый chunk отправляется через Param3<int,int,string>;
-- клиент читает ctx прямо в OnRPC case;
-- клиент собирает chunks в отдельный player data buffer;
-- после сборки полного payload вызывает Silver77_HandleQuestPlayerDataPayload(payload);
-- ParamsReadContext не передаётся в helper-функции.
-
-Проверка в игре:
-- ошибка String CORRUPTED больше не проявляется;
-- UI начал получать реальные статусы квестов;
-- вместо повторного “ВЗЯТЬ КВЕСТ” отображается корректное состояние “УЖЕ АКТИВЕН”.
-
-Вывод:
-TASK 064 успешно решил проблему client-server sync.
-Полученный опыт нужно закрепить в правилах агента: любые JSON/string payload для DayZ RPC передавать чанками, а не одной строкой.
+Замечание по процессу:
+Если изменения в Documentation/AGENT_TASK_LOOP.md сделал агент, это нарушение ограничений. Для таких технических задач агент должен менять только DayZ_layout/dayz_layout_viewer.html. Документацию обновляет пользователь вручную после review.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
@@ -637,7 +431,7 @@ TASK 064 успешно решил проблему client-server sync.
 15. Соблюдать БЛОК 4.1 — КОДИРОВКА И КИРИЛЛИЦА.
 16. Соблюдать БЛОК 4.2 — DAYZ CLIENT-SERVER RPC И СИНХРОНИЗАЦИЯ.
 17. Учитывать БЛОК 6 — ПОДСКАЗКИ ОТ ПОЛЬЗОВАТЕЛЯ, если задача связана с UI, layout-файлами или текстами.
-18. Учитывать Documentation/QUEST_LOGIC_SPEC.md, если задача связана с логикой квестов, JSON-квестами, редактором квестов, Offer, Completion, Reward, requiredQuestIds, серверной обработкой квестов или клиентской логикой отображения квестов.
+18. Учитывать Documentation/QUEST_LOGIC_SPEC.md, если задача связана с логикой квестов, JSON-квестами, редактором квестов, Offer, Completion, Reward, 	requiredQuestIds, серверной обработкой квестов или клиентской логикой отображения квестов.
 19. Git контролирует только пользователь.
 20. Агент НЕ делает git commit.
 21. Агент НЕ делает git push.
@@ -649,6 +443,8 @@ TASK 064 успешно решил проблему client-server sync.
 27. Если задача связана с RPC, сначала подтвердить транспорт и формат данных, и только потом менять UI.
 28. Не считать UI первопричиной, пока не подтверждено, что данные успешно применены на клиенте.
 29. Отчёт должен быть кратким: только факты, без длинных объяснений, если подробный анализ не запрошен отдельно.
+30. Для задач по отдельным инструментам в папке DayZ_layout агент должен менять только явно указанные файлы внутри DayZ_layout и не трогать документацию, мод, JSON или layout-файлы проекта.
+31. Если полная задача уже записана в БЛОК 1, в чат агенту отправляется только короткая команда. Агент не должен брать задачи из текста чата, если они расходятся с БЛОКОМ 1.
 
 --------------------------------------------------------------------------------
 ФОРМАТ ОТЧЁТА В ЧАТ:
@@ -1068,6 +864,11 @@ UI начал показывать корректное состояние, на
 - TASK 061 — Диагностическая проверка Param1<string> вместо Param3 — временный тест, позже откатан
 - TASK 063 — Возврат player data RPC на Param3 после диагностики — принято
 - TASK 064 — Player data RPC переведён на chunked sync как config sync — принято. Исправлена ошибка “String CORRUPTED - FIX OnStoreLoad()”. В игре подтверждено: UI получает реальные статусы квестов и показывает “УЖЕ АКТИВЕН”.
+- TASK 065 — DayZ layout viewer — начата разработка отдельного read-only просмотрщика .layout файлов в DayZ_layout/.
+- TASK 065 FIX 1–4 — несколько неудачных подходов к viewer: plain text viewer, XML/DOMParser, неверный формат position[] / size[] / color[]. Отклонено.
+- TASK 065 FIX 5 — парсер переведён на stack-подход для вложенных виджетов. Частично принято как промежуточный шаг.
+- TASK 065 FIX 6 — добавлено ядро дерева parent/children и absX/absY. Частично принято как шаг по ядру.
+- TASK 065 FIX 7 — принято. Ядро DayZ layout viewer доведено: parentId/parentName, text/font/props, безопасный absX/absY, подписи node.name, transparent border без color.
 
 
 
@@ -1084,6 +885,58 @@ UI начал показывать корректное состояние, на
 - текстами
 - визуальными элементами
 - восстановлением кириллицы
+--------------------------------------------------------------------------------
+ОПЫТ ПО DayZ .layout VIEWER:
+--------------------------------------------------------------------------------
+
+- DayZ .layout в проекте НЕ XML.
+- Нельзя использовать DOMParser.
+- Нельзя использовать формат position[] = {x,y}, size[] = {w,h}, color[] = {r,g,b,a}.
+- Реальный формат проекта:
+  position 30 82
+  size 330 250
+  color 0.0824 0.0824 0.0824 0.96
+
+- Начало виджета:
+  <WidgetClassType> <ElementName> {
+
+  Примеры:
+  FrameWidgetClass QuestMenuRoot {
+  PanelWidgetClass QuestPanel {
+  TextListboxWidgetClass QuestListbox {
+  ButtonWidgetClass AcceptButton {
+  TextWidgetClass AcceptButtonText {
+
+- Отдельная строка "{" не создаёт node.
+  Это только начало блока children.
+
+- Строка "}" закрывает текущий node.
+
+- Для парсинга нужен stack nodes:
+  новый WidgetClass → создать node, связать с parent, nodes.push, stack.push
+  строка } → stack.pop
+  свойства → писать в stack[stack.length - 1]
+
+- Нельзя использовать один currentElement для вложенного layout.
+  Он ломает parent/children, потому что каждый новый вложенный виджет перезаписывает текущий элемент.
+
+- Для визуального отображения нужны absX / absY:
+  child.absX = parent.absX + child.position.x
+  child.absY = parent.absY + child.position.y
+
+- Если у node нет position, это не ошибка:
+  local position считать как 0,0
+  children всё равно нужно обрабатывать.
+
+- Если у node нет color:
+  использовать transparent background + видимую рамку.
+  Не использовать random color, потому что визуал должен быть стабильным между обновлениями.
+
+- DayZ layout viewer должен быть read-only:
+  ничего не сохранять
+  ничего не генерировать
+  не изменять .layout
+  не форматировать .layout
 
 --------------------------------------------------------------------------------
 ПОДСКАЗКИ:
