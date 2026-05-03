@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визуальный просмотр .layout файлов DayZ</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 30px; background: #f5f5f5; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        #file-input { margin: 20px 0; }
+        #visual-container {
+            position: relative;
+            width: 1000px; height: 600px;
+            border: 2px solid #34495e; background: #fff; overflow: hidden; margin-top: 20px;
+            background-image: linear-gradient(#ccc 1px, transparent 1px),
+                            linear-gradient(90deg, #ccc 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .ui-element {
+            position: absolute;
+            border: 1px solid black;
+            box-sizing: border-box;
+            opacity: 0.7;
+        }
+        footer { margin-top: 30px; color: #7f8c8d; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>Визуальный просмотрщик .layout файлов (только чтение)</h1>
+    <p><strong>Внимание:</strong> Загрузите .layout файл для визуализации UI-элементов.</p>
+    
+    <label for="file-input">Выберите .layout файл:</label>
+    <input type="file" id="file-input" accept=".layout" />
+    
+    <div id="visual-container"></div>
+
+    <script>
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const xmlContent = e.target.result;
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+
+                const container = document.getElementById('visual-container');
+                container.innerHTML = '';
+
+                const elements = xmlDoc.querySelectorAll('*');
+                elements.forEach(el => {
+                    const pos = el.querySelector('position') || {};
+                    const size = el.querySelector('size') || {};
+                    const color = el.querySelector('color') || {};
+
+                    const x = parseFloat(pos.getAttribute?.('x')) || 0;
+                    const y = parseFloat(pos.getAttribute?.('y')) || 0;
+                    const w = parseFloat(size.getAttribute?.('w')) || 0;
+                    const h = parseFloat(size.getAttribute?.('h')) || 0;
+
+                    if (w <= 0 || h <= 0) return;
+
+                    const r = parseInt(color.getAttribute?.('r')) || 0;
+                    const g = parseInt(color.getAttribute?.('g')) || 0;
+                    const b = parseInt(color.getAttribute?.('b')) || 0;
+                    const a = parseFloat(color.getAttribute?.('a')) || 1;
+
+                    const div = document.createElement('div');
+                    div.className = 'ui-element';
+                    div.style.left = x + 'px';
+                    div.style.top = y + 'px';
+                    div.style.width = w + 'px';
+                    div.style.height = h + 'px';
+                    div.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+
+                    div.title = `x:${x} y:${y} w:${w} h:${h}`;
+                    container.appendChild(div);
+                });
+            };
+            reader.readAsText(file);
+        });
+    </script>
+
+    <footer>
+        &copy; 2026 Silver_77_Quests. Только для просмотра. Никакие данные не сохраняются.
+    </footer>
+</body>
+</html>

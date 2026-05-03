@@ -286,44 +286,144 @@ TASK 064 — Перевести player data RPC на chunked sync как config 
 ## НАЧАЛО ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
+
+TASK 065 FIX — Переделать plain text viewer в визуальный read-only DayZ layout viewer
+
+Контекст:
+Предыдущий результат не принят.
+Был создан просмотрщик, который просто показывает .layout как plain text.
+Это безопасно, но не выполняет цель задачи.
+
+Что хорошо:
+- агент работал только в DayZ_layout/
+- другие файлы проекта не тронуты
+
+Проблема:
+- нужен не просмотр текста .layout
+- нужен визуальный просмотрщик:
+  .layout код → прямоугольники UI по position / size / color
+- нужно видеть панели, кнопки, списки и тексты примерно так, как они расположены в DayZ layout
+
+Важно:
+Через input type="file" браузер МОЖЕТ читать выбранный пользователем локальный .layout файл через FileReader.
+Нам не нужен прямой доступ к файловой системе.
+Нам не нужен backend.
+Нужно читать выбранный файл и строить визуальную схему.
+
+Где работать:
+- только DayZ_layout/dayz_layout_viewer.html
+
+Запрещено менять:
+- Documentation/AGENT_TASK_LOOP.md
+- Documentation/QUEST_LOGIC_SPEC.md
+- Silver_77_Quests_Client/
+- Silver_77_Quests_Server/
+- любые .layout файлы проекта
+- любые .json файлы
+- любые файлы вне DayZ_layout/
+- Git
+
+Что сделать:
+1. Оставить или добавить input type="file" для выбора .layout файла.
+2. FileReader должен читать выбранный .layout файл как текст.
+3. Добавить кнопку “Обновить”.
+4. Кнопка “Обновить” должна заново читать выбранный файл через FileReader и перерисовывать визуал.
+5. Добавить парсер DayZ layout, который распознаёт:
+   - WidgetClass type
+   - name
+   - вложенность через { }
+   - position x y
+   - size w h
+   - color r g b a
+   - text "..."
+   - font "..."
+   - ignorepointer
+   - halign / valign
+   - hexactpos / vexactpos
+   - hexactsize / vexactsize
+6. На основе распарсенных элементов нарисовать визуальные HTML-блоки:
+   - FrameWidgetClass как контейнер
+   - PanelWidgetClass как панель
+   - ButtonWidgetClass как кнопка/прямоугольник
+   - TextWidgetClass как текст
+   - MultilineTextWidgetClass как многострочный текстовый блок
+   - TextListboxWidgetClass как прямоугольник списка
+7. Учитывать position и size из .layout.
+8. Учитывать color через rgba(r*255, g*255, b*255, a).
+9. Если color не указан — показывать прозрачный блок с видимой рамкой.
+10. Показывать имя элемента на визуальном блоке.
+11. Добавить список найденных элементов:
+    - name
+    - type
+    - position
+    - size
+12. При клике по визуальному блоку:
+    - подсветить элемент
+    - показать свойства элемента
+13. При клике по элементу в списке:
+    - подсветить соответствующий визуальный блок
+    - показать свойства элемента
+14. Панель свойств должна показывать:
+    - name
+    - type
+    - parent
+    - position
+    - size
+    - color
+    - text
+    - font
+    - ignorepointer
+    - halign
+    - valign
+    - hexactpos
+    - vexactpos
+    - hexactsize
+    - vexactsize
+15. Добавить масштаб просмотра:
+    - 50%
+    - 75%
+    - 100%
+    - 125%
+16. Ничего не сохранять.
+17. Ничего не генерировать.
+18. Не добавлять Export/Generate.
+19. Не изменять исходный .layout.
+20. Не форматировать layout-код.
+21. Не использовать внешние библиотеки или CDN.
+22. Всё должно быть в одном файле:
+    DayZ_layout/dayz_layout_viewer.html
+
+Критерии готовности:
+1. Можно выбрать .layout файл.
+2. После выбора видны прямоугольники/кнопки/тексты согласно position и size.
+3. Цвета отображаются, если color указан.
+4. Видны имена элементов.
+5. Есть список найденных элементов.
+6. Есть панель свойств.
+7. Клик по элементу работает.
+8. Кнопка “Обновить” перечитывает выбранный файл.
+9. Исходные файлы не изменяются.
+10. Изменён только DayZ_layout/dayz_layout_viewer.html.
+
+Формат отчёта:
+
 AGENT REPORT
 
 DONE:
-- Player data RPC переведён на chunked sync по аналогии с config sync.
-- Сервер больше не отправляет весь player data JSON одной строкой через RPC.
-- Добавлена серверная отправка player data чанками через Param3<int,int,string>.
-- param1 = chunkIndex.
-- param2 = totalChunks.
-- param3 = chunkPayload.
-- Использован безопасный размер чанка 512 байт / размер config sync.
-- На клиенте добавлен отдельный buffer для player data chunks.
-- Клиент собирает player data payload отдельно от config payload.
-- ctx.Read выполняется прямо внутри OnRPC case SILVER77_QUEST_RPC_PLAYER_DATA.
-- ParamsReadContext не передаётся в helper-функции.
-- После сборки полного payload вызывается Silver77_HandleQuestPlayerDataPayload(payload).
-- Config sync не затронут.
-- Серверная бизнес-логика progress не менялась.
-- JSON и layout не менялись.
+- что сделано
 
 CHANGED FILES:
-- Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
-- Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c
+- какие файлы изменены
 
 DIFF:
-- Server: прямая отправка Param3<int,int,string>(0,1,payload) заменена на SendPlayerDataPayloadChunks(player, payload).
-- Server: добавлена отправка player data чанками.
-- Client: добавлены g_Silver77_PlayerDataSyncChunks и g_Silver77_PlayerDataSyncExpectedChunkCount.
-- Client: добавлены Silver77_ResetPlayerDataSyncBuffer() и Silver77_StorePlayerDataSyncChunk().
-- Client: OnRPC case SILVER77_QUEST_RPC_PLAYER_DATA теперь читает chunk, собирает payload и только после сборки вызывает обработчик payload.
+- кратко
 
 PROBLEMS:
-- Нет.
+- реальные проблемы, если есть
 
 CONCLUSION:
-- TASK 064 выполнен.
-- Ошибка “String CORRUPTED - FIX OnStoreLoad()” устранена.
-- Player data sync работает через chunked RPC.
-- В игре подтверждено: UI получает реальные статусы квестов и показывает “УЖЕ АКТИВЕН”.
+- краткий вывод
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
