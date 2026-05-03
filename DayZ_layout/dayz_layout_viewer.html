@@ -45,98 +45,144 @@
                 const container = document.getElementById('visual-container');
                 container.innerHTML = '';
 
-                // Построчный stack-парсер для .layout файлов DayZ
-                const lines = content.split('\n');
-                const nodeStack = []; // стек узлов (настоящий стек)
-                const elements = []; // найденные UI-элементы для визуализации
-                
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
+                // Ядро парсера .layout файлов DayZ с иерархией и абсолютными координатами
+                function parseLayout(content) {
+                    const lines = content.split('\n');
+                    const nodeStack = []; // стек для отслеживания родительских узлов
+                    const allNodes = []; // все узлы для построения дерева
+                    let rootNode = null;
                     
-                    // Ищем начало нового UI-элемента (класс с именем)
-                    const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
-                    if (classMatch) {
-                        // Создаем новый узел и добавляем в стек
-                        const newNode = {
-                            type: classMatch[1],
-                            name: classMatch[2],
-                            position: null,
-                            size: null,
-                            color: null
-                        };
-                        nodeStack.push(newNode);
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        
+                        // Ищем начало нового UI-элемента (класс с именем)
+                        const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
+                        if (classMatch) {
+                            // Создаем новый узел
+                            const newNode = {
+                                id: allNodes.length,
+                                type: classMatch[1],
+                                name: classMatch[2],
+                                position: null,
+                                size: null,
+                                color: null,
+                                parent: nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null,
+                                children: [],
+                                absX: 0,
+                                absY: 0
+                            };
+                            
+                            // Связываем с родителем
+                            if (newNode.parent) {
+                                newNode.parent.children.push(newNode);
+                            } else {
+                                rootNode = newNode;
+                            }
+                            
+                            allNodes.push(newNode);
+                            nodeStack.push(newNode);
+                        }
+                        
+                        // Если стек не пустой, парсим свойства текущего узла
+                        if (nodeStack.length > 0) {
+                            const currentNode = nodeStack[nodeStack.length - 1];
+                            
+                            // Парсим position (формат: position x y)
+                            const posMatch = line.match(/^\s*position\s+([\d\.]+)\s+([\d\.]+)/);
+                            if (posMatch) {
+                                currentNode.position = {
+                                    x: parseFloat(posMatch[1]) || 0,
+                                    y: parseFloat(posMatch[2]) || 0
+                                };
+                            }
+                            
+                            // Парсим size (формат: size w h)
+                            const sizeMatch = line.match(/^\s*size\s+([\d\.]+)\s+([\d\.]+)/);
+                            if (sizeMatch) {
+                                currentNode.size = {
+                                    w: parseFloat(sizeMatch[1]) || 0,
+                                    h: parseFloat(sizeMatch[2]) || 0
+                                };
+                            }
+                            
+                            // Парсим color (формат: color r g b a)
+                            const colorMatch = line.match(/^\s*color\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)/);
+                            if (colorMatch) {
+                                currentNode.color = {
+                                    r: parseFloat(colorMatch[1]) || 0,
+                                    g: parseFloat(colorMatch[2]) || 0,
+                                    b: parseFloat(colorMatch[3]) || 0,
+                                    a: parseFloat(colorMatch[4]) || 1
+                                };
+                            }
+                        }
+                        
+                        // Обрабатываем закрывающую фигурную скобку
+                        if (line === '}') {
+                            nodeStack.pop();
+                        }
                     }
                     
-                    // Если стек не пустой, ищем свойства в текущем узле (последнем в стеке)
-                    if (nodeStack.length > 0) {
-                        const currentNode = nodeStack[nodeStack.length - 1];
+                    // Вычисляем абсолютные координаты для всех узлов
+                    function calculateAbsolutePositions(node, parentAbsX = 0, parentAbsY = 0) {
+                        if (!node.position) return;
                         
-                        // Парсим position (формат: position x y)
-                        const posMatch = line.match(/^\s*position\s+([\d\.]+)\s+([\d\.]+)/);
-                        if (posMatch) {
-                            currentNode.position = {
-                                x: parseFloat(posMatch[1]) || 0,
-                                y: parseFloat(posMatch[2]) || 0
-                            };
-                        }
+                        node.absX = parentAbsX + node.position.x;
+                        node.absY = parentAbsY + node.position.y;
                         
-                        // Парсим size (формат: size w h)
-                        const sizeMatch = line.match(/^\s*size\s+([\d\.]+)\s+([\d\.]+)/);
-                        if (sizeMatch) {
-                            currentNode.size = {
-                                w: parseFloat(sizeMatch[1]) || 0,
-                                h: parseFloat(sizeMatch[2]) || 0
-                            };
-                        }
-                        
-                        // Парсим color (формат: color r g b a)
-                        const colorMatch = line.match(/^\s*color\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)/);
-                        if (colorMatch) {
-                            currentNode.color = {
-                                r: parseFloat(colorMatch[1]) || 0,
-                                g: parseFloat(colorMatch[2]) || 0,
-                                b: parseFloat(colorMatch[3]) || 0,
-                                a: parseFloat(colorMatch[4]) || 1
-                            };
-                        }
+                        // Рекурсивно вычисляем для детей
+                        node.children.forEach(child => {
+                            calculateAbsolutePositions(child, node.absX, node.absY);
+                        });
                     }
                     
-                    // Обрабатываем закрывающую фигурную скобку
-                    if (line === '}') {
-                        // Извлекаем узел из стека
-                        const finishedNode = nodeStack.pop();
-                        
-                        // Если у уз��а есть position и size - сохраняем для визуализации
-                        if (finishedNode && finishedNode.position && finishedNode.size && 
-                            finishedNode.size.w > 0 && finishedNode.size.h > 0) {
-                            elements.push({...finishedNode});
-                        }
+                    if (rootNode) {
+                        calculateAbsolutePositions(rootNode);
                     }
+                    
+                    return { nodes: allNodes, root: rootNode };
                 }
-
-                // Визуализируем найденные элементы
-                elements.forEach(element => {
-                    const { position, size, color } = element;
-                    
-                    const div = document.createElement('div');
-                    div.className = 'ui-element';
-                    div.style.left = (position.x * 2) + 'px'; // масштабируем для наглядности
-                    div.style.top = (position.y * 2) + 'px';
-                    div.style.width = (size.w * 2) + 'px';
-                    div.style.height = (size.h * 2) + 'px';
-                    
-                    if (color) {
-                        div.style.backgroundColor = `rgba(${Math.round(color.r * 255)}, ${Math.round(color.g * 255)}, ${Math.round(color.b * 255)}, ${color.a})`;
-                    } else {
-                        div.style.backgroundColor = `rgba(${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, 0.7)`;
-                    }
-                    
-                    div.title = `${element.type} ${element.name}\nx:${position.x} y:${position.y} w:${size.w} h:${size.h}`;
-                    
-                    container.appendChild(div);
-                });
                 
-                console.log(`Найдено элементов: ${elements.length}`);
+                // Функция рендеринга с использованием абсолютных координат
+                function renderLayout(container, layoutData) {
+                    container.innerHTML = '';
+                    
+                    layoutData.nodes.forEach(node => {
+                        // Пропускаем узлы без position и size
+                        if (!node.position || !node.size || 
+                            node.size.w <= 0 || node.size.h <= 0) {
+                            return;
+                        }
+                        
+                        const div = document.createElement('div');
+                        div.className = 'ui-element';
+                        div.style.left = (node.absX * 2) + 'px'; // масштабируем для наглядности
+                        div.style.top = (node.absY * 2) + 'px';
+                        div.style.width = (node.size.w * 2) + 'px';
+                        div.style.height = (node.size.h * 2) + 'px';
+                        
+                        // Используем цвет из узла или серый по умолчанию
+                        if (node.color) {
+                            div.style.backgroundColor = `rgba(${Math.round(node.color.r * 255)}, ${Math.round(node.color.g * 255)}, ${Math.round(node.color.b * 255)}, ${node.color.a})`;
+                        } else {
+                            div.style.backgroundColor = 'rgba(128, 128, 128, 0.7)'; // серый по умолчанию
+                        }
+                        
+                        div.title = `${node.type} ${node.name}\n` +
+                                   `absX:${node.absX} absY:${node.absY}\n` +
+                                   `relX:${node.position.x} relY:${node.position.y}\n` +
+                                   `w:${node.size.w} h:${node.size.h}`;
+                        
+                        container.appendChild(div);
+                    });
+                    
+                    console.log(`Найдено узлов: ${layoutData.nodes.length}`);
+                    console.log(`Корневой узел: ${layoutData.root ? layoutData.root.type + ' ' + layoutData.root.name : 'нет'}`);
+                }
+                
+                // Парсим и рендерим layout
+                const layoutData = parseLayout(content);
+                renderLayout(container, layoutData);
             };
             reader.readAsText(file);
         });
