@@ -45,30 +45,105 @@
                 const container = document.getElementById('visual-container');
                 container.innerHTML = '';
 
-                // Регулярные выражения для извлечения данных
-                const regex = /class\s+[^\n]*?\{[^\}]*?position\s*\[\]\s*=\s*\{([^\}]+)\}[^\}]*?size\s*\[\]\s*=\s*\{([^\}]+)\}[^\}]*?color\s*\[\]\s*=\s*\{([^\}]+)\}/g;
-                let match;
+                // Построчный stack-парсер для .layout файлов DayZ
+                const lines = content.split('\n');
+                const stack = []; // стек для отслеживания вложенности
+                const elements = []; // найденные UI-элементы
+                
+                let currentElement = null;
+                let braceCount = 0;
+                let inElement = false;
 
-                while ((match = regex.exec(content)) !== null) {
-                    const [_, pos, size, col] = match;
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
                     
-                    const [x, y] = pos.split(',').map(parseFloat).map(v => isNaN(v) ? 0 : v);
-                    const [w, h] = size.split(',').map(parseFloat).map(v => isNaN(v) ? 0 : v);
-                    const [r, g, b, a] = col.split(',').map(parseFloat).map((v, i) => isNaN(v) ? (i === 3 ? 1 : 0) : v);
+                    // Отслеживаем открывающие фигурные скобки
+                    const openBraces = (line.match(/\{/g) || []).length;
+                    const closeBraces = (line.match(/\}/g) || []).length;
+                    
+                    braceCount += openBraces - closeBraces;
+                    
+                    // Ищем начало нового UI-элемента (класс с именем)
+                    const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
+                    if (classMatch) {
+                        currentElement = {
+                            type: classMatch[1],
+                            name: classMatch[2],
+                            position: null,
+                            size: null,
+                            color: null,
+                            depth: braceCount - 1 // глубина вложенности
+                        };
+                        inElement = true;
+                    }
+                    
+                    // Если мы внутри элемента, ищем его свойства
+                    if (inElement && currentElement) {
+                        // Парсим position (формат: position x y)
+                        const posMatch = line.match(/^\s*position\s+([\d\.]+)\s+([\d\.]+)/);
+                        if (posMatch) {
+                            currentElement.position = {
+                                x: parseFloat(posMatch[1]) || 0,
+                                y: parseFloat(posMatch[2]) || 0
+                            };
+                        }
+                        
+                        // Парсим size (формат: size w h)
+                        const sizeMatch = line.match(/^\s*size\s+([\d\.]+)\s+([\d\.]+)/);
+                        if (sizeMatch) {
+                            currentElement.size = {
+                                w: parseFloat(sizeMatch[1]) || 0,
+                                h: parseFloat(sizeMatch[2]) || 0
+                            };
+                        }
+                        
+                        // Парсим color (формат: color r g b a)
+                        const colorMatch = line.match(/^\s*color\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)/);
+                        if (colorMatch) {
+                            currentElement.color = {
+                                r: parseFloat(colorMatch[1]) || 0,
+                                g: parseFloat(colorMatch[2]) || 0,
+                                b: parseFloat(colorMatch[3]) || 0,
+                                a: parseFloat(colorMatch[4]) || 1
+                            };
+                        }
+                    }
+                    
+                    // Если встретили закрывающую скобку и вышли из текущего элемента
+                    if (closeBraces > 0 && currentElement && braceCount < currentElement.depth) {
+                        // Сохраняем элемент, если у него есть position и size
+                        if (currentElement.position && currentElement.size && 
+                            currentElement.size.w > 0 && currentElement.size.h > 0) {
+                            elements.push({...currentElement});
+                        }
+                        currentElement = null;
+                        inElement = false;
+                    }
+                }
 
-                    if (w <= 0 || h <= 0) continue;
-
+                // Визуализируем найденные элементы
+                elements.forEach(element => {
+                    const { position, size, color } = element;
+                    
                     const div = document.createElement('div');
                     div.className = 'ui-element';
-                    div.style.left = x + 'px';
-                    div.style.top = y + 'px';
-                    div.style.width = w + 'px';
-                    div.style.height = h + 'px';
-                    div.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
-                    div.title = `x:${x} y:${y} w:${w} h:${h} | rgba(${r},${g},${b},${a})`;
+                    div.style.left = (position.x * 2) + 'px'; // масштабируем для наглядности
+                    div.style.top = (position.y * 2) + 'px';
+                    div.style.width = (size.w * 2) + 'px';
+                    div.style.height = (size.h * 2) + 'px';
+                    
+                    if (color) {
+                        div.style.backgroundColor = `rgba(${Math.round(color.r * 255)}, ${Math.round(color.g * 255)}, ${Math.round(color.b * 255)}, ${color.a})`;
+                    } else {
+                        div.style.backgroundColor = `rgba(${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, 0.7)`;
+                    }
+                    
+                    div.title = `${element.type} ${element.name}\nx:${position.x} y:${position.y} w:${size.w} h:${size.h}`;
                     
                     container.appendChild(div);
-                }
+                });
+                
+                console.log(`Найдено элементов: ${elements.length}`);
             };
             reader.readAsText(file);
         });

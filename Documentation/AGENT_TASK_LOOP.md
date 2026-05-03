@@ -286,77 +286,401 @@ TASK 064 — Перевести player data RPC на chunked sync как config 
 ## НАЧАЛО ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 065 FIX 2:
+TASK 065 FIX 4 — Исправить DayZ layout viewer под реальный формат .layout проекта
 
-Текущий результат не принят.
+Цель:
+Исправить DayZ_layout/dayz_layout_viewer.html так, чтобы он парсил РЕАЛЬНЫЙ формат .layout файлов из проекта Silver_77_Quests и визуально отображал UI-элементы по position / size / color.
 
-Что хорошо:
-- файл DayZ_layout/dayz_layout_viewer.html создан
-- есть input type=file и FileReader
-- есть попытка визуального рендера
+ВАЖНО:
+Предыдущие попытки были неверные:
+1. .layout НЕ XML.
+2. Нельзя использовать DOMParser.
+3. .layout НЕ использует формат:
+   position[] = {x, y}
+   size[] = {w, h}
+   color[] = {r, g, b, a}
 
-Проблемы:
-1. Парсер сделан под XML через DOMParser.
-2. DayZ .layout в проекте НЕ XML.
-3. Наш layout имеет текстовый синтаксис:
-   FrameWidgetClass QuestMenuRoot {
-       color 0.1765 0.1765 0.1765 0.9
+РЕАЛЬНЫЙ ФОРМАТ в нашем проекте такой:
+
+FrameWidgetClass QuestMenuRoot {
+ ignorepointer 0
+ color 0.1765 0.1765 0.1765 0.9
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass QuestPanel {
+   ignorepointer 0
+   color 0.0824 0.0824 0.0824 0.96
+   position 0 0
+   size 920 560
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    TextListboxWidgetClass QuestListbox {
+     ignorepointer 0
+     position 30 82
+     size 330 250
+     halign left_ref
+     valign top_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     font "gui/fonts/metron16"
+    }
+
+    ButtonWidgetClass AcceptButton {
+     ignorepointer 0
+     position 390 420
+     size 220 48
+     halign left_ref
+     valign top_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      TextWidgetClass AcceptButtonText {
+       ignorepointer 1
        position 0 0
        size 1 1
-       {
-           PanelWidgetClass QuestPanel {
-               ...
-           }
-       }
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       text "ВЗЯТЬ КВЕСТ"
+       font "gui/fonts/metron22"
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
    }
-4. Поэтому DOMParser/querySelectorAll не подходит.
-5. Также был затронут Documentation/AGENT_TASK_LOOP.md, а это запрещено.
+  }
+ }
+}
 
-Править только:
-- DayZ_layout/dayz_layout_viewer.html
+Ключевые особенности формата:
+- начало виджета:
+  <WidgetClassType> <ElementName> {
 
-Не трогать:
+Примеры:
+FrameWidgetClass QuestMenuRoot {
+PanelWidgetClass QuestPanel {
+TextListboxWidgetClass QuestListbox {
+ButtonWidgetClass AcceptButton {
+TextWidgetClass AcceptButtonText {
+MultilineTextWidgetClass DescriptionText {
+
+- свойства идут отдельными строками:
+  position 30 82
+  size 330 250
+  color 0.0824 0.0824 0.0824 0.96
+  text "ВЗЯТЬ КВЕСТ"
+  font "gui/fonts/metron22"
+  ignorepointer 0
+  halign left_ref
+  valign top_ref
+  hexactpos 1
+  vexactpos 1
+  hexactsize 1
+  vexactsize 1
+
+- вложенность задаётся фигурными скобками:
+  {
+  }
+
+- отдельная строка:
+  {
+  НЕ является новым виджетом.
+  Это просто начало блока children.
+
+- отдельная строка:
+  }
+  закрывает текущий блок.
+
+Где работать:
+ТОЛЬКО:
+DayZ_layout/dayz_layout_viewer.html
+
+Запрещено менять:
 - Documentation/AGENT_TASK_LOOP.md
 - Documentation/QUEST_LOGIC_SPEC.md
 - Silver_77_Quests_Client/
 - Silver_77_Quests_Server/
-- любые .layout проекта
-- любые .json
+- любые .layout файлы проекта
+- любые .json файлы
+- любые файлы вне DayZ_layout/
 - Git
 
-Что сделать:
-1. Убрать XML/DOMParser подход.
-2. Сделать текстовый парсер DayZ .layout.
-3. Парсер должен читать строки и распознавать:
-   - начало виджета: <WidgetClassType> <ElementName> {
-     например: PanelWidgetClass QuestPanel {
-   - вложенность через { и }
-   - properties:
-     position x y
-     size w h
-     color r g b a
-     text "..."
-     font "..."
-     ignorepointer
-     halign
-     valign
-     hexactpos
-     vexactpos
-     hexactsize
-     vexactsize
-4. Построить дерево элементов с parent.
-5. Рисовать визуальные блоки по position/size/color.
-6. Если color нет — прозрачный блок с видимой рамкой.
-7. Показывать имя элемента на блоке.
-8. Добавить кнопку “Обновить”.
-9. Добавить список найденных элементов.
-10. Добавить панель свойств.
-11. Клик по визуальному блоку или списку должен подсвечивать элемент и показывать свойства.
-12. Добавить масштаб 50/75/100/125.
-13. Ничего не сохранять.
-14. Ничего не генерировать.
+Что нужно сделать:
 
-Отчёт кратко.
+1. Полностью убрать поддержку неправильных форматов:
+   - DOMParser
+   - XML
+   - position[] = {x, y}
+   - size[] = {w, h}
+   - color[] = {r, g, b, a}
+   - class SomeClass { ... }
+
+2. Реализовать функцию:
+   parseLayout(text)
+
+3. parseLayout(text) должна:
+   - разбить текст на строки
+   - читать файл построчно
+   - использовать stack для вложенности
+   - находить начало виджета регуляркой:
+     /^([A-Za-z0-9_]+WidgetClass)\s+([A-Za-z0-9_]+)\s*\{$/
+   - создавать node:
+     {
+       id,
+       type,
+       name,
+       parentId,
+       children: [],
+       position: null,
+       size: null,
+       color: null,
+       text: "",
+       font: "",
+       props: {},
+       absX: 0,
+       absY: 0
+     }
+
+4. Логика stack:
+   - если строка пустая — пропустить
+   - если строка равна "{" — пропустить, node не создавать
+   - если строка равна "}" — stack.pop()
+   - если строка это новый виджет — создать node и push в stack
+   - если строка это свойство — записать в текущий node, то есть stack[stack.length - 1]
+
+5. Парсить свойства так:
+
+position:
+строка:
+position 30 82
+результат:
+node.position = { x: 30, y: 82 }
+
+size:
+строка:
+size 330 250
+результат:
+node.size = { w: 330, h: 250 }
+
+color:
+строка:
+color 0.0824 0.0824 0.0824 0.96
+результат:
+node.color = { r: 0.0824, g: 0.0824, b: 0.0824, a: 0.96 }
+
+text:
+строка:
+text "ВЗЯТЬ КВЕСТ"
+результат:
+node.text = "ВЗЯТЬ КВЕСТ"
+
+font:
+строка:
+font "gui/fonts/metron22"
+результат:
+node.font = "gui/fonts/metron22"
+
+остальные свойства:
+ignorepointer 0
+halign left_ref
+valign top_ref
+hexactpos 1
+vexactpos 1
+hexactsize 1
+vexactsize 1
+"exact text" 1
+"text halign" center
+"text valign" center
+
+сохранять в:
+node.props[key] = value
+
+6. Реализовать функцию:
+   computeAbsolutePositions(nodes)
+
+Правило:
+- если у node нет parent:
+  absX = position.x
+  absY = position.y
+- если parent есть:
+  absX = parent.absX + position.x
+  absY = parent.absY + position.y
+
+Если position нет:
+- x = 0
+- y = 0
+
+7. Реализовать функцию:
+   renderLayout(nodes)
+
+Она должна:
+- очистить visual-container
+- нарисовать div для каждого node, у которого есть size
+- использовать node.absX / node.absY
+- использовать node.size.w / node.size.h
+- учитывать scale
+
+CSS:
+div.style.position = "absolute"
+div.style.left = node.absX * scale + "px"
+div.style.top = node.absY * scale + "px"
+div.style.width = node.size.w * scale + "px"
+div.style.height = node.size.h * scale + "px"
+
+8. Цвет:
+Если node.color есть:
+- DayZ color от 0 до 1
+- CSS:
+  rgba(
+    Math.round(r * 255),
+    Math.round(g * 255),
+    Math.round(b * 255),
+    a
+  )
+
+Если node.color нет:
+- background transparent
+- border 1px dashed или solid, видимый
+
+9. На каждом визуальном блоке показать подпись:
+- node.name
+- для TextWidgetClass можно добавить node.text, если text не пустой
+
+10. Добавить interface:
+- input type="file"
+- кнопка "Обновить"
+- select масштаба:
+  50%
+  75%
+  100%
+  125%
+- visual-container
+- список найденных элементов
+- панель свойств выбранного элемента
+
+11. Кнопка "Обновить":
+- если файл не выбран — показать сообщение "Файл ещё не выбран"
+- если файл выбран — заново прочитать его через FileReader и перерисовать viewer
+
+12. Список элементов:
+Для каждого node показать:
+- name
+- type
+- position
+- size
+
+13. При клике по элементу в списке:
+- подсветить соответствующий visual div
+- показать свойства
+
+14. При клике по visual div:
+- подсветить его
+- показать свойства
+
+15. Панель свойств должна показывать:
+- name
+- type
+- parent
+- position
+- size
+- absolute position
+- color
+- text
+- font
+- ignorepointer
+- halign
+- valign
+- hexactpos
+- vexactpos
+- hexactsize
+- vexactsize
+
+16. Ничего не сохранять.
+17. Ничего не генерировать.
+18. Не добавлять Export.
+19. Не добавлять Generate.
+20. Не использовать localStorage.
+21. Не использовать внешние библиотеки.
+22. Не использовать CDN.
+23. Не отправлять данные в сеть.
+
+Критерии готовности:
+1. Изменён только файл:
+   DayZ_layout/dayz_layout_viewer.html
+
+2. Открывается локально в браузере.
+
+3. Можно выбрать реальный файл:
+   Silver_77_Quests_Client/gui/QuestMenu.layout
+
+4. После выбора должны появиться визуальные блоки с именами:
+   - QuestMenuRoot
+   - QuestPanel
+   - QuestListbox
+   - DescriptionPanel
+   - RoutePanel
+   - DialogPanel
+   - AcceptButton
+   - CompleteButton
+   - CloseButton
+
+5. В свойствах QuestListbox должны быть видны:
+   position 30 82
+   size 330 250
+   font gui/fonts/metron16
+
+6. В свойствах QuestPanel должны быть видны:
+   position 0 0
+   size 920 560
+   color 0.0824 0.0824 0.0824 0.96
+
+7. Кнопка "Обновить" перечитывает выбранный файл.
+
+8. Documentation/AGENT_TASK_LOOP.md не изменён.
+
+9. Файлы мода не изменены.
+
+10. Нет DOMParser в коде.
+
+11. Нет поиска position[] / size[] / color[].
+
+Отчёт:
+AGENT REPORT
+
+DONE:
+- что сделано
+
+CHANGED FILES:
+- какие файлы изменены
+
+DIFF:
+- кратко
+
+PROBLEMS:
+- реальные проблемы, если есть
+
+CONCLUSION:
+- краткий вывод
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
