@@ -105,8 +105,16 @@
             align-items: start;
         }
 
+        .left-column {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 18px;
+            min-width: 0;
+        }
+
         .viewer-card,
-        .sidebar {
+        .sidebar,
+        .source-card {
             background: var(--panel);
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -283,6 +291,27 @@
             word-break: break-word;
         }
 
+        .inspector-actions {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 12px;
+        }
+
+        .inspector-actions button {
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--text);
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .inspector-actions button:hover {
+            border-color: var(--accent);
+            background: #f0f7ff;
+        }
+
         #selected-text-preview,
         #sanity-results {
             margin-top: 10px;
@@ -299,14 +328,6 @@
         .empty-state {
             color: var(--muted);
             font-size: 13px;
-        }
-
-        .source-card {
-            margin-top: 18px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
         }
 
         .source-toolbar {
@@ -368,6 +389,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .left-column {
+                grid-template-rows: auto auto;
+            }
+
             .sidebar {
                 grid-template-rows: auto auto auto;
             }
@@ -418,11 +443,24 @@
     </div>
 
     <div class="workspace">
-        <section class="viewer-card">
-            <div class="viewer-shell">
-                <div id="visual-container"></div>
-            </div>
-        </section>
+        <div class="left-column">
+            <section class="viewer-card">
+                <div class="viewer-shell">
+                    <div id="visual-container"></div>
+                </div>
+            </section>
+
+            <section class="source-card">
+                <div class="panel-header">Source Editor</div>
+                <div class="source-toolbar">
+                    <button type="button" id="apply-source-button">Apply / Refresh preview</button>
+                    <button type="button" id="reset-source-button">Reset</button>
+                    <button type="button" id="copy-source-button">Copy source</button>
+                    <span class="source-toolbar-status" id="source-editor-status">No source loaded.</span>
+                </div>
+                <textarea id="source-editor" spellcheck="false" placeholder="Load a .layout file to inspect and tweak source in memory."></textarea>
+            </section>
+        </div>
 
         <aside class="sidebar">
             <section class="panel-section">
@@ -451,17 +489,6 @@
             </section>
         </aside>
     </div>
-
-    <section class="source-card">
-        <div class="panel-header">Source Editor</div>
-        <div class="source-toolbar">
-            <button type="button" id="apply-source-button">Apply / Refresh preview</button>
-            <button type="button" id="reset-source-button">Reset</button>
-            <button type="button" id="copy-source-button">Copy source</button>
-            <span class="source-toolbar-status" id="source-editor-status">No source loaded.</span>
-        </div>
-        <textarea id="source-editor" spellcheck="false" placeholder="Load a .layout file to inspect and tweak source in memory."></textarea>
-    </section>
 
     <script>
         const fileInput = document.getElementById('file-input');
@@ -1007,7 +1034,15 @@
                     <dt>Source lines</dt><dd>${escapeHtml(`${node.sourceStartLine || '?'}-${node.sourceEndLine || '?'}`)}</dd>
                     <dt>Z-order</dt><dd>${String(getNodeZOrder(node))}</dd>
                 </dl>
+                <div class="inspector-actions">
+                    <button type="button" id="reveal-source-button">Reveal source</button>
+                </div>
             `;
+
+            const revealSourceButton = document.getElementById('reveal-source-button');
+            if (revealSourceButton) {
+                revealSourceButton.addEventListener('click', () => revealNodeSource(node));
+            }
 
             if (node.text || propEntries) {
                 const chunks = [];

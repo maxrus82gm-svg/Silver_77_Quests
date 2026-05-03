@@ -254,35 +254,64 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 071 — Source reveal: двойной клик по элементу поднимает его код в нижнем source editor
+TASK 072 — Перекомпоновать интерфейс DayZ Layout Viewer по схеме пользователя: 1/2/3
 
 Цель:
-Доработать DayZ_layout/dayz_layout_viewer.html так, чтобы пользователь мог быстро находить код визуального элемента в нижнем source editor.
+Исправить компоновку интерфейса в DayZ_layout/dayz_layout_viewer.html.
 
-Важно:
-Нужно не “телепортировать пользователя к коду”, а сделать так, чтобы нужный кусок кода сам поднимался в нижнем source editor.
+Сейчас source reveal работает хорошо:
+- double click по visual element работает
+- double click по element list работает
+- source block выделяется
+- нужный код прокручивается внутри textarea
 
-Пользователь остаётся в том же интерфейсе:
-- visual preview сверху/по центру
-- inspector справа
-- source editor снизу
+Но сама компоновка интерфейса неудобная:
+Source Editor визуально оторван от preview/workspace и находится как отдельный блок ниже, из-за чего рабочая связка “вижу элемент → вижу код → меняю → Apply” ощущается разорванной.
 
-При двойном клике по visual element или element list:
-1. выбранный node подсвечивается в preview
-2. inspector показывает node
-3. нижний source editor прокручивается внутри textarea
-4. нужный блок кода оказывается примерно в центре видимой области textarea
-5. соответствующий блок кода выделяется
+Пользователь прислал скрин с разметкой зон:
 
-То есть действие должно ощущаться так:
-“я кликнул элемент — его код сам появился снизу перед глазами”.
+ЗОНА 1:
+- основная визуальная рабочая область / preview
+- должна находиться слева сверху
+- должна занимать основную ширину левой рабочей области
+
+ЗОНА 2:
+- правая колонка
+- Element List
+- Inspector
+- Sanity Checks
+- должна быть отдельной вертикальной правой колонкой
+
+ЗОНА 3:
+- Source Editor
+- должен быть снизу под ЗОНОЙ 1
+- должен быть частью левой рабочей области
+- должен быть по ширине ЗОНЫ 1
+- НЕ должен быть отдельным оторванным блоком на всю страницу где-то ниже
+
+Главная требуемая схема:
+
+main-workspace
+├─ left-work-area
+│  ├─ zone-1-preview
+│  └─ zone-3-source-editor
+│
+└─ right-sidebar
+   ├─ element-list
+   ├─ inspector
+   └─ sanity-checks
+
+То есть:
+- слева большая рабочая колонка
+- справа узкая служебная колонка
+- внутри левой колонки сверху preview, снизу source editor
 
 Где работать:
-Разрешено менять:
-1. DayZ_layout/dayz_layout_viewer.html
-2. Documentation/AGENT_TASK_LOOP.md — только если нужно записать краткий отчёт в разрешённые блоки агентского цикла.
+ТОЛЬКО:
+DayZ_layout/dayz_layout_viewer.html
 
 Запрещено менять:
+- Documentation/AGENT_TASK_LOOP.md
 - Documentation/QUEST_LOGIC_SPEC.md
 - Silver_77_Quests_Client/
 - Silver_77_Quests_Server/
@@ -295,431 +324,333 @@ TASK 071 — Source reveal: двойной клик по элементу под
 - P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 - P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
-Эти файлы можно только загружать и читать.
+Эти файлы можно только загружать и читать через viewer.
 Их нельзя изменять, форматировать или пересохранять.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 1 — УТОЧНИТЬ РАСПОЛОЖЕНИЕ SOURCE EDITOR
+ЧАСТЬ 1 — ОСНОВНАЯ КОМПОНОВКА 1/2/3
 --------------------------------------------------------------------------------
 
-Source editor уже добавлен снизу.
-Нужно проверить и при необходимости поправить его расположение.
+Нужно перестроить HTML/CSS так, чтобы интерфейс соответствовал схеме:
 
-Требования:
+1 — Preview / Visual Workspace
+2 — Right Sidebar
+3 — Source Editor
 
-1. Source editor должен находиться сразу под основным workspace:
-   - workspace = visual preview + sidebar/inspector
-   - сразу под ним source editor
-   - без большого визуального разрыва
+Текущий source editor не должен идти отдельной секцией после всей workspace.
+Он должен быть перенесён внутрь левой рабочей колонки под preview.
 
-2. Source editor должен быть по ширине рабочего окна viewer-а.
-   Он не должен быть узкой боковой панелью.
+Рекомендуемая HTML-структура:
 
-3. Textarea должна занимать всю ширину source editor panel.
+<div class="main-workspace">
+    <div class="left-work-area">
+        <section class="viewer-card">
+            <div class="viewer-shell">
+                <div id="visual-container"></div>
+            </div>
+        </section>
 
-4. Высота textarea должна быть достаточной, чтобы при reveal source было видно контекст:
-   - минимум 320px
-   - лучше около 360px
-   - resize: vertical оставить
+        <section class="source-card">
+            <div class="panel-header">Source Editor</div>
+            <div class="source-toolbar">
+                ...
+            </div>
+            <textarea id="source-editor"></textarea>
+        </section>
+    </div>
 
-5. Source editor должен быть удобен для чтения:
-   - monospace font
-   - стабильный line-height
-   - tab-size: 4
-   - код не должен визуально ломаться
+    <aside class="sidebar">
+        <section class="panel-section">
+            Element List
+        </section>
 
-Рекомендуемый CSS:
+        <section class="panel-section">
+            Inspector
+        </section>
 
-#source-editor {
-    width: 100%;
-    min-height: 360px;
-    resize: vertical;
-    font: 13px/1.45 Consolas, "Courier New", monospace;
-    tab-size: 4;
-    white-space: pre;
-    overflow: auto;
-}
-
-Если сейчас source-card имеет большой margin-top, уменьшить до разумного:
-margin-top: 10px или 12px.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 2 — SOURCE POSITION TRACKING
---------------------------------------------------------------------------------
-
-Нужно научить parseLayout запоминать, где в source editor находится каждый node.
-
-Каждый node должен получить поля:
-
-- sourceStartLine
-- sourceEndLine
-- sourceStartOffset
-- sourceEndOffset
-
-Где:
-- sourceStartLine — номер строки, где начинается WidgetClass node
-- sourceEndLine — номер строки, где заканчивается node
-- sourceStartOffset — индекс символа в полном source text, где начинается node
-- sourceEndOffset — индекс символа в полном source text, где заканчивается node
-
-Нумерация строк внутри кода может быть 0-based.
-В inspector показывать 1-based, чтобы человеку было понятнее.
-
-Пример:
-
-TextWidgetClass AcceptButtonText {
- position 0 0
- size 1 1
- text "ВЗЯТЬ КВЕСТ"
-}
-
-Для AcceptButtonText:
-- sourceStartLine = строка с "TextWidgetClass AcceptButtonText {"
-- sourceEndLine = строка с закрывающей "}"
-- sourceStartOffset = offset начала строки
-- sourceEndOffset = offset конца строки с закрывающей скобкой
-
---------------------------------------------------------------------------------
-ЧАСТЬ 3 — LINE START OFFSETS
---------------------------------------------------------------------------------
-
-Чтобы корректно делать setSelectionRange, нужно посчитать offset начала каждой строки.
-
-Добавить функцию, например:
-
-function getLineInfo(content) {
-    const lines = [];
-    const lineStartOffsets = [];
-    const regex = /(.*?)(\r\n|\n|\r|$)/g;
-    let match;
-    let offset = 0;
-
-    while ((match = regex.exec(content)) && match[0].length > 0) {
-        lines.push(match[1]);
-        lineStartOffsets.push(offset);
-        offset += match[0].length;
-    }
-
-    return { lines, lineStartOffsets };
-}
+        <section class="panel-section">
+            Sanity Checks
+        </section>
+    </aside>
+</div>
 
 Важно:
-- желательно учитывать \n и \r\n
-- sourceStartOffset/sourceEndOffset должны соответствовать реальному textarea.value
-- если CRLF чуть сместит selection, это не критично, но лучше сделать аккуратно
-
-Минимально допустимо:
-- использовать content.split(/\r?\n/)
-- считать newline length как 1
-- но предпочтительнее вариант с regex выше
+- Source Editor должен быть внутри left-work-area.
+- Sidebar должен быть соседней правой колонкой.
+- Source Editor не должен находиться после sidebar как отдельный блок всей страницы.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 4 — BLOCKSTACK И ЗАКРЫТИЕ NODE
+ЧАСТЬ 2 — CSS GRID / FLEX
 --------------------------------------------------------------------------------
 
-В текущем viewer уже есть blockStack с kind node/group.
-Нужно использовать его для определения конца node.
+Можно использовать CSS Grid.
 
-Логика:
+Рекомендуемая логика:
 
-1. Когда найден новый WidgetClass:
-   - создать node
-   - записать:
-     node.sourceStartLine = i
-     node.sourceStartOffset = lineStartOffsets[i]
-   - push:
-     blockStack.push({ kind: "node", node })
+.main-workspace {
+    display: grid;
+    grid-template-columns: minmax(760px, 1fr) 360px;
+    gap: 18px;
+    align-items: start;
+}
 
-2. Когда найдена отдельная строка "{":
-   - push:
-     blockStack.push({ kind: "group" })
+.left-work-area {
+    display: grid;
+    grid-template-rows: minmax(420px, auto) auto;
+    gap: 12px;
+    min-width: 0;
+}
 
-3. Когда найдена строка "}":
-   - const closingBlock = blockStack.pop()
-   - если closingBlock.kind === "node":
-       closingBlock.node.sourceEndLine = i
-       closingBlock.node.sourceEndOffset = lineStartOffsets[i] + rawLine.length
-   - если closingBlock.kind === "group":
-       просто закрыли group
-
-Важно:
-- не путать group-блок и node-блок
-- именно node-блок должен получить sourceEndLine/sourceEndOffset
-- отдельная строка "{" не создаёт node
-- отдельная строка "}" закрывает либо group, либо node
-
-Если sourceEndOffset не найден, fallback:
-- sourceEndLine = sourceStartLine
-- sourceEndOffset = sourceStartOffset + длина первой строки
-
---------------------------------------------------------------------------------
-ЧАСТЬ 5 — REVEAL SOURCE, А НЕ TELEPORT
---------------------------------------------------------------------------------
-
-Функция должна не уводить пользователя куда-то по странице, а прокручивать именно нижний source editor.
-
-Добавить функцию:
-
-function revealNodeSource(nodeId) {
-    const node = getNodeById(nodeId);
-    if (!node || typeof node.sourceStartOffset !== "number") {
-        return;
-    }
-
-    setSelectedNode(node.id);
-
-    sourceEditor.setSelectionRange(node.sourceStartOffset, node.sourceEndOffset);
-
-    scrollSourceEditorToLine(node.sourceStartLine);
-
-    try {
-        sourceEditor.focus({ preventScroll: true });
-    } catch (error) {
-        sourceEditor.focus();
-    }
+.sidebar {
+    display: grid;
+    grid-template-rows: minmax(220px, 1fr) auto auto;
+    align-self: stretch;
 }
 
 Смысл:
-- найти node
-- выбрать node в viewer
-- выделить его source block в textarea
-- прокрутить textarea, чтобы sourceStartLine оказался примерно в центре
-- не скроллить всю страницу к source editor специально
-- основной scroll должен происходить внутри textarea через sourceEditor.scrollTop
+- левая колонка широкая
+- правая колонка узкая
+- source editor живёт внутри левой колонки
+- source editor по ширине совпадает с preview area
+
+Можно адаптировать размеры под текущий CSS, но итоговая структура должна соответствовать схеме 1/2/3.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 3 — SOURCE EDITOR POSITION
+--------------------------------------------------------------------------------
+
+Source Editor должен:
+
+1. Начинаться сразу под preview / viewer-card.
+2. Быть визуально частью той же левой рабочей области.
+3. Иметь ширину ровно левой колонки.
+4. Не растягиваться под правую колонку.
+5. Не быть отдельным full-width блоком на всю страницу.
+6. Не создавать большой разрыв между preview и editor.
+
+Если сейчас .source-card стоит после .workspace, его нужно перенести внутрь left-work-area.
+
+Если сейчас .source-card имеет большой margin-top, убрать или уменьшить:
+margin-top: 0 или 10px.
+
+Так как source-card будет внутри left-work-area, gap между preview и source editor лучше задавать через left-work-area gap.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 4 — PREVIEW AREA
+--------------------------------------------------------------------------------
+
+Preview area должна остаться рабочей.
+
+Не ломать:
+- visual-container
+- viewer-shell
+- viewport presets
+- renderScale
+- grid
+- show borders
+- show debug labels
+- click selection
+- double click reveal source
+
+Preview должен оставаться в ЗОНЕ 1.
+
+Если preview сейчас слишком маленький из-за новой сетки, можно поправить:
+- min-height viewer-card / viewer-shell
+- overflow: auto
+- min-width: 0 для grid children
+
+Но не ломать render math.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 5 — RIGHT SIDEBAR
+--------------------------------------------------------------------------------
+
+Правая колонка — ЗОНА 2.
+
+Она должна содержать:
+- Element List
+- Inspector
+- Sanity Checks
+
+Требования:
+1. Sidebar справа от preview/source.
+2. Sidebar не должен быть под source editor.
+3. Sidebar не должен растягивать source editor.
+4. Sidebar должен сохранять текущую функциональность:
+   - список элементов
+   - фильтр
+   - selected row
+   - inspector
+   - Reveal source button
+   - sanity checks
+
+Если высота sidebar больше или меньше левой области — это нормально.
+Главное — он должен быть справа как служебная колонка.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 6 — SOURCE REVEAL UX
+--------------------------------------------------------------------------------
+
+Source reveal уже работает.
+Нужно сохранить его поведение.
+
+При double click по visual element или element list:
+- selected node обновляется
+- inspector обновляется
+- source editor внутри нижней левой зоны прокручивается
+- нужный код выделяется
+- sourceStartLine оказывается примерно в центре textarea
+- страница не должна специально улетать вниз
 
 Важно:
-Если focus() двигает всю страницу слишком сильно, использовать:
-sourceEditor.focus({ preventScroll: true })
+Код должен “подниматься” внутри textarea.
+Пользователь не должен “телепортироваться” всей страницей к отдельному нижнему блоку.
 
-Если preventScroll не поддерживается, fallback:
-sourceEditor.focus()
+Если после изменения layout focus({ preventScroll: true }) или scrollTop ломаются — исправить минимально.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 6 — SCROLL SOURCE EDITOR TO CENTER
+ЧАСТЬ 7 — НЕ ТРОГАТЬ ЛОГИКУ, ЕСЛИ НЕ НУЖНО
 --------------------------------------------------------------------------------
 
-Добавить функцию:
+Эта задача про компоновку интерфейса.
 
-function scrollSourceEditorToLine(lineIndex) {
-    const computed = window.getComputedStyle(sourceEditor);
-    const lineHeight = parseFloat(computed.lineHeight) || 18;
-    const targetTop = lineIndex * lineHeight;
-    sourceEditor.scrollTop = Math.max(0, targetTop - sourceEditor.clientHeight / 2);
+Не менять без необходимости:
+- parseLayout
+- blockStack
+- sourceStartLine/sourceEndLine/sourceStartOffset/sourceEndOffset
+- calculateFinalRects
+- exact-флаги
+- viewport math
+- z-order
+- encoding
+- sanity checks
+- Apply / Reset / Copy source logic
+
+Напоминание:
+exact = 1 → пиксели
+exact = 0 → доля parentRect / проценты
+
+Если нужно изменить JS только из-за переноса DOM-элементов — можно.
+Но не переписывать engine.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 8 — RESPONSIVE / SMALL SCREEN
+--------------------------------------------------------------------------------
+
+Сохранить адаптивность.
+
+Если экран узкий, можно делать:
+@media (max-width: 1280px) {
+    .main-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        order: 2;
+    }
+
+    .left-work-area {
+        order: 1;
+    }
 }
 
-Требование:
-После двойного клика нужная строка должна оказаться примерно в центре видимой области textarea.
-
-Это важно:
-Пользователь должен видеть не только одну строку, а контекст вокруг блока.
+Но на широком экране основная схема должна быть:
+- слева preview + source editor
+- справа sidebar
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 7 — DOUBLE CLICK EVENTS
---------------------------------------------------------------------------------
-
-Добавить двойной клик:
-
-1. На visual DOM element:
-
-div.addEventListener("dblclick", event => {
-    event.stopPropagation();
-    revealNodeSource(node.id);
-});
-
-2. На строку element list:
-
-button.addEventListener("dblclick", event => {
-    event.preventDefault();
-    revealNodeSource(node.id);
-});
-
-Одинарный клик должен сохранить старое поведение:
-- выбрать node
-- показать inspector
-
-Двойной клик:
-- выбрать node
-- поднять его код в нижнем source editor
-- выделить source block
-
---------------------------------------------------------------------------------
-ЧАСТЬ 8 — INSPECTOR SOURCE INFO
---------------------------------------------------------------------------------
-
-В inspector добавить информацию о source-позиции выбранного node:
-
-Source:
-- start line
-- end line
-
-Показывать человеку 1-based:
-
-Source lines:
-12–28
-
-Если sourceEndLine неизвестен:
-Source line:
-12
-
-Также добавить кнопку в inspector:
-Jump to source
-
-Но формулировка кнопки может быть:
-Reveal source
-Show source
-Показать код
-
-Кнопка вызывает:
-revealNodeSource(selectedNode.id)
-
-Важно:
-Название может быть любое, но смысл — поднять соответствующий source block в нижнем editor.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 9 — APPLY И SOURCE OFFSETS
---------------------------------------------------------------------------------
-
-После Apply / Refresh preview из textarea:
-- parseLayout должен заново посчитать sourceStartLine/sourceEndLine/sourceStartOffset/sourceEndOffset уже для нового текста
-- reveal source должен работать по обновлённому тексту
-- старые offsets нельзя использовать после изменения source
-
-После Reset:
-- offsets тоже пересчитываются
-
-После Encoding reload:
-- offsets тоже пересчитываются
-
---------------------------------------------------------------------------------
-ЧАСТЬ 10 — READ-ONLY SAFETY
---------------------------------------------------------------------------------
-
-Сохранить read-only безопасность.
-
-Нельзя:
-- сохранять source в реальный .layout
-- скачивать файл автоматически
-- использовать File System Access API
-- писать в localStorage
-- менять реальные .layout файлы
-- менять мод
-- менять JSON
-
-Можно:
-- выделять код в textarea
-- копировать source
-- строить preview из textarea
-- использовать reveal source
-
---------------------------------------------------------------------------------
-ЧАСТЬ 11 — ПРОВЕРКИ
+ЧАСТЬ 9 — ПРОВЕРКИ
 --------------------------------------------------------------------------------
 
 Проверить вручную:
 
-1. Загрузить:
+1. Открыть viewer.
+
+2. Загрузить:
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+
+3. Проверить визуально:
+- preview находится в зоне 1 слева сверху
+- sidebar находится в зоне 2 справа
+- source editor находится в зоне 3 снизу под preview
+- source editor НЕ растянут под sidebar
+- source editor имеет ширину preview/левой колонки
+
+4. Загрузить:
 P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 
-2. Выбрать правильную кодировку, если нужно:
-Windows-1251
+5. Проверить:
+- Windows-1251 работает
+- preview работает
+- element list работает
+- inspector работает
+- Reveal source button работает
+- double click visual element работает
+- double click element list работает
+- Apply / Refresh preview работает
+- Reset работает
 
-3. Двойной клик по визуальному элементу:
-- DescriptionText
-- QuestListbox
-- AcceptButtonText
+6. Проверить reveal:
+- double click по DescriptionText
+- source editor в зоне 3 прокрутился внутри textarea
+- нужный код выделен
+- страница не улетела вниз
 
-Ожидание:
-- выбранный элемент подсвечивается
-- inspector показывает выбранный node
-- textarea получает выделение нужного блока
-- нужный блок кода поднялся в видимую область нижнего editor
-- sourceStartLine примерно в центре textarea
-- вся страница не должна специально улетать вниз
+7. Проверить, что finalRect sanity values не изменились:
+QuestPanel при viewport 1280x720:
+x=180 y=80 w=920 h=560
 
-4. Двойной клик по элементу в Element List:
-- QuestPanel
-- RoutePanel
-- CloseButtonText
+QuestListbox:
+x=210 y=162 w=330 h=250
 
-Ожидание:
-- код соответствующего node поднимается в source editor
-- выделяется нужный блок
-- inspector показывает правильный node
-
-5. Нажать кнопку Reveal source / Show source в inspector.
-Ожидание:
-- работает так же, как double click
-
-6. Изменить текст в textarea.
-7. Нажать Apply / Refresh preview.
-8. Двойной клик по изменённому элементу.
-9. Убедиться, что reveal source работает по новому source.
-
-10. Нажать Reset.
-11. Убедиться, что reveal source работает по original source.
-
-12. Проверить:
-P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+AcceptButtonText:
+x=570 y=500 w=220 h=48
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
 --------------------------------------------------------------------------------
 
 1. Изменён только:
-- DayZ_layout/dayz_layout_viewer.html
-- Documentation/AGENT_TASK_LOOP.md, если агент записал отчёт
+DayZ_layout/dayz_layout_viewer.html
 
-2. Реальные .layout файлы проекта не изменены.
+2. Documentation/AGENT_TASK_LOOP.md не изменён.
 
-3. Файлы мода не изменены.
+3. Реальные .layout файлы проекта не изменены.
 
-4. JSON не изменён.
+4. Файлы мода не изменены.
 
-5. Source editor находится снизу, под workspace.
+5. JSON не изменён.
 
-6. Source editor занимает ширину рабочего viewer-а.
+6. Интерфейс соответствует схеме 1/2/3:
+- зона 1 preview слева сверху
+- зона 2 sidebar справа
+- зона 3 source editor слева снизу под preview
 
-7. Textarea удобная по высоте и ширине.
+7. Source Editor находится внутри левой рабочей колонки.
 
-8. Node содержит:
-- sourceStartLine
-- sourceEndLine
-- sourceStartOffset
-- sourceEndOffset
+8. Source Editor не находится отдельным блоком на всю страницу после sidebar.
 
-9. Double click по visual element вызывает reveal source.
+9. Ширина Source Editor соответствует ширине preview/левой колонки.
 
-10. Double click по element list row вызывает reveal source.
+10. Sidebar остаётся справа.
 
-11. Source block выделяется через setSelectionRange.
+11. Reveal source продолжает работать.
 
-12. Textarea прокручивается так, чтобы нужная строка была примерно в центре.
+12. Apply / Reset / Copy source продолжают работать.
 
-13. Важно:
-код поднимается внутри нижнего textarea, а не пользователь телепортируется всей страницей вниз.
+13. Inspector / Element List / Sanity Checks продолжают работать.
 
-14. Inspector показывает source lines.
+14. finalRect math не изменён без необходимости.
 
-15. В inspector есть кнопка Reveal source / Show source / Показать код.
-
-16. Apply / Reset пересчитывают source offsets.
-
-17. Ничего не сохраняется на диск.
-
-18. Encoding / viewport / inspector / sanity checks продолжают работать.
-
-19. finalRect math не сломан.
-
-20. Source editor layout не ломает workspace.
+15. Отчёт вернуть только в чат.
 
 Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- как была реализована текущая связь node/source
-- какие риски были учтены
-- как сделано, чтобы код поднимался в textarea, а не страница скроллилась вниз
+- что было не так с текущей компоновкой
+- как была выбрана новая структура 1/2/3
 
 DONE:
 - что сделано
@@ -731,18 +662,16 @@ DIFF:
 - кратко
 
 CHECKS:
-- double click visual element
-- double click element list
-- Reveal source button
-- source selection
-- scroll to center inside textarea
-- Apply после ручной правки
-- Reset
-- read-only safety
+- preview zone 1
+- sidebar zone 2
+- source editor zone 3
+- reveal source
+- Apply / Reset
+- inspector/list
+- sanity values
 
 PROBLEMS:
 - реальные проблемы, если есть
-- предположения, если поведение textarea/selection не подтверждено
 
 CONCLUSION:
 - краткий вывод
