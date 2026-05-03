@@ -254,36 +254,468 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-Статус:
-Нет активной задачи.
+TASK 066 — Исправить DayZ layout viewer: точное позиционирование, z-order и отображение текста
 
-Последняя завершённая задача:
-TASK 065 FIX 7 — Довести ядро DayZ layout viewer: parentId/parentName/text/font/props и безопасные absX/absY.
+Цель:
+Довести DayZ_layout/dayz_layout_viewer.html от rough preview до более точного read-only renderer-а DayZ .layout.
 
-Результат:
-Выполнено и принято как ядро viewer-а.
+Нужно добиться:
+- более точного позиционирования элементов
+- корректных размеров
+- правильного перекрытия элементов
+- отображения настоящего текста из layout
+- разделения debug-подписей и игрового текста
 
-В DayZ_layout/dayz_layout_viewer.html:
-- добавлены parentId / parentName
-- добавлены text / font / props
-- парсятся text и font
-- парсятся quoted props вида "text halign" center
-- calculateAbsolutePositions больше не делает return при отсутствии position
-- renderLayout использует absX / absY
-- на визуальных блоках появляется подпись node.name
-- random color убран
-- если color нет: transparent + dashed border
-- DOMParser не используется
-- position[] / size[] / color[] не используются
+Контекст:
+Viewer уже умеет:
+- читать реальный текстовый формат DayZ .layout
+- находить WidgetClass элементы
+- читать position / size / color
+- строить parent / children
+- читать text / font / props
+- считать absX / absY
+- примерно рисовать UI-блоки
 
-Примечание:
-Viewer ещё не завершён полностью. Следующий логичный шаг — отдельная задача TASK 066 на UI-инспектор:
-- список элементов
-- панель свойств
-- клик по visual div
-- клик по списку
-- кнопка Обновить
-- масштаб 50/75/100/125
+Но текущий визуал НЕ соответствует расположению элементов в игре.
+
+Что сейчас не так:
+1. Позиционирование слишком грубое.
+   Сейчас используется логика вроде:
+   absX = parent.absX + position.x
+   absY = parent.absY + position.y
+
+2. Это не соответствует DayZ layout.
+   В DayZ на итоговый прямоугольник влияет:
+   - parent rect
+   - position
+   - size
+   - halign
+   - valign
+   - hexactpos
+   - vexactpos
+   - hexactsize
+   - vexactsize
+
+3. Root с:
+   size 1 1
+   hexactsize 0
+   vexactsize 0
+   сейчас может восприниматься неправильно.
+   Это НЕ 1px x 1px.
+   Это 100% родителя / viewport.
+
+4. center_ref сейчас не работает как в игре.
+   Например QuestPanel с:
+   position 0 0
+   size 920 560
+   halign center_ref
+   valign center_ref
+   должен быть по центру viewport, а не в левом верхнем углу.
+
+5. Есть жёсткое умножение координат/размеров на 2.
+   Это неправильно.
+   Масштаб отображения должен быть отдельной renderScale, а не частью layout math.
+
+6. Перекрытие элементов пока неправильное.
+   Parent/панели могут перекрывать children.
+   Текст может быть под панелями/кнопками.
+   Нужно управлять z-order.
+
+7. Текст отображается недостаточно правильно.
+   Нужно показывать настоящий node.text для TextWidgetClass / MultilineTextWidgetClass.
+   Debug label с node.name не должен заменять игровой текст.
+
+Где работать:
+ТОЛЬКО:
+DayZ_layout/dayz_layout_viewer.html
+
+Запрещено менять:
+- Documentation/AGENT_TASK_LOOP.md
+- Documentation/QUEST_LOGIC_SPEC.md
+- Silver_77_Quests_Client/
+- Silver_77_Quests_Server/
+- любые .layout файлы проекта
+- любые .json файлы
+- любые файлы вне DayZ_layout/
+- Git
+
+Что НЕ делать:
+- НЕ переписывать viewer с нуля без необходимости
+- НЕ возвращать DOMParser/XML
+- НЕ возвращать position[] / size[] / color[]
+- НЕ делать Export
+- НЕ делать Generate
+- НЕ сохранять файлы
+- НЕ использовать внешние библиотеки/CDN
+- НЕ использовать random color
+- НЕ трогать файлы мода
+
+Что сделать:
+
+1. Добавить finalRect каждому node.
+
+Каждый node должен получить:
+
+node.finalRect = {
+  x: number,
+  y: number,
+  w: number,
+  h: number
+}
+
+renderLayout должен использовать именно finalRect, а не absX/absY напрямую.
+
+2. Добавить viewport/canvas rect.
+
+Например:
+
+const VIEWPORT_WIDTH = 1280;
+const VIEWPORT_HEIGHT = 720;
+
+или:
+
+const VIEWPORT_WIDTH = 1920;
+const VIEWPORT_HEIGHT = 1080;
+
+Главное:
+- root элементы считаются относительно viewport
+- root size 1 1 при hexactsize 0/vexactsize 0 = весь viewport
+- canvas в браузере может быть масштабирован, но layout math считается в viewport units
+
+3. Добавить функцию computeFinalRects.
+
+Примерная логика:
+
+function computeFinalRects(rootNode, viewportRect) {
+    computeNodeRect(rootNode, viewportRect);
+}
+
+function computeNodeRect(node, parentRect) {
+    // 1. получить local size
+    // 2. получить local position
+    // 3. применить halign / valign
+    // 4. записать node.finalRect
+    // 5. рекурсивно обработать children
+}
+
+4. Правильно считать размер.
+
+Использовать:
+- node.size
+- node.props.hexactsize
+- node.props.vexactsize
+- parentRect
+
+Правило для ширины:
+- если hexactsize == "1":
+  width = node.size.w
+- если hexactsize == "0":
+  width = parentRect.w * node.size.w
+
+Правило для высоты:
+- если vexactsize == "1":
+  height = node.size.h
+- если vexactsize == "0":
+  height = parentRect.h * node.size.h
+
+Если exact flag отсутствует:
+- считать как exact = 1 для обычных элементов
+- для root с size 1 1 можно считать как relative 100%
+
+Пример:
+FrameWidgetClass QuestMenuRoot {
+ size 1 1
+ hexactsize 0
+ vexactsize 0
+}
+
+Если viewport 1280x720:
+QuestMenuRoot finalRect.w = 1280
+QuestMenuRoot finalRect.h = 720
+
+Пример:
+PanelWidgetClass QuestPanel {
+ size 920 560
+ hexactsize 1
+ vexactsize 1
+}
+
+QuestPanel finalRect.w = 920
+QuestPanel finalRect.h = 560
+
+5. Правильно считать position.
+
+Использовать:
+- node.position
+- node.props.hexactpos
+- node.props.vexactpos
+- parentRect
+
+Правило для localX:
+- если hexactpos == "1":
+  localX = node.position.x
+- если hexactpos == "0":
+  localX = parentRect.w * node.position.x
+
+Правило для localY:
+- если vexactpos == "1":
+  localY = node.position.y
+- если vexactpos == "0":
+  localY = parentRect.h * node.position.y
+
+Если position нет:
+localX = 0
+localY = 0
+
+6. Правильно учитывать halign.
+
+Свойство:
+node.props.halign
+
+Поддержать минимум:
+
+halign left_ref:
+x = parentRect.x + localX
+
+halign center_ref:
+x = parentRect.x + (parentRect.w - width) / 2 + localX
+
+halign right_ref:
+x = parentRect.x + parentRect.w - width - localX
+
+Если halign отсутствует:
+считать как left_ref
+
+Почему это важно:
+QuestPanel:
+position 0 0
+size 920 560
+halign center_ref
+hexactpos 1
+
+Должен быть по центру parent/viewport:
+x = parentRect.x + (parentRect.w - 920) / 2
+
+7. Правильно учитывать valign.
+
+Свойство:
+node.props.valign
+
+Поддержать минимум:
+
+valign top_ref:
+y = parentRect.y + localY
+
+valign center_ref:
+y = parentRect.y + (parentRect.h - height) / 2 + localY
+
+valign bottom_ref:
+y = parentRect.y + parentRect.h - height - localY
+
+Если valign отсутствует:
+считать как top_ref
+
+Почему это важно:
+QuestPanel:
+position 0 0
+size 920 560
+valign center_ref
+
+Должен быть по центру parent/viewport:
+y = parentRect.y + (parentRect.h - 560) / 2
+
+8. Убрать жёсткое умножение *2 из layout math.
+
+Плохо:
+left = node.absX * 2
+top = node.absY * 2
+width = node.size.w * 2
+height = node.size.h * 2
+
+Правильно:
+left = node.finalRect.x * renderScale
+top = node.finalRect.y * renderScale
+width = node.finalRect.w * renderScale
+height = node.finalRect.h * renderScale
+
+9. Добавить renderScale.
+
+Минимум:
+let renderScale = 0.5;
+
+Лучше:
+select с вариантами:
+- 50%
+- 75%
+- 100%
+
+Но если select пока сложно — достаточно константы renderScale = 0.5.
+
+Важно:
+renderScale влияет только на отображение в браузере.
+renderScale НЕ должен влиять на layout math.
+
+10. Исправить z-order.
+
+Нужно, чтобы:
+- parent рисовался ниже child
+- children поверх parent
+- TextWidgetClass поверх PanelWidgetClass / ButtonWidgetClass
+- порядок элементов сохранял порядок layout там, где возможно
+- большие панели не скрывали дочерний текст/кнопки
+
+Минимальная логика:
+- zIndex = node.id
+- плюс depth bonus:
+  zIndex = node.id + nodeDepth * 100
+- для TextWidgetClass добавить ещё +1000
+- для MultilineTextWidgetClass добавить ещё +900
+
+Можно добавить node.depth при парсинге:
+node.depth = parent ? parent.depth + 1 : 0
+
+11. Разделить debug label и настоящий игровой текст.
+
+Настоящий текст:
+- node.text из TextWidgetClass / MultilineTextWidgetClass
+
+Debug label:
+- node.name для понимания, какой это элемент
+
+Правило:
+- Для TextWidgetClass и MultilineTextWidgetClass отображать node.text, если он есть.
+- Если node.text пустой, можно показывать node.name маленьким debug label.
+- Для PanelWidgetClass / ButtonWidgetClass можно показывать маленький debug label node.name, но он не должен мешать игровому тексту.
+
+12. Отображать TextWidgetClass как текст, а не как тяжёлую панель.
+
+Для TextWidgetClass:
+- backgroundColor лучше transparent
+- border можно сделать очень тонкий dashed только для debug
+- textContent = node.text || node.name
+- цвет текста можно пока сделать белым или чёрным в зависимости от фона
+- pointer/debug tooltip оставить
+
+13. Отображать MultilineTextWidgetClass как текстовый блок.
+
+Для MultilineTextWidgetClass:
+- textContent = node.text || node.name
+- white-space: pre-wrap
+- overflow: hidden
+- background transparent или слабая debug-рамка
+
+14. Для ButtonWidgetClass:
+- рисовать прямоугольник кнопки
+- child TextWidgetClass должен быть поверх кнопки
+- если внутри есть текстовый child, он должен быть виден
+
+15. Для PanelWidgetClass:
+- рисовать фон/рамку
+- children должны быть поверх панели
+
+16. Tooltip/title должен показывать:
+
+- name
+- type
+- parentName
+- position
+- size
+- halign
+- valign
+- hexactpos
+- vexactpos
+- hexactsize
+- vexactsize
+- finalRect x/y/w/h
+- text
+- font
+
+17. Проверка на QuestMenu.layout.
+
+После загрузки QuestMenu.layout ожидается:
+
+QuestMenuRoot:
+- занимает весь viewport
+- не ломает children как 1x1 px
+
+QuestPanel:
+- size 920 560
+- halign center_ref
+- valign center_ref
+- расположен по центру viewport
+
+QuestListbox:
+- position 30 82
+- size 330 250
+- находится внутри QuestPanel слева сверху с отступом 30/82
+
+AcceptButton / CompleteButton / CloseButton:
+- находятся внутри QuestPanel
+- текст кнопок должен быть виден поверх кнопок
+
+18. Проверка на QuestJournal.layout.
+
+После загрузки QuestJournal.layout:
+- QuestJournalPanel должен быть расположен по правилам align/exact
+- TitleText должен отображать текст
+- QuestListbox должен быть внутри панели
+- DescriptionText должен быть текстовым блоком
+
+Критерии готовности:
+
+1. Изменён только:
+DayZ_layout/dayz_layout_viewer.html
+
+2. AGENT_TASK_LOOP.md не изменён.
+
+3. Файлы мода/layout/json не изменены.
+
+4. Нет DOMParser.
+
+5. Нет position[] / size[] / color[].
+
+6. Нет random color.
+
+7. Нет жёсткого *2 в layout math.
+
+8. Есть finalRect у node.
+
+9. renderLayout использует finalRect * renderScale.
+
+10. Root size 1 1 + hexactsize 0/vexactsize 0 не считается как 1px.
+
+11. center_ref по X/Y работает хотя бы для QuestPanel.
+
+12. QuestPanel в QuestMenu.layout отображается по центру viewport.
+
+13. QuestListbox отображается внутри QuestPanel с отступом position 30 82.
+
+14. TextWidgetClass отображает node.text.
+
+15. Текст кнопок виден поверх кнопок.
+
+16. Parent не перекрывает children.
+
+17. Viewer остаётся read-only.
+
+Формат отчёта:
+
+AGENT REPORT
+
+DONE:
+- что сделано
+
+CHANGED FILES:
+- какие файлы изменены
+
+DIFF:
+- кратко
+
+PROBLEMS:
+- реальные проблемы, если есть
+
+CONCLUSION:
+- краткий вывод
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
