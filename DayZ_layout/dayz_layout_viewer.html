@@ -301,6 +301,62 @@
             font-size: 13px;
         }
 
+        .source-card {
+            margin-top: 18px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .source-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            background: #f8fbfe;
+        }
+
+        .source-toolbar button {
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--text);
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .source-toolbar button:hover {
+            border-color: var(--accent);
+            background: #f0f7ff;
+        }
+
+        .source-toolbar-status {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        #source-editor {
+            display: block;
+            width: 100%;
+            min-height: 280px;
+            padding: 14px;
+            border: none;
+            resize: vertical;
+            font: 13px/1.45 Consolas, "Courier New", monospace;
+            color: #1f2933;
+            background: #fbfdff;
+        }
+
+        #source-editor:focus {
+            outline: none;
+            background: #ffffff;
+        }
+
         footer {
             margin-top: 20px;
             color: #7f8c8d;
@@ -396,6 +452,17 @@
         </aside>
     </div>
 
+    <section class="source-card">
+        <div class="panel-header">Source Editor</div>
+        <div class="source-toolbar">
+            <button type="button" id="apply-source-button">Apply / Refresh preview</button>
+            <button type="button" id="reset-source-button">Reset</button>
+            <button type="button" id="copy-source-button">Copy source</button>
+            <span class="source-toolbar-status" id="source-editor-status">No source loaded.</span>
+        </div>
+        <textarea id="source-editor" spellcheck="false" placeholder="Load a .layout file to inspect and tweak source in memory."></textarea>
+    </section>
+
     <script>
         const fileInput = document.getElementById('file-input');
         const encodingSelect = document.getElementById('encoding-select');
@@ -414,6 +481,11 @@
         const inspectorPanel = document.getElementById('inspector-panel');
         const selectedTextPreview = document.getElementById('selected-text-preview');
         const sanityResults = document.getElementById('sanity-results');
+        const sourceEditor = document.getElementById('source-editor');
+        const sourceEditorStatus = document.getElementById('source-editor-status');
+        const applySourceButton = document.getElementById('apply-source-button');
+        const resetSourceButton = document.getElementById('reset-source-button');
+        const copySourceButton = document.getElementById('copy-source-button');
 
         const VIEWPORT_PRESETS = {
             '1280x720': { w: 1280, h: 720 },
@@ -427,9 +499,11 @@
             fileName: '',
             fileBytes: null,
             decodedContent: '',
+            originalDecodedContent: '',
             layoutData: null,
             selectedNodeId: null,
-            sanityReport: null
+            sanityReport: null,
+            sourceDirty: false
         };
 
         function getViewportRect() {
@@ -462,6 +536,35 @@
                 console.warn('Decoding failed, falling back to UTF-8', error);
                 return new TextDecoder('utf-8').decode(bytes);
             }
+        }
+
+        function updateSourceEditorStatus() {
+            if (!state.fileName && !sourceEditor.value) {
+                sourceEditorStatus.textContent = 'No source loaded.';
+                return;
+            }
+
+            if (state.sourceDirty) {
+                sourceEditorStatus.textContent = 'Source editor has unapplied changes.';
+                return;
+            }
+
+            if (!state.fileName && sourceEditor.value) {
+                sourceEditorStatus.textContent = 'Preview matches current source editor text.';
+                return;
+            }
+
+            sourceEditorStatus.textContent = `Source editor synced with ${state.fileName} (${encodingSelect.value}).`;
+        }
+
+        function setSourceEditorValue(text, markDirty = false) {
+            sourceEditor.value = text;
+            state.sourceDirty = markDirty;
+            updateSourceEditorStatus();
+        }
+
+        function syncEditorFromLoadedSource() {
+            setSourceEditorValue(state.originalDecodedContent, false);
         }
 
         function isTextNode(node) {
@@ -1184,6 +1287,7 @@
                 renderElementList();
                 renderSanityResults(state.sanityReport);
                 updateSelectionUI();
+                updateSourceEditorStatus();
                 return;
             }
 
@@ -1197,16 +1301,50 @@
             renderElementList();
             updateSelectionUI();
             renderSanityResults(state.sanityReport);
+            updateSourceEditorStatus();
         }
 
         function updateDecodedContent() {
-            state.decodedContent = decodeLayoutBytes(state.fileBytes, encodingSelect.value);
+            state.originalDecodedContent = decodeLayoutBytes(state.fileBytes, encodingSelect.value);
+            state.decodedContent = state.originalDecodedContent;
             state.layoutData = null;
             state.sanityReport = null;
+            syncEditorFromLoadedSource();
             loadedFileStatus.textContent = state.fileName
                 ? `Loaded: ${state.fileName} (${encodingSelect.value})`
                 : 'No file loaded.';
             refreshLayoutFromState();
+        }
+
+        function applySourceEditorToPreview() {
+            state.decodedContent = sourceEditor.value;
+            state.layoutData = null;
+            state.sanityReport = null;
+            state.sourceDirty = false;
+            refreshLayoutFromState();
+        }
+
+        function resetSourceEditor() {
+            if (!state.originalDecodedContent && !sourceEditor.value) {
+                return;
+            }
+            state.decodedContent = state.originalDecodedContent;
+            state.layoutData = null;
+            state.sanityReport = null;
+            syncEditorFromLoadedSource();
+            refreshLayoutFromState();
+        }
+
+        async function copySourceEditorText() {
+            const text = sourceEditor.value;
+            try {
+                await navigator.clipboard.writeText(text);
+                sourceEditorStatus.textContent = 'Current source copied.';
+            } catch (error) {
+                sourceEditor.select();
+                document.execCommand('copy');
+                sourceEditorStatus.textContent = 'Current source copied.';
+            }
         }
 
         fileInput.addEventListener('change', event => {
@@ -1239,6 +1377,13 @@
         elementSearchInput.addEventListener('input', renderElementList);
         copySelectedButton.addEventListener('click', copySelectedInfo);
         runSanityButton.addEventListener('click', runSanityChecks);
+        applySourceButton.addEventListener('click', applySourceEditorToPreview);
+        resetSourceButton.addEventListener('click', resetSourceEditor);
+        copySourceButton.addEventListener('click', copySourceEditorText);
+        sourceEditor.addEventListener('input', () => {
+            state.sourceDirty = sourceEditor.value !== state.decodedContent;
+            updateSourceEditorStatus();
+        });
 
         refreshLayoutFromState();
     </script>
