@@ -254,17 +254,27 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 065 FIX 6 — Исправить ядро DayZ layout viewer: parseLayout должен строить дерево nodes с parent/children
+TASK 065 FIX 7 — Довести ядро DayZ layout viewer: parentId/parentName/text/font/props и безопасные absX/absY
 
-Цель:
-Исправить только ядро парсинга в DayZ_layout/dayz_layout_viewer.html.
-Нужно, чтобы parseLayout(text) строил правильное дерево UI-элементов DayZ .layout с parent/children и absolute position.
+Контекст:
+Предыдущий шаг стал ближе к цели.
+В DayZ_layout/dayz_layout_viewer.html уже появились:
+- parseLayout(content)
+- allNodes / rootNode
+- parent / children
+- absX / absY
+- renderLayout(container, layoutData)
 
-ВАЖНО:
-Это НЕ задача на красоту UI.
-Это НЕ задача на полный редактор.
-Это НЕ задача на генерацию layout-кода.
-Сейчас нужно исправить именно модель данных парсера.
+Но результат ещё не принят полностью.
+
+Что нужно исправить:
+1. Node сейчас неполный.
+2. Не хватает parentId / parentName.
+3. Не парсятся text и font.
+4. Не сохраняются props.
+5. calculateAbsolutePositions опасно делает return, если у node нет position.
+6. renderLayout не показывает имя элемента на самом блоке.
+7. Если color нет, сейчас используется заливка по умолчанию, а нужен transparent + видимая рамка.
 
 Где работать:
 ТОЛЬКО:
@@ -280,159 +290,83 @@ DayZ_layout/dayz_layout_viewer.html
 - любые файлы вне DayZ_layout/
 - Git
 
-Текущая проблема:
-В текущей версии уже есть nodeStack, но это пока не полноценное дерево.
-Сейчас узлы кладутся в stack и потом pop, но не создаются нормальные связи:
-- id
-- parentId
-- parentName
-- children
-- absX
-- absY
-- text
-- font
-- props
+Что сделать:
 
-Из-за этого viewer не может:
-- показать родителя элемента
-- правильно посчитать absolute position
-- вывести дерево/список элементов
-- показать свойства выбранного элемента
-- стабильно работать с вложенными виджетами
+1. В структуру каждого node добавить поля:
+   - parentId
+   - parentName
+   - text
+   - font
+   - props
 
-ПОСТУЛАТ 1:
-DayZ .layout — это дерево виджетов.
+Node должен иметь минимум такую структуру:
 
-Пример:
-
-PanelWidgetClass QuestPanel {
- position 0 0
- size 920 560
- {
-  TextListboxWidgetClass QuestListbox {
-   position 30 82
-   size 330 250
-  }
-
-  ButtonWidgetClass AcceptButton {
-   position 390 420
-   size 220 48
-   {
-    TextWidgetClass AcceptButtonText {
-     position 0 0
-     size 1 1
-     text "ВЗЯТЬ КВЕСТ"
-    }
-   }
-  }
- }
+{
+  id: number,
+  type: string,
+  name: string,
+  parent: object или null,
+  parentId: number или null,
+  parentName: string,
+  children: [],
+  position: null или { x:number, y:number },
+  size: null или { w:number, h:number },
+  color: null или { r:number, g:number, b:number, a:number },
+  text: "",
+  font: "",
+  props: {},
+  absX: 0,
+  absY: 0
 }
 
-Правильные связи:
-- QuestPanel — parent для QuestListbox и AcceptButton
-- AcceptButton — parent для AcceptButtonText
-- QuestListbox parentName = QuestPanel
-- AcceptButtonText parentName = AcceptButton
+2. При создании node:
+   - parent = nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null
+   - parentId = parent ? parent.id : null
+   - parentName = parent ? parent.name : ""
+   - если parent есть, добавить node в parent.children
+   - добавить node в allNodes
+   - push node в nodeStack
 
-ПОСТУЛАТ 2:
-Нельзя использовать один currentElement.
+3. Парсить text:
 
-Почему:
-1. Найден QuestPanel → currentElement = QuestPanel
-2. Найден QuestListbox → currentElement = QuestListbox
-3. QuestPanel потерян как активный parent
-4. Найден AcceptButton → currentElement = AcceptButton
-5. Найден AcceptButtonText → currentElement = AcceptButtonText
-6. AcceptButton потерян как parent
-7. Невозможно построить parent/children
-8. Невозможно корректно посчитать absolute position
-
-ПОСТУЛАТ 3:
-Нужен stack текущего пути вложенности.
-
-Правильная идея:
-- stack хранит путь от root к текущему виджету
-- stack[stack.length - 1] — текущий активный виджет
-- новый WidgetClass становится child текущего верхнего элемента stack
-- при строке "}" верхний элемент закрывается через stack.pop()
-- свойства пишутся в текущий верхний элемент stack
-
-Пример работы stack:
-
-Строка:
-PanelWidgetClass QuestPanel {
-
-Действие:
-- parent = null или QuestMenuRoot
-- создать node QuestPanel
-- nodes.push(QuestPanel)
-- parent.children.push(QuestPanel), если parent есть
-- stack.push(QuestPanel)
-
-Строка:
-TextListboxWidgetClass QuestListbox {
-
-Действие:
-- parent = stack top = QuestPanel
-- создать node QuestListbox
-- QuestListbox.parentName = "QuestPanel"
-- QuestPanel.children.push(QuestListbox)
-- nodes.push(QuestListbox)
-- stack.push(QuestListbox)
-
-Строка:
-}
-
-Действие:
-- stack.pop()
-- закрыли QuestListbox
-- текущий parent снова QuestPanel
-
-ПОСТУЛАТ 4:
-Отдельная строка "{" НЕ создаёт node.
-
-Пример:
-
-PanelWidgetClass QuestPanel {
- position 0 0
- size 920 560
- {
-  TextWidgetClass TitleText {
-   ...
-  }
- }
-}
-
-Строка "{" после свойств QuestPanel — это просто блок children.
-Её нужно пропустить.
-
-ПОСТУЛАТ 5:
-Строка "}" закрывает текущий node.
-
-Если stack не пустой:
-stack.pop()
-
-Если stack пустой:
-ничего не делать, не падать.
-
-РЕАЛЬНЫЙ ФОРМАТ СВОЙСТВ:
-
-position:
-position 30 82
-
-size:
-size 330 250
-
-color:
-color 0.0824 0.0824 0.0824 0.96
-
-text:
+Формат:
 text "ВЗЯТЬ КВЕСТ"
 
-font:
+Результат:
+currentNode.text = "ВЗЯТЬ КВЕСТ"
+
+Регулярка:
+line.match(/^text\s+"(.*)"$/)
+
+4. Парсить font:
+
+Формат:
 font "gui/fonts/metron22"
 
-обычные свойства:
+Результат:
+currentNode.font = "gui/fonts/metron22"
+
+Регулярка:
+line.match(/^font\s+"(.*)"$/)
+
+5. Парсить свойства в кавычках:
+
+Формат:
+"exact text" 1
+"text halign" center
+"text valign" center
+
+Результат:
+currentNode.props["exact text"] = "1"
+currentNode.props["text halign"] = "center"
+currentNode.props["text valign"] = "center"
+
+Регулярка:
+line.match(/^"([^"]+)"\s+(.*)$/)
+
+6. Парсить обычные свойства в props:
+
+Формат:
 ignorepointer 0
 halign left_ref
 valign top_ref
@@ -441,258 +375,101 @@ vexactpos 1
 hexactsize 1
 vexactsize 1
 
-свойства в кавычках:
-"exact text" 1
-"text halign" center
-"text valign" center
+Результат:
+currentNode.props.ignorepointer = "0"
+currentNode.props.halign = "left_ref"
+currentNode.props.valign = "top_ref"
+currentNode.props.hexactpos = "1"
+currentNode.props.vexactpos = "1"
+currentNode.props.hexactsize = "1"
+currentNode.props.vexactsize = "1"
 
-Что сделать:
+Регулярка:
+line.match(/^([A-Za-z0-9_]+)\s+(.*)$/)
 
-1. В DayZ_layout/dayz_layout_viewer.html реализовать или заменить функцию parseLayout(text).
+Важно:
+position, size, color, text, font должны записываться в отдельные поля.
+Остальные свойства — в props.
 
-2. parseLayout(text) должна возвращать массив nodes.
+7. Исправить calculateAbsolutePositions.
 
-3. Каждый node должен иметь структуру:
+Сейчас нельзя делать:
+if (!node.position) return;
 
-{
-  id: number,
-  type: string,
-  name: string,
-  parentId: number или null,
-  parentName: string,
-  children: [],
-  position: null или { x:number, y:number },
-  size: null или { w:number, h:number },
-  color: null или { r:number, g:number, b:number, a:number },
-  text: string,
-  font: string,
-  props: {},
-  absX: number,
-  absY: number
-}
+Почему:
+Если у parent нет position, дети всё равно должны обрабатываться.
 
-4. Алгоритм parseLayout(text):
+Правильно:
+- localX = node.position ? node.position.x : 0
+- localY = node.position ? node.position.y : 0
+- node.absX = parentAbsX + localX
+- node.absY = parentAbsY + localY
+- потом обязательно пройти по children
 
-function parseLayout(text) {
-  const lines = text.split(/\r?\n/);
-  const nodes = [];
-  const stack = [];
-  let nextId = 1;
+Пример:
 
-  for each rawLine:
-    const line = rawLine.trim();
-
-    if line is empty:
-      continue;
-
-    if line starts with "//":
-      continue;
-
-    if line === "{":
-      continue;
-
-    if line === "}":
-      if stack.length > 0:
-        stack.pop();
-      continue;
-
-    const widgetMatch = line.match(/^([A-Za-z0-9_]+WidgetClass)\s+([A-Za-z0-9_]+)\s*\{$/);
-
-    if widgetMatch:
-      const parent = stack.length > 0 ? stack[stack.length - 1] : null;
-
-      const node = {
-        id: nextId++,
-        type: widgetMatch[1],
-        name: widgetMatch[2],
-        parentId: parent ? parent.id : null,
-        parentName: parent ? parent.name : "",
-        children: [],
-        position: null,
-        size: null,
-        color: null,
-        text: "",
-        font: "",
-        props: {},
-        absX: 0,
-        absY: 0
-      };
-
-      if parent:
-        parent.children.push(node);
-
-      nodes.push(node);
-      stack.push(node);
-      continue;
-
-    if stack.length === 0:
-      continue;
-
-    const current = stack[stack.length - 1];
-
-    parse property line into current.
-
-  computeAbsolutePositions(nodes);
-  return nodes;
-}
-
-5. Парсинг свойств:
-
-position:
-const m = line.match(/^position\s+([-0-9.]+)\s+([-0-9.]+)/)
-current.position = { x: parseFloat(m[1]), y: parseFloat(m[2]) }
-
-size:
-const m = line.match(/^size\s+([-0-9.]+)\s+([-0-9.]+)/)
-current.size = { w: parseFloat(m[1]), h: parseFloat(m[2]) }
-
-color:
-const m = line.match(/^color\s+([-0-9.]+)\s+([-0-9.]+)\s+([-0-9.]+)\s+([-0-9.]+)/)
-current.color = {
-  r: parseFloat(m[1]),
-  g: parseFloat(m[2]),
-  b: parseFloat(m[3]),
-  a: parseFloat(m[4])
-}
-
-text:
-const m = line.match(/^text\s+"(.*)"$/)
-current.text = m[1]
-
-font:
-const m = line.match(/^font\s+"(.*)"$/)
-current.font = m[1]
-
-quoted prop:
-const m = line.match(/^"([^"]+)"\s+(.*)$/)
-current.props[m[1]] = m[2]
-
-normal prop:
-const m = line.match(/^([A-Za-z0-9_]+)\s+(.*)$/)
-current.props[m[1]] = m[2]
-
-6. Реализовать computeAbsolutePositions(nodes):
-
-function computeAbsolutePositions(nodes) {
-  const byId = new Map(nodes.map(n => [n.id, n]));
-
-  for each node in nodes:
+function calculateAbsolutePositions(node, parentAbsX = 0, parentAbsY = 0) {
     const localX = node.position ? node.position.x : 0;
     const localY = node.position ? node.position.y : 0;
 
-    if node.parentId:
-      const parent = byId.get(node.parentId);
-      node.absX = (parent ? parent.absX : 0) + localX;
-      node.absY = (parent ? parent.absY : 0) + localY;
-    else:
-      node.absX = localX;
-      node.absY = localY;
+    node.absX = parentAbsX + localX;
+    node.absY = parentAbsY + localY;
+
+    node.children.forEach(child => {
+        calculateAbsolutePositions(child, node.absX, node.absY);
+    });
 }
 
-7. Почему absolute position нужен:
+8. Исправить renderLayout.
 
-Если:
-QuestPanel position 0 0
-QuestListbox position 30 82
+Для каждого div нужно показывать имя элемента на блоке:
+- div.textContent = node.name
 
-То:
-QuestListbox.absX = QuestPanel.absX + 30
-QuestListbox.absY = QuestPanel.absY + 82
+Если node.type === "TextWidgetClass" и node.text не пустой:
+- div.textContent = node.name + ": " + node.text
 
-Если потом появится вложенный текст:
-AcceptButton position 390 420
-AcceptButtonText position 0 0
-
-То:
-AcceptButtonText.absX = AcceptButton.absX + 0
-AcceptButtonText.absY = AcceptButton.absY + 0
-
-8. Обновить renderLayout(nodes), чтобы он использовал:
-- node.absX
-- node.absY
-- node.size.w
-- node.size.h
-
-9. В renderLayout(nodes):
-- рисовать только nodes с size
-- если node.color есть — использовать rgba из DayZ color
-- если node.color нет — background transparent + visible border
+9. Если у node нет color:
+- backgroundColor = "transparent"
+- border должен быть видимый
 - НЕ использовать random color
-- на блоке показать node.name
-- если node.type === "TextWidgetClass" и node.text не пустой, показать node.name + ": " + node.text
+- НЕ использовать плотную серую заливку
 
-10. Добавить минимальную отладку в UI:
-После парсинга вывести количество найденных nodes:
-Найдено элементов: X
+10. Tooltip/title должен показывать:
+- type
+- name
+- parentName
+- position
+- absolute position
+- size
+- text
+- font
 
-11. Минимально проверить в коде, что parseLayout на QuestMenu.layout должен находить:
-- QuestMenuRoot
-- QuestPanel
-- QuestListbox
-- DescriptionPanel
-- RoutePanel
-- DialogPanel
-- AcceptButton
-- CompleteButton
-- CloseButton
+11. Не делать пока:
+- большой UI-инспектор
+- полноценную панель свойств
+- сложный список элементов
+- экспорт
+- генерацию layout-кода
 
-12. В этой задаче НЕ обязательно идеально доделывать:
-- красивую панель свойств
-- сложный UI
-- идеальный список элементов
-
-Но если они уже есть — не ломать.
-
-13. В этой задаче обязательно:
-- parseLayout строит nodes с parent/children
-- computeAbsolutePositions считает absX/absY
-- renderLayout использует absX/absY
-- нет currentElement как основной логики
-- нет random color
-- нет DOMParser
-- нет position[] / size[] / color[]
-
-14. Нельзя:
-- менять Documentation/AGENT_TASK_LOOP.md
-- менять файлы мода
-- менять .layout файлы проекта
-- менять JSON
-- создавать тестовые файлы
-- оставлять тестовые файлы
-- использовать localStorage
-- использовать внешние библиотеки
-- использовать CDN
-- отправлять данные в сеть
-- генерировать layout-код
-- сохранять файлы
+Это будет отдельной задачей после принятия ядра.
 
 Критерии готовности:
-
-1. Изменён только файл:
-DayZ_layout/dayz_layout_viewer.html
-
-2. В коде есть функция parseLayout(text).
-
-3. В коде есть функция computeAbsolutePositions(nodes).
-
-4. parseLayout использует stack nodes.
-
-5. Node содержит:
-id, type, name, parentId, parentName, children, position, size, color, text, font, props, absX, absY.
-
-6. Свойства пишутся в stack[stack.length - 1].
-
-7. renderLayout использует node.absX / node.absY.
-
-8. Нет DOMParser.
-
-9. Нет position[] / size[] / color[].
-
-10. Нет random color.
-
-11. AGENT_TASK_LOOP.md не изменён.
-
-12. Файлы мода не изменены.
+1. Изменён только DayZ_layout/dayz_layout_viewer.html.
+2. AGENT_TASK_LOOP.md не изменён.
+3. Файлы мода не изменены.
+4. Node содержит parentId, parentName, text, font, props.
+5. text и font парсятся.
+6. quoted props парсятся.
+7. обычные props парсятся.
+8. calculateAbsolutePositions не делает return при отсутствии position.
+9. renderLayout использует absX/absY.
+10. На визуальных блоках видны имена элементов.
+11. Если color нет — transparent + visible border.
+12. Нет DOMParser.
+13. Нет position[] / size[] / color[].
+14. Нет random color.
+15. Нет сохранения файлов.
+16. Нет генерации layout-кода.
 
 Формат отчёта:
 

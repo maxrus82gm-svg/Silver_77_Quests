@@ -45,20 +45,20 @@
                 const container = document.getElementById('visual-container');
                 container.innerHTML = '';
 
-                // Ядро парсера .layout файлов DayZ с иерархией и абсолютными координатами
+                // Ядро парсера .layout файлов DayZ с расширенными свойствами
                 function parseLayout(content) {
                     const lines = content.split('\n');
-                    const nodeStack = []; // стек для отслеживания родительских узлов
-                    const allNodes = []; // все узлы для построения дерева
+                    const nodeStack = [];
+                    const allNodes = [];
                     let rootNode = null;
                     
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i].trim();
                         
-                        // Ищем начало нового UI-элемента (класс с именем)
+                        // Ищем начало нового UI-элемента
                         const classMatch = line.match(/^\s*(\w+WidgetClass)\s+(\w+)\s*\{/);
                         if (classMatch) {
-                            // Создаем новый узел
+                            const parentNode = nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null;
                             const newNode = {
                                 id: allNodes.length,
                                 type: classMatch[1],
@@ -66,15 +66,19 @@
                                 position: null,
                                 size: null,
                                 color: null,
-                                parent: nodeStack.length > 0 ? nodeStack[nodeStack.length - 1] : null,
+                                text: null,
+                                font: null,
+                                props: {},
+                                parent: parentNode,
+                                parentId: parentNode ? parentNode.id : -1,
+                                parentName: parentNode ? parentNode.name : null,
                                 children: [],
                                 absX: 0,
                                 absY: 0
                             };
                             
-                            // Связываем с родителем
-                            if (newNode.parent) {
-                                newNode.parent.children.push(newNode);
+                            if (parentNode) {
+                                parentNode.children.push(newNode);
                             } else {
                                 rootNode = newNode;
                             }
@@ -83,11 +87,11 @@
                             nodeStack.push(newNode);
                         }
                         
-                        // Если стек не пустой, парсим свойства текущего узла
+                        // Парсим свойства текущего узла
                         if (nodeStack.length > 0) {
                             const currentNode = nodeStack[nodeStack.length - 1];
                             
-                            // Парсим position (формат: position x y)
+                            // position (формат: position x y)
                             const posMatch = line.match(/^\s*position\s+([\d\.]+)\s+([\d\.]+)/);
                             if (posMatch) {
                                 currentNode.position = {
@@ -96,7 +100,7 @@
                                 };
                             }
                             
-                            // Парсим size (формат: size w h)
+                            // size (формат: size w h)
                             const sizeMatch = line.match(/^\s*size\s+([\d\.]+)\s+([\d\.]+)/);
                             if (sizeMatch) {
                                 currentNode.size = {
@@ -105,7 +109,7 @@
                                 };
                             }
                             
-                            // Парсим color (формат: color r g b a)
+                            // color (формат: color r g b a)
                             const colorMatch = line.match(/^\s*color\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)/);
                             if (colorMatch) {
                                 currentNode.color = {
@@ -114,6 +118,34 @@
                                     b: parseFloat(colorMatch[3]) || 0,
                                     a: parseFloat(colorMatch[4]) || 1
                                 };
+                            }
+                            
+                            // text (формат: text "текст" или text текст)
+                            const textMatch = line.match(/^\s*text\s+(?:"([^"]*)"|(\S.*))$/);
+                            if (textMatch) {
+                                currentNode.text = textMatch[1] || textMatch[2] || '';
+                            }
+                            
+                            // font (формат: font "шрифт" или font шрифт)
+                            const fontMatch = line.match(/^\s*font\s+(?:"([^"]*)"|(\S.*))$/);
+                            if (fontMatch) {
+                                currentNode.font = fontMatch[1] || fontMatch[2] || '';
+                            }
+                            
+                            // quoted props (формат: "ключ" значение)
+                            const quotedPropMatch = line.match(/^\s*"([^"]+)"\s+(\S.*)$/);
+                            if (quotedPropMatch) {
+                                const key = quotedPropMatch[1];
+                                const value = quotedPropMatch[2].trim();
+                                currentNode.props[key] = value;
+                            }
+                            
+                            // normal props (формат: ключ значение)
+                            const normalPropMatch = line.match(/^\s*(\w+)\s+(\S.*)$/);
+                            if (normalPropMatch && !['position', 'size', 'color', 'text', 'font', 'ignorepointer', 'halign', 'valign', 'hexactpos', 'vexactpos', 'hexactsize', 'vexactsize'].includes(normalPropMatch[1])) {
+                                const key = normalPropMatch[1];
+                                const value = normalPropMatch[2].trim();
+                                currentNode.props[key] = value;
                             }
                         }
                         
@@ -125,10 +157,14 @@
                     
                     // Вычисляем абсолютные координаты для всех узлов
                     function calculateAbsolutePositions(node, parentAbsX = 0, parentAbsY = 0) {
-                        if (!node.position) return;
-                        
-                        node.absX = parentAbsX + node.position.x;
-                        node.absY = parentAbsY + node.position.y;
+                        // Не прерываем выполнение при отсутствии position
+                        if (node.position) {
+                            node.absX = parentAbsX + node.position.x;
+                            node.absY = parentAbsY + node.position.y;
+                        } else {
+                            node.absX = parentAbsX;
+                            node.absY = parentAbsY;
+                        }
                         
                         // Рекурсивно вычисляем для детей
                         node.children.forEach(child => {
@@ -143,41 +179,74 @@
                     return { nodes: allNodes, root: rootNode };
                 }
                 
-                // Функция рендеринга с использованием абсолютных координат
+                // Функция рендеринга с отображением имени узла
                 function renderLayout(container, layoutData) {
                     container.innerHTML = '';
                     
                     layoutData.nodes.forEach(node => {
-                        // Пропускаем узлы без position и size
-                        if (!node.position || !node.size || 
-                            node.size.w <= 0 || node.size.h <= 0) {
+                        // Пропускаем узлы без size или с нулевым размером
+                        if (!node.size || node.size.w <= 0 || node.size.h <= 0) {
                             return;
                         }
                         
                         const div = document.createElement('div');
                         div.className = 'ui-element';
-                        div.style.left = (node.absX * 2) + 'px'; // масштабируем для наглядности
+                        div.style.left = (node.absX * 2) + 'px';
                         div.style.top = (node.absY * 2) + 'px';
                         div.style.width = (node.size.w * 2) + 'px';
                         div.style.height = (node.size.h * 2) + 'px';
                         
-                        // Используем цвет из узла или серый по умолчанию
+                        // Если color нет: прозрачный фон + видимая граница
                         if (node.color) {
                             div.style.backgroundColor = `rgba(${Math.round(node.color.r * 255)}, ${Math.round(node.color.g * 255)}, ${Math.round(node.color.b * 255)}, ${node.color.a})`;
+                            div.style.border = '1px solid #000';
                         } else {
-                            div.style.backgroundColor = 'rgba(128, 128, 128, 0.7)'; // серый по умолчанию
+                            div.style.backgroundColor = 'transparent';
+                            div.style.border = '1px dashed #666';
                         }
                         
-                        div.title = `${node.type} ${node.name}\n` +
-                                   `absX:${node.absX} absY:${node.absY}\n` +
-                                   `relX:${node.position.x} relY:${node.position.y}\n` +
-                                   `w:${node.size.w} h:${node.size.h}`;
+                        // Добавляем текст с именем узла
+                        const nameLabel = document.createElement('div');
+                        nameLabel.textContent = node.name;
+                        nameLabel.style.position = 'absolute';
+                        nameLabel.style.top = '2px';
+                        nameLabel.style.left = '2px';
+                        nameLabel.style.fontSize = '10px';
+                        nameLabel.style.color = '#000';
+                        nameLabel.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                        nameLabel.style.padding = '1px 3px';
+                        nameLabel.style.borderRadius = '2px';
+                        nameLabel.style.pointerEvents = 'none';
+                        div.appendChild(nameLabel);
                         
+                        // Формируем tooltip с информацией
+                        let tooltip = `${node.type} ${node.name}`;
+                        if (node.parentName) {
+                            tooltip += `\nРодитель: ${node.parentName}`;
+                        }
+                        if (node.position) {
+                            tooltip += `\nabsX:${node.absX} absY:${node.absY}`;
+                            tooltip += `\nrelX:${node.position.x} relY:${node.position.y}`;
+                        }
+                        tooltip += `\nw:${node.size.w} h:${node.size.h}`;
+                        if (node.text) {
+                            tooltip += `\nТекст: "${node.text}"`;
+                        }
+                        if (node.font) {
+                            tooltip += `\nШрифт: ${node.font}`;
+                        }
+                        if (Object.keys(node.props).length > 0) {
+                            tooltip += `\nДоп. свойства: ${JSON.stringify(node.props)}`;
+                        }
+                        
+                        div.title = tooltip;
                         container.appendChild(div);
                     });
                     
                     console.log(`Найдено узлов: ${layoutData.nodes.length}`);
-                    console.log(`Корневой узел: ${layoutData.root ? layoutData.root.type + ' ' + layoutData.root.name : 'нет'}`);
+                    if (layoutData.root) {
+                        console.log(`Корневой узел: ${layoutData.root.type} "${layoutData.root.name}"`);
+                    }
                 }
                 
                 // Парсим и рендерим layout
