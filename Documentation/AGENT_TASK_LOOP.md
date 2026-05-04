@@ -254,329 +254,564 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 073 — Локализовать интерфейс DayZ Layout Viewer на русский язык
+TASK 075 — Собрать единственную рабочую версию Quest JSON Editor в P:\Silver_77_Quests\JSON_Quvest
 
 Цель:
-Перевести пользовательский интерфейс DayZ_layout/dayz_layout_viewer.html на русский язык.
+Устранить архитектурный конфликт, найденный в TASK 074.
 
-Важно:
-Это косметическая UI-задача.
-Не менять логику viewer-а.
-Не менять парсер.
-Не менять finalRect math.
-Не менять source reveal.
-Не менять encoding / viewport / inspector / sanity checks logic.
-Не менять реальные .layout файлы.
+Сейчас редактор квестов split между двумя папками:
 
-Где работать:
-ТОЛЬКО:
-DayZ_layout/dayz_layout_viewer.html
+1. Основная папка проекта:
+P:\Silver_77_Quests\JSON_Quvest
+
+2. Вспомогательная папка:
+P:\Silver_77_Quests\Support\JSON_Quvest
+
+По правилу проекта, единственная рабочая папка Quest JSON Editor должна быть:
+
+P:\Silver_77_Quests\JSON_Quvest
+
+Главная точка запуска:
+
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+
+Но сейчас фактически происходит так:
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+→ P:\Silver_77_Quests\Support\JSON_Quvest\start-editor.ps1
+→ P:\Silver_77_Quests\Support\JSON_Quvest\server.ps1
+→ Support\JSON_Quvest\index.html / app.js / styles.css
+
+Из-за этого:
+- прямой запуск JSON_Quvest\index.html открывает старую версию
+- запуск через start-editor.cmd открывает актуальную версию из Support
+- пользователь видит две разные версии редактора
+- агент может править не тот файл
+
+Задача TASK 075:
+Собрать актуальную рабочую runtime-версию редактора целиком в:
+
+P:\Silver_77_Quests\JSON_Quvest
+
+Support\JSON_Quvest больше не должен быть активной runtime-папкой редактора.
+
+--------------------------------------------------------------------------------
+ВАЖНОЕ ОГРАНИЧЕНИЕ
+--------------------------------------------------------------------------------
+
+Это задача с правками файлов.
+
+Но:
+- НЕ менять JSON квестов по содержанию.
+- НЕ менять структуру квестов.
+- НЕ менять данные rewards/items/quests/triggers.
+- НЕ менять файлы мода.
+- НЕ менять клиент/сервер DayZ мода.
+- НЕ делать рефакторинг редактора.
+- НЕ переписывать app.js логику.
+- НЕ менять UI/UX редактора без необходимости.
+- НЕ удалять файлы безвозвратно.
+
+Главная задача:
+перенести/синхронизировать актуальную рабочую версию runtime-файлов редактора в JSON_Quvest и поправить пути запуска.
+
+--------------------------------------------------------------------------------
+РАЗРЕШЕНО МЕНЯТЬ
+--------------------------------------------------------------------------------
+
+Разрешено менять только файлы, связанные с Quest JSON Editor:
+
+P:\Silver_77_Quests\JSON_Quvest\index.html
+P:\Silver_77_Quests\JSON_Quvest\app.js
+P:\Silver_77_Quests\JSON_Quvest\styles.css
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
+P:\Silver_77_Quests\JSON_Quvest\server.ps1
+P:\Silver_77_Quests\JSON_Quvest\editor-config.json, если требуется
+P:\Silver_77_Quests\JSON_Quvest\editor-draft.json, если требуется
+P:\Silver_77_Quests\JSON_Quvest\item-stack-rules.json, только если это нужно для переноса runtime-связей, но не менять смысл данных
+
+Также разрешено создать архивную папку для старых/спорных версий:
+
+P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
+
+или похожее понятное имя внутри Support\Archive.
+
+Разрешено переносить туда старые/спорные версии файлов, если это нужно для очистки рабочей папки.
+
+--------------------------------------------------------------------------------
+ЗАПРЕЩЕНО МЕНЯТЬ
+--------------------------------------------------------------------------------
 
 Запрещено менять:
-- Documentation/AGENT_TASK_LOOP.md
-- Documentation/QUEST_LOGIC_SPEC.md
-- Silver_77_Quests_Client/
-- Silver_77_Quests_Server/
-- реальные .layout файлы проекта
-- реальные .json файлы
-- любые файлы мода
-- Git
+
+P:\Silver_77_Quests\Silver_77_Quests_Client\
+P:\Silver_77_Quests\Silver_77_Quests_Server\
+P:\Silver_77_Quests\Documentation\QUEST_LOGIC_SPEC.md
+реальные файлы мода
+любые .layout файлы
+любые DayZ scripts вне JSON_Quvest
+данные квестов без отдельной задачи
+
+Особенно не менять содержательно:
+P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests.json
+P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests_BackUP.json
+
+Эти JSON-файлы можно читать и использовать для проверки, но нельзя менять данные квестов в рамках этой задачи.
 
 --------------------------------------------------------------------------------
-ЧТО СДЕЛАТЬ
+ОТЧЁТ В AGENT_TASK_LOOP
 --------------------------------------------------------------------------------
 
-Перевести видимые пользователю подписи интерфейса на русский.
+Этому агенту разрешено записать отчёт самостоятельно в:
 
-Примеры замен:
+P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
 
-Title:
-DayZ .layout Viewer
-→ Просмотрщик DayZ .layout
+Но только в разрешённые блоки:
+- AGENT REPORT
+- REVIEW / STATUS, если такой блок предусмотрен текущей структурой
+- статус текущей задачи, если принято в доке
 
-Description:
-Read-only preview: inspect DayZ widget hierarchy, decoded text, final rects, and sanity checks without changing source layouts.
-→ Режим просмотра: анализ и предпросмотр DayZ .layout без изменения исходных файлов.
+Запрещено:
+- менять SYSTEM INSTRUCTIONS
+- менять правила блока 4
+- менять опыт/подсказки блока 6 без отдельной команды
+- удалять историю
+- переписывать старые задачи
+- менять QUEST_LOGIC_SPEC.md
 
-Toolbar:
-Layout file
-→ Файл layout
-
-Encoding
-→ Кодировка
-
-Viewport
-→ Экран
-
-Scale
-→ Масштаб
-
-Show debug labels
-→ Имена элементов
-
-Show borders
-→ Рамки
-
-Show grid
-→ Сетка
-
-Copy selected info
-→ Копировать выбранное
-
-Run sanity checks
-→ Проверить layout
-
-Loaded:
-→ Загружен:
-
-Selected:
-→ Выбран:
-
-Element List
-→ Список элементов
-
-Filter by name or type
-→ Фильтр по имени или типу
-
-Inspector
-→ Инспектор
-
-Sanity Checks
-→ Проверки
-
-Source Editor
-→ Редактор исходного кода
-
-Apply / Refresh preview
-→ Применить / обновить предпросмотр
-
-Reset
-→ Сбросить
-
-Copy source
-→ Копировать код
-
-Reveal source
-→ Показать код
-
-No file loaded.
-→ Файл не загружен.
-
-No node selected.
-→ Элемент не выбран.
-
-No source loaded.
-→ Код не загружен.
-
-Source editor has unapplied changes.
-→ Есть неприменённые изменения.
-
-Source editor synced with ...
-→ Редактор синхронизирован с ...
-
-Current source copied.
-→ Код скопирован.
-
-Preview matches current source editor text.
-→ Предпросмотр соответствует текущему коду редактора.
-
-Load a .layout file to inspect its node tree.
-→ Загрузите .layout файл, чтобы увидеть дерево элементов.
-
-Select a widget in the viewport or element list.
-→ Выберите элемент в предпросмотре или списке.
-
-Run checks after loading QuestMenu.layout or QuestJournal.layout.
-→ Запустите проверку после загрузки QuestMenu.layout или QuestJournal.layout.
-
-Footer:
-© 2026 Silver_77_Quests. Read-only viewer only: no layout files are rewritten, formatted, or regenerated.
-→ © 2026 Silver_77_Quests. Только просмотр: layout-файлы не перезаписываются, не форматируются и не генерируются.
+Если есть сомнение — отчёт вернуть только в чат.
 
 --------------------------------------------------------------------------------
-INSPECTOR LABELS
+КОНТЕКСТ ИЗ TASK 074
 --------------------------------------------------------------------------------
 
-Перевести подписи в Inspector:
+TASK 074 установил:
 
-Name → Имя
-Type → Тип
-Parent → Родитель
-Depth → Глубина
-finalRect → Итоговый прямоугольник
-Position → Позиция
-Size → Размер
-Alignment → Выравнивание
-Exact → Exact-флаги
-Font → Шрифт
-Text align → Выравнивание текста
-Source lines → Строки кода
-Z-order → Z-порядок
-Text → Текст
-Props → Свойства
+Фактически актуальные runtime-файлы сейчас находятся в:
+
+P:\Silver_77_Quests\Support\JSON_Quvest\index.html
+P:\Silver_77_Quests\Support\JSON_Quvest\app.js
+P:\Silver_77_Quests\Support\JSON_Quvest\styles.css
+P:\Silver_77_Quests\Support\JSON_Quvest\start-editor.ps1
+P:\Silver_77_Quests\Support\JSON_Quvest\server.ps1
+
+Актуальные рабочие data-файлы находятся в:
+
+P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests.json
+P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests_BackUP.json
+P:\Silver_77_Quests\JSON_Quvest\item-stack-rules.json
+
+Старые или спорные root-файлы:
+
+P:\Silver_77_Quests\JSON_Quvest\index.html
+P:\Silver_77_Quests\JSON_Quvest\app.js
+P:\Silver_77_Quests\JSON_Quvest\styles.css
+
+Также спорными являются root stub-файлы, если они только пересылают запуск в Support:
+
+P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
+P:\Silver_77_Quests\JSON_Quvest\server.ps1
+
+--------------------------------------------------------------------------------
+МОЁ ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
+--------------------------------------------------------------------------------
+
+Предпочтительный путь:
+
+1. Не удалять старые файлы безвозвратно.
+2. Создать архив спорных версий внутри Support, например:
+
+P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
+
+3. Перед заменой root-файлов сохранить старые root-версии туда:
+- JSON_Quvest\index.html
+- JSON_Quvest\app.js
+- JSON_Quvest\styles.css
+- JSON_Quvest\start-editor.ps1, если это stub
+- JSON_Quvest\server.ps1, если это stub
+
+4. Скопировать актуальные runtime-файлы из Support\JSON_Quvest в JSON_Quvest:
+- index.html
+- app.js
+- styles.css
+- start-editor.ps1
+- server.ps1
+
+5. Исправить JSON_Quvest\start-editor.cmd:
+он должен запускать:
+
+P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
+
+а не Support\JSON_Quvest\start-editor.ps1.
+
+То есть start-editor.cmd должен использовать путь рядом с собой:
+
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-editor.ps1"
+
+6. Исправить start-editor.ps1 после переноса:
+он должен считать scriptDir как JSON_Quvest и искать index.html/server.ps1 рядом с собой.
+
+7. Исправить server.ps1 после переноса:
+он должен раздавать статику из JSON_Quvest, а не из Support\JSON_Quvest.
+
+8. Убедиться, что:
+- item-stack-rules.json берётся из JSON_Quvest
+- Silver_77_Quests.json берётся из JSON_Quvest
+- Silver_77_Quests_BackUP.json берётся из JSON_Quvest
+- editor-draft.json теперь один рабочий, желательно в JSON_Quvest
+- editor-config.json теперь один рабочий, желательно в JSON_Quvest
+
+9. Support\JSON_Quvest после успешного переноса не должен оставаться активной runtime-папкой.
+
+10. Старые/спорные версии должны быть в архиве, а не в рабочей папке.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 1 — ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА ПЕРЕД ПРАВКАМИ
+--------------------------------------------------------------------------------
+
+Перед изменениями ещё раз проверить:
+
+1. Какие файлы есть в:
+P:\Silver_77_Quests\JSON_Quvest
+
+2. Какие файлы есть в:
+P:\Silver_77_Quests\Support\JSON_Quvest
+
+3. Содержимое:
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+
+4. Содержимое:
+P:\Silver_77_Quests\Support\JSON_Quvest\start-editor.ps1
+
+5. Содержимое:
+P:\Silver_77_Quests\Support\JSON_Quvest\server.ps1
+
+6. Убедиться, что Support-версия действительно актуальная:
+- в ней есть NPC Flow / роли Offer / Completion / Reward
+- есть актуальная сортировка/фильтр по trigger / NPC
+- UI соответствует тому, что пользователь считает правильной версией
+
+Если обнаружится, что актуальная версия уже частично перенесена — не дублировать бездумно, а написать это в ANALYSIS и действовать минимально.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 2 — АРХИВИРОВАТЬ СТАРЫЕ ROOT-ФАЙЛЫ
+--------------------------------------------------------------------------------
+
+Создать архивную папку, например:
+
+P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
+
+Внутри желательно сделать подпапку с понятным именем, например:
+
+root_old_before_TASK_075
+
+или:
+
+root_old_runtime_before_migration
+
+Туда перенести старые root-файлы, которые будут заменены:
+
+P:\Silver_77_Quests\JSON_Quvest\index.html
+P:\Silver_77_Quests\JSON_Quvest\app.js
+P:\Silver_77_Quests\JSON_Quvest\styles.css
+
+Если root start-editor.ps1 и server.ps1 являются только stub/proxy в Support, тоже перенести их копии в архив перед заменой.
 
 Важно:
-Не менять сами технические значения:
-- QuestPanel
-- TextWidgetClass
-- finalRect числа
-- left_ref
-- center_ref
-- hexactpos
-- пути шрифтов
-- имена node
-
-Переводить только подписи интерфейса.
+Не архивировать и не трогать:
+- Silver_77_Quests.json
+- Silver_77_Quests_BackUP.json
+- item-stack-rules.json
 
 --------------------------------------------------------------------------------
-ELEMENT LIST
+ЧАСТЬ 3 — ПЕРЕНЕСТИ АКТУАЛЬНЫЙ RUNTIME В JSON_Quvest
 --------------------------------------------------------------------------------
 
-Можно оставить типы короткими техническими:
-FRAME / PANEL / TEXT / BUTTON
+Скопировать актуальные файлы из:
 
-Но заголовки и placeholder перевести:
-Element List → Список элементов
-Filter by name or type → Фильтр по имени или типу
+P:\Silver_77_Quests\Support\JSON_Quvest
 
-Имена элементов не переводить:
-QuestPanel, DescriptionText, AcceptButtonText — оставить как есть.
+в:
 
---------------------------------------------------------------------------------
-SANITY CHECKS
---------------------------------------------------------------------------------
+P:\Silver_77_Quests\JSON_Quvest
 
-Перевести видимые тексты sanity checks, если они есть.
+Файлы:
+- index.html
+- app.js
+- styles.css
+- start-editor.ps1
+- server.ps1
 
-Примеры:
-PASS → ОК
-WARN → ВНИМАНИЕ
-Missing node → Элемент не найден
-Expected → Ожидалось
-Actual → Фактически
-Delta → Разница
-
-Если перевод sanity checks может затронуть много логики, можно перевести только заголовки и кнопки, а сами технические результаты оставить как есть.
+После копирования в JSON_Quvest эти файлы должны стать основной рабочей версией.
 
 --------------------------------------------------------------------------------
-SOURCE EDITOR
+ЧАСТЬ 4 — ИСПРАВИТЬ START-EDITOR.CMD
 --------------------------------------------------------------------------------
 
-Перевести только интерфейс редактора:
-Source Editor → Редактор исходного кода
-Apply / Refresh preview → Применить / обновить предпросмотр
-Reset → Сбросить
-Copy source → Копировать код
+Файл:
 
-Код внутри textarea НЕ переводить и НЕ менять.
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+
+должен запускать start-editor.ps1 из той же папки.
+
+Ожидаемый смысл:
+
+@echo off
+setlocal
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-editor.ps1"
+
+Важно:
+- не уводить запуск в ..\Support\JSON_Quvest
+- не использовать Support как runtime
+- сохранить удобный запуск двойным кликом по start-editor.cmd
 
 --------------------------------------------------------------------------------
-ЧТО НЕ ДЕЛАТЬ
+ЧАСТЬ 5 — ИСПРАВИТЬ START-EDITOR.PS1
 --------------------------------------------------------------------------------
 
-Не переводить:
-- имена классов WidgetClass
-- имена node
-- имена переменных
-- значения свойств .layout
-- содержимое textarea
-- текст внутри реального .layout
-- пути файлов
-- технические enum значения:
-  left_ref
-  top_ref
-  center_ref
-  hexactpos
-  vexactsize
+Файл:
+
+P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
+
+должен работать из собственной папки.
+
+Проверить/исправить:
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$indexPath = Join-Path $scriptDir "index.html"
+$serverScript = Join-Path $scriptDir "server.ps1"
+
+То есть:
+- index.html рядом
+- server.ps1 рядом
+- editor-config.json рядом
+- editor-config.local.json рядом
+- backup/source paths разрешаются относительно JSON_Quvest, если они относительные
+
+Важно:
+Если в перенесённом support start-editor.ps1 есть логика, которая предполагает Support\JSON_Quvest, убрать эту привязку.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 6 — ИСПРАВИТЬ SERVER.PS1
+--------------------------------------------------------------------------------
+
+Файл:
+
+P:\Silver_77_Quests\JSON_Quvest\server.ps1
+
+должен раздавать файлы из JSON_Quvest.
+
+Проверить/исправить:
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+Статика должна отдаваться из $scriptDir:
+- index.html
+- app.js
+- styles.css
+
+Пути данных должны быть root JSON_Quvest:
+
+- Silver_77_Quests.json
+- Silver_77_Quests_BackUP.json
+- item-stack-rules.json
+- editor-config.json
+- editor-config.local.json
+- editor-draft.json
+
+Если в server.ps1 есть переменная типа:
+
+$projectRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
+$rootEditorDir = Join-Path $projectRoot "JSON_Quvest"
+
+то после переноса в JSON_Quvest нужно проверить, не ломает ли она пути.
+
+Моё мнение:
+после переноса server.ps1 в JSON_Quvest лучше сделать проще:
+- $editorDir = $scriptDir
+- stackRulesPath = Join-Path $editorDir "item-stack-rules.json"
+- draftPath = Join-Path $editorDir "editor-draft.json"
+- config paths = Join-Path $editorDir ...
+- safe static path = Join-Path $editorDir ...
+
+Так меньше риска снова split-режима.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 7 — НЕ ТРОГАТЬ QUEST JSON DATA
+--------------------------------------------------------------------------------
+
+Очень важно:
+Не менять содержимое квестов.
 
 Не менять:
-- CSS layout без необходимости
-- HTML structure без необходимости
-- JS logic без необходимости
+- rewards
+- objectives
+- triggers
+- questIds
+- roles
+- dialogue
+- requirements
+- item class names
+- quantities
+
+Файлы:
+P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests.json
+P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests_BackUP.json
+
+можно только читать для проверки загрузки редактора.
+Нельзя форматировать, пересохранять или менять данные.
 
 --------------------------------------------------------------------------------
-ПРОВЕРКИ
+ЧАСТЬ 8 — ПРОВЕРКИ ПОСЛЕ ПЕРЕНОСА
 --------------------------------------------------------------------------------
 
-Проверить вручную:
+Проверить:
 
-1. Открыть viewer.
-2. Убедиться, что интерфейс на русском.
-3. Загрузить QuestMenu.layout.
-4. Выбрать Windows-1251.
-5. Проверить:
-- preview работает
-- список элементов работает
-- inspector работает
-- Reveal source / Показать код работает
-- Apply / Refresh preview работает
-- Reset работает
-- Copy source работает
-- sanity checks запускаются
+1. Запустить:
 
-6. Убедиться:
-- .layout код в textarea не изменён
-- имена элементов не переведены
-- технические значения не переведены
-- реальный файл не изменён
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+
+2. Убедиться, что открывается:
+
+http://127.0.0.1:4173/index.html
+
+3. Убедиться, что версия редактора актуальная:
+- видны правильные NPC Flow блоки
+- видны роли Offer / Completion / Reward
+- блоки раскрашены корректно
+- сортировка/фильтр по trigger / NPC работает, если он был в актуальной версии
+
+4. Проверить, что прямое открытие:
+
+P:\Silver_77_Quests\JSON_Quvest\index.html
+
+не показывает старую root-версию.
+Оно может работать ограниченно как file://, но визуально это должна быть актуальная версия UI.
+
+5. Проверить, что:
+- app.js используется из JSON_Quvest
+- styles.css используется из JSON_Quvest
+- server.ps1 используется из JSON_Quvest
+- start-editor.ps1 используется из JSON_Quvest
+- Support\JSON_Quvest больше не участвует в runtime-запуске
+
+6. Проверить:
+- Import JSON
+- Load Base
+- Validate
+- Copy JSON
+- Export JSON
+- Save Path / Backup Path
+- Stack rules
+
+7. Проверить, что основной JSON не изменился сам по себе.
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 9 — ЧТО ДЕЛАТЬ С SUPPORT\JSON_Quvest
+--------------------------------------------------------------------------------
+
+В рамках TASK 075:
+
+Не удалять Support\JSON_Quvest полностью, если это рискованно.
+
+Можно:
+- оставить Support\JSON_Quvest как источник, из которого скопированы файлы
+- или перенести его runtime-копию в архив, если перенос прошёл успешно и задача это безопасно позволяет
+
+Предпочтительный безопасный вариант:
+1. Сначала перенести runtime в JSON_Quvest.
+2. Проверить запуск из JSON_Quvest.
+3. Если всё работает — в отчёте предложить TASK 076:
+   архивировать/очистить Support\JSON_Quvest.
+
+То есть если есть сомнения — не удалять Support\JSON_Quvest в этой задаче.
+Главная цель TASK 075 — чтобы JSON_Quvest стал самодостаточным рабочим editor runtime.
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
 --------------------------------------------------------------------------------
 
-1. Изменён только:
-DayZ_layout/dayz_layout_viewer.html
+Задача считается выполненной, если:
 
-2. Реальные .layout файлы не изменены.
+1. Основной runtime Quest JSON Editor находится в:
+P:\Silver_77_Quests\JSON_Quvest
 
-3. Файлы мода не изменены.
+2. start-editor.cmd запускает:
+P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
 
-4. JSON не изменён.
+3. start-editor.ps1 запускает:
+P:\Silver_77_Quests\JSON_Quvest\server.ps1
 
-5. Интерфейс viewer-а переведён на русский.
+4. server.ps1 раздаёт:
+P:\Silver_77_Quests\JSON_Quvest\index.html
+P:\Silver_77_Quests\JSON_Quvest\app.js
+P:\Silver_77_Quests\JSON_Quvest\styles.css
 
-6. Технические имена node/class/property не переведены.
+5. Прямой запуск JSON_Quvest\index.html больше не показывает старую версию UI.
 
-7. Source editor code не изменяется.
+6. Через start-editor.cmd открывается актуальная версия редактора.
 
-8. Viewer logic не сломана.
+7. Support\JSON_Quvest больше не нужен для обычного runtime-запуска.
 
-9. Reveal source работает.
+8. Старые root-файлы не удалены безвозвратно, а сохранены в архив спорных версий или явно перечислены как не тронутые.
 
-10. Apply / Reset / Copy source работают.
+9. JSON квестов не изменён содержательно.
 
-11. Отчёт вернуть в чат.
+10. Файлы мода не изменены.
 
-Формат отчёта:
+11. В отчёте указано, какие файлы были перенесены/заменены/заархивированы.
+
+--------------------------------------------------------------------------------
+ОЖИДАЕМЫЙ ОТЧЁТ
+--------------------------------------------------------------------------------
 
 AGENT REPORT
 
 ANALYSIS:
-- что было переведено
-- что специально не переводилось
+- что было до правки
+- почему был split между JSON_Quvest и Support\JSON_Quvest
+- какая версия выбрана как актуальная runtime-версия
+- какие риски были учтены
 
 DONE:
 - что сделано
+- какие файлы перенесены
+- какие пути исправлены
+- что стало основной runtime-папкой
 
 CHANGED FILES:
-- какие файлы изменены
+- полный список изменённых файлов
+
+MOVED / ARCHIVED:
+- какие старые файлы перенесены в архив
+- куда именно
 
 DIFF:
-- кратко
+- кратко по главным изменениям:
+  start-editor.cmd
+  start-editor.ps1
+  server.ps1
+  index/app/styles
 
 CHECKS:
-- загрузка layout
-- кодировка
-- inspector
-- reveal source
-- apply/reset/copy
-- sanity checks
+- запуск start-editor.cmd
+- открытие актуального UI
+- проверка, что Support не используется как runtime
+- прямой index.html показывает актуальный UI
+- JSON не изменён содержательно
+- stack rules/config/draft работают или отмечены как требуют проверки
 
 PROBLEMS:
 - реальные проблемы, если есть
+- что не удалось проверить
+
+QUESTIONS:
+- вопросы пользователю, если остались
 
 CONCLUSION:
 - краткий вывод
+- можно ли считать JSON_Quvest единственной рабочей папкой
+- нужна ли TASK 076 на архивирование/очистку Support
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -1753,6 +1988,135 @@ UI начал показывать корректное состояние, на
   - какой expected finalRect
   - какой text
   - какая кодировка
+  
+  
+  --------------------------------------------------------------------------------
+ОПЫТ ПО QUEST JSON EDITOR / JSON_Quvest
+--------------------------------------------------------------------------------
+
+Главная рабочая папка редактора квестов:
+
+P:\Silver_77_Quests\JSON_Quvest
+
+Главная точка запуска редактора:
+
+P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+
+Это важное правило:
+если пользователь запускает редактор через start-editor.cmd из JSON_Quvest, значит вся актуальная рабочая версия редактора должна находиться в JSON_Quvest.
+
+Рабочие файлы редактора должны лежать в одной папке:
+
+P:\Silver_77_Quests\JSON_Quvest
+
+К рабочим файлам редактора относятся:
+- index.html
+- app.js
+- styles.css
+- start-editor.cmd
+- start-editor.ps1
+- server.ps1
+- editor-config.json
+- editor-config.local.json, если используется локально
+- editor-draft.json, если используется как черновик
+- item-stack-rules.json
+- Silver_77_Quests.json
+- Silver_77_Quests_BackUP.json
+- README.md
+- PROJECT_CONTEXT.md
+
+Support\JSON_Quvest НЕ должен быть основной рабочей папкой редактора.
+
+Support можно использовать только как место для:
+- вспомогательных материалов
+- старых спорных версий
+- архивов
+- временных копий
+- документации/поддержки
+
+Нельзя допускать ситуацию:
+- start-editor.cmd лежит в JSON_Quvest
+- а запускает рабочие файлы из Support\JSON_Quvest
+- или актуальный index.html/app.js/styles.css лежат в Support
+- а в JSON_Quvest лежит старая/неполная версия
+
+Это создаёт путаницу:
+- пользователь открывает index.html и видит старую версию
+- start-editor.cmd открывает другую версию
+- агент может править не тот файл
+- в проекте появляются две разные версии одного редактора
+
+Правило:
+все задачи по Quest JSON Editor должны считать основной рабочей папкой только:
+
+P:\Silver_77_Quests\JSON_Quvest
+
+Если в Support\JSON_Quvest найдена более новая или рабочая версия редактора, её нужно перенести/синхронизировать в JSON_Quvest отдельной задачей.
+
+После переноса:
+- start-editor.cmd должен запускать файлы из JSON_Quvest
+- start-editor.ps1 должен находиться в JSON_Quvest
+- server.ps1 должен находиться в JSON_Quvest
+- index.html должен использовать ./styles.css и ./app.js из JSON_Quvest
+- server.ps1 должен обслуживать файлы из JSON_Quvest
+
+Все нерабочие, устаревшие или спорные версии из JSON_Quvest не удалять сразу без анализа.
+Их нужно перенести в архивную папку, например:
+
+P:\Silver_77_Quests\Support\JSON_Quvest_Archive_ConflictingVersions
+
+или:
+
+P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
+
+Название может быть другим, но смысл должен быть понятен:
+"архив спорных/старых версий редактора".
+
+Архивная папка нужна, чтобы:
+- не потерять старые файлы
+- можно было сравнить версии
+- не держать нерабочие копии в рабочей папке
+- не мешать пользователю и агентам
+
+Запрещено:
+- развивать Quest JSON Editor в Support\JSON_Quvest как основную версию
+- оставлять две разные актуальные версии index.html / app.js / styles.css
+- удалять старые файлы без переноса в архив
+- менять файлы мода при чистке редактора
+- менять JSON квестов при чистке редактора, если задача только про структуру редактора
+- менять Git вручную без команды пользователя
+
+Перед любой правкой Quest JSON Editor агент обязан:
+1. Проверить, что работает в папке:
+   P:\Silver_77_Quests\JSON_Quvest
+
+2. Проверить start-editor.cmd:
+   он должен запускать редактор из JSON_Quvest, а не из Support.
+
+3. Проверить, есть ли дубли:
+   - JSON_Quvest/index.html
+   - Support/JSON_Quvest/index.html
+   - JSON_Quvest/app.js
+   - Support/JSON_Quvest/app.js
+   - JSON_Quvest/styles.css
+   - Support/JSON_Quvest/styles.css
+   - JSON_Quvest/server.ps1
+   - Support/JSON_Quvest/server.ps1
+   - JSON_Quvest/start-editor.ps1
+   - Support/JSON_Quvest/start-editor.ps1
+
+4. Если есть расхождение, сначала написать ANALYSIS:
+   - какая версия новее
+   - какая версия запускается через start-editor.cmd
+   - какие файлы реально используются
+   - какие файлы устарели
+   - что предлагается перенести в архив
+
+5. Только после этого выполнять перенос/чистку, если задача это разрешает.
+
+Итоговая цель:
+В JSON_Quvest должна остаться одна понятная рабочая версия редактора квестов.
+В Support должны лежать только архивные/вспомогательные материалы, а не активная версия редактора.
 
 ================================================================================
 # КОНЕЦ ФАЙЛА

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quest JSON Workshop</title>
-    <link rel="stylesheet" href="./styles.css?v=2026-04-26-flow-builder-reward-v2">
+    <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <div class="page-shell">
@@ -61,18 +61,6 @@
                 <h2>Квесты</h2>
               </div>
               <button id="addQuestButton" class="button small">+ Квест</button>
-            </div>
-            <div class="sidebar-tools">
-              <div class="field">
-                <div class="field-label-row">
-                  <label for="questTriggerFilter">Сортировка по trigger / NPC</label>
-                  <span class="field-key">questIds order</span>
-                </div>
-                <select id="questTriggerFilter">
-                  <option value="">Все квесты</option>
-                </select>
-                <small id="questTriggerFilterHint">Можно выбрать конкретный trigger, чтобы видеть только его квесты в его порядке.</small>
-              </div>
             </div>
             <div id="questList" class="entity-list"></div>
           </section>
@@ -172,6 +160,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=2026-04-26-flow-builder-reward-v2"></script>
+    <script src="./app.js"></script>
   </body>
   </html>
