@@ -254,478 +254,343 @@ JSON/string payload нельзя отправлять одной строкой 
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 075 — Собрать единственную рабочую версию Quest JSON Editor в P:\Silver_77_Quests\JSON_Quvest
+TASK 077 — Привести UI и редактор к реальному JSON-контракту мода: objectives вместо requiredItems, dialogText вместо dialogue, правильное разделение DescriptionPanel и DialogPanel
 
 Цель:
-Устранить архитектурный конфликт, найденный в TASK 074.
+Исправить расхождение в терминах и отображении данных между Quest JSON Editor, JSON-контрактом и UI мода.
 
-Сейчас редактор квестов split между двумя папками:
+Контекст:
+TASK 076 показал, что критического schema mismatch между editor и mod нет, но есть важные нюансы:
 
-1. Основная папка проекта:
-P:\Silver_77_Quests\JSON_Quvest
+1. requiredItems как отдельного поля в JSON нет.
+   Его роль выполняет:
+   quests[].objectives[]
 
-2. Вспомогательная папка:
-P:\Silver_77_Quests\Support\JSON_Quvest
+2. dialogue как отдельного поля в JSON нет.
+   Реальный контракт диалога:
+   triggerActions[].dialogText
 
-По правилу проекта, единственная рабочая папка Quest JSON Editor должна быть:
+3. Offer / Completion / Reward реализованы через:
+   offerTriggerIds[]
+   completionTriggerIds[]
+   rewardTriggerIds[]
 
-P:\Silver_77_Quests\JSON_Quvest
+   и через:
+   triggerActions[] с actionType = offer / completion / reward
 
-Главная точка запуска:
+Пользователь хочет привести редактор и UI к этой реальной модели, чтобы не было ложных ожиданий.
 
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+Главная видимая проблема:
+В игре текст диалога NPC сейчас отображается в верхнем DescriptionPanel, а также повторяется в нижнем диалоговом журнале.
 
-Но сейчас фактически происходит так:
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
-→ P:\Silver_77_Quests\Support\JSON_Quvest\start-editor.ps1
-→ P:\Silver_77_Quests\Support\JSON_Quvest\server.ps1
-→ Support\JSON_Quvest\index.html / app.js / styles.css
+Ожидаемое поведение:
+- Верхний DescriptionPanel должен показывать описание квеста и техническую/игровую информацию:
+  - описание квеста
+  - цели
+  - что нужно принести
+  - прогресс
+  - что дадут
+  - требования
+  - статус
 
-Из-за этого:
-- прямой запуск JSON_Quvest\index.html открывает старую версию
-- запуск через start-editor.cmd открывает актуальную версию из Support
-- пользователь видит две разные версии редактора
-- агент может править не тот файл
+- Нижний DialogPanel должен показывать именно диалог NPC:
+  - triggerActions[].dialogText
+  - текст текущего NPC-блока Offer / Completion / Reward
+  - диалоговый журнал, если он нужен
 
-Задача TASK 075:
-Собрать актуальную рабочую runtime-версию редактора целиком в:
-
-P:\Silver_77_Quests\JSON_Quvest
-
-Support\JSON_Quvest больше не должен быть активной runtime-папкой редактора.
+То есть:
+DescriptionPanel = “что за квест и что делать”
+DialogPanel = “что сказал NPC”
 
 --------------------------------------------------------------------------------
-ВАЖНОЕ ОГРАНИЧЕНИЕ
+ВАЖНО
 --------------------------------------------------------------------------------
 
-Это задача с правками файлов.
+Это задача с возможными правками, но сначала обязательно сделать короткий анализ.
 
-Но:
-- НЕ менять JSON квестов по содержанию.
-- НЕ менять структуру квестов.
-- НЕ менять данные rewards/items/quests/triggers.
-- НЕ менять файлы мода.
-- НЕ менять клиент/сервер DayZ мода.
-- НЕ делать рефакторинг редактора.
-- НЕ переписывать app.js логику.
-- НЕ менять UI/UX редактора без необходимости.
-- НЕ удалять файлы безвозвратно.
+Перед правкой найти точные места в коде:
+- где DescriptionText заполняется
+- где DialogText заполняется
+- где формируется “Диалоговый журнал”
+- где берётся triggerActions[].dialogText
+- где берётся quest.description
+- где формируется список objectives/rewards/status
 
-Главная задача:
-перенести/синхронизировать актуальную рабочую версию runtime-файлов редактора в JSON_Quvest и поправить пути запуска.
+Не править вслепую.
 
 --------------------------------------------------------------------------------
 РАЗРЕШЕНО МЕНЯТЬ
 --------------------------------------------------------------------------------
 
-Разрешено менять только файлы, связанные с Quest JSON Editor:
+Разрешено менять только файлы, связанные с UI/редактором квестов:
 
-P:\Silver_77_Quests\JSON_Quvest\index.html
+Редактор:
 P:\Silver_77_Quests\JSON_Quvest\app.js
+P:\Silver_77_Quests\JSON_Quvest\index.html
 P:\Silver_77_Quests\JSON_Quvest\styles.css
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
-P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
-P:\Silver_77_Quests\JSON_Quvest\server.ps1
-P:\Silver_77_Quests\JSON_Quvest\editor-config.json, если требуется
-P:\Silver_77_Quests\JSON_Quvest\editor-draft.json, если требуется
-P:\Silver_77_Quests\JSON_Quvest\item-stack-rules.json, только если это нужно для переноса runtime-связей, но не менять смысл данных
 
-Также разрешено создать архивную папку для старых/спорных версий:
+Клиентский UI мода:
+P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
 
-P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
+Данные/модель, если потребуется только для чтения:
+P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\3_Game\QuestData.c
+P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\4_World\QuestClientManager.c
+P:\Silver_77_Quests\Silver_77_Quests_Server\scripts\4_World\QuestServerManager.c
 
-или похожее понятное имя внутри Support\Archive.
-
-Разрешено переносить туда старые/спорные версии файлов, если это нужно для очистки рабочей папки.
+Layout-файлы можно читать для проверки имён виджетов:
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
 --------------------------------------------------------------------------------
 ЗАПРЕЩЕНО МЕНЯТЬ
 --------------------------------------------------------------------------------
 
-Запрещено менять:
-
-P:\Silver_77_Quests\Silver_77_Quests_Client\
-P:\Silver_77_Quests\Silver_77_Quests_Server\
-P:\Silver_77_Quests\Documentation\QUEST_LOGIC_SPEC.md
-реальные файлы мода
-любые .layout файлы
-любые DayZ scripts вне JSON_Quvest
-данные квестов без отдельной задачи
-
-Особенно не менять содержательно:
-P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests.json
-P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests_BackUP.json
-
-Эти JSON-файлы можно читать и использовать для проверки, но нельзя менять данные квестов в рамках этой задачи.
-
---------------------------------------------------------------------------------
-ОТЧЁТ В AGENT_TASK_LOOP
---------------------------------------------------------------------------------
-
-Этому агенту разрешено записать отчёт самостоятельно в:
-
-P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
-
-Но только в разрешённые блоки:
-- AGENT REPORT
-- REVIEW / STATUS, если такой блок предусмотрен текущей структурой
-- статус текущей задачи, если принято в доке
-
 Запрещено:
-- менять SYSTEM INSTRUCTIONS
-- менять правила блока 4
-- менять опыт/подсказки блока 6 без отдельной команды
-- удалять историю
-- переписывать старые задачи
-- менять QUEST_LOGIC_SPEC.md
+- менять JSON квестов по содержанию
+- менять rewards/items/quantities
+- менять questIds
+- менять triggerIds
+- менять структуру JSON без отдельной задачи
+- менять серверную runtime-логику без необходимости
+- менять layout-файлы без отдельной задачи
+- менять файлы вне указанных областей
+- удалять файлы
+- переносить файлы
+- делать большой рефакторинг
 
-Если есть сомнение — отчёт вернуть только в чат.
-
---------------------------------------------------------------------------------
-КОНТЕКСТ ИЗ TASK 074
---------------------------------------------------------------------------------
-
-TASK 074 установил:
-
-Фактически актуальные runtime-файлы сейчас находятся в:
-
-P:\Silver_77_Quests\Support\JSON_Quvest\index.html
-P:\Silver_77_Quests\Support\JSON_Quvest\app.js
-P:\Silver_77_Quests\Support\JSON_Quvest\styles.css
-P:\Silver_77_Quests\Support\JSON_Quvest\start-editor.ps1
-P:\Silver_77_Quests\Support\JSON_Quvest\server.ps1
-
-Актуальные рабочие data-файлы находятся в:
-
+Особенно не менять:
 P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests.json
 P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests_BackUP.json
-P:\Silver_77_Quests\JSON_Quvest\item-stack-rules.json
 
-Старые или спорные root-файлы:
-
-P:\Silver_77_Quests\JSON_Quvest\index.html
-P:\Silver_77_Quests\JSON_Quvest\app.js
-P:\Silver_77_Quests\JSON_Quvest\styles.css
-
-Также спорными являются root stub-файлы, если они только пересылают запуск в Support:
-
-P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
-P:\Silver_77_Quests\JSON_Quvest\server.ps1
+Эти файлы можно читать только для проверки.
 
 --------------------------------------------------------------------------------
-МОЁ ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
+ЧАСТЬ 1 — УТОЧНИТЬ ТЕРМИНЫ В РЕДАКТОРЕ
 --------------------------------------------------------------------------------
 
-Предпочтительный путь:
+Нужно проверить интерфейс Quest JSON Editor.
 
-1. Не удалять старые файлы безвозвратно.
-2. Создать архив спорных версий внутри Support, например:
+Если в UI редактора встречаются термины:
+- Required Items
+- requiredItems
+- dialogue
+- Dialog
+- Dialogue
 
-P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
+нужно убедиться, что они не создают ложного впечатления о JSON-полях.
 
-3. Перед заменой root-файлов сохранить старые root-версии туда:
-- JSON_Quvest\index.html
-- JSON_Quvest\app.js
-- JSON_Quvest\styles.css
-- JSON_Quvest\start-editor.ps1, если это stub
-- JSON_Quvest\server.ps1, если это stub
+Правильные термины:
 
-4. Скопировать актуальные runtime-файлы из Support\JSON_Quvest в JSON_Quvest:
-- index.html
-- app.js
-- styles.css
-- start-editor.ps1
-- server.ps1
-
-5. Исправить JSON_Quvest\start-editor.cmd:
-он должен запускать:
-
-P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
-
-а не Support\JSON_Quvest\start-editor.ps1.
-
-То есть start-editor.cmd должен использовать путь рядом с собой:
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-editor.ps1"
-
-6. Исправить start-editor.ps1 после переноса:
-он должен считать scriptDir как JSON_Quvest и искать index.html/server.ps1 рядом с собой.
-
-7. Исправить server.ps1 после переноса:
-он должен раздавать статику из JSON_Quvest, а не из Support\JSON_Quvest.
-
-8. Убедиться, что:
-- item-stack-rules.json берётся из JSON_Quvest
-- Silver_77_Quests.json берётся из JSON_Quvest
-- Silver_77_Quests_BackUP.json берётся из JSON_Quvest
-- editor-draft.json теперь один рабочий, желательно в JSON_Quvest
-- editor-config.json теперь один рабочий, желательно в JSON_Quvest
-
-9. Support\JSON_Quvest после успешного переноса не должен оставаться активной runtime-папкой.
-
-10. Старые/спорные версии должны быть в архиве, а не в рабочей папке.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 1 — ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА ПЕРЕД ПРАВКАМИ
---------------------------------------------------------------------------------
-
-Перед изменениями ещё раз проверить:
-
-1. Какие файлы есть в:
-P:\Silver_77_Quests\JSON_Quvest
-
-2. Какие файлы есть в:
-P:\Silver_77_Quests\Support\JSON_Quvest
-
-3. Содержимое:
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
-
-4. Содержимое:
-P:\Silver_77_Quests\Support\JSON_Quvest\start-editor.ps1
-
-5. Содержимое:
-P:\Silver_77_Quests\Support\JSON_Quvest\server.ps1
-
-6. Убедиться, что Support-версия действительно актуальная:
-- в ней есть NPC Flow / роли Offer / Completion / Reward
-- есть актуальная сортировка/фильтр по trigger / NPC
-- UI соответствует тому, что пользователь считает правильной версией
-
-Если обнаружится, что актуальная версия уже частично перенесена — не дублировать бездумно, а написать это в ANALYSIS и действовать минимально.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 2 — АРХИВИРОВАТЬ СТАРЫЕ ROOT-ФАЙЛЫ
---------------------------------------------------------------------------------
-
-Создать архивную папку, например:
-
-P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
-
-Внутри желательно сделать подпапку с понятным именем, например:
-
-root_old_before_TASK_075
-
+1. Для предметов, которые нужно принести:
+Не “requiredItems” как отдельное поле.
+А:
+Objectives / Цели
 или:
+Objectives: item / Цели: предметы
 
-root_old_runtime_before_migration
+Подсказка:
+“В JSON это quests[].objectives[]. Для item-objective это предметы, которые игрок должен принести/сдать.”
 
-Туда перенести старые root-файлы, которые будут заменены:
+2. Для диалога NPC:
+Не “dialogue” как отдельное поле.
+А:
+Dialog Text / Текст диалога NPC
+с подсказкой:
+“В JSON это triggerActions[].dialogText.”
 
-P:\Silver_77_Quests\JSON_Quvest\index.html
-P:\Silver_77_Quests\JSON_Quvest\app.js
-P:\Silver_77_Quests\JSON_Quvest\styles.css
-
-Если root start-editor.ps1 и server.ps1 являются только stub/proxy в Support, тоже перенести их копии в архив перед заменой.
-
-Важно:
-Не архивировать и не трогать:
-- Silver_77_Quests.json
-- Silver_77_Quests_BackUP.json
-- item-stack-rules.json
-
---------------------------------------------------------------------------------
-ЧАСТЬ 3 — ПЕРЕНЕСТИ АКТУАЛЬНЫЙ RUNTIME В JSON_Quvest
---------------------------------------------------------------------------------
-
-Скопировать актуальные файлы из:
-
-P:\Silver_77_Quests\Support\JSON_Quvest
-
-в:
-
-P:\Silver_77_Quests\JSON_Quvest
-
-Файлы:
-- index.html
-- app.js
-- styles.css
-- start-editor.ps1
-- server.ps1
-
-После копирования в JSON_Quvest эти файлы должны стать основной рабочей версией.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 4 — ИСПРАВИТЬ START-EDITOR.CMD
---------------------------------------------------------------------------------
-
-Файл:
-
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
-
-должен запускать start-editor.ps1 из той же папки.
-
-Ожидаемый смысл:
-
-@echo off
-setlocal
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-editor.ps1"
+3. Для ролей:
+Offer / Completion / Reward можно оставить, но пояснить:
+- Offer = выдача квеста
+- Completion = промежуточный этап / сдача части целей
+- Reward = финальное закрытие квеста
 
 Важно:
-- не уводить запуск в ..\Support\JSON_Quvest
-- не использовать Support как runtime
-- сохранить удобный запуск двойным кликом по start-editor.cmd
+Не переименовывать реальные JSON-поля.
+Менять только видимые подписи/подсказки редактора, если они вводят в заблуждение.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 5 — ИСПРАВИТЬ START-EDITOR.PS1
+ЧАСТЬ 2 — ПРОВЕРИТЬ QUESTMENU UI MAPPING
 --------------------------------------------------------------------------------
 
-Файл:
+Нужно проверить файл:
 
-P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
+P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
 
-должен работать из собственной папки.
+И layout:
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 
-Проверить/исправить:
+Найти виджеты:
+- DescriptionPanel
+- DescriptionText
+- DialogPanel
+- DialogText
+- DialogPanelLabel
+- QuestListbox
+- TriggerRouteListbox
+- AcceptButton
+- CompleteButton
+- CloseButton
 
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$indexPath = Join-Path $scriptDir "index.html"
-$serverScript = Join-Path $scriptDir "server.ps1"
-
-То есть:
-- index.html рядом
-- server.ps1 рядом
-- editor-config.json рядом
-- editor-config.local.json рядом
-- backup/source paths разрешаются относительно JSON_Quvest, если они относительные
-
-Важно:
-Если в перенесённом support start-editor.ps1 есть логика, которая предполагает Support\JSON_Quvest, убрать эту привязку.
-
---------------------------------------------------------------------------------
-ЧАСТЬ 6 — ИСПРАВИТЬ SERVER.PS1
---------------------------------------------------------------------------------
-
-Файл:
-
-P:\Silver_77_Quests\JSON_Quvest\server.ps1
-
-должен раздавать файлы из JSON_Quvest.
-
-Проверить/исправить:
-
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-
-Статика должна отдаваться из $scriptDir:
-- index.html
-- app.js
-- styles.css
-
-Пути данных должны быть root JSON_Quvest:
-
-- Silver_77_Quests.json
-- Silver_77_Quests_BackUP.json
-- item-stack-rules.json
-- editor-config.json
-- editor-config.local.json
-- editor-draft.json
-
-Если в server.ps1 есть переменная типа:
-
-$projectRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
-$rootEditorDir = Join-Path $projectRoot "JSON_Quvest"
-
-то после переноса в JSON_Quvest нужно проверить, не ломает ли она пути.
-
-Моё мнение:
-после переноса server.ps1 в JSON_Quvest лучше сделать проще:
-- $editorDir = $scriptDir
-- stackRulesPath = Join-Path $editorDir "item-stack-rules.json"
-- draftPath = Join-Path $editorDir "editor-draft.json"
-- config paths = Join-Path $editorDir ...
-- safe static path = Join-Path $editorDir ...
-
-Так меньше риска снова split-режима.
+Проверить:
+1. Какой текст сейчас попадает в DescriptionText.
+2. Какой текст сейчас попадает в DialogText.
+3. Почему triggerActions[].dialogText отображается сверху в DescriptionPanel.
+4. Почему он повторяется в “Диалоговом журнале”.
+5. Где формируется текст:
+   - “Статус”
+   - “Можно взять”
+   - “Контекст NPC”
+   - “Цели”
+   - “Принести”
+   - “Сдано”
+   - “Можно сдавать частями”
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 7 — НЕ ТРОГАТЬ QUEST JSON DATA
+ЧАСТЬ 3 — ОЖИДАЕМОЕ РАЗДЕЛЕНИЕ ДАННЫХ В QUESTMENU
 --------------------------------------------------------------------------------
 
-Очень важно:
-Не менять содержимое квестов.
+Нужно привести отображение к такой логике:
+
+A. DescriptionPanel / DescriptionText
+
+Показывает НЕ диалог NPC, а информацию по квесту.
+
+Пример содержимого:
+
+Название:
+Рыба это вам не картошка!
+
+Описание:
+Рыбак просит принести карпов.
+
+Статус:
+не взят / взят / выполнен
+
+Цели:
+- Принести: Carp x6
+- Сдано: 0 / 6
+- Можно сдавать частями: да
+
+Награда:
+- Ammo_12gaPellets x8
+
+Требования:
+- предыдущий квест: ...
+- доступен: да/нет
+
+B. DialogPanel / DialogText
+
+Показывает только текст NPC из текущего action-блока:
+
+triggerActions[].dialogText
+
+Например:
+“Слух, родной, принеси мне карпиков, штук 6...”
+
+C. Диалоговый журнал
+
+Если журнал нужен, он может быть ниже DialogText или внутри DialogPanel, но он не должен подменять DescriptionPanel.
+
+Если места мало:
+- DialogText показывает текущий диалог
+- журнал можно оставить как debug/историю, но не дублировать весь текст в DescriptionPanel
+
+--------------------------------------------------------------------------------
+ЧАСТЬ 4 — НЕ ЛОМАТЬ ROLE MODEL
+--------------------------------------------------------------------------------
+
+Не менять модель ролей.
+
+Оставить:
+- offerTriggerIds[]
+- completionTriggerIds[]
+- rewardTriggerIds[]
+- triggerActions[]
+
+Не вводить новые поля:
+- requiredItems[]
+- dialogue
 
 Не менять:
-- rewards
-- objectives
-- triggers
-- questIds
-- roles
-- dialogue
-- requirements
-- item class names
-- quantities
-
-Файлы:
-P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests.json
-P:\Silver_77_Quests\JSON_Quvest\Silver_77_Quests_BackUP.json
-
-можно только читать для проверки загрузки редактора.
-Нельзя форматировать, пересохранять или менять данные.
+- actionType = offer / completion / reward
+- triggerActions[].dialogText
+- triggerActions[].rewards[]
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 8 — ПРОВЕРКИ ПОСЛЕ ПЕРЕНОСА
+ЧАСТЬ 5 — ПРОВЕРИТЬ JOURNAL UI
 --------------------------------------------------------------------------------
 
 Проверить:
 
-1. Запустить:
+P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+Журнал квестов должен показывать:
+- список активных/доступных/завершённых квестов
+- описание квеста
+- цели
+- прогресс
+- награды
+- статус
 
-2. Убедиться, что открывается:
+Журнал НЕ обязан показывать текущий NPC dialogText как основной description.
+dialogText — это контекст разговора с NPC, а не описание квеста в журнале.
 
-http://127.0.0.1:4173/index.html
-
-3. Убедиться, что версия редактора актуальная:
-- видны правильные NPC Flow блоки
-- видны роли Offer / Completion / Reward
-- блоки раскрашены корректно
-- сортировка/фильтр по trigger / NPC работает, если он был в актуальной версии
-
-4. Проверить, что прямое открытие:
-
-P:\Silver_77_Quests\JSON_Quvest\index.html
-
-не показывает старую root-версию.
-Оно может работать ограниченно как file://, но визуально это должна быть актуальная версия UI.
-
-5. Проверить, что:
-- app.js используется из JSON_Quvest
-- styles.css используется из JSON_Quvest
-- server.ps1 используется из JSON_Quvest
-- start-editor.ps1 используется из JSON_Quvest
-- Support\JSON_Quvest больше не участвует в runtime-запуске
-
-6. Проверить:
-- Import JSON
-- Load Base
-- Validate
-- Copy JSON
-- Export JSON
-- Save Path / Backup Path
-- Stack rules
-
-7. Проверить, что основной JSON не изменился сам по себе.
+Если сейчас journal показывает dialogText как описание, это нужно отметить как проблему.
+Править только если место в коде очевидно и правка безопасная.
 
 --------------------------------------------------------------------------------
-ЧАСТЬ 9 — ЧТО ДЕЛАТЬ С SUPPORT\JSON_Quvest
+ЧАСТЬ 6 — ПРОВЕРКА В ИГРЕ / ПО СКРИНУ
 --------------------------------------------------------------------------------
 
-В рамках TASK 075:
+Пользователь показал проблему на скрине:
 
-Не удалять Support\JSON_Quvest полностью, если это рискованно.
+Сейчас в игре:
+- верхний блок показывает NPC dialogText
+- нижний диалоговый журнал тоже показывает NPC dialogText
 
-Можно:
-- оставить Support\JSON_Quvest как источник, из которого скопированы файлы
-- или перенести его runtime-копию в архив, если перенос прошёл успешно и задача это безопасно позволяет
+Ожидается:
+- верхний блок показывает описание/цели/награды
+- нижний блок показывает NPC dialogText
 
-Предпочтительный безопасный вариант:
-1. Сначала перенести runtime в JSON_Quvest.
-2. Проверить запуск из JSON_Quvest.
-3. Если всё работает — в отчёте предложить TASK 076:
-   архивировать/очистить Support\JSON_Quvest.
+Нужно сделать правку именно под это поведение.
 
-То есть если есть сомнения — не удалять Support\JSON_Quvest в этой задаче.
-Главная цель TASK 075 — чтобы JSON_Quvest стал самодостаточным рабочим editor runtime.
+--------------------------------------------------------------------------------
+ЧАСТЬ 7 — ПРОВЕРКИ
+--------------------------------------------------------------------------------
+
+После правки проверить:
+
+1. Открыть квест у NPC Offer.
+
+Ожидание:
+- DescriptionPanel показывает описание квеста, цели, награду, статус.
+- DialogPanel показывает текст NPC Offer.
+
+2. Открыть Completion NPC.
+
+Ожидание:
+- DescriptionPanel показывает цели/прогресс сдачи.
+- DialogPanel показывает текст Completion action.
+
+3. Открыть Reward NPC.
+
+Ожидание:
+- DescriptionPanel показывает статус закрытия/награду.
+- DialogPanel показывает текст Reward action.
+
+4. Проверить, что кнопки:
+- ВЗЯТЬ КВЕСТ
+- СДАТЬ КВЕСТ / ЭТАП
+- ЗАКРЫТЬ
+работают как раньше.
+
+5. Проверить, что JSON не изменился.
+
+6. Проверить, что редактор не создаёт новых полей:
+- requiredItems
+- dialogue
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
@@ -733,85 +598,138 @@ P:\Silver_77_Quests\JSON_Quvest\index.html
 
 Задача считается выполненной, если:
 
-1. Основной runtime Quest JSON Editor находится в:
-P:\Silver_77_Quests\JSON_Quvest
-
-2. start-editor.cmd запускает:
-P:\Silver_77_Quests\JSON_Quvest\start-editor.ps1
-
-3. start-editor.ps1 запускает:
-P:\Silver_77_Quests\JSON_Quvest\server.ps1
-
-4. server.ps1 раздаёт:
-P:\Silver_77_Quests\JSON_Quvest\index.html
-P:\Silver_77_Quests\JSON_Quvest\app.js
-P:\Silver_77_Quests\JSON_Quvest\styles.css
-
-5. Прямой запуск JSON_Quvest\index.html больше не показывает старую версию UI.
-
-6. Через start-editor.cmd открывается актуальная версия редактора.
-
-7. Support\JSON_Quvest больше не нужен для обычного runtime-запуска.
-
-8. Старые root-файлы не удалены безвозвратно, а сохранены в архив спорных версий или явно перечислены как не тронутые.
-
-9. JSON квестов не изменён содержательно.
-
-10. Файлы мода не изменены.
-
-11. В отчёте указано, какие файлы были перенесены/заменены/заархивированы.
+1. В редакторе не создаётся ложного ожидания поля requiredItems.
+2. В редакторе явно понятно, что предметы для сдачи — это objectives[].
+3. В редакторе явно понятно, что текст NPC — это triggerActions[].dialogText.
+4. В QuestMenu DescriptionPanel больше не показывает NPC dialogText как основной текст.
+5. QuestMenu DescriptionPanel показывает описание/цели/награды/статус квеста.
+6. QuestMenu DialogPanel показывает NPC dialogText.
+7. Journal UI не использует dialogText как замену description, если это было проблемой.
+8. JSON-контракт не изменён.
+9. Новые поля requiredItems/dialogue не добавлены.
+10. Данные квестов не изменены.
+11. Файлы мода вне UI не тронуты без необходимости.
 
 --------------------------------------------------------------------------------
-ОЖИДАЕМЫЙ ОТЧЁТ
+ОТЧЁТ
 --------------------------------------------------------------------------------
+
+Этому агенту можно записать отчёт в:
+
+P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
+
+Но только в разрешённые блоки отчёта.
+Не менять SYSTEM INSTRUCTIONS, правила, историю и блок опыта без отдельной команды.
+
+Также вернуть отчёт в чат.
+
+Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- что было до правки
-- почему был split между JSON_Quvest и Support\JSON_Quvest
-- какая версия выбрана как актуальная runtime-версия
-- какие риски были учтены
+- где именно был неправильный маппинг
+- какие поля реально используются
+- почему DescriptionPanel показывал dialogText
+- что было решено менять
 
 DONE:
-- что сделано
-- какие файлы перенесены
-- какие пути исправлены
-- что стало основной runtime-папкой
+- что изменено в редакторе
+- что изменено в QuestUI
+- что изменено в JournalUI, если менялось
 
 CHANGED FILES:
-- полный список изменённых файлов
-
-MOVED / ARCHIVED:
-- какие старые файлы перенесены в архив
-- куда именно
+- полный список файлов
 
 DIFF:
-- кратко по главным изменениям:
-  start-editor.cmd
-  start-editor.ps1
-  server.ps1
-  index/app/styles
+- кратко по каждому файлу
 
 CHECKS:
-- запуск start-editor.cmd
-- открытие актуального UI
-- проверка, что Support не используется как runtime
-- прямой index.html показывает актуальный UI
-- JSON не изменён содержательно
-- stack rules/config/draft работают или отмечены как требуют проверки
+- Offer NPC
+- Completion NPC
+- Reward NPC
+- DescriptionPanel
+- DialogPanel
+- objectives
+- rewards
+- dialogText
+- JSON не изменён
 
 PROBLEMS:
-- реальные проблемы, если есть
 - что не удалось проверить
-
-QUESTIONS:
-- вопросы пользователю, если остались
+- какие моменты требуют ручной проверки в игре
 
 CONCLUSION:
 - краткий вывод
-- можно ли считать JSON_Quvest единственной рабочей папкой
-- нужна ли TASK 076 на архивирование/очистку Support
+
+--------------------------------------------------------------------------------
+ДОПОЛНЕНИЕ К TASK 077
+--------------------------------------------------------------------------------
+
+Визуальную концепцию Quest JSON Editor не переделывать с нуля.
+
+Текущие направления считаются правильными:
+- NPC Flow
+- роли Offer / Completion / Reward
+- визуальное разделение блоков
+- Objectives как цели квеста
+- Rewards как награды
+- triggerActions[].dialogText как текст NPC
+- item-stack-rules.json как справочник стеков
+
+Главная задача TASK 077 не в том, чтобы заново придумать редактор, а в том, чтобы точнее подогнать термины и UI-маппинг под реальный контракт мода.
+
+Особенно важно:
+
+1. requiredItems как отдельного JSON-поля нет.
+   Предметы, которые нужно принести или сдать, должны называться и отображаться как:
+   objectives[]
+   или item-objectives.
+
+2. dialogue как отдельного JSON-поля нет.
+   Текст NPC должен называться и отображаться как:
+   triggerActions[].dialogText.
+
+3. DescriptionPanel в игровом UI должен показывать:
+   - описание квеста
+   - цели
+   - прогресс
+   - что нужно принести
+   - что уже сдано
+   - награды
+   - требования
+   - статус
+
+4. DialogPanel в игровом UI должен показывать:
+   - текст NPC
+   - triggerActions[].dialogText
+   - контекст текущего Offer / Completion / Reward блока
+
+5. Не добавлять новые поля:
+   - requiredItems[]
+   - dialogue
+   - dialogueText вне triggerActions[]
+
+6. Не ломать Stack Rules.
+   item-stack-rules.json нужен и считается важной частью редактора.
+
+7. Не заменять stack rules жёсткими vanilla-значениями.
+   На серверах с модами размер стака может отличаться, поэтому справочник стеков нужен.
+
+8. Не менять JSON квестов по содержанию.
+   Не менять rewards/items/quantities/questIds/dialogText без отдельной задачи.
+
+9. Не менять runtime-логику мода шире, чем требуется для правильного отображения DescriptionPanel/DialogPanel.
+
+10. Если обнаружится, что UI мода уже читает правильные поля, но отображает их не в тот виджет, исправлять именно маппинг отображения, а не JSON-контракт.
+
+Ожидаемый итог:
+- редактор продолжает использовать текущую правильную визуальную концепцию;
+- DescriptionPanel больше не выглядит как NPC-диалог;
+- DialogPanel показывает NPC dialogText;
+- цели и предметы воспринимаются как objectives[];
+- пользователь не видит ложных сущностей requiredItems/dialogue;
+- stack rules остаются рабочей частью редактора.
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -1990,133 +1908,194 @@ UI начал показывать корректное состояние, на
   - какая кодировка
   
   
-  --------------------------------------------------------------------------------
-ОПЫТ ПО QUEST JSON EDITOR / JSON_Quvest
+--------------------------------------------------------------------------------
+ОПЫТ ПО QUEST JSON EDITOR / ВИЗУАЛЬНАЯ КОНЦЕПЦИЯ / STACK RULES
 --------------------------------------------------------------------------------
 
-Главная рабочая папка редактора квестов:
+Визуальная концепция Quest JSON Editor в целом считается правильной.
 
-P:\Silver_77_Quests\JSON_Quvest
+Редактор должен быть удобной оболочкой над реальным JSON-контрактом мода, а не отдельной схемой данных, которая расходится с runtime-логикой.
 
-Главная точка запуска редактора:
+Главное правило:
+мод является источником правды.
+редактор должен формировать JSON строго под то, что реально читает мод.
 
-P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd
+--------------------------------------------------------------------------------
+ПРАВИЛЬНАЯ МОДЕЛЬ РОЛЕЙ
+--------------------------------------------------------------------------------
 
-Это важное правило:
-если пользователь запускает редактор через start-editor.cmd из JSON_Quvest, значит вся актуальная рабочая версия редактора должна находиться в JSON_Quvest.
+Текущая концепция NPC Flow считается правильной:
 
-Рабочие файлы редактора должны лежать в одной папке:
+1. Offer
+- место / NPC, где игрок берёт квест
+- стартовый диалог
+- условия доступности
+- может выдавать стартовые предметы через giveItems
+- не должен быть финальным закрытием квеста
 
-P:\Silver_77_Quests\JSON_Quvest
+2. Completion
+- промежуточный этап / сдача части задачи
+- может быть 0, 1 или несколько
+- может быть на другом NPC / trigger
+- может иметь свой triggerActions[].dialogText
+- может принимать objectives
+- может выдавать промежуточную награду через triggerActions[].rewards
 
-К рабочим файлам редактора относятся:
-- index.html
-- app.js
-- styles.css
-- start-editor.cmd
-- start-editor.ps1
-- server.ps1
-- editor-config.json
-- editor-config.local.json, если используется локально
-- editor-draft.json, если используется как черновик
-- item-stack-rules.json
-- Silver_77_Quests.json
-- Silver_77_Quests_BackUP.json
-- README.md
-- PROJECT_CONTEXT.md
+3. Reward
+- финальное закрытие квеста
+- обычно исходный NPC, но может быть другой trigger
+- выдаёт финальную награду
+- закрывает квест
 
-Support\JSON_Quvest НЕ должен быть основной рабочей папкой редактора.
+Текущая runtime-модель мода:
+- Offer и Reward фактически single-trigger роли
+- Completion может быть несколько
+- это совпадает с желаемой логикой:
+  один Offer → несколько Completion → один Reward
 
-Support можно использовать только как место для:
-- вспомогательных материалов
-- старых спорных версий
-- архивов
-- временных копий
-- документации/поддержки
+--------------------------------------------------------------------------------
+РЕАЛЬНЫЙ JSON-КОНТРАКТ
+--------------------------------------------------------------------------------
 
-Нельзя допускать ситуацию:
-- start-editor.cmd лежит в JSON_Quvest
-- а запускает рабочие файлы из Support\JSON_Quvest
-- или актуальный index.html/app.js/styles.css лежат в Support
-- а в JSON_Quvest лежит старая/неполная версия
+Не вводить ложные поля.
 
-Это создаёт путаницу:
-- пользователь открывает index.html и видит старую версию
-- start-editor.cmd открывает другую версию
-- агент может править не тот файл
-- в проекте появляются две разные версии одного редактора
+В контракте нет отдельного поля:
+
+requiredItems
+
+Его роль выполняет:
+
+quests[].objectives[]
+
+Особенно:
+objectives[] с type == "item"
+
+Правильная терминология:
+- Objectives
+- Цели
+- Цели: предметы
+- Что нужно принести / сдать
+
+Неправильная терминология, если она подразумевает отдельное JSON-поле:
+- requiredItems[]
+- отдельный блок requiredItems в JSON
+
+--------------------------------------------------------------------------------
+
+В контракте нет отдельного поля:
+
+dialogue
+
+Реальный текст NPC хранится здесь:
+
+triggerActions[].dialogText
+
+Правильная терминология:
+- Dialog Text
+- Текст диалога NPC
+- triggerActions[].dialogText
+
+Неправильная терминология, если она подразумевает отдельное JSON-поле:
+- dialogue
+- dialogueText как отдельная сущность вне triggerActions
+
+--------------------------------------------------------------------------------
+РАЗДЕЛЕНИЕ DESCRIPTION И DIALOG
+--------------------------------------------------------------------------------
+
+В UI мода и редакторе нужно строго разделять смысл:
+
+Description / DescriptionPanel:
+- описание квеста
+- смысл задачи
+- цели
+- прогресс
+- что нужно принести
+- что уже сдано
+- награды
+- требования
+- статус квеста
+
+Dialog / DialogPanel:
+- что говорит NPC
+- текст текущего action-блока
+- triggerActions[].dialogText
+- контекст разговора Offer / Completion / Reward
+
+Правильный маппинг:
+
+quest.description / objectives / rewards / progress / status
+→ DescriptionPanel / DescriptionText
+
+triggerActions[].dialogText
+→ DialogPanel / DialogText
+
+Нельзя использовать triggerActions[].dialogText как основное описание квеста в DescriptionPanel.
+
+Если нужен диалоговый журнал, он может быть отдельной частью DialogPanel, но не должен подменять DescriptionPanel.
+
+--------------------------------------------------------------------------------
+СПРАВОЧНИК СТЕКОВ
+--------------------------------------------------------------------------------
+
+Справочник стеков item-stack-rules.json является важной частью редактора.
+
+Он нужен, чтобы редактор мог правильно считать количество предметов с учётом стеков.
+
+Это особенно важно для серверов с модами, где размер стака может отличаться от vanilla DayZ.
+
+Примеры:
+- патроны
+- деньги
+- дрова
+- палки
+- вода
+- топливо
+- любые модовые предметы с изменённым размером стака
 
 Правило:
-все задачи по Quest JSON Editor должны считать основной рабочей папкой только:
+не удалять и не упрощать справочник стеков.
+не заменять его жёстко прописанными vanilla-значениями.
+не считать, что quantity всегда означает количество отдельных физических предметов.
 
-P:\Silver_77_Quests\JSON_Quvest
+Для item-objectives учитывать:
+- quantity
+- useItemQuantity
+- allowPartialTurnIn
+- removeOnComplete
+- item-stack-rules.json
 
-Если в Support\JSON_Quvest найдена более новая или рабочая версия редактора, её нужно перенести/синхронизировать в JSON_Quvest отдельной задачей.
+Смысл:
+редактор должен помогать пользователю правильно рассчитать требования к предметам до запуска игры.
 
-После переноса:
-- start-editor.cmd должен запускать файлы из JSON_Quvest
-- start-editor.ps1 должен находиться в JSON_Quvest
-- server.ps1 должен находиться в JSON_Quvest
-- index.html должен использовать ./styles.css и ./app.js из JSON_Quvest
-- server.ps1 должен обслуживать файлы из JSON_Quvest
+--------------------------------------------------------------------------------
+ЧТО НЕ ЛОМАТЬ
+--------------------------------------------------------------------------------
 
-Все нерабочие, устаревшие или спорные версии из JSON_Quvest не удалять сразу без анализа.
-Их нужно перенести в архивную папку, например:
+Не переделывать визуальную концепцию редактора с нуля без отдельной задачи.
 
-P:\Silver_77_Quests\Support\JSON_Quvest_Archive_ConflictingVersions
+Считать правильными направлениями:
+- NPC Flow
+- Offer / Completion / Reward
+- Objectives вместо requiredItems
+- triggerActions[].dialogText вместо dialogue
+- Rewards как отдельный блок наград
+- Stack Rules / справочник стеков
+- визуальное разделение блоков по ролям
 
-или:
+Не добавлять новые JSON-поля без отдельного решения:
+- requiredItems[]
+- dialogue
+- dialogueText вне triggerActions[]
+- rewardBlock
+- completionBlock
+- offerBlock
 
-P:\Silver_77_Quests\Support\Archive\JSON_Quvest_ConflictingVersions
-
-Название может быть другим, но смысл должен быть понятен:
-"архив спорных/старых версий редактора".
-
-Архивная папка нужна, чтобы:
-- не потерять старые файлы
-- можно было сравнить версии
-- не держать нерабочие копии в рабочей папке
-- не мешать пользователю и агентам
-
-Запрещено:
-- развивать Quest JSON Editor в Support\JSON_Quvest как основную версию
-- оставлять две разные актуальные версии index.html / app.js / styles.css
-- удалять старые файлы без переноса в архив
-- менять файлы мода при чистке редактора
-- менять JSON квестов при чистке редактора, если задача только про структуру редактора
-- менять Git вручную без команды пользователя
-
-Перед любой правкой Quest JSON Editor агент обязан:
-1. Проверить, что работает в папке:
-   P:\Silver_77_Quests\JSON_Quvest
-
-2. Проверить start-editor.cmd:
-   он должен запускать редактор из JSON_Quvest, а не из Support.
-
-3. Проверить, есть ли дубли:
-   - JSON_Quvest/index.html
-   - Support/JSON_Quvest/index.html
-   - JSON_Quvest/app.js
-   - Support/JSON_Quvest/app.js
-   - JSON_Quvest/styles.css
-   - Support/JSON_Quvest/styles.css
-   - JSON_Quvest/server.ps1
-   - Support/JSON_Quvest/server.ps1
-   - JSON_Quvest/start-editor.ps1
-   - Support/JSON_Quvest/start-editor.ps1
-
-4. Если есть расхождение, сначала написать ANALYSIS:
-   - какая версия новее
-   - какая версия запускается через start-editor.cmd
-   - какие файлы реально используются
-   - какие файлы устарели
-   - что предлагается перенести в архив
-
-5. Только после этого выполнять перенос/чистку, если задача это разрешает.
-
-Итоговая цель:
-В JSON_Quvest должна остаться одна понятная рабочая версия редактора квестов.
-В Support должны лежать только архивные/вспомогательные материалы, а не активная версия редактора.
+Если нужно расширять функционал, сначала проверить:
+1. поддерживает ли это мод;
+2. где это читается в client/server коде;
+3. как это должно выглядеть в JSON;
+4. только потом добавлять UI в редактор.
 
 ================================================================================
 # КОНЕЦ ФАЙЛА

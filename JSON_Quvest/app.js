@@ -1232,10 +1232,6 @@ function syncQuestTriggerActions(quest) {
     getQuestRoleTriggerIds(quest, actionType).forEach((triggerId) => {
       const existingAction = existingActions.find((entry) => entry.actionType === actionType && entry.triggerId === triggerId);
       const nextAction = existingAction || createQuestTriggerAction(actionType, triggerId);
-      if (actionType === "offer" && !toText(nextAction.dialogText).trim() && toText(quest.description).trim()) {
-        nextAction.dialogText = quest.description;
-      }
-
       nextActions.push(nextAction);
     });
   });
@@ -2951,8 +2947,8 @@ function getQuestActionSectionMeta(quest, actionType) {
       title: "Взятие квеста",
       description: "Отдельная стартовая реплика NPC, который выдаёт этот квест.",
       emptyText: "Пока нет ни одного trigger в роли offer.",
-      dialogLabel: "Offer Dialog Text (что скажет NPC при взятии)",
-      dialogHint: "Например: возьми предмет и отнеси его нужному человеку.",
+      dialogLabel: "Offer Dialog Text (triggerActions[].dialogText / что скажет NPC при взятии)",
+      dialogHint: "Это NPC-реплика из triggerActions[].dialogText, а не отдельное поле dialogue и не quest.description.",
       rewardHint: "Предметы при старте задаются ниже через Give Items."
     };
   }
@@ -2962,8 +2958,8 @@ function getQuestActionSectionMeta(quest, actionType) {
       title: "Сдача / передача",
       description: "Отдельные реплики и, при необходимости, локальная награда у NPC, который принимает предметы или завершает этап.",
       emptyText: "Пока нет ни одного trigger в роли completion.",
-      dialogLabel: "Completion Dialog Text (что скажет NPC при сдаче)",
-      dialogHint: "Например: спасибо, передай привет рыбаку. Если этот же NPC должен дать награду, включи ему роль Reward ниже.",
+      dialogLabel: "Completion Dialog Text (triggerActions[].dialogText / что скажет NPC при сдаче)",
+      dialogHint: "Это NPC-реплика из triggerActions[].dialogText. Если этот же NPC должен дать награду, включи ему роль Reward ниже.",
       rewardHint: "Необязательно: здесь можно выдать предметы за этот этап передачи. Финальное закрытие квеста всё равно делает Reward-блок."
     };
   }
@@ -2972,8 +2968,8 @@ function getQuestActionSectionMeta(quest, actionType) {
     title: "Выдача награды",
     description: "Эти блоки срабатывают после выполненной передачи или сдачи. Награду можно выдать у любого NPC, которому включена роль Reward.",
     emptyText: "Пока нет ни одного trigger в роли reward.",
-    dialogLabel: "Reward Dialog Text (что скажет NPC перед наградой)",
-    dialogHint: "Например: отличная работа, вот твоя награда.",
+    dialogLabel: "Reward Dialog Text (triggerActions[].dialogText / что скажет NPC перед наградой)",
+    dialogHint: "Это NPC-реплика из triggerActions[].dialogText, а не отдельное поле dialogue.",
     rewardHint: "Если локальный список наград пуст, сюда подставятся общие Rewards квеста."
   };
 }
@@ -3247,7 +3243,7 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
   const basePath = `quests.${questIndex}`;
   const actionCard = findQuestActionCard(quest, "offer", triggerId);
   const actionBasePath = actionCard ? `quests.${questIndex}.triggerActions.${actionCard.actionIndex}` : "";
-  const offerDialog = actionCard ? actionCard.action.dialogText : quest.description;
+  const offerDialog = actionCard ? actionCard.action.dialogText : "";
   const hasCompletionStages = normalizeQuestIdArray(quest.completionTriggerIds).length > 0;
   const nextStepText = hasCompletionStages
     ? "Следующий шаг задаётся блоком с галочкой Completion. Этот Offer-блок только выдаёт старт и задачу."
@@ -3266,7 +3262,8 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
         <div class="muted">Эти настройки срабатывают у NPC, где игрок берёт квест: стартовый диалог, предметы на выдачу и задача игроку.</div>
         ${actionBasePath
           ? textareaField("Offer Dialog Text (что скажет NPC при взятии)", `${actionBasePath}.dialogText`, offerDialog, "Например: возьми предмет и отнеси его нужному человеку.", "dialogText")
-          : textareaField("Offer Dialog Text (legacy fallback)", `${basePath}.description`, offerDialog, "Блок triggerActions ещё не создан. Переключи роль Offer заново, если такое увидишь.", "description")}
+          : `<div class="empty-note">Offer dialog живёт в <code>triggerActions[].dialogText</code>. Здесь нет отдельного поля <code>dialogue</code>, а <code>quest.description</code> редактируется выше как описание квеста для DescriptionPanel.</div>`}
+        <div class="muted">DescriptionPanel читает <code>quest.description</code> и сводку по целям/наградам. DialogPanel читает NPC-реплику из <code>triggerActions[].dialogText</code>.</div>
         <div class="trigger-summary-grid">
           <div class="trigger-summary-item">
             <strong>Что выдать при старте</strong>
@@ -3286,7 +3283,7 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
           ${objectArrayEditor(`${basePath}.giveItems`, quest.giveItems, "reward-item", renderRewardItemFields)}
         </div>
         <div class="stack">
-          <h4 class="inline-section-title">Objectives (что нужно передать / принести)</h4>
+          <h4 class="inline-section-title">Objectives (quests[].objectives[] / что нужно передать или принести, не отдельное requiredItems)</h4>
           ${objectArrayEditor(`${basePath}.objectives`, quest.objectives, "objective-item", renderObjectiveFields)}
         </div>
       </div>
@@ -3324,6 +3321,7 @@ function renderQuestTriggerActionDetail(quest, questIndex, actionType, triggerId
       </div>
       <div class="stack">
         ${textareaField(meta.dialogLabel, `${basePath}.dialogText`, action.dialogText, meta.dialogHint, "dialogText")}
+        <div class="muted">DialogPanel в моде показывает именно это поле: <code>triggerActions[].dialogText</code>.</div>
         ${showRewardEditor
           ? `
             <div class="stack">
@@ -3522,7 +3520,9 @@ function renderQuestEditor(quest, index) {
             <div class="field-grid single">
               ${textField("ID (идентификатор квеста)", `${base}.id`, quest.id, "Уникальный служебный код квеста. Не должен повторяться.", "id")}
               ${textField("Name (название для игрока)", `${base}.name`, quest.name, "Человеческое название, которое проще читать в редакторе и логике.", "name")}
+              ${textareaField("Quest Description (quest.description / текст для DescriptionPanel)", `${base}.description`, quest.description, "Это описание квеста для DescriptionPanel: что это за квест, что делать, что получит игрок. Это не NPC dialog.", "description")}
               <div class="muted">Стартовый диалог, предметы при взятии, цели и награды теперь редактируются ниже в <strong>NPC Flow</strong>. Какая настройка откроется, определяет галочка роли внутри блока NPC.</div>
+              <div class="muted">DescriptionPanel = <code>quest.description</code> + status/progress/objectives/rewards. DialogPanel = <code>triggerActions[].dialogText</code>. Отдельных JSON-полей <code>requiredItems</code> и <code>dialogue</code> в контракте нет.</div>
               <div class="muted">Список и порядок квестов у NPC задаются в <code>trigger.questIds</code>. Видимость в игре считается автоматически: offer до взятия, completion для активных промежуточных этапов, reward когда все Completion выполнены или Completion вообще нет.</div>
             </div>
           `

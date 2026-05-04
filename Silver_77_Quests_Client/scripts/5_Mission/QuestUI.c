@@ -557,7 +557,6 @@ class QuestUIMenu extends UIScriptedMenu
             desc += "Можно взять: нет\n";
         
         desc += BuildQuestRequirementsText(quest);
-        desc += BuildQuestNpcContextText(quest, status, currentTriggerId, canAccept, canComplete, canDeposit, canClaimReward);
         
         if (canClaimReward)
             desc += "Можно получить награду: да\n";
@@ -1026,6 +1025,5 @@ class QuestUIMenu extends UIScriptedMenu
             mission.OnQuestMenuClosed();
     }
 }
-
 
 
