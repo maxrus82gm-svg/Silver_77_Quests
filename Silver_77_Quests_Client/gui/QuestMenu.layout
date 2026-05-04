@@ -1,6 +1,6 @@
 FrameWidgetClass QuestMenuRoot {
  ignorepointer 0
- color 0.1765 0.1765 0.1765 0.9
+ color 0.1765 0.1765 0.1765 0.97
  position 0 0
  size 1 1
  halign center_ref
@@ -12,9 +12,9 @@ FrameWidgetClass QuestMenuRoot {
  {
   PanelWidgetClass QuestPanel {
    ignorepointer 0
-   color 0.0824 0.0824 0.0824 0.96
+   color 0.0824 0.0824 0.0824 0.985
    position 0 0
-   size 920 560
+   size 980 560
    halign center_ref
    valign center_ref
    hexactpos 1
@@ -25,14 +25,14 @@ FrameWidgetClass QuestMenuRoot {
     TextWidgetClass TitleText {
      ignorepointer 1
      position 0 20
-     size 920 42
+     size 980 42
      halign center_ref
      valign top_ref
      hexactpos 1
      vexactpos 1
      hexactsize 1
      vexactsize 1
-     text " ¬≈—“€"
+     text "–ö–í–ï–°–¢–´"
      font "gui/fonts/metron28"
      "exact text" 1
      "size to text h" 0
@@ -43,7 +43,7 @@ FrameWidgetClass QuestMenuRoot {
     TextListboxWidgetClass QuestListbox {
      ignorepointer 0
      position 30 82
-     size 330 250
+     size 250 450
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -54,9 +54,9 @@ FrameWidgetClass QuestMenuRoot {
     }
     PanelWidgetClass DescriptionPanel {
      ignorepointer 1
-     color 0.0118 0.0118 0.0118 0.9
-     position 380 74
-     size 350 204
+     color 0.0118 0.0118 0.0118 0.96
+     position 300 74
+     size 420 204
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -75,7 +75,7 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text "ŒÔËÒ‡ÌËÂ Í‚ÂÒÚ‡"
+       text "–û–ø–∏—Å–∞–Ω–∏–µ –∫–≤–µ—Å—Ç–∞"
        font "gui/fonts/metron16"
        "exact text" 1
        "size to text h" 0
@@ -86,14 +86,14 @@ FrameWidgetClass QuestMenuRoot {
       MultilineTextWidgetClass DescriptionText {
        ignorepointer 1
        position 12 30
-       size 326 162
+       size 396 162
        halign left_ref
        valign top_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text "¬˚·ÂËÚÂ Í‚ÂÒÚ ËÁ ÒÔËÒÍ‡"
+       text "–í—ã–±–µ—Ä–∏—Ç–µ –∫–≤–µ—Å—Ç –∏–∑ —Å–ø–∏—Å–∫–∞"
        font "gui/fonts/metron16"
        "exact text" 1
        "size to text h" 0
@@ -106,9 +106,9 @@ FrameWidgetClass QuestMenuRoot {
     }
     PanelWidgetClass RoutePanel {
      ignorepointer 0
-     color 0.0118 0.0118 0.0118 0.92
-     position 750 74
-     size 140 334
+     color 0.0118 0.0118 0.0118 0.96
+     position 740 74
+     size 210 334
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -120,14 +120,14 @@ FrameWidgetClass QuestMenuRoot {
        ignorepointer 1
        color 0.9843 0.8431 0.3098 1
        position 10 8
-       size 110 18
+       size 180 18
        halign left_ref
        valign top_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text "Ã‡¯ÛÚ"
+       text "–ú–∞—Ä—à—Ä—É—Ç"
        font "gui/fonts/metron16"
        "exact text" 1
        "size to text h" 0
@@ -138,7 +138,7 @@ FrameWidgetClass QuestMenuRoot {
       TextListboxWidgetClass TriggerRouteListbox {
        ignorepointer 0
        position 10 30
-       size 120 292
+       size 190 292
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -151,9 +151,9 @@ FrameWidgetClass QuestMenuRoot {
     }
     PanelWidgetClass DialogPanel {
      ignorepointer 1
-     color 0.0118 0.0118 0.0118 0.94
-     position 380 286
-     size 350 122
+     color 0.0118 0.0118 0.0118 0.96
+     position 300 286
+     size 420 122
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -172,7 +172,7 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text "ƒË‡ÎÓ„ NPC"
+       text "–î–∏–∞–ª–æ–≥ NPC"
        font "gui/fonts/metron16"
        "exact text" 1
        "size to text h" 0
@@ -183,7 +183,7 @@ FrameWidgetClass QuestMenuRoot {
       MultilineTextWidgetClass DialogText {
        ignorepointer 1
        position 12 30
-       size 326 80
+       size 396 80
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -203,8 +203,8 @@ FrameWidgetClass QuestMenuRoot {
     }
     ButtonWidgetClass AcceptButton {
      ignorepointer 0
-     position 390 420
-     size 220 48
+     position 300 420
+     size 210 48
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -222,7 +222,7 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 0
        hexactsize 0
        vexactsize 0
-       text "¬«ﬂ“‹  ¬≈—“"
+       text "–í–ó–Ø–¢–¨ –ö–í–ï–°–¢"
        font "gui/fonts/metron22"
        "exact text" 1
        "size to text h" 0
@@ -234,8 +234,8 @@ FrameWidgetClass QuestMenuRoot {
     }
     ButtonWidgetClass CompleteButton {
      ignorepointer 0
-     position 670 420
-     size 220 48
+     position 530 420
+     size 210 48
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -253,7 +253,7 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 0
        hexactsize 0
        vexactsize 0
-       text "—ƒ¿“‹  ¬≈—“"
+       text "–°–î–ê–¢–¨ –ö–í–ï–°–¢"
        font "gui/fonts/metron22"
        "exact text" 1
        "size to text h" 0
@@ -265,8 +265,8 @@ FrameWidgetClass QuestMenuRoot {
     }
     ButtonWidgetClass CloseButton {
      ignorepointer 0
-     position 390 490
-     size 500 48
+     position 300 490
+     size 650 48
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -284,7 +284,7 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 0
        hexactsize 0
        vexactsize 0
-       text "«‡Í˚Ú¸ ÓÚ Ë ÛÈÚË"
+       text "–ó–∞–∫—Ä—ã—Ç—å —Ä–æ—Ç –∏ —É–π—Ç–∏"
        font "gui/fonts/metron22"
        "exact text" 1
        "size to text h" 0

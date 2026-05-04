@@ -97,7 +97,6 @@ class QuestJournalUIMenu extends UIScriptedMenu
             string displayName = quest.name;
             if (status == "reward_pending")
             {
-                displayName = "[Ожидает награду] " + displayName;
                 int rowReward = m_QuestList.AddItem(displayName, null, 0);
                 m_QuestList.SetItemColor(rowReward, 0, 0xFFFFD54F);
                 m_VisibleQuestIds.Insert(quest.id);
@@ -109,6 +108,7 @@ class QuestJournalUIMenu extends UIScriptedMenu
             }
             
             int row = m_QuestList.AddItem(displayName, null, 0);
+            m_QuestList.SetItemColor(row, 0, 0xFFF0EADB);
             m_VisibleQuestIds.Insert(quest.id);
             
             if (quest.id == previousQuestId)

@@ -141,6 +141,19 @@ class QuestUIMenu extends UIScriptedMenu
             UpdateButtons();
         }
     }
+
+    string SanitizeQuestUiLabel(string text)
+    {
+        string normalized = text;
+        normalized.Replace("[F] ", "");
+        normalized.Replace("[F]", "");
+        normalized.Trim();
+
+        while (normalized.IndexOf("  ") != -1)
+            normalized.Replace("  ", " ");
+
+        return normalized;
+    }
     
     void RefreshQuestList()
     {
@@ -179,35 +192,23 @@ class QuestUIMenu extends UIScriptedMenu
             string nextTriggerId = QuestClientManager.GetNextQuestTriggerId(m_Player, quest.id);
             bool isCurrentStageHere = (currentTriggerId != "" && currentTriggerId == nextTriggerId);
             string displayName = quest.name;
-            
-            if (highlightAsReward)
-                displayName = "[Награда] " + displayName;
-            
-            if (status == "reward_pending")
-                displayName = "[Ожидает награду] " + displayName;
-            else if (status == "active")
-                displayName = "[Активен] " + displayName;
-            else if (status == "completed")
-                displayName = "[Выполнен] " + displayName;
-                
+            int rowColor = 0xFFF0EADB;
+
             if (highlightAsReward || canClaimReward)
-                displayName = "[Награда здесь] " + quest.name;
+                rowColor = 0xFFFFD54F;
             else if (canComplete)
-                displayName = "[Сдать этап здесь] " + quest.name;
-            else if (canDeposit)
-                displayName = "[Передать предметы] " + quest.name;
+                rowColor = 0xFFA5D6A7;
+            else if (canDeposit || isCurrentStageHere)
+                rowColor = 0xFF90CAF9;
             else if (status == "reward_pending")
-                displayName = "[Вернуться за наградой] " + quest.name;
-            else if (status == "active" && isCurrentStageHere)
-                displayName = "[Текущий этап здесь] " + quest.name;
-            else if (status == "active")
-                displayName = "[Активен] " + quest.name;
+                rowColor = 0xFFFFE082;
             else if (status == "completed")
-                displayName = "[Выполнен] " + quest.name;
+                rowColor = 0xFFB0BEC5;
+            else if (status == "active")
+                rowColor = 0xFFECEFF1;
 
             int row = m_QuestList.AddItem(displayName, null, 0);
-            if (highlightAsReward || canClaimReward)
-                m_QuestList.SetItemColor(row, 0, 0xFFFFD54F);
+            m_QuestList.SetItemColor(row, 0, rowColor);
             m_VisibleQuestIds.Insert(quest.id);
             
             if (quest.id == previousQuestId)
@@ -330,12 +331,12 @@ class QuestUIMenu extends UIScriptedMenu
 
     string BuildRouteLabel(string triggerId, string actionType)
     {
-        string triggerText = QuestClientManager.GetTriggerDisplayText(triggerId);
+        string triggerText = SanitizeQuestUiLabel(QuestClientManager.GetTriggerDisplayText(triggerId));
         string actionLabel = BuildQuestDialogActionLabel(actionType);
         if (actionLabel == "")
             return triggerText;
 
-        return "[" + actionLabel + "] " + triggerText;
+        return actionLabel + ": " + triggerText;
     }
 
     void RefreshTriggerRouteList(Silver77_Quest quest, string status)
@@ -780,34 +781,40 @@ class QuestUIMenu extends UIScriptedMenu
     
     string BuildQuestDialogText(Silver77_Quest quest, string status, string currentTriggerId, bool canAccept, bool canComplete, bool canClaimReward)
     {
-        string journalText = BuildQuestDialogJournalText(quest, status, currentTriggerId, canAccept, canComplete, canClaimReward);
-        if (journalText != "")
-            return journalText;
-
-        if (!quest || currentTriggerId == "")
+        if (!quest)
             return "";
-        
-        if (canAccept)
+
+        string focusedTriggerId = "";
+        string focusedActionType = "";
+        string focusedRouteKey = m_SelectedRouteKey;
+        if (focusedRouteKey != "")
         {
-            string offerActionDialogText = QuestClientManager.GetQuestTriggerActionDialogText(quest, currentTriggerId, "offer");
-            if (offerActionDialogText != "")
-                return "Диалог:\n" + offerActionDialogText;
+            TStringArray routeParts = new TStringArray;
+            focusedRouteKey.Split("|", routeParts);
+            if (routeParts.Count() >= 2)
+            {
+                focusedTriggerId = routeParts.Get(0);
+                focusedActionType = routeParts.Get(1);
+            }
         }
-        
-        if (canClaimReward)
+
+        if (focusedTriggerId == "" || focusedActionType == "")
         {
-            string rewardActionDialogText = QuestClientManager.GetQuestTriggerActionDialogText(quest, currentTriggerId, "reward");
-            if (rewardActionDialogText != "")
-                return "Диалог:\n" + rewardActionDialogText;
+            string currentActionType = ResolveCurrentDialogActionType(quest, status, currentTriggerId, canAccept, canComplete, canClaimReward);
+            if (currentTriggerId != "" && currentActionType != "")
+            {
+                focusedTriggerId = currentTriggerId;
+                focusedActionType = currentActionType;
+            }
         }
-        
-        if (status == "active")
+
+        if (focusedTriggerId != "" && focusedActionType != "")
         {
-            string completionDialogText = QuestClientManager.GetQuestTriggerActionDialogText(quest, currentTriggerId, "completion");
-            if (completionDialogText != "")
-                return "Диалог:\n" + completionDialogText;
+            string focusedDialogText = QuestClientManager.GetQuestTriggerActionDialogText(quest, focusedTriggerId, focusedActionType);
+            if (focusedDialogText != "")
+                return focusedDialogText;
         }
-        
+
         return "";
     }
 
@@ -1025,5 +1032,3 @@ class QuestUIMenu extends UIScriptedMenu
             mission.OnQuestMenuClosed();
     }
 }
-
-
