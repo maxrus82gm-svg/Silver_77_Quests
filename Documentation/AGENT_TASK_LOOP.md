@@ -519,37 +519,41 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 080 REVIEW
+TASK 082 REVIEW
 
 Статус:
 Принято условно.
 
 Что принято:
-- Создана система Documentation\SplitDoc.
-- Созданы 9 SplitDoc-файлов:
-  - AGENT_RULES.md
-  - ENCODING_RULES.md
-  - DAYZ_RPC_SYNC_RULES.md
-  - QUEST_EDITOR_RULES.md
-  - QUEST_JSON_CONTRACT.md
-  - QUEST_UI_RULES.md
-  - DAYZ_LAYOUT_VIEWER_RULES.md
-  - SERVER_PROFILE_RULES.md
-  - TASK_HISTORY.md
-- AGENT_TASK_LOOP.md сокращён до рабочего shell-документа.
-- AGENT_TASK_LOOP.md теперь содержит назначение файла, матрицу чтения SplitDoc, БЛОК 1, БЛОК 2, БЛОК 3 и ссылку на историю.
-- В AGENT_RULES.md внесены правила о том, как ChatGPT должен формировать задачи.
-- В AGENT_RULES.md внесены правила о том, как агент при разрешении задачи обновляет AGENT REPORT, REVIEW / STATUS, TASK_HISTORY и новые правила.
-- В TASK_HISTORY.md добавлены TASK 079 и TASK 080.
-- Код, JSON, мод и layout не менялись.
+- В QuestMenu.layout добавлен full-screen BackgroundOverlay.
+- В QuestJournal.layout добавлен full-screen BackgroundOverlay.
+- Усилен фон QuestPanel и QuestJournalPanel.
+- В QuestMenu возвращён label “Список квестов” над QuestListbox.
+- Для DescriptionPanel и DialogPanel добавлена wheel-прокрутка через widget scroll API.
+- Для QuestJournal добавлена wheel-прокрутка DescriptionText.
+- Action prompt не отключался и input/action-система не трогалась.
+- JSON-контракт не менялся.
+- Server profile не трогался.
+- Mapping DescriptionPanel / DialogPanel не переписывался.
+- Кириллица по отчёту не повреждена.
+- Forbidden files не менялись.
+
+Что требует ручной проверки в игре:
+- Реально ли full-screen overlay затемняет мир и action prompt достаточно сильно.
+- Работает ли VScrollStep / VScrollToPos01 на MultilineTextWidget в DayZ runtime.
+- Работает ли wheel-scroll в QuestMenu для DescriptionText и DialogText.
+- Работает ли wheel-scroll в QuestJournal.
+- Видна ли подпись “Список квестов” и не перекрывает ли она QuestListbox.
+- Не сломалось ли управление кнопками.
+- Не сломались ли Offer / Completion / Reward.
 
 Риски:
-- RUSSIAN_ENCODING.md, QUEST_LOGIC_SPEC.md и README_JSON_CONFIG.md остаются внешними документами и могут пересекаться со SplitDoc.
-- Нужно не допустить появления нескольких расходящихся источников правды.
-- Правило жёстких рамок агента нужно усилить отдельной задачей, чтобы агент не делал инициативных правок вне БЛОКА 1.
+- Scroll реализован не через отдельный scroll-container, а через wheel-scroll на MultilineTextWidget. Это может работать, но требует проверки в runtime.
+- Для QuestJournal агент сам отметил риск: курсор там по-прежнему не включается, поэтому wheel-scroll может потребовать отдельной проверки.
+- Если VScrollStep окажется нестабильным или не сработает, следующая задача должна быть только про явный DayZ-compatible scroll container / scrollbar.
 
-Следующий шаг:
-TASK 081 — точечно усилить AGENT_RULES.md правилом жёстких рамок: агент меняет только явно разрешённые файлы и только то, что прямо указано в БЛОКЕ 1; всё найденное вне задачи записывает в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK, но не исправляет сам.
+Вывод:
+TASK 082 выполнен в рамках жёстких рамок. Следующий шаг — собрать клиентский PBO и проверить QuestMenu / QuestJournal в игре.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
