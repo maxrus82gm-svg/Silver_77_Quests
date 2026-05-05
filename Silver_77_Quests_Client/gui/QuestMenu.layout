@@ -10,9 +10,21 @@ FrameWidgetClass QuestMenuRoot {
  hexactsize 0
  vexactsize 0
  {
+  PanelWidgetClass BackgroundOverlay {
+   ignorepointer 1
+   color 0 0 0 0.82
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+  }
   PanelWidgetClass QuestPanel {
    ignorepointer 0
-   color 0.0824 0.0824 0.0824 0.985
+   color 0.0549 0.0549 0.0549 0.992
    position 0 0
    size 980 560
    halign center_ref
@@ -40,6 +52,25 @@ FrameWidgetClass QuestMenuRoot {
      "text halign" center
      "text valign" center
     }
+    TextWidgetClass QuestListLabel {
+     ignorepointer 1
+     color 0.8902 0.8902 0.8902 1
+     position 30 60
+     size 250 18
+     halign left_ref
+     valign top_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Список квестов"
+     font "gui/fonts/metron16"
+     "exact text" 1
+     "size to text h" 0
+     "size to text v" 0
+     "text halign" left
+     "text valign" center
+    }
     TextListboxWidgetClass QuestListbox {
      ignorepointer 0
      position 30 82
@@ -53,7 +84,7 @@ FrameWidgetClass QuestMenuRoot {
      font "gui/fonts/metron16"
     }
     PanelWidgetClass DescriptionPanel {
-     ignorepointer 1
+     ignorepointer 0
      color 0.0118 0.0118 0.0118 0.96
      position 300 74
      size 420 204
@@ -84,9 +115,9 @@ FrameWidgetClass QuestMenuRoot {
        "text valign" center
       }
       MultilineTextWidgetClass DescriptionText {
-       ignorepointer 1
+       ignorepointer 0
        position 12 30
-       size 396 162
+       size 384 162
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -150,7 +181,7 @@ FrameWidgetClass QuestMenuRoot {
      }
     }
     PanelWidgetClass DialogPanel {
-     ignorepointer 1
+     ignorepointer 0
      color 0.0118 0.0118 0.0118 0.96
      position 300 286
      size 420 122
@@ -181,9 +212,9 @@ FrameWidgetClass QuestMenuRoot {
        "text valign" center
       }
       MultilineTextWidgetClass DialogText {
-       ignorepointer 1
+       ignorepointer 0
        position 12 30
-       size 396 80
+       size 384 80
        halign left_ref
        valign top_ref
        hexactpos 1

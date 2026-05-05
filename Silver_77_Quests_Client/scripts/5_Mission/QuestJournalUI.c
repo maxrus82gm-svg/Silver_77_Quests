@@ -173,6 +173,31 @@ class QuestJournalUIMenu extends UIScriptedMenu
         UpdateQuestDetails();
         return true;
     }
+
+    void ResetScrollableText(MultilineTextWidget widget)
+    {
+        if (!widget)
+            return;
+
+        widget.VScrollToPos01(0);
+    }
+
+    bool HandleScrollableTextWheel(Widget w, MultilineTextWidget textWidget, int wheel)
+    {
+        if (!w || !textWidget || w != textWidget)
+            return false;
+
+        if (!textWidget.IsScrollbarVisible())
+            return false;
+
+        if (wheel > 0)
+            return textWidget.VScrollStep(-1);
+
+        if (wheel < 0)
+            return textWidget.VScrollStep(1);
+
+        return false;
+    }
     
     void UpdateQuestDetails()
     {
@@ -185,7 +210,8 @@ class QuestJournalUIMenu extends UIScriptedMenu
                 m_QuestDescription.SetText("Активных квестов нет.");
             else
                 m_QuestDescription.SetText("Выберите квест из списка.");
-            
+
+            ResetScrollableText(m_QuestDescription);
             return;
         }
         
@@ -193,6 +219,7 @@ class QuestJournalUIMenu extends UIScriptedMenu
         if (!quest)
         {
             m_QuestDescription.SetText("Квест не найден.");
+            ResetScrollableText(m_QuestDescription);
             return;
         }
         
@@ -269,6 +296,7 @@ class QuestJournalUIMenu extends UIScriptedMenu
         else
             desc += "\nСдать квест можно у подходящего trigger / NPC по логике квеста.";
         m_QuestDescription.SetText(desc);
+        ResetScrollableText(m_QuestDescription);
     }
     
     override bool OnClick(Widget w, int x, int y, int button)
@@ -296,6 +324,9 @@ class QuestJournalUIMenu extends UIScriptedMenu
     
     override bool OnMouseWheel(Widget w, int x, int y, int wheel)
     {
+        if (HandleScrollableTextWheel(w, m_QuestDescription, wheel))
+            return true;
+
         if (wheel > 0)
             return SelectQuestOffset(-1);
         

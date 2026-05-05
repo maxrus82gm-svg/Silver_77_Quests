@@ -12,6 +12,8 @@ class QuestUIMenu extends UIScriptedMenu
     private TextListboxWidget m_TriggerRouteList;
     private MultilineTextWidget m_QuestDescription;
     private MultilineTextWidget m_DialogText;
+    private Widget m_DescriptionPanel;
+    private Widget m_DialogPanel;
     private ButtonWidget m_AcceptButton;
     private ButtonWidget m_CompleteButton;
     private ButtonWidget m_CloseButton;
@@ -54,6 +56,8 @@ class QuestUIMenu extends UIScriptedMenu
         m_TriggerRouteList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TriggerRouteListbox"));
         m_QuestDescription = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
         m_DialogText = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
+        m_DescriptionPanel = layoutRoot.FindAnyWidget("DescriptionPanel");
+        m_DialogPanel = layoutRoot.FindAnyWidget("DialogPanel");
         m_AcceptButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AcceptButton"));
         m_CompleteButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CompleteButton"));
         m_CloseButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CloseButton"));
@@ -140,6 +144,34 @@ class QuestUIMenu extends UIScriptedMenu
             UpdateQuestDetails();
             UpdateButtons();
         }
+    }
+
+    void ResetScrollableText(MultilineTextWidget widget)
+    {
+        if (!widget)
+            return;
+
+        widget.VScrollToPos01(0);
+    }
+
+    bool HandleScrollableTextWheel(Widget w, Widget panelWidget, MultilineTextWidget textWidget, int wheel)
+    {
+        if (!w || !textWidget)
+            return false;
+
+        if (w != panelWidget && w != textWidget)
+            return false;
+
+        if (!textWidget.IsScrollbarVisible())
+            return false;
+
+        if (wheel > 0)
+            return textWidget.VScrollStep(-1);
+
+        if (wheel < 0)
+            return textWidget.VScrollStep(1);
+
+        return false;
     }
 
     string SanitizeQuestUiLabel(string text)
@@ -515,6 +547,17 @@ class QuestUIMenu extends UIScriptedMenu
         }
         return false;
     }
+
+    override bool OnMouseWheel(Widget w, int x, int y, int wheel)
+    {
+        if (HandleScrollableTextWheel(w, m_DescriptionPanel, m_QuestDescription, wheel))
+            return true;
+
+        if (HandleScrollableTextWheel(w, m_DialogPanel, m_DialogText, wheel))
+            return true;
+
+        return super.OnMouseWheel(w, x, y, wheel);
+    }
     
     void UpdateQuestDetails()
     {
@@ -524,9 +567,13 @@ class QuestUIMenu extends UIScriptedMenu
         if (m_SelectedQuestId == "")
         {
             m_QuestDescription.SetText("Выберите квест из списка");
+            ResetScrollableText(m_QuestDescription);
             RefreshTriggerRouteList(null, "");
             if (m_DialogText)
+            {
                 m_DialogText.SetText("");
+                ResetScrollableText(m_DialogText);
+            }
             return;
         }
         
@@ -534,9 +581,13 @@ class QuestUIMenu extends UIScriptedMenu
         if (!quest)
         {
             m_QuestDescription.SetText("Квест не найден");
+            ResetScrollableText(m_QuestDescription);
             RefreshTriggerRouteList(null, "");
             if (m_DialogText)
+            {
                 m_DialogText.SetText("");
+                ResetScrollableText(m_DialogText);
+            }
             return;
         }
         
@@ -609,6 +660,7 @@ class QuestUIMenu extends UIScriptedMenu
             desc += "\nЗапрос отправлен. Ждем ответ сервера...";
         
         m_QuestDescription.SetText(desc);
+        ResetScrollableText(m_QuestDescription);
         
         RefreshTriggerRouteList(quest, status);
         
@@ -619,6 +671,8 @@ class QuestUIMenu extends UIScriptedMenu
                 m_DialogText.SetText(dialogText);
             else
                 m_DialogText.SetText("");
+
+            ResetScrollableText(m_DialogText);
         }
     }
     
