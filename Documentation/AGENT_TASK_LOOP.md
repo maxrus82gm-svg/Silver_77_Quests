@@ -56,10 +56,10 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 082 — QuestMenu / QuestJournal финальная UI-доработка после ручной проверки в игре
+TASK 083 — Аналитика мода PB_DoorsAndBarricades: понять устройство и причину пропавшей коллизии
 
 Статус:
-Новая активная задача для агента.
+Новая активная аналитическая задача для агента.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -67,315 +67,369 @@ TASK 082 — QuestMenu / QuestJournal финальная UI-доработка �
 
 Перед выполнением задачи агент обязан прочитать:
 
-1. P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
-2. P:\Silver_77_Quests\Documentation\SplitDoc\AGENT_RULES.md
-3. P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_UI_RULES.md
-4. P:\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
-5. P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_JSON_CONTRACT.md
-6. P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
+1. D:\GitHub\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
+2. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\AGENT_RULES.md
+3. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
+4. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
 
 Агент обязан соблюдать принцип жёстких рамок:
-- делать только то, что прямо указано в БЛОКЕ 1;
-- менять только явно разрешённые файлы;
-- не чинить “заодно” соседние проблемы;
-- если найдена проблема вне задачи — писать её в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK, но не исправлять сам.
+
+- это аналитическая задача;
+- ничего не менять;
+- не чинить “заодно”;
+- не перепаковывать PBO;
+- не удалять и не переносить файлы;
+- если найдена проблема вне scope — записать в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK, но не исправлять сам.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-После TASK 078 пользователь выполнил ручную проверку в игре.
+Пользователь распаковал PBO мода дверей:
 
-Подтверждено, что работает корректно:
-- поведение Offer NPC;
-- поведение Completion NPC;
-- поведение Reward NPC;
-- выполнение квеста “Поставка провизии” прошло успешно;
-- панели расширены и стали лучше;
-- кириллица отображается нормально;
-- DescriptionPanel / DialogPanel в целом разделены правильно.
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\addons\PB_DoorsAndBarricades.pbo
 
-Проблемы, которые остались по фактической проверке в игре:
+Распакованное содержимое находится в папке:
 
-1. Фон QuestMenu всё ещё слишком прозрачный.
-   Игровой мир и HUD/action prompt за интерфейсом мешают читать текст.
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\
 
-2. Полноценного scroll нет.
-   Длинные тексты в DescriptionPanel и DialogPanel всё ещё обрезаются.
+Также пользователь указал commit:
 
-3. В QuestMenu нет подписи “Список квестов” над левым списком.
+d814d0c2d6a0a688e8b23c781534d7229c9929c9
 
-4. Action prompt вида “Проверить пульс [УДЕРЖИВАЙТЕ]” виден за окном.
-   В этой задаче НЕ нужно отключать или подавлять action prompt через input/action-систему.
-   Нужно решить проблему визуально через тёмный фон / overlay / непрозрачность QuestUI.
+Мод относится к DayZ Doors / Barricades / Walls / Gates / Windows / Kits.
+
+Главная проблема:
+у объектов мода пропала или не работает коллизия.
+
+Нужно понять:
+- как мод устроен;
+- какие классы и модели используются;
+- где задаётся физика / collision / construction;
+- почему collision может отсутствовать;
+- что проверять дальше;
+- какую следующую безопасную задачу поставить для фикса.
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 082
+ЦЕЛЬ TASK 083
 --------------------------------------------------------------------------------
 
-Довести QuestMenu / QuestJournal до следующего состояния:
+Сделать аналитический разбор мода PB_DoorsAndBarricades и дать техническое заключение:
 
-1. Фон окна в игре реально стал тёмным и достаточно плотным.
-2. Мир и action prompt за интерфейсом не мешают чтению.
-3. Длинные тексты в DescriptionPanel и DialogPanel можно читать через scroll или другой реально рабочий механизм прокрутки.
-4. Подпись “Список квестов” возвращена и отображается корректно над QuestListbox.
-5. Уже работающие части не сломаны:
-   - Offer / Completion / Reward;
-   - выполнение квестов;
-   - разделение DescriptionPanel и DialogPanel;
-   - кириллица;
-   - текущий JSON-контракт.
+1. Какие основные классы есть в config.cpp.
+2. От чего они наследуются.
+3. Какие классы являются kit-объектами.
+4. Какие классы являются установленными buildable-объектами.
+5. Какие модели .p3d используются.
+6. Какие настройки могут влиять на collision.
+7. Есть ли в config.cpp подозрительные поля:
+   - physLayer
+   - simulation
+   - createProxyPhysicsOnInit
+   - createdProxiesOnInit
+   - collision_data
+   - carveNavmesh
+   - placement
+   - bounding
+   - class Construction
+8. Есть ли в скриптах логика, которая может скрывать / создавать / заменять объект после установки.
+9. Есть ли признаки, что проблема может быть не в config.cpp, а в .p3d Geometry LOD.
+10. Дать список вероятных причин исчезновения коллизии по степени вероятности.
+11. Предложить следующую безопасную TASK 084 для точечной проверки или фикса.
 
 --------------------------------------------------------------------------------
 МОЁ МНЕНИЕ / ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
 --------------------------------------------------------------------------------
 
 Предпочтительное решение:
+сначала не чинить, а понять устройство мода.
 
-1. Фон:
-   сделать общий тёмный overlay / фон под QuestUI.
-   Не трогать action prompt и не вмешиваться в глобальную input/action-систему.
-   Нужно добиться, чтобы окно квестов читалось на фоне игрового мира.
+По DayZ buildable-объектам проблема коллизии часто бывает не только в config.cpp.
 
-2. Scroll:
-   сделать настоящий scroll, если DayZ UI это позволяет.
-   Это предпочтительнее, чем снова увеличивать размеры панелей.
-   Если текущие MultilineTextWidgetClass не поддерживают прокрутку, нужно найти корректный DayZ UI-паттерн:
-   - ScrollWidgetClass;
-   - ScrollPanel;
-   - другой поддерживаемый scroll-контейнер;
-   - или минимальный безопасный кодовый механизм прокрутки, если layout-ом это не решается.
+Самые вероятные зоны риска:
 
-3. Подпись “Список квестов”:
-   вернуть как отдельный label над левым QuestListbox.
-   Не встраивать эту подпись в элементы списка.
+1. В модели .p3d нет корректного Geometry LOD / Fire Geometry / View Geometry.
+2. Geometry LOD есть, но не соответствует named selections или components.
+3. createProxyPhysicsOnInit / createdProxiesOnInit не создают нужную deployed-физику.
+4. collision_data[] пустой или не соответствует construction part.
+5. Объект наследуется от Fence, но кастомная модель не повторяет нужную структуру vanilla Fence.
+6. Скрипт после установки создаёт объект без нужного deployed state / animation source.
+7. Объект визуально появляется, но физический proxy / geometry не активируется.
+8. Model path / selection / memory point / proxy не совпадает с тем, что ожидает config и scripts.
 
-4. QuestJournal:
-   править только если там используется тот же проблемный паттерн фона/scroll и это прямо связано с задачей.
-   Не делать отдельную большую переработку журнала.
+На этой задаче нельзя сразу править.
 
-5. Если полноценный scroll окажется слишком рискованным или технически невозможным в текущей реализации:
-   сделать максимально безопасную часть задачи,
-   честно описать ограничение,
-   предложить отдельную следующую задачу.
-   Но сначала реально проверить поддерживаемые варианты, а не просто предположить.
+Нужно составить карту мода, найти наиболее вероятный источник проблемы и предложить следующий точечный шаг.
 
 --------------------------------------------------------------------------------
-РАЗРЕШЁННЫЕ ФАЙЛЫ ДЛЯ ПРАВОК
+SCOPE ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Разрешено менять только файлы, напрямую связанные с Quest UI:
+Это только аналитика.
 
-1. Layout квестового окна:
-P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+Агент должен:
+- читать файлы;
+- анализировать config / scripts / models;
+- составить карту классов;
+- найти вероятные причины проблемы collision;
+- предложить следующую задачу.
 
-2. Layout журнала, только если нужно для связанной проблемы фона/scroll:
-P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+Агент не должен:
+- править файлы;
+- перепаковывать PBO;
+- запускать фиксы;
+- менять config.cpp;
+- менять .p3d;
+- менять scripts;
+- менять JSON/XML;
+- менять основной мод Silver_77_Quests;
+- делать commit.
 
-3. Клиентский UI-код квестового окна:
-P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+--------------------------------------------------------------------------------
+РАЗРЕШЁННЫЕ ФАЙЛЫ И ПАПКИ ДЛЯ ЧТЕНИЯ
+--------------------------------------------------------------------------------
 
-4. Клиентский UI-код журнала, только если нужно для связанной проблемы:
-P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+Можно читать:
+
+D:\GitHub\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
+D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\AGENT_RULES.md
+D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
+D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
+
+Можно читать распакованный мод:
+
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\addons\
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\PB_DoorsAndBarricades\
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\config.cpp
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.c
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.p3d
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.rvmat
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.cpp
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.json
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.xml
+D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\$PBOPREFIX$
+
+Если фактический путь отличается:
+- найти папку распакованного PB_DoorsAndBarricades внутри репозитория;
+- указать реальный путь в отчёте.
 
 --------------------------------------------------------------------------------
 ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
 --------------------------------------------------------------------------------
 
-Не менять:
-- P:\Silver_77_Quests\JSON_Quvest\
-- P:\Silver_77_Quests\DayZ_layout\
-- P:\Silver_77_Quests\Silver_77_Quests_Server\
-- P:\Silver_77_Quests\Support\
-- P:\Silver_77_Quests\Documentation\SplitDoc\
-- P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
-- server profile
-- production server files
+Запрещено:
+- менять любые файлы;
+- перепаковывать PBO;
+- запускать Addon Builder;
+- менять config.cpp;
+- менять .p3d;
+- менять scripts .c;
+- менять JSON;
+- менять XML;
+- менять types.xml;
+- менять основной Silver_77_Quests_Client;
+- менять основной Silver_77_Quests_Server;
+- менять Quest Editor;
+- менять Documentation / SplitDoc;
+- удалять файлы;
+- переносить файлы;
+- переименовывать файлы;
+- делать git commit;
+- делать git push;
+- делать git reset;
+- делать git clean;
+- делать git checkout для отката.
 
-Не делать:
-- не менять JSON-контракт;
-- не добавлять requiredItems;
-- не добавлять dialogue;
-- не добавлять dialogueText вне triggerActions[];
-- не копировать JSON в profile/server;
-- не чистить progress;
-- не менять серверную runtime-логику;
-- не вмешиваться в глобальную input/action-систему;
-- не отключать action prompt;
-- не делать большой рефакторинг UI;
-- не менять архитектуру Offer / Completion / Reward;
-- не трогать stack rules.
+Это только аналитика.
 
-Если агент считает, что для scroll или overlay нужен другой файл, не указанный в разрешённых:
-- не менять его;
-- написать в PROBLEMS;
-- предложить отдельную следующую задачу.
+Если агент нашёл очевидное решение:
+не исправлять, а описать в CONCLUSION и предложить TASK 084.
 
 --------------------------------------------------------------------------------
-ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
+ЧТО ИМЕННО НУЖНО ПРОВЕРИТЬ
 --------------------------------------------------------------------------------
 
-1. Тёмный фон / overlay
+1. Структура распакованного PBO
 
-Нужно найти, какой widget / panel / layout-элемент реально отвечает за фон QuestMenu в runtime.
+Нужно вывести дерево верхнего уровня:
 
-Требование:
-- фон должен стать реально тёмным в игре;
-- игровой мир за окном должен меньше мешать чтению;
-- action prompt за интерфейсом не нужно отключать, но он должен перестать мешать за счёт затемнения/overlay;
-- если текущий alpha/color не влияет на runtime, найти правильный элемент или способ.
+- есть ли config.cpp;
+- есть ли Scripts;
+- есть ли Data / models / .p3d;
+- есть ли textures / rvmat;
+- есть ли modded scripts;
+- есть ли settings/config JSON;
+- есть ли types.xml;
+- есть ли $PBOPREFIX$.
 
-Предпочтительный вариант:
-- добавить или настроить общий тёмный overlay/фон внутри QuestMenu.layout;
-- либо сделать QuestPanel / root panel реально плотным и тёмным;
-- не трогать action prompt и input-систему.
+2. config.cpp
 
-2. Scroll для DescriptionPanel
+Нужно найти и описать:
 
-Нужно реализовать возможность читать длинное описание/цели/награды без обрезания.
+- CfgPatches;
+- CfgMods;
+- CfgVehicles;
+- базовые классы;
+- kit-классы;
+- deployed/buildable-классы;
+- door/barricade/wall/gate/window классы;
+- model paths;
+- physLayer;
+- simulation;
+- bounding;
+- createProxyPhysicsOnInit;
+- createdProxiesOnInit;
+- collision_data;
+- class Construction;
+- AnimationSources;
+- attachments;
+- hiddenSelections;
+- rotation / animation sources;
+- inheritance chain.
 
-Проверить:
-- текущий DescriptionText;
-- текущий DescriptionPanel;
-- поддерживает ли текущий виджет scroll;
-- нужен ли scroll-контейнер;
-- нужно ли поменять widget-class на scroll-capable вариант.
+Особенно проверить классы, похожие на:
 
-Цель:
-длинный текст DescriptionPanel должен быть доступен пользователю для чтения.
+- PBDoorsBase
+- PBDoorsKitBase
+- PB_PlankDoor
+- PB_WoodDoor
+- PB_MetalDoor
+- PB_PlankBarricade
+- PB_MetalBarricade
+- PB_BrickBarricade
+- PB_PlankDoorBarricade
+- PB_MetalDoorBarricade
+- PB_BrickDoorBarricade
+- PB_WoodWall
+- PB_MetalWall
+- PB_WoodGate
+- PB_MetalGate
+- PB_PlankWindow
+- PB_MetalWindow
+- все *_Kit классы
 
-3. Scroll для DialogPanel
+3. Модели .p3d
 
-Нужно реализовать возможность читать длинный NPC dialogText без обрезания.
+Нужно перечислить .p3d модели, которые используются для дверей / баррикад / стен / ворот / окон.
 
-Проверить:
-- текущий DialogText;
-- текущий DialogPanel;
-- поддерживает ли текущий виджет scroll;
-- нужен ли scroll-контейнер;
-- нужно ли поменять widget-class на scroll-capable вариант.
+Если возможно без изменения файлов:
+- проверить имена моделей;
+- проверить, существуют ли файлы по путям из config.cpp;
+- указать, какие модели нужно открыть в Object Builder для проверки Geometry LOD.
 
-Цель:
-длинный NPC dialogText должен быть доступен пользователю для чтения.
+Важно:
+агент может не уметь надёжно читать внутренние LOD .p3d.
+Если не может проверить LOD напрямую, он должен честно сказать:
 
-4. QuestListbox
+"Нужно открыть модель в Object Builder и проверить Geometry / Fire Geometry / View Geometry LOD".
 
-Проверить, что QuestListbox после TASK 078 работает нормально.
-Если там уже есть нормальная прокрутка — не трогать.
-Если список квестов тоже обрезается без прокрутки — исправить только если это безопасно и связано с текущей задачей.
+4. Скрипты
 
-5. Подпись “Список квестов”
+Нужно проверить Scripts:
 
-Вернуть видимый label:
+- есть ли классы установки kit;
+- есть ли placement logic;
+- есть ли OnPlacementComplete;
+- есть ли create object / replace object logic;
+- есть ли SetAnimationPhase;
+- есть ли HideSelection / ShowSelection;
+- есть ли CreateDynamicPhysics / SetDynamicPhysicsLifeTime / dBody / collision-related calls;
+- есть ли Init / EEInit / OnStoreLoad / AfterStoreLoad logic;
+- есть ли логика, которая переводит объект в Deployed state;
+- есть ли logic для gates/doors open/close.
 
-Список квестов
+5. Construction / collision
 
-Требования:
-- label должен быть над QuestListbox;
-- label должен быть читаемым;
-- label не должен перекрывать элементы списка;
-- label не должен быть элементом списка;
-- label должен выглядеть как часть текущего стиля QuestMenu.
+Нужно отдельно проверить:
 
-6. Сохранить правильный mapping
+- class Construction;
+- collision_data[];
+- required_parts[];
+- conflicted_parts[];
+- is_gate;
+- id;
+- material_type;
+- build_action_type;
+- dismantle_action_type;
+- proxy physics;
+- deployed selections.
 
-Не сломать уже правильную логику:
+6. Вероятные причины пропавшей коллизии
 
-DescriptionPanel / DescriptionText:
-- quest.description;
-- статус;
-- цели;
-- прогресс;
-- награды.
+Составить список вероятных причин по приоритету:
 
-DialogPanel / DialogText:
-- triggerActions[].dialogText;
-- текущий NPC dialog;
-- текущий action-блок Offer / Completion / Reward.
+Например:
+A. Нет Geometry LOD в .p3d.
+B. Geometry LOD есть, но не настроены components / mass / named selections.
+C. Неправильная настройка createProxyPhysicsOnInit / createdProxiesOnInit.
+D. Пустой collision_data[] для Construction.
+E. Неверный inheritance / simulation / physLayer.
+F. Скрипт ставит не тот объект или не переводит его в Deployed state.
+G. Модель путь неверный или визуальный объект есть, но physical geometry не активируется.
+H. Коллизия есть только у части/selection, которая скрыта animation source.
+I. Объект наследуется от Fence, но кастомная модель не соответствует vanilla fence expectations.
 
-Нельзя возвращать старый режим, где NPC dialogText подмешивался в DescriptionPanel.
+7. Что проверить вручную в Object Builder
+
+Дать пользователю список:
+
+- какие .p3d открыть;
+- какие LOD проверить;
+- какие named selections проверить;
+- какие components должны быть в Geometry LOD;
+- какие свойства geometry важны;
+- что сравнить с vanilla Fence / Gate / Watchtower;
+- где посмотреть Fire Geometry / View Geometry;
+- что проверить по mass / convexity / components.
+
+8. Следующая задача
+
+Предложить TASK 084:
+
+Варианты:
+- TASK 084A — точечная проверка config.cpp collision/proxy settings;
+- TASK 084B — проверка/исправление .p3d Geometry LOD;
+- TASK 084C — тестовый фикс createProxyPhysicsOnInit / createdProxiesOnInit / collision_data;
+- TASK 084D — проверка скрипта установки kit/deployed object.
+
+Выбрать один наиболее вероятный вариант по результатам анализа.
 
 --------------------------------------------------------------------------------
 КОДИРОВКА
 --------------------------------------------------------------------------------
 
-Так как задача затрагивает layout/UI с кириллицей, обязательно учитывать ENCODING_RULES.md.
+Если агент читает .cpp / .c / .xml / .json с кириллицей:
 
-Требования:
-- не ломать кириллицу;
-- не делать массовую перекодировку;
-- если файл уже UTF-8 без BOM — не трогать кодировку;
-- если файл с кириллицей сохраняется заново — проверить, что текст не превратился в кракозябры;
-- в отчёте указать ENCODING CHECK для изменённых .layout/.c файлов.
+- не менять кодировку;
+- не сохранять файлы;
+- если видит кракозябры, указать в отчёте;
+- это аналитика, поэтому ничего не перекодировать.
 
 --------------------------------------------------------------------------------
 ЖЁСТКИЕ РАМКИ ДЛЯ ЭТОЙ ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Агенту запрещено расширять scope.
+Это аналитическая задача.
 
-Эта задача только про:
-- тёмный фон / overlay QuestMenu;
-- scroll DescriptionPanel;
-- scroll DialogPanel;
-- подпись “Список квестов”;
-- минимальную связанную проверку QuestJournal, если там тот же паттерн.
+Агент не имеет права менять файлы.
 
-Не делать:
-- чистку server profile;
-- перенос JSON;
-- изменение квестовых данных;
-- изменение редактора;
-- изменение JSON-контракта;
-- изменение server runtime;
-- глобальное отключение action prompt;
-- переписывание всей UI-системы;
-- cleanup всех layout-файлов;
-- исправление сторонних найденных проблем.
+Если найдено очевидное решение:
+- не исправлять;
+- записать в CONCLUSION;
+- предложить TASK 084.
+
+Если найдено несколько проблем:
+- ранжировать их;
+- не чинить ни одну.
+
+Если для анализа нужен файл вне разрешённой зоны:
+- не читать/не менять без необходимости;
+- указать в PROBLEMS, какой файл нужен и почему.
 
 Если проблема найдена вне задачи:
-писать в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK.
-
---------------------------------------------------------------------------------
-ПРОВЕРКИ
---------------------------------------------------------------------------------
-
-После правок проверить:
-
-1. Layout / код:
-- QuestMenu.layout синтаксически не сломан;
-- QuestUI.c синтаксически не сломан;
-- если менялся QuestJournal.layout / QuestJournalUI.c — они тоже не сломаны.
-
-2. Фон:
-- в QuestMenu появился реально тёмный фон / overlay;
-- фон должен перекрывать игровой мир достаточно для чтения;
-- action prompt не отключается, но визуально не мешает читать.
-
-3. Scroll:
-- DescriptionPanel больше не обрезает длинный текст без возможности чтения;
-- DialogPanel больше не обрезает длинный dialogText без возможности чтения;
-- если scroll реализован частично — честно указать, что именно работает, а что нет.
-
-4. Label:
-- над левым списком есть “Список квестов”;
-- label читаемый;
-- label не перекрывает QuestListbox.
-
-5. Mapping:
-- DescriptionPanel показывает описание/цели/прогресс/награды/статус;
-- DialogPanel показывает NPC dialogText;
-- Offer / Completion / Reward mapping не сломан.
-
-6. Кириллица:
-- русский текст в layout/UI не сломан;
-- нет кракозябр.
-
-7. Ограничения:
-- JSON не менялся;
-- server profile не трогался;
-- action prompt не отключался;
-- forbidden files не менялись.
+- писать в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK;
+- не исправлять сам.
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
@@ -383,77 +437,75 @@ DialogPanel / DialogText:
 
 Задача считается выполненной, если:
 
-1. В QuestMenu реально появился тёмный фон / overlay.
-2. Action prompt не отключён, но визуально больше не мешает чтению.
-3. DescriptionPanel получил рабочее решение для чтения длинного текста.
-4. DialogPanel получил рабочее решение для чтения длинного dialogText.
-5. Подпись “Список квестов” возвращена.
-6. Кириллица не сломана.
-7. Description/Dialog mapping не сломан.
-8. Offer / Completion / Reward не затронуты.
-9. JSON-контракт не менялся.
-10. Server profile не трогался.
-11. Все изменения перечислены в отчёте.
-12. Если scroll не удалось реализовать полноценно — агент честно доказал причину и предложил отдельный следующий шаг.
+1. Дано дерево верхнего уровня распакованного мода.
+2. Описаны основные классы config.cpp.
+3. Разделены kit-классы и deployed/buildable-классы.
+4. Описаны model paths и .p3d, которые нужно проверить.
+5. Найдены collision-related настройки config.cpp.
+6. Проверены scripts на placement/deployed/collision логику.
+7. Составлен список вероятных причин пропавшей коллизии.
+8. Дана ручная checklist-проверка для Object Builder.
+9. Предложена следующая TASK 084.
+10. Ничего не изменялось.
+11. CHANGED FILES содержит “ничего не изменялось”.
 
 --------------------------------------------------------------------------------
-ОТЧЁТ
+ОЖИДАЕМЫЙ ОТЧЁТ
 --------------------------------------------------------------------------------
-
-Отчёт вернуть в чат.
-
-В AGENT_TASK_LOOP.md ничего не писать, если в текущей shell-структуре нет прямого требования писать отчёт.
-Если правила AGENT_TASK_LOOP явно разрешают обновить БЛОК 2 — можно обновить только БЛОК 2, но не менять REVIEW/историю без отдельной команды.
-
-Формат отчёта:
 
 AGENT REPORT
 
 ANALYSIS:
-- что было причиной прозрачного фона;
-- почему прежняя alpha-правка не дала эффекта, если удалось определить;
-- какой scroll-подход выбран;
-- где лучше всего вернуть label “Список квестов”.
+- кратко как устроен мод;
+- что найдено по config.cpp;
+- что найдено по scripts;
+- что найдено по models;
+- где вероятнее всего зона проблемы collision.
 
-DONE:
-- что изменено по фону;
-- что изменено по DescriptionPanel scroll;
-- что изменено по DialogPanel scroll;
-- что изменено по label;
-- что проверено по mapping.
+STRUCTURE:
+- дерево верхнего уровня распакованного PBO;
+- основные папки и файлы.
+
+CLASSES:
+- базовые классы;
+- kit-классы;
+- deployed/buildable-классы;
+- какие классы наследуются от чего.
+
+MODELS:
+- список .p3d;
+- какие классы используют какие модели;
+- какие модели нужно проверить в Object Builder.
+
+COLLISION FINDINGS:
+- physLayer;
+- simulation;
+- createProxyPhysicsOnInit;
+- createdProxiesOnInit;
+- collision_data;
+- Construction;
+- Geometry LOD risk;
+- скриптовые риски.
+
+LIKELY CAUSES:
+- список причин по вероятности.
+
+MANUAL CHECKLIST:
+- что пользователю проверить руками в Object Builder / игре.
 
 CHANGED FILES:
-- полный список файлов.
-
-DIFF:
-- кратко по каждому файлу.
-
-ENCODING CHECK:
-- какие файлы с кириллицей изменялись;
-- какая кодировка была/стала;
-- BOM/no BOM;
-- кириллица не сломана.
-
-CHECKS:
-- фон/overlay;
-- scroll DescriptionPanel;
-- scroll DialogPanel;
-- label “Список квестов”;
-- mapping Description/Dialog;
-- JSON не менялся;
-- server profile не трогался;
-- forbidden files не менялись.
+- ничего не изменялось.
 
 PROBLEMS:
-- что не удалось решить;
-- что требует ручной проверки в игре;
-- что найдено вне scope и не исправлялось.
+- что не удалось проверить;
+- какие файлы / LOD требуют ручной проверки;
+- какие проблемы найдены вне scope.
 
 RECOMMENDED NEXT TASK:
-- только если реально нужна следующая задача.
+- предложить TASK 084 с чёткой областью и разрешёнными файлами.
 
 CONCLUSION:
-- краткий итог.
+- краткий вывод: где вероятнее всего причина пропавшей коллизии.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
