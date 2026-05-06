@@ -259,7 +259,7 @@
           "className": "BandageDressing",
           "quantity": 6,
           "removeOnComplete": 1,
-          "useItemQuantity": 1,
+          "useItemQuantity": 0,
           "allowPartialTurnIn": 1
         }
       ],
