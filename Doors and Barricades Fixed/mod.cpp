@@ -1,0 +1,11 @@
+name = "Doors and Barricades Fixed";
+picture = "PB_DoorsAndBarricades/logo/DnB_logo.paa";
+logoSmall = "PB_DoorsAndBarricades/logo/DnB_logo.paa";
+logo = "PB_DoorsAndBarricades/logo/DnB_logo.paa";
+logoOver = "PB_DoorsAndBarricades/logo/DnB_logo.paa";
+tooltip = "Doors and Barricades Fixed";
+overview = "";
+action = "https://steamcommunity.com/sharedfiles/filedetails/?id=2824425541";
+author = "Morette";
+authorID = "morette_filho";
+version = "";

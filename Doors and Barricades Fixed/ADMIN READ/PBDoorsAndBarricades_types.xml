@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<types>
+	//////////////////////////////////////////////
+	//////////   Doors And Barricades   //////////
+	//////////////////////////////////////////////
+	<type name="PB_PlankDoor">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_WoodDoor">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalDoor">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_PlankBarricade">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalBarricade">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_BrickBarricade">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_PlankDoorBarricade">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalDoorBarricade">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_BrickDoorBarricade">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+    <type name="PB_Well">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_WoodWall">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalWall">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_PlankWindow">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalWindow">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_WoodGate">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalGate">
+		<lifetime>3888000</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+
+    //////////////////////////////////////////////
+	///////// Doors And Barricades KITS //////////
+	//////////////////////////////////////////////
+	<type name="PB_PlankDoor_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_WoodDoor_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_MetalDoor_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_PlankBarricade_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_WoodWall_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_PlankDoorBarricade_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_Well_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_WoodGate_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+	<type name="PB_PlankWindow_Kit">
+		<lifetime>7400</lifetime>
+	    <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+    </type>
+
+    //////////////////////////////////////////////
+	///////// Doors And Barricades Items /////////
+	//////////////////////////////////////////////
+    <type name="PB_Brick">
+        <nominal>0</nominal>
+        <lifetime>14400</lifetime>
+        <restock>0</restock>
+        <min>0</min>
+        <quantmin>-1</quantmin>
+        <quantmax>-1</quantmax>
+        <cost>100</cost>
+        <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+        <category name="tools"/>
+    </type>
+    <type name="PB_Stone">
+        <nominal>0</nominal>
+        <lifetime>14400</lifetime>
+        <restock>0</restock>
+        <min>0</min>
+        <quantmin>-1</quantmin>
+        <quantmax>-1</quantmax>
+        <cost>100</cost>
+        <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="1" deloot="0"/>
+        <category name="tools"/>
+    </type>
+</types>

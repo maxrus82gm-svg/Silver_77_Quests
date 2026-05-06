@@ -1,0 +1,47 @@
+{
+	"CanDestroyPBDoor": 1,					//[ 0 ] To disable item destruction.  [ 1 ] to activate item destruction
+	"CanCutComboLock": 1,					//[ 0 ] To disable combination lock raid. [ 1 ] to activate combination lock raid
+	"CanCraftDoorKits": 1,					//[ 0 ] To disable kit creation. [ 1 ] to activate kit creation
+	"CanCraftBarricadesKits": 1,			//[ 0 ] To disable kit creation. [ 1 ] to activate kit creation
+	"CanCraftWellKits": 0,
+	"RaidToolsT1": [						// Tools for Tier 1 raid
+		"Sledgehammer",
+		"PickAxe",
+		"FirefighterAxe",
+		"WoodAxe",
+		"Hatchet"
+	],
+	"RaidToolsT2": [						// Tools for Tier 2 raid
+		"Sledgehammer",
+		"PickAxe",
+		"FirefighterAxe",
+		"WoodAxe"
+	],
+	"RaidToolsT3": [						// Tools for Tier 3 raid
+		"Sledgehammer",
+        "PickAxe"
+	],
+	"CarDestroyPartsTools": [
+		"Sledgehammer"						// Tools that can be used to destroy vehicle parts      
+	],
+	"PB_DestroyTime": 600,					//Standard destruction time in seconds [All time in Seconds]
+	"PB_DismantleTime": 25,					//Time to dismantle an item           
+	"PB_ToolDamage": 25,					//Tool damage after actions
+	"DialLockDestroyTime": 180,				//Dial Lock cut time
+	"T1DoorDestroyTime": 180,				//[Plank Door T1]
+	"T2DoorDestroyTime": 600,				//[Wood Door T2]
+	"T3DoorDestroyTime": 1200,				//[Metal Door T3]
+    "T1DoorToolDamage": 40,					//Self explained
+    "T2DoorToolDamage": 100,				//Self explained
+    "T3DoorToolDamage": 200,				//Self explained
+	"T1BarricadeAndWallDestroyTime": 180,	//[Plank Window T1],[PlanK barricade T1],[Plank Door Barricade T1]
+	"T2BarricadeAndWallDestroyTime": 600,	//[Metal Window T2],[Metal barricade T2],[Metal Door Barricade T2]
+	"T3BarricadeAndWallDestroyTime": 1200,	//[Brick barricade T3],[Brick Door Barricade T3]
+    "T1BarricadeAndWallToolDamage": 40,		//Self explained
+    "T2BarricadeAndWallToolDamage": 100,	//Self explained
+    "T3BarricadeAndWallToolDamage": 200,	//Self explained
+	"T1GateWallDestroyTime": 600,			//[Wood Gate T1], [Wood Wall T1] 
+	"T2GateWallDestroyTime": 1200,			//[Metal Gate T2], [Metal Wall T2]  
+    "T1GateWallToolDamage": 100,			//Self explained
+    "T2GateWallToolDamage": 200				//Self explained
+}

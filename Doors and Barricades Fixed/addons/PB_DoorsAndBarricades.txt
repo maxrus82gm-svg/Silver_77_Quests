@@ -1,0 +1,3 @@
+prefix=PB_DoorsAndBarricades\
+product=dayz ugc
+version=1
