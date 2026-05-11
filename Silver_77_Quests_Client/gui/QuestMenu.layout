@@ -167,7 +167,7 @@ FrameWidgetClass QuestMenuRoot {
          clipchildren 0
          ignorepointer 0
          position 0 0
-         size 414 1
+         size 394 600
          halign left_ref
          valign top_ref
          hexactpos 1
@@ -179,7 +179,7 @@ FrameWidgetClass QuestMenuRoot {
          font "gui/fonts/metron16"
          "exact text" 1
          "size to text h" 0
-         "size to text v" 1
+         "size to text v" 0
          "text halign" left
          "text valign" top
          wrap 1
@@ -285,7 +285,7 @@ FrameWidgetClass QuestMenuRoot {
          clipchildren 0
          ignorepointer 0
          position 0 0
-         size 414 1
+         size 394 300
          halign left_ref
          valign top_ref
          hexactpos 1
@@ -297,7 +297,7 @@ FrameWidgetClass QuestMenuRoot {
          font "gui/fonts/metron16"
          "exact text" 1
          "size to text h" 0
-         "size to text v" 1
+         "size to text v" 0
          "text halign" left
          "text valign" top
          wrap 1
