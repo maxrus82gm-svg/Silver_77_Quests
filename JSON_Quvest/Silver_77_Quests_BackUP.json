@@ -122,13 +122,7 @@
           ]
         }
       ],
-      "giveItems": [
-        {
-          "className": "HuntingKnife",
-          "quantity": 1,
-          "spawnOnGround": 0
-        }
-      ],
+      "giveItems": [],
       "objectives": [
         {
           "type": "item",
@@ -215,7 +209,7 @@
       "name": "Поставка медицины",
       "description": "Рыбаку нужны медицинские припасы: подготовь 6 бинтов и принеси их обратно. После сдачи квест закроется у того же NPC.",
       "repeatable": 1,
-      "cooldownSeconds": 80000,
+      "cooldownSeconds": 250000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
@@ -236,11 +230,16 @@
         {
           "triggerId": "fisherman_trigger",
           "actionType": "reward",
-          "dialogText": "Вот это я понимаю,вот это я понимаю... Спасибо за исполнение просьбы. Держи 100 патронов, потратился наверно на зараженных.",
+          "dialogText": "Вот это я понимаю, вот это я понимаю!!!... Спасибо за исполнение просьбы. Держи патроны, потратился наверно на зараженных.",
           "rewards": [
             {
               "className": "Ammo_12gaPellets",
-              "quantity": 7,
+              "quantity": 5,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "Whetstone",
+              "quantity": 1,
               "spawnOnGround": 0
             }
           ]
@@ -259,7 +258,7 @@
           "className": "BandageDressing",
           "quantity": 6,
           "removeOnComplete": 1,
-          "useItemQuantity": 1,
+          "useItemQuantity": 0,
           "allowPartialTurnIn": 1
         }
       ],
@@ -345,6 +344,68 @@
           "spawnOnGround": 0
         }
       ]
+    },
+    {
+      "id": "fishman_CHO_01",
+      "name": "Газики всегда в цене.",
+      "description": "Здорова, меня Пуля кличут.",
+      "repeatable": 1,
+      "cooldownSeconds": 350000,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "fishman_CHO"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "fishman_CHO"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "fishman_CHO",
+          "actionType": "offer",
+          "dialogText": "Мне для похода в Светлоярск надо 6 противогазов и 3 бинта. Я понимаю что это не просто найти все, но как есть. Смотри там в баре есть верстак, там бинты можно сделать. Главное тряпки, дезинфекция.",
+          "rewards": []
+        },
+        {
+          "triggerId": "fishman_CHO",
+          "actionType": "reward",
+          "dialogText": "Ну ты даешь! Все таки собрал!) Выручил ты нас, теперь команда обеспечена для вылазки с защитными средствами. Травиться никому не придется, а то время поджимает, думал не соберем.",
+          "rewards": [
+            {
+              "className": "MoneyRuble5",
+              "quantity": 20,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "LeatherSewingKit",
+              "quantity": 1,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "GP5GasMask",
+          "quantity": 6,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        },
+        {
+          "type": "item",
+          "className": "BandageDressing",
+          "quantity": 3,
+          "removeOnComplete": 1,
+          "useItemQuantity": 1,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": []
     }
   ],
   "triggers": [
@@ -362,7 +423,7 @@
         "quest_hunter_1",
         "quest_hunter_2"
       ],
-      "hintText": "[F] Коля Ворон",
+      "hintText": "[F] Коля (Ворон)",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Mirek",
       "npcPosition": [
@@ -465,6 +526,45 @@
       "npcHandsItem": "VEPR12u",
       "npcBackItems": [
         "FS_Eco_Orange_Bag"
+      ]
+    },
+    {
+      "id": "fishman_CHO",
+      "position": [
+        13470.688477,
+        64.777725,
+        12148.264648
+      ],
+      "radius": 1.5,
+      "focusHeight": 1.2,
+      "focusRadius": 1,
+      "questIds": [
+        "fishman_CHO_01"
+      ],
+      "hintText": "Серега (Пуля)",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Seth",
+      "npcPosition": [
+        13470.688477,
+        64.777725,
+        12148.264648
+      ],
+      "npcOrientation": [
+        250,
+        0,
+        0
+      ],
+      "npcLoadout": [
+        "weldinggoggles_mung",
+        "FS_ForestOldCap_ColorBase",
+        "FS_Forest_Jacket",
+        "FS_RusVKPO_pants",
+        "WorkingGloves_Beige",
+        "CombatBoots_Grey"
+      ],
+      "npcHandsItem": "CZ527",
+      "npcBackItems": [
+        "Crossbow"
       ]
     }
   ]
