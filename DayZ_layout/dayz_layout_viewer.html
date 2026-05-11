@@ -602,6 +602,10 @@
             return node.type === 'TextListboxWidgetClass';
         }
 
+        function isScrollNode(node) {
+            return node.type === 'ScrollWidgetClass';
+        }
+
         function getNodeDepth(node) {
             let depth = 0;
             let current = node;
@@ -1165,6 +1169,63 @@
             div.appendChild(previewLayer);
         }
 
+        function appendScrollPreview(div, node, renderScale) {
+            const hasVerticalScrollbar = getNodeProp(node, 'Scrollbar V', '0') === '1';
+            const hasHorizontalScrollbar = getNodeProp(node, 'Scrollbar H', '0') === '1';
+
+            if (!hasVerticalScrollbar && !hasHorizontalScrollbar) {
+                return;
+            }
+
+            if (hasVerticalScrollbar) {
+                const scrollbarTrack = document.createElement('div');
+                scrollbarTrack.style.position = 'absolute';
+                scrollbarTrack.style.top = '0';
+                scrollbarTrack.style.right = '0';
+                scrollbarTrack.style.width = Math.max(8, 10 * renderScale) + 'px';
+                scrollbarTrack.style.height = '100%';
+                scrollbarTrack.style.background = 'rgba(255, 255, 255, 0.08)';
+                scrollbarTrack.style.borderLeft = '1px solid rgba(255, 255, 255, 0.18)';
+                scrollbarTrack.style.pointerEvents = 'none';
+
+                const scrollbarThumb = document.createElement('div');
+                scrollbarThumb.style.position = 'absolute';
+                scrollbarThumb.style.left = '1px';
+                scrollbarThumb.style.top = Math.max(6, 8 * renderScale) + 'px';
+                scrollbarThumb.style.width = Math.max(5, 7 * renderScale) + 'px';
+                scrollbarThumb.style.height = Math.max(20, 36 * renderScale) + 'px';
+                scrollbarThumb.style.borderRadius = '999px';
+                scrollbarThumb.style.background = 'rgba(255, 255, 255, 0.38)';
+                scrollbarThumb.style.pointerEvents = 'none';
+                scrollbarTrack.appendChild(scrollbarThumb);
+                div.appendChild(scrollbarTrack);
+            }
+
+            if (hasHorizontalScrollbar) {
+                const scrollbarTrack = document.createElement('div');
+                scrollbarTrack.style.position = 'absolute';
+                scrollbarTrack.style.left = '0';
+                scrollbarTrack.style.bottom = '0';
+                scrollbarTrack.style.width = '100%';
+                scrollbarTrack.style.height = Math.max(8, 10 * renderScale) + 'px';
+                scrollbarTrack.style.background = 'rgba(255, 255, 255, 0.08)';
+                scrollbarTrack.style.borderTop = '1px solid rgba(255, 255, 255, 0.18)';
+                scrollbarTrack.style.pointerEvents = 'none';
+
+                const scrollbarThumb = document.createElement('div');
+                scrollbarThumb.style.position = 'absolute';
+                scrollbarThumb.style.left = Math.max(6, 8 * renderScale) + 'px';
+                scrollbarThumb.style.top = '1px';
+                scrollbarThumb.style.width = Math.max(20, 42 * renderScale) + 'px';
+                scrollbarThumb.style.height = Math.max(5, 7 * renderScale) + 'px';
+                scrollbarThumb.style.borderRadius = '999px';
+                scrollbarThumb.style.background = 'rgba(255, 255, 255, 0.38)';
+                scrollbarThumb.style.pointerEvents = 'none';
+                scrollbarTrack.appendChild(scrollbarThumb);
+                div.appendChild(scrollbarTrack);
+            }
+        }
+
         function renderLayout(layoutData, renderScale) {
             container.innerHTML = '';
             applyViewportToContainer(layoutData.viewportRect, renderScale);
@@ -1177,6 +1238,7 @@
 
                 const nodeIsText = isTextNode(node);
                 const nodeIsListbox = isListboxNode(node);
+                const nodeIsScroll = isScrollNode(node);
                 const div = document.createElement('div');
                 div.className = 'ui-element';
                 div.dataset.nodeId = String(node.id);
@@ -1196,6 +1258,9 @@
                 } else if (nodeIsListbox) {
                     div.style.backgroundColor = node.color ? colorToRgba(node.color, 0.9) : 'rgba(10, 10, 10, 0.9)';
                     div.style.border = '1px solid rgba(255, 255, 255, 0.18)';
+                } else if (nodeIsScroll) {
+                    div.style.backgroundColor = node.color ? colorToRgba(node.color, 0.5) : 'rgba(12, 12, 12, 0.24)';
+                    div.style.border = '1px dashed rgba(255, 255, 255, 0.28)';
                 } else if (node.color) {
                     div.style.backgroundColor = colorToRgba(node.color);
                     div.style.border = '1px solid rgba(0, 0, 0, 0.3)';
@@ -1233,6 +1298,10 @@
 
                 if (nodeIsListbox) {
                     appendListboxPreview(div, renderScale);
+                }
+
+                if (nodeIsScroll) {
+                    appendScrollPreview(div, node, renderScale);
                 }
 
                 const debugLabel = document.createElement('div');

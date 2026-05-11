@@ -4,16 +4,15 @@
 
 const int MENU_QUEST_UI = 77777;
 const int MENU_QUEST_JOURNAL_UI = 77778;
-const int QUEST_UI_DESCRIPTION_MAX_CHARS_PER_LINE = 72;
-const int QUEST_UI_DIALOG_MAX_CHARS_PER_LINE = 74;
-
 class QuestUIMenu extends UIScriptedMenu
 {
     private TextWidget m_Title;
     private TextListboxWidget m_QuestList;
     private TextListboxWidget m_TriggerRouteList;
-    private TextListboxWidget m_QuestDescription;
-    private TextListboxWidget m_DialogText;
+    private ScrollWidget m_DescriptionScroll;
+    private ScrollWidget m_DialogScroll;
+    private MultilineTextWidget m_QuestDescription;
+    private MultilineTextWidget m_DialogText;
     private ButtonWidget m_AcceptButton;
     private ButtonWidget m_CompleteButton;
     private ButtonWidget m_CloseButton;
@@ -54,14 +53,22 @@ class QuestUIMenu extends UIScriptedMenu
         m_Title = TextWidget.Cast(layoutRoot.FindAnyWidget("TitleText"));
         m_QuestList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("QuestListbox"));
         m_TriggerRouteList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TriggerRouteListbox"));
-        m_QuestDescription = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
-        m_DialogText = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
+        m_DescriptionScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("DescriptionScroll"));
+        m_DialogScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("DialogScroll"));
+        m_QuestDescription = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
+        m_DialogText = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
         m_AcceptButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AcceptButton"));
         m_CompleteButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CompleteButton"));
         m_CloseButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CloseButton"));
         m_AcceptButtonText = TextWidget.Cast(layoutRoot.FindAnyWidget("AcceptButtonText"));
         m_CompleteButtonText = TextWidget.Cast(layoutRoot.FindAnyWidget("CompleteButtonText"));
         m_CloseButtonText = TextWidget.Cast(layoutRoot.FindAnyWidget("CloseButtonText"));
+
+        if (m_QuestDescription)
+            m_QuestDescription.SetLineBreakingOverride(LinebreakOverrideMode.LINEBREAK_WESTERN);
+
+        if (m_DialogText)
+            m_DialogText.SetLineBreakingOverride(LinebreakOverrideMode.LINEBREAK_WESTERN);
         
         m_Player = PlayerBase.Cast(GetGame().GetPlayer());
         if (m_Player)
@@ -146,196 +153,32 @@ class QuestUIMenu extends UIScriptedMenu
         }
     }
 
-    float GetQuestUiCharWeight(string character)
+    void ResetScrollWidgetToTop(ScrollWidget scrollWidget)
     {
-        if (character == " " || character == "\t")
-            return 0.35;
-
-        if (character == "." || character == "," || character == ":" || character == ";" || character == "!" || character == "?" || character == "'" || character == "\"" || character == "`")
-            return 0.45;
-
-        if (character == "(" || character == ")" || character == "[" || character == "]" || character == "{" || character == "}" || character == "|" || character == "/")
-            return 0.55;
-
-        if (character == "-" || character == "_" || character == "+" || character == "=")
-            return 0.65;
-
-        if (character == "i" || character == "l" || character == "I" || character == "1")
-            return 0.55;
-
-        if (character == "m" || character == "w" || character == "M" || character == "W" || character == "@")
-            return 1.2;
-
-        return 1.0;
-    }
-
-    float GetQuestUiTextWeight(string text)
-    {
-        float totalWeight = 0.0;
-        for (int characterIndex = 0; characterIndex < text.Length(); characterIndex++)
-        {
-            totalWeight += GetQuestUiCharWeight(text.Substring(characterIndex, 1));
-        }
-
-        return totalWeight;
-    }
-
-    ref array<string> SplitQuestUiWordByWeight(string word, int maxCharsPerLine)
-    {
-        ref array<string> chunks = new array<string>;
-        string currentChunk = "";
-
-        for (int characterIndex = 0; characterIndex < word.Length(); characterIndex++)
-        {
-            string character = word.Substring(characterIndex, 1);
-            string candidateChunk = currentChunk + character;
-            if (currentChunk != "" && GetQuestUiTextWeight(candidateChunk) > maxCharsPerLine)
-            {
-                chunks.Insert(currentChunk);
-                currentChunk = character;
-            }
-            else
-            {
-                currentChunk = candidateChunk;
-            }
-        }
-
-        if (currentChunk != "")
-            chunks.Insert(currentChunk);
-
-        if (chunks.Count() == 0)
-            chunks.Insert(word);
-
-        return chunks;
-    }
-
-    ref array<string> BuildWrappedTextLines(string text, int maxCharsPerLine)
-    {
-        ref array<string> wrappedLines = new array<string>;
-
-        if (text == "")
-        {
-            wrappedLines.Insert("");
-            return wrappedLines;
-        }
-
-        TStringArray sourceLines = new TStringArray;
-        text.Split("\n", sourceLines);
-
-        foreach (string sourceLine : sourceLines)
-        {
-            if (sourceLine == "")
-            {
-                wrappedLines.Insert("");
-                continue;
-            }
-
-            TStringArray words = new TStringArray;
-            sourceLine.Split(" ", words);
-
-            string currentLine = "";
-            bool hadWord = false;
-
-            foreach (string word : words)
-            {
-                if (word == "")
-                    continue;
-
-                hadWord = true;
-                if (currentLine == "")
-                {
-                    if (GetQuestUiTextWeight(word) <= maxCharsPerLine)
-                    {
-                        currentLine = word;
-                    }
-                    else
-                    {
-                        ref array<string> directChunks = SplitQuestUiWordByWeight(word, maxCharsPerLine);
-                        for (int directChunkIndex = 0; directChunkIndex < directChunks.Count(); directChunkIndex++)
-                        {
-                            string directChunk = directChunks.Get(directChunkIndex);
-                            if (directChunkIndex < directChunks.Count() - 1)
-                                wrappedLines.Insert(directChunk);
-                            else
-                                currentLine = directChunk;
-                        }
-                    }
-                    continue;
-                }
-
-                string candidateLine = currentLine + " " + word;
-                if (GetQuestUiTextWeight(candidateLine) <= maxCharsPerLine)
-                {
-                    currentLine = candidateLine;
-                }
-                else
-                {
-                    wrappedLines.Insert(currentLine);
-                    currentLine = "";
-
-                    if (GetQuestUiTextWeight(word) <= maxCharsPerLine)
-                    {
-                        currentLine = word;
-                    }
-                    else
-                    {
-                        ref array<string> wrappedChunks = SplitQuestUiWordByWeight(word, maxCharsPerLine);
-                        for (int wrappedChunkIndex = 0; wrappedChunkIndex < wrappedChunks.Count(); wrappedChunkIndex++)
-                        {
-                            string wrappedChunk = wrappedChunks.Get(wrappedChunkIndex);
-                            if (wrappedChunkIndex < wrappedChunks.Count() - 1)
-                                wrappedLines.Insert(wrappedChunk);
-                            else
-                                currentLine = wrappedChunk;
-                        }
-                    }
-                }
-            }
-
-            if (!hadWord)
-            {
-                wrappedLines.Insert("");
-                continue;
-            }
-
-            if (currentLine != "")
-                wrappedLines.Insert(currentLine);
-        }
-
-        if (wrappedLines.Count() == 0)
-            wrappedLines.Insert("");
-
-        return wrappedLines;
-    }
-
-    void FillScrollableTextList(TextListboxWidget listWidget, string text, int maxCharsPerLine, int rowColor)
-    {
-        if (!listWidget)
+        if (!scrollWidget)
             return;
 
-        listWidget.ClearItems();
-
-        ref array<string> wrappedLines = BuildWrappedTextLines(text, maxCharsPerLine);
-        foreach (string wrappedLine : wrappedLines)
-        {
-            string displayLine = wrappedLine;
-            if (displayLine == "")
-                displayLine = " ";
-
-            int row = listWidget.AddItem(displayLine, null, 0);
-            listWidget.SetItemColor(row, 0, rowColor);
-        }
+        scrollWidget.VScrollToPos01(0);
     }
 
     void SetDescriptionText(string text)
     {
-        // Description keeps source line boundaries so quest items/objectives stay separated.
-        FillScrollableTextList(m_QuestDescription, text, QUEST_UI_DESCRIPTION_MAX_CHARS_PER_LINE, 0xFFF0EADB);
+        if (!m_QuestDescription)
+            return;
+
+        m_QuestDescription.SetText(text);
+        m_QuestDescription.Update();
+        ResetScrollWidgetToTop(m_DescriptionScroll);
     }
 
     void SetDialogText(string text)
     {
-        FillScrollableTextList(m_DialogText, text, QUEST_UI_DIALOG_MAX_CHARS_PER_LINE, 0xFFFFD54F);
+        if (!m_DialogText)
+            return;
+
+        m_DialogText.SetText(text);
+        m_DialogText.Update();
+        ResetScrollWidgetToTop(m_DialogScroll);
     }
 
     string SanitizeQuestUiLabel(string text)

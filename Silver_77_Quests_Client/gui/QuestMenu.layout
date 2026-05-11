@@ -149,8 +149,8 @@ FrameWidgetClass QuestMenuRoot {
        "text halign" left
        "text valign" center
       }
-      TextListboxWidgetClass DescriptionText {
-       clipchildren 0
+      ScrollWidgetClass DescriptionScroll {
+       clipchildren 1
        ignorepointer 0
        position 8 34
        size 414 156
@@ -160,12 +160,32 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       color 1 1 1 0.65
-       style Default
-       "title visible" 0
-       lines 1
-       "highlight row" 0
-       font "gui/fonts/metron16"
+       style blank
+       "Scrollbar V" 1
+       {
+        MultilineTextWidgetClass DescriptionText {
+         clipchildren 0
+         ignorepointer 0
+         position 0 0
+         size 414 1
+         halign left_ref
+         valign top_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         color 0.9412 0.9176 0.8588 1
+         style None
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 1
+         "text halign" left
+         "text valign" top
+         wrap 1
+         "condense whitespace" 1
+        }
+       }
       }
      }
     }
@@ -247,8 +267,8 @@ FrameWidgetClass QuestMenuRoot {
        "text halign" left
        "text valign" center
       }
-      TextListboxWidgetClass DialogText {
-       clipchildren 0
+      ScrollWidgetClass DialogScroll {
+       clipchildren 1
        ignorepointer 0
        position 8 34
        size 414 74
@@ -258,12 +278,32 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       color 1 1 1 0.65
-       style Default
-       "title visible" 0
-       lines 1
-       "highlight row" 0
-       font "gui/fonts/metron16"
+       style blank
+       "Scrollbar V" 1
+       {
+        MultilineTextWidgetClass DialogText {
+         clipchildren 0
+         ignorepointer 0
+         position 0 0
+         size 414 1
+         halign left_ref
+         valign top_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         color 1 0.8353 0.3098 1
+         style None
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 1
+         "text halign" left
+         "text valign" top
+         wrap 1
+         "condense whitespace" 1
+        }
+       }
       }
      }
     }
