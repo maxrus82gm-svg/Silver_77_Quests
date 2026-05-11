@@ -1446,14 +1446,14 @@
                 });
 
                 results.push({
-                    status: descriptionContent && descriptionText && descriptionText.type === 'RichTextWidgetClass' ? 'ok' : 'warn',
-                    label: 'Description rich text stack',
+                    status: descriptionContent && descriptionText && descriptionContent.type === 'FrameWidgetClass' && descriptionText.type === 'MultilineTextWidgetClass' ? 'ok' : 'warn',
+                    label: 'Description multiline stack',
                     message: descriptionContent && descriptionText ? `${descriptionContent.type} -> ${descriptionText.type}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: dialogContent && dialogText && dialogText.type === 'RichTextWidgetClass' ? 'ok' : 'warn',
-                    label: 'Dialog rich text stack',
+                    status: dialogContent && dialogText && dialogContent.type === 'FrameWidgetClass' && dialogText.type === 'MultilineTextWidgetClass' ? 'ok' : 'warn',
+                    label: 'Dialog multiline stack',
                     message: dialogContent && dialogText ? `${dialogContent.type} -> ${dialogText.type}` : 'Widget not found'
                 });
 

@@ -150,44 +150,65 @@ FrameWidgetClass QuestMenuRoot {
        "text valign" center
       }
       ScrollWidgetClass DescriptionScroll {
-       clipchildren 1
-       ignorepointer 0
-       position 8 34
-       size 414 156
+        clipchildren 1
+        ignorepointer 0
+        position 8 34
+        size 414 156
        halign left_ref
        valign top_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
-       vexactsize 1
-       style blank
-       "Scrollbar V" 1
-       {
-        MultilineTextWidgetClass DescriptionText {
-         clipchildren 0
-         ignorepointer 0
-         position 0 0
-         size 394 600
-         halign left_ref
-         valign top_ref
-         hexactpos 1
-         vexactpos 1
-         hexactsize 1
-         vexactsize 1
-         color 0.9412 0.9176 0.8588 1
-         style None
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" left
-         "text valign" top
-         wrap 1
-         "condense whitespace" 1
-        }
+        vexactsize 1
+        style blank
+        "Scrollbar V" 1
+        {
+         FrameWidgetClass DescriptionContent {
+           clipchildren 1
+           ignorepointer 0
+           position 0 0
+           size 394 0
+           halign left_ref
+           valign top_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 1
+           vexactsize 1
+           color 1 1 1 0
+           style None
+           scriptclass "SizeToChild"
+           m_ChildName "DescriptionText"
+           m_HorizontalOffset 0
+           m_VerticalOffset 0
+           m_ResizeHorizontal 0
+           m_ResizeVertical 1
+           {
+           MultilineTextWidgetClass DescriptionText {
+             clipchildren 0
+             ignorepointer 0
+             position 0 0
+             size 394 600
+             halign left_ref
+             valign top_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 1
+             vexactsize 1
+             color 0.9412 0.9176 0.8588 1
+             style None
+             font "gui/fonts/metron16"
+             "exact text" 1
+             "size to text h" 0
+             "size to text v" 0
+             "text halign" left
+             "text valign" top
+             wrap 1
+             "condense whitespace" 1
+            }
+          }
+         }
        }
       }
-     }
     }
     PanelWidgetClass RoutePanel {
      ignorepointer 0
@@ -268,44 +289,65 @@ FrameWidgetClass QuestMenuRoot {
        "text valign" center
       }
       ScrollWidgetClass DialogScroll {
-       clipchildren 1
-       ignorepointer 0
-       position 8 34
-       size 414 74
+        clipchildren 1
+        ignorepointer 0
+        position 8 34
+        size 414 74
        halign left_ref
        valign top_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
-       vexactsize 1
-       style blank
-       "Scrollbar V" 1
-       {
-        MultilineTextWidgetClass DialogText {
-         clipchildren 0
-         ignorepointer 0
-         position 0 0
-         size 394 300
-         halign left_ref
-         valign top_ref
-         hexactpos 1
-         vexactpos 1
-         hexactsize 1
-         vexactsize 1
-         color 1 0.8353 0.3098 1
-         style None
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" left
-         "text valign" top
-         wrap 1
-         "condense whitespace" 1
-        }
+        vexactsize 1
+        style blank
+        "Scrollbar V" 1
+        {
+         FrameWidgetClass DialogContent {
+           clipchildren 1
+           ignorepointer 0
+           position 0 0
+           size 394 0
+           halign left_ref
+           valign top_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 1
+           vexactsize 1
+           color 1 1 1 0
+           style None
+           scriptclass "SizeToChild"
+           m_ChildName "DialogText"
+           m_HorizontalOffset 0
+           m_VerticalOffset 0
+           m_ResizeHorizontal 0
+           m_ResizeVertical 1
+           {
+           MultilineTextWidgetClass DialogText {
+             clipchildren 0
+             ignorepointer 0
+             position 0 0
+             size 394 300
+             halign left_ref
+             valign top_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 1
+             vexactsize 1
+             color 1 0.8353 0.3098 1
+             style None
+             font "gui/fonts/metron16"
+             "exact text" 1
+             "size to text h" 0
+             "size to text v" 0
+             "text halign" left
+             "text valign" top
+             wrap 1
+             "condense whitespace" 1
+            }
+          }
+         }
        }
       }
-     }
     }
     ButtonWidgetClass AcceptButton {
      ignorepointer 0
