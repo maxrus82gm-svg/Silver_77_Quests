@@ -4,7 +4,6 @@
 
 const int MENU_QUEST_UI = 77777;
 const int MENU_QUEST_JOURNAL_UI = 77778;
-const float QUEST_UI_SCROLL_WHEEL_STEP = 18.0;
 class QuestUIMenu extends UIScriptedMenu
 {
     private TextWidget m_Title;
@@ -160,42 +159,6 @@ class QuestUIMenu extends UIScriptedMenu
             return;
 
         scrollWidget.VScrollToPos01(0);
-    }
-
-    bool IsWidgetInside(Widget w, Widget parentWidget)
-    {
-        Widget current = w;
-
-        while (current)
-        {
-            if (current == parentWidget)
-                return true;
-
-            current = current.GetParent();
-        }
-
-        return false;
-    }
-
-    bool HandleScrollWidgetWheel(Widget w, int wheel, ScrollWidget scrollWidget)
-    {
-        if (!w || !scrollWidget)
-            return false;
-
-        if (!IsWidgetInside(w, scrollWidget))
-            return false;
-
-        float nextPos = scrollWidget.GetVScrollPos();
-
-        if (wheel < 0)
-            nextPos += QUEST_UI_SCROLL_WHEEL_STEP;
-        else if (wheel > 0)
-            nextPos -= QUEST_UI_SCROLL_WHEEL_STEP;
-        else
-            return false;
-
-        scrollWidget.VScrollToPos(nextPos);
-        return true;
     }
 
     void SetDescriptionText(string text)
@@ -594,12 +557,6 @@ class QuestUIMenu extends UIScriptedMenu
 
     override bool OnMouseWheel(Widget w, int x, int y, int wheel)
     {
-        if (HandleScrollWidgetWheel(w, wheel, m_DescriptionScroll))
-            return true;
-
-        if (HandleScrollWidgetWheel(w, wheel, m_DialogScroll))
-            return true;
-
         return super.OnMouseWheel(w, x, y, wheel);
     }
     
