@@ -631,52 +631,36 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 096 REVIEW
+TASK 098 REVIEW
 
 Статус:
 Принято условно.
 
 Что принято:
-- Старый direct ScrollWidget -> MultilineTextWidget для Description/Dialog убран.
-- Description/Dialog переведены на:
-  - ScrollWidget
-  - GridSpacerWidgetClass
-  - RichTextWidgetClass
-- Фиксированные 394x600 / 394x300 больше не используются как основная модель.
-- Добавлен runtime sync высоты через RichTextWidget.GetContentHeight().
-- Scroll API не вызывается на RichTextWidget.
-- Reset scroll остался только на ScrollWidget.
-- QuestListbox не изменён.
-- TriggerRouteListbox не изменён.
-- JSON не менялся.
-- Server не менялся.
-- QuestJournal не менялся.
-- @Trader не трогался.
-- DayZ_layout viewer обновлён под RichTextWidgetClass, по нашему правилу.
+- Description/Dialog остались на MultilineTextWidget.
+- RichTextWidget не используется.
+- MultilineEditBoxWidget не используется.
+- TextListboxWidget для Description/Dialog не возвращён.
+- QuestUI.c не трогался.
+- Scroll API остаётся только на ScrollWidget.
+- Базовые панели и кнопки по отчёту не сдвигались.
+- Внутри DescriptionScroll добавлен DescriptionContent.
+- Внутри DialogScroll добавлен DialogContent.
+- Viewer обновлён под текущий тестовый stack.
 
-Что обязательно проверить в игре:
-1. Компилируется ли `RichTextWidget` в Mission module.
-2. Компилируется ли `RichTextWidget.GetContentHeight()`.
-3. Компилируется ли `contentWidget.SetSize(contentWidth, richContentHeight)`.
-4. Открывается ли QuestMenu без runtime error.
-5. Видны ли Description и Dialog.
-6. Есть ли native wrap.
-7. Не разъезжается ли геометрия панелей.
-8. Не вылезает ли текст за пределы scroll-областей.
-9. Работает ли scroll wheel.
-10. Работает ли drag scrollbar.
-11. Не прыгает ли scroll наверх при чтении.
-12. Кнопки и RoutePanel работают.
-13. Кириллица отображается нормально.
-
-Риски:
-- `RichTextWidget` может оказаться чувствительным к plain text с `\n`. Если переносы строк не будут отображаться как ожидается, нужно будет смотреть, требует ли RichTextWidget markup/форматирование.
-- `GetContentHeight()` может вернуть корректную высоту только после `Update()`, что агент учёл, но runtime всё равно надо проверить.
-- `GridSpacerWidgetClass` с `Rows 1` и `"Size To Content V" 1` может вести себя не так, как ожидаем, если RichTextWidget сам не отдаст высоту.
-- Scroll reset всё ещё вызывается при каждом `SetDescriptionText/SetDialogText`; если UpdateQuestDetails вызывается часто, scroll может прыгать наверх. Это уже отдельный маленький polish, если проявится.
-
-Вывод:
-TASK 096 выполнен правильно по направлению. Это уже не очередной костыль вокруг MultilineTextWidget, а нормальный тест нового vanilla-style стека. Теперь нужно собрать клиент и проверить runtime.
+Что теперь надо проверить в игре:
+1. Компилируется ли layout с `scriptclass "SizeToChild"`.
+2. QuestMenu открывается без runtime error.
+3. Окна остались на местах.
+4. Description текст виден.
+5. Dialog текст виден.
+6. Scrollbar работает.
+7. Wrap сохранился.
+8. Текст больше не выходит за границы DescriptionScroll.
+9. Текст больше не выходит за границы DialogScroll.
+10. Кнопки работают.
+11. RoutePanel работает.
+12. QuestListbox работает.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
