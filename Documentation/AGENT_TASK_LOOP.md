@@ -56,86 +56,71 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 098 — QuestMenu: тест clipping через ContentParent SizeToChild для ScrollWidget + MultilineTextWidget
+TASK 099 — Hotfix: откатить ContentParent SizeToChild и вернуть рабочий baseline QuestMenu
 
 Статус:
-Узкая практическая UI-задача после аналитики TASK 097.
+Срочный UI hotfix после runtime-проверки TASK 098.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-Текущая рабочая база QuestMenu:
+Текущий рабочий baseline QuestMenu:
 
 5ccb7c4d24de2ac0691136e64ad29e2789708874
-
-Это состояние считается рабочим baseline.
 
 В этом baseline:
 
 1. QuestMenu визуально целый.
-2. DescriptionPanel находится на правильном месте.
-3. DialogPanel находится на правильном месте.
-4. RoutePanel находится на правильном месте.
-5. QuestListbox находится на правильном месте.
-6. Кнопки находятся на правильном месте.
-7. Description/Dialog текст виден.
-8. Native wrap работает.
-9. Scrollbar работает.
-10. QuestListbox и TriggerRouteListbox работают как раньше.
+2. Окна находятся на правильных местах.
+3. Description/Dialog текст виден.
+4. Native wrap работает.
+5. Scrollbar работает.
+6. QuestListbox / RoutePanel / кнопки находятся на местах.
+7. Главная оставшаяся проблема baseline: текст при прокрутке выходит за границы scroll-окна.
 
-Текущая проблема одна:
+После TASK 098 был сделан тест:
 
-При прокрутке текст `DescriptionText` / `DialogText` выходит за границы своего scroll-окна и визуально накладывается на другие области.
-
-Текущий рабочий стек:
-
-Description:
-ScrollWidgetClass DescriptionScroll
-  MultilineTextWidgetClass DescriptionText
-
-Dialog:
-ScrollWidgetClass DialogScroll
-  MultilineTextWidgetClass DialogText
-
-Аналитика TASK 097 показала, что самый безопасный следующий тест — не менять общую геометрию QuestMenu, а добавить промежуточный vanilla-like content parent между ScrollWidget и MultilineTextWidget:
-
-ScrollWidgetClass
+ScrollWidget
   FrameWidgetClass ContentParent
-    MultilineTextWidgetClass
+    MultilineTextWidget
 
-Reference-направление:
-vanilla pattern с промежуточным content parent, например `FrameWidgetClass ContentParent` с `scriptclass "SizeToChild"`.
+Runtime-проверка показала, что этот тест НЕ подходит:
+
+- геометрия снова разъехалась;
+- Dialog уехал вниз и оказался рядом с кнопками;
+- кнопки начали визуально пересекаться с Dialog;
+- Description/Dialog больше не ведут себя как стабильные области;
+- scrollbar визуально остаётся в одной области, а content ощущается как будто живёт в другом coordinate space.
+
+Вывод:
+
+`ContentParent + SizeToChild` в текущем QuestMenu ломает компоновку и должен быть откатан.
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 098
+ЦЕЛЬ TASK 099
 --------------------------------------------------------------------------------
 
-Проверить, решает ли промежуточный `ContentParent` проблему clipping/viewport для текущей рабочей схемы:
+Вернуть QuestMenu к рабочему baseline-состоянию:
 
 ScrollWidgetClass
   MultilineTextWidgetClass
 
-Нужно тестово заменить direct-child схему на:
+То есть откатить изменения TASK 098:
 
-Description:
-ScrollWidgetClass DescriptionScroll
-  FrameWidgetClass DescriptionContent
-    MultilineTextWidgetClass DescriptionText
-
-Dialog:
-ScrollWidgetClass DialogScroll
-  FrameWidgetClass DialogContent
-    MultilineTextWidgetClass DialogText
+- убрать `DescriptionContent`;
+- убрать `DialogContent`;
+- убрать `scriptclass "SizeToChild"`;
+- вернуть `DescriptionText` прямым ребёнком `DescriptionScroll`;
+- вернуть `DialogText` прямым ребёнком `DialogScroll`;
+- не делать новых экспериментов;
+- не чинить clipping в этой задаче.
 
 Главная цель:
 
-- сохранить текущую рабочую геометрию QuestMenu;
-- сохранить MultilineTextWidget;
-- сохранить native wrap;
-- сохранить ScrollWidget;
-- проверить, начнёт ли scroll viewport корректно ограничивать видимость текста;
-- не менять расположение окон.
+- восстановить рабочую геометрию QuestMenu;
+- вернуть состояние, где всё на местах;
+- оставить известную проблему clipping для отдельной будущей аналитики/задачи.
 
 --------------------------------------------------------------------------------
 ЖЁСТКИЕ РАМКИ
@@ -143,37 +128,34 @@ ScrollWidgetClass DialogScroll
 
 Агент обязан:
 
-- делать только то, что прямо указано в этой задаче;
-- не чинить “заодно” соседние проблемы;
-- не менять архитектуру квестов;
-- не менять JSON-контракт;
-- не трогать server;
-- не трогать Quest Editor;
-- не трогать QuestJournal;
-- не трогать @Trader;
-- не делать большой редизайн QuestMenu;
+- сделать только откат TASK 098;
+- не искать новое решение в этой задаче;
+- не делать новый wrapper;
+- не менять архитектуру;
 - не менять размеры основных панелей;
 - не менять позиции основных панелей;
+- не менять QuestListbox;
+- не менять TriggerRouteListbox;
+- не менять кнопки;
+- не трогать JSON;
+- не трогать server;
+- не трогать QuestJournal;
+- не трогать @Trader;
 - не делать git commit / push / reset / clean;
-- если `scriptclass "SizeToChild"` вызывает проблемы — не уходить в новую архитектуру, а описать в PROBLEMS.
+- не запускать Addon Builder;
+- не перепаковывать PBO.
 
 Запрещено:
 
+- оставлять `DescriptionContent`;
+- оставлять `DialogContent`;
+- оставлять `scriptclass "SizeToChild"` в QuestMenu.layout;
 - переходить на RichTextWidget;
 - переходить на MultilineEditBoxWidget;
 - переходить на HtmlWidget;
 - возвращать TextListboxWidget для Description/Dialog;
-- менять QuestListbox;
-- менять TriggerRouteListbox;
-- менять RoutePanel;
-- менять кнопки;
-- менять Offer / Completion / Reward logic;
-- менять JSON;
-- менять server;
-- менять QuestJournal;
-- менять @Trader;
-- перепаковывать PBO;
-- запускать Addon Builder.
+- делать новые clipping-эксперименты;
+- менять layout кроме отката TASK 098.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -188,31 +170,11 @@ ScrollWidgetClass DialogScroll
 5. P:\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
 6. P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
 
-Прочитать текущую рабочую базу:
+Прочитать текущие файлы:
 
 7. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 8. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
-
-Можно читать, но не менять:
-
-9. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
-10. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
-11. P:\Silver_77_Quests\DayZ_layout\
-12. P:\Silver_77_Quests\@Trader\
-
-Можно читать vanilla/reference на диске D:
-
-13. D:\Dayz\gui\layouts\
-14. D:\Dayz\scripts\5_mission\gui\
-15. D:\Dayz\scripts\
-
-Особенно свериться с reference из TASK 097:
-
-- `D:\Dayz\gui\layouts\inventory_new\wide\left_area.layout`
-- `D:\Dayz\scripts\5_mission\gui\inventorynew\areas\leftarea.c`
-- любые места, где есть `FrameWidgetClass ContentParent`
-- любые места, где используется `scriptclass "SizeToChild"`
-- любые места, где `ScrollWidget` содержит промежуточный content parent
+9. P:\Silver_77_Quests\DayZ_layout\dayz_layout_viewer.html
 
 --------------------------------------------------------------------------------
 РАЗРЕШЁННЫЕ ФАЙЛЫ ДЛЯ ПРАВОК
@@ -222,57 +184,18 @@ ScrollWidgetClass DialogScroll
 
 1. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 
-2. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+2. P:\Silver_77_Quests\DayZ_layout\dayz_layout_viewer.html
 
-3. P:\Silver_77_Quests\DayZ_layout\*
+QuestUI.c менять нельзя, если там нет следов TASK 098.
 
-DayZ_layout менять только если текущий viewer явно устарел относительно рабочей базы и мешает проверить структуру.
+Если QuestUI.c уже не менялся в TASK 098 и по-прежнему использует:
 
-Если viewer менять:
-- только минимально;
-- вернуть sanity-check к текущей рабочей схеме `ScrollWidget + MultilineTextWidget`;
-- добавить проверку `DescriptionContent/DialogContent`, если они появятся;
-- не переписывать viewer полностью;
-- не делать redesign viewer.
+- MultilineTextWidget;
+- SetText;
+- Update;
+- ResetScrollWidgetToTop на ScrollWidget;
 
---------------------------------------------------------------------------------
-ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
---------------------------------------------------------------------------------
-
-Запрещено менять:
-
-- P:\Silver_77_Quests\@Trader\
-- P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
-- P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
-- P:\Silver_77_Quests\Silver_77_Quests_Server\
-- P:\Silver_77_Quests\JSON_Quvest\
-- P:\Silver_77_Quests\Documentation\
-- P:\Silver_77_Quests\Documentation\SplitDoc\
-- P:\Silver_77_Quests\Support\
-- P:\Silver_77_Quests\Doors and Barricades Fixed\
-- любые quest JSON;
-- любые server profile файлы;
-- любые PBO.
-
-Запрещено делать:
-
-- git commit;
-- git push;
-- git reset;
-- git clean;
-- git checkout;
-- перенос файлов;
-- удаление файлов;
-- переименование файлов;
-- перепаковку PBO;
-- запуск Addon Builder;
-- изменение JSON-контракта;
-- изменение RPC/sync;
-- изменение логики Offer / Completion / Reward;
-- переход на RichTextWidget;
-- переход на MultilineEditBoxWidget;
-- переход на HtmlWidget;
-- возврат к TextListboxWidget для Description/Dialog.
+то QuestUI.c оставить без изменений.
 
 --------------------------------------------------------------------------------
 БАЗОВАЯ ГЕОМЕТРИЯ, КОТОРУЮ НЕЛЬЗЯ ЛОМАТЬ
@@ -288,6 +211,12 @@ DescriptionScroll:
 - position 8 34
 - size 414 156
 
+DescriptionText:
+- position 0 0
+- size 394 600
+- wrap 1
+- "size to text v" 0
+
 DialogPanel:
 - position 300 286
 - size 430 122
@@ -295,6 +224,12 @@ DialogPanel:
 DialogScroll:
 - position 8 34
 - size 414 74
+
+DialogText:
+- position 0 0
+- size 394 300
+- wrap 1
+- "size to text v" 0
 
 RoutePanel:
 - position 740 74
@@ -320,124 +255,114 @@ CloseButton:
 ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-1. Изменить Description stack в QuestMenu.layout
+1. Откатить Description stack
 
-Было:
-
-ScrollWidgetClass DescriptionScroll
-  MultilineTextWidgetClass DescriptionText
-
-Нужно тестово сделать:
+Сейчас после TASK 098 может быть:
 
 ScrollWidgetClass DescriptionScroll
   FrameWidgetClass DescriptionContent
     MultilineTextWidgetClass DescriptionText
 
-Требования:
+Нужно вернуть:
 
-- `DescriptionScroll` остаётся `ScrollWidgetClass`.
-- `DescriptionScroll position` не менять.
-- `DescriptionScroll size` не менять.
-- `DescriptionText` остаётся `MultilineTextWidgetClass`.
-- `DescriptionText` имя не менять.
-- `DescriptionText` должен остаться шириной примерно 394.
-- `DescriptionText` должен сохранить:
-  - wrap 1
-  - "size to text v" 0
-  - font "gui/fonts/metron16"
-  - текущий цвет
-  - text halign left
-  - text valign top
-- `DescriptionText size 394 600` можно оставить как в baseline для первого теста.
-- Между `DescriptionScroll` и `DescriptionText` добавить `FrameWidgetClass DescriptionContent`.
-- Для `DescriptionContent` проверить vanilla-like настройки:
-  - position 0 0
-  - size примерно 394 600
-  - clipchildren 1 или 0 — выбрать по reference и объяснить в отчёте
-  - scriptclass "SizeToChild", если это подтверждено reference и синтаксис безопасен
-- Не менять расположение `DescriptionPanel`.
+ScrollWidgetClass DescriptionScroll
+  MultilineTextWidgetClass DescriptionText
 
-2. Изменить Dialog stack в QuestMenu.layout
+Удалить:
 
-Было:
+- FrameWidgetClass DescriptionContent
+- scriptclass "SizeToChild"
+- m_ChildName "DescriptionText"
+- m_ResizeHorizontal
+- m_ResizeVertical
+- offsets SizeToChild
 
-ScrollWidgetClass DialogScroll
-  MultilineTextWidgetClass DialogText
+`DescriptionText` должен снова лежать напрямую внутри `DescriptionScroll`.
 
-Нужно тестово сделать:
+2. Откатить Dialog stack
+
+Сейчас после TASK 098 может быть:
 
 ScrollWidgetClass DialogScroll
   FrameWidgetClass DialogContent
     MultilineTextWidgetClass DialogText
 
-Требования:
+Нужно вернуть:
 
-- `DialogScroll` остаётся `ScrollWidgetClass`.
-- `DialogScroll position` не менять.
-- `DialogScroll size` не менять.
-- `DialogText` остаётся `MultilineTextWidgetClass`.
-- `DialogText` имя не менять.
-- `DialogText` должен остаться шириной примерно 394.
-- `DialogText` должен сохранить:
-  - wrap 1
-  - "size to text v" 0
-  - font "gui/fonts/metron16"
-  - текущий цвет
-  - text halign left
-  - text valign top
-- `DialogText size 394 300` можно оставить как в baseline для первого теста.
-- Между `DialogScroll` и `DialogText` добавить `FrameWidgetClass DialogContent`.
-- Для `DialogContent` проверить vanilla-like настройки:
-  - position 0 0
-  - size примерно 394 300
-  - clipchildren 1 или 0 — выбрать по reference и объяснить в отчёте
-  - scriptclass "SizeToChild", если это подтверждено reference и синтаксис безопасен
-- Не менять расположение `DialogPanel`.
+ScrollWidgetClass DialogScroll
+  MultilineTextWidgetClass DialogText
 
-3. QuestUI.c
+Удалить:
 
-Проверить, нужно ли добавить ссылки:
+- FrameWidgetClass DialogContent
+- scriptclass "SizeToChild"
+- m_ChildName "DialogText"
+- m_ResizeHorizontal
+- m_ResizeVertical
+- offsets SizeToChild
 
-- Widget m_DescriptionContent
-- Widget m_DialogContent
+`DialogText` должен снова лежать напрямую внутри `DialogScroll`.
 
-Если для `SizeToChild` и статичного child-size это не нужно:
-- не добавлять лишний код.
+3. Сохранить MultilineTextWidget baseline
 
-Если нужно обновлять content parent после SetText:
-- добавить минимально;
-- не менять общую логику;
-- не вызывать scroll API на MultilineTextWidget;
-- reset scroll оставить только через ScrollWidget.
+DescriptionText должен остаться:
 
-Сохранить:
+- MultilineTextWidgetClass
+- size 394 600
+- wrap 1
+- "size to text v" 0
+- font "gui/fonts/metron16"
+- текущий цвет
+- text halign left
+- text valign top
+
+DialogText должен остаться:
+
+- MultilineTextWidgetClass
+- size 394 300
+- wrap 1
+- "size to text v" 0
+- font "gui/fonts/metron16"
+- текущий цвет
+- text halign left
+- text valign top
+
+4. QuestUI.c
+
+Не менять, если там нет следов TASK 098.
+
+Проверить, что там по-прежнему:
 
 - private MultilineTextWidget m_QuestDescription;
 - private MultilineTextWidget m_DialogText;
-- касты `MultilineTextWidget.Cast(...)`;
-- SetLineBreakingOverride для Description/Dialog, если он сейчас есть;
-- SetText;
-- Update;
-- ResetScrollWidgetToTop(m_DescriptionScroll);
-- ResetScrollWidgetToTop(m_DialogScroll).
+- MultilineTextWidget.Cast(...);
+- SetDescriptionText(...) делает SetText + Update + ResetScrollWidgetToTop(m_DescriptionScroll);
+- SetDialogText(...) делает SetText + Update + ResetScrollWidgetToTop(m_DialogScroll);
+- scroll API не вызывается на MultilineTextWidget.
 
-4. DayZ_layout viewer
+5. DayZ_layout viewer
 
-Проверить viewer по правилу SplitDoc.
+Viewer после TASK 098 мог быть настроен на ожидание:
 
-Сейчас viewer мог остаться частично под старый RichText experiment.
+FrameWidgetClass -> MultilineTextWidgetClass
 
-Если viewer sanity-check ожидает `RichTextWidgetClass` или `DescriptionContent/DialogContent` от старого эксперимента неправильно:
-- минимально обновить sanity-check под текущую задачу;
-- viewer должен понимать:
-  - DescriptionScroll
-  - DialogScroll
-  - DescriptionContent, если добавлен
-  - DialogContent, если добавлен
-  - MultilineTextWidgetClass DescriptionText/DialogText
+Нужно минимально вернуть viewer sanity-check к baseline:
 
-Важно:
-viewer не обязан идеально симулировать runtime clipping, но должен не вводить в заблуждение по структуре.
+Description:
+DescriptionScroll -> DescriptionText
+
+Dialog:
+DialogScroll -> DialogText
+
+Viewer должен проверять:
+
+- DescriptionScroll существует;
+- DialogScroll существует;
+- DescriptionText существует и является MultilineTextWidgetClass;
+- DialogText существует и является MultilineTextWidgetClass.
+
+Не нужно делать большой redesign viewer.
+Не нужно пытаться симулировать runtime clipping.
 
 --------------------------------------------------------------------------------
 ПРОВЕРКИ
@@ -446,36 +371,36 @@ viewer не обязан идеально симулировать runtime clipp
 После правок проверить:
 
 1. QuestMenu.layout синтаксически целый.
-2. QuestUI.c синтаксически целый.
-3. DescriptionPanel position/size не изменились.
-4. DialogPanel position/size не изменились.
-5. RoutePanel position/size не изменились.
-6. QuestListbox position/size не изменились.
-7. AcceptButton/CompleteButton/CloseButton position/size не изменились.
-8. DescriptionScroll остался ScrollWidgetClass.
-9. DialogScroll остался ScrollWidgetClass.
-10. DescriptionText остался MultilineTextWidgetClass.
-11. DialogText остался MultilineTextWidgetClass.
-12. DescriptionContent добавлен как FrameWidgetClass, если выбран этот вариант.
-13. DialogContent добавлен как FrameWidgetClass, если выбран этот вариант.
-14. RichTextWidget не используется.
-15. MultilineEditBoxWidget не используется.
-16. HtmlWidget не используется.
-17. TextListboxWidget для Description/Dialog не возвращён.
-18. QuestListbox не изменён.
-19. TriggerRouteListbox не изменён.
+2. DescriptionContent удалён.
+3. DialogContent удалён.
+4. scriptclass "SizeToChild" удалён из QuestMenu.layout.
+5. DescriptionText снова прямой ребёнок DescriptionScroll.
+6. DialogText снова прямой ребёнок DialogScroll.
+7. DescriptionText остался MultilineTextWidgetClass.
+8. DialogText остался MultilineTextWidgetClass.
+9. DescriptionPanel position/size не изменились.
+10. DialogPanel position/size не изменились.
+11. RoutePanel position/size не изменились.
+12. QuestListbox position/size не изменились.
+13. TriggerRouteListbox position/size не изменились.
+14. AcceptButton/CompleteButton/CloseButton position/size не изменились.
+15. RichTextWidget не используется.
+16. MultilineEditBoxWidget не используется.
+17. HtmlWidget не используется.
+18. TextListboxWidget для Description/Dialog не возвращён.
+19. QuestUI.c не менялся или остался совместимым.
 20. JSON не менялся.
 21. Server не менялся.
 22. QuestJournal не менялся.
 23. @Trader не менялся.
-24. DayZ_layout viewer проверен.
+24. DayZ_layout viewer проверен и минимально приведён к baseline sanity.
 25. Кириллица не повреждена.
 
 --------------------------------------------------------------------------------
 КОДИРОВКА
 --------------------------------------------------------------------------------
 
-Задача затрагивает .layout, возможно .c и возможно viewer html.
+Задача затрагивает .layout и возможно viewer html.
 
 Нужно соблюдать ENCODING_RULES.md:
 
@@ -492,23 +417,15 @@ viewer не обязан идеально симулировать runtime clipp
 
 Задача считается выполненной, если:
 
-1. Текущая рабочая геометрия QuestMenu сохранена.
-2. Description/Dialog получили промежуточный content parent или агент честно объяснил, почему не стал его добавлять.
-3. MultilineTextWidget сохранён.
-4. ScrollWidget сохранён.
-5. RichTextWidget не используется.
-6. MultilineEditBoxWidget не используется.
-7. TextListboxWidget для Description/Dialog не возвращён.
-8. QuestListbox и TriggerRouteListbox не изменены.
-9. Quest logic не изменена.
-10. JSON не изменён.
-11. Server не изменён.
-12. QuestJournal не изменён.
-13. DayZ_layout viewer проверен и при необходимости минимально обновлён.
-14. Агент вернул отчёт в чат.
-
-Если `ContentParent + SizeToChild` не компилируется или ломает layout:
-- задача всё равно может считаться выполненной как тест, если агент не ушёл в новую архитектуру, а честно описал проблему в PROBLEMS и предложил следующий безопасный вариант.
+1. QuestMenu возвращён к рабочей baseline-структуре.
+2. Description/Dialog снова имеют прямой стек:
+   - ScrollWidget -> MultilineTextWidget
+3. ContentParent / SizeToChild удалены.
+4. Геометрия основных панелей не менялась.
+5. QuestUI.c не сломан.
+6. Viewer sanity-check больше не ждёт TASK 098 stack.
+7. Агент вернул отчёт в чат.
+8. В PROBLEMS зафиксировано, что clipping остаётся отдельной нерешённой проблемой.
 
 --------------------------------------------------------------------------------
 ОЖИДАЕМЫЙ ОТЧЁТ
@@ -517,56 +434,56 @@ viewer не обязан идеально симулировать runtime clipp
 AGENT REPORT
 
 DONE:
-- что изменено в QuestMenu.layout;
-- что изменено в QuestUI.c;
-- добавлен ли DescriptionContent/DialogContent;
-- использован ли `scriptclass "SizeToChild"`;
-- менялся ли DayZ_layout viewer.
+- что откатили;
+- удалён ли DescriptionContent;
+- удалён ли DialogContent;
+- удалён ли SizeToChild;
+- вернулся ли direct stack ScrollWidget -> MultilineTextWidget;
+- менялся ли viewer;
+- трогался ли QuestUI.c.
 
 CHANGED FILES:
-- Silver_77_Quests_Client\gui\QuestMenu.layout
-- Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c, если менялся
-- DayZ_layout\..., если менялся
+- QuestMenu.layout
+- dayz_layout_viewer.html, если менялся
+- QuestUI.c, только если реально менялся
 
 DIFF:
 - кратко описать изменения layout;
-- кратко описать изменения script;
 - кратко описать изменения viewer, если были.
 
 BASELINE GEOMETRY CHECK:
 - подтвердить, что позиции и размеры DescriptionPanel/DialogPanel/RoutePanel/QuestListbox/buttons не изменились.
 
 COMPILE-SAFETY CHECK:
-- нет cast mismatch;
 - DescriptionText/DialogText остались MultilineTextWidget;
-- scroll API только на ScrollWidget;
-- QuestListbox/TriggerRouteListbox сохранены.
+- QuestUI.c cast mismatch отсутствует;
+- scroll API только на ScrollWidget.
 
 DAYZ_LAYOUT CHECK:
-- показывает ли viewer текущий stack;
-- обновлялся ли viewer;
-- какие ограничения viewer остаются.
+- viewer больше не ожидает RichText stack;
+- viewer больше не ожидает TASK 098 ContentParent stack;
+- viewer проверяет baseline stack.
 
 RUNTIME EXPECTATION:
-- что должно измениться в игре;
-- что нужно проверить руками.
+- QuestMenu должен вернуться к рабочей геометрии baseline;
+- Description/Dialog должны быть видимы;
+- wrap и scrollbar должны работать;
+- clipping-проблема может остаться.
 
 ENCODING CHECK:
 - указать, что кириллица не повреждена;
 - указать, что массовая перекодировка не выполнялась.
 
 PROBLEMS:
-- что не удалось проверить без запуска игры;
-- если ContentParent/SizeToChild не подходит — почему.
+- clipping остаётся нерешённым;
+- ContentParent + SizeToChild признан неудачным тестом для текущего QuestMenu.
 
 RECOMMENDED NEXT TASK:
-- если clipping исправится — runtime polish;
-- если clipping не исправится — отдельная задача на следующий вариант;
-- если layout сломается — откат к baseline `5ccb7c4d24de2ac0691136e64ad29e2789708874`.
+- аналитика без правок: почему ScrollWidget viewport не клипит MultilineTextWidget и есть ли runtime/widget flags для clipping;
+- либо отдельный тест другого widget-типа только после разрешения.
 
 CONCLUSION:
-- краткий вывод: тест ContentParent выполнен или почему остановлен.
-
+- краткий вывод.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
