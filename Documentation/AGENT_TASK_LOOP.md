@@ -56,10 +56,10 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 084 — Hotfix compile error после TASK 082: убрать неподдерживаемый scroll API из Quest UI
+TASK 085 — QuestMenu readability: рабочий непрозрачный фон и DayZ-compatible способ длинного текста
 
 Статус:
-Новая активная срочная задача для агента.
+Новая активная UI-задача после ручной проверки в игре.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -79,49 +79,58 @@ TASK 084 — Hotfix compile error после TASK 082: убрать неподд
 - не чинить “заодно” соседние проблемы;
 - не расширять задачу самостоятельно;
 - менять только явно разрешённые файлы;
-- не трогать JSON, server, editor, layout и documentation;
-- если найден другой способ scroll или другая UI-проблема — записать в PROBLEMS / RECOMMENDED NEXT TASK, но не исправлять в этой задаче.
+- не трогать JSON, server, editor, RPC/sync и quest logic;
+- не возвращать неподдерживаемый MultilineTextWidget scroll API:
+  - VScrollToPos01
+  - VScrollStep
+  - IsScrollbarVisible;
+- если найден лучший, но более крупный способ scroll — описать его в RECOMMENDED NEXT TASK, а не переписывать весь UI самовольно.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-После TASK 082 были собраны моды, обновлены на сервере и выполнен запуск.
+После TASK 084 сервер/клиент снова запускаются нормально.
 
-При старте сервер/клиент получил compile error:
+TASK 084 закрыла compile error:
 
-Can't compile "Mission" script module!
-
-Silver_77_Quests/scripts/5_Mission/questjournalui.c(182):
 Undefined function 'MultilineTextWidget.VScrollToPos01'
 
-Актуальный commit / hash:
+Но ручная проверка QuestMenu в игре показала две проблемы:
 
-296532875c6ab908cc1f20c2bb4f2f7ab3eb1904
+1. Фон QuestMenu фактически не работает.
+   Окно квестов выглядит почти прозрачным.
+   Игровой мир и action prompt вида “Проверить пульс [УДЕРЖИВАЙТЕ]” просвечивают сквозь интерфейс и мешают читать.
 
-Ошибка связана с изменениями TASK 082, где была добавлена экспериментальная scroll-логика для MultilineTextWidget через методы:
+2. Scroll длинных текстов отсутствует.
+   DescriptionPanel и DialogPanel обрезают текст.
+   После TASK 084 экспериментальный scroll был временно отключён, потому что использовал неподдерживаемый API MultilineTextWidget.
 
-- VScrollToPos01
-- VScrollStep
-- IsScrollbarVisible
+По текущему QuestMenu.layout уже есть:
+- BackgroundOverlay;
+- QuestPanel;
+- DescriptionPanel;
+- DialogPanel;
+- RoutePanel.
 
-В текущем DayZ runtime эти методы у MultilineTextWidget не доступны, поэтому Mission script module не компилируется.
-
-Важно:
-TASK 082 была принята условно, и в REVIEW уже был отмечен риск, что scroll через VScrollStep / VScrollToPos01 требует проверки в runtime.
+Но текущий способ через PanelWidgetClass color визуально не дал нужной непрозрачности в DayZ runtime.
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 084
+ЦЕЛЬ TASK 085
 --------------------------------------------------------------------------------
 
-Вернуть компиляцию Mission script module.
+Сделать QuestMenu читаемым в игре.
 
-Нужно убрать или безопасно отключить неподдерживаемый scroll API из Quest UI кода.
+Минимальная цель:
 
-Главная цель:
-мод должен снова компилироваться и запускаться.
-
-Это не задача на полноценную реализацию scroll.
+1. Реально непрозрачный / почти непрозрачный тёмный фон QuestMenu.
+2. Игровой мир и action prompt за меню не должны мешать чтению.
+3. Длинный текст DescriptionPanel должен иметь безопасный способ чтения.
+4. Длинный текст DialogPanel должен иметь безопасный способ чтения.
+5. Не использовать неподдерживаемый MultilineTextWidget API.
+6. Не ломать Offer / Completion / Reward.
+7. Не менять JSON-контракт.
+8. Не трогать серверную логику.
 
 --------------------------------------------------------------------------------
 МОЁ МНЕНИЕ / ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
@@ -129,66 +138,75 @@ TASK 082 была принята условно, и в REVIEW уже был от
 
 Предпочтительное решение:
 
-Сделать минимальный hotfix.
+Разделить задачу на две части внутри одного UI-hotfix:
 
-Не откатывать всю TASK 082.
-Не трогать overlay.
-Не трогать layout.
-Не трогать подпись “Список квестов”.
-Не трогать цвета, панели, размеры и mapping Description/Dialog.
+1. Фон / readability — обязательно сделать в этой задаче.
+2. Длинный текст — сделать безопасным DayZ-compatible способом.
 
-Нужно убрать только ту часть, которая ломает компиляцию:
+По фону:
 
-- VScrollToPos01
-- VScrollStep
-- IsScrollbarVisible
-- helper-функции, которые их вызывают;
-- OnMouseWheel-логику, если она зависит от этих helper-функций.
+Текущий PanelWidgetClass color оказался недостаточным или не рендерится как реальный фон в runtime.
 
-Лучший безопасный вариант:
+Нужно найти DayZ-compatible способ сделать настоящий затемняющий слой.
 
-1. В QuestJournalUI.c:
-   - сделать ResetScrollableText безопасной пустой функцией или удалить её вызовы;
-   - убрать вызовы VScrollToPos01;
-   - отключить HandleScrollableTextWheel, если он использует VScrollStep / IsScrollbarVisible;
-   - OnMouseWheel должен снова работать только для выбора квестов в списке, без scroll MultilineTextWidget.
+Предпочтительные варианты по порядку:
 
-2. В QuestUI.c:
-   - сделать ResetScrollableText безопасной пустой функцией или удалить её вызовы;
-   - убрать вызовы VScrollToPos01;
-   - отключить HandleScrollableTextWheel, если он использует VScrollStep / IsScrollbarVisible;
-   - OnMouseWheel не должен вызывать неподдерживаемый scroll API.
+A. Использовать ImageWidgetClass как тёмный фон/подложку, если DayZ layout стабильно рендерит ImageWidget с цветом/текстурой.
+B. Использовать FrameWidgetClass / ImageWidgetClass с реальной фоновой текстурой/заливкой.
+C. Если общий fullscreen overlay не работает, сделать отдельные непрозрачные backing-виджеты под:
+   - QuestPanel;
+   - DescriptionPanel;
+   - DialogPanel;
+   - RoutePanel;
+   - button area.
 
-3. Если после удаления этих вызовов длинные тексты снова обрезаются:
-   - это ожидаемый временный откат scroll-функции;
-   - записать это в PROBLEMS;
-   - предложить отдельную следующую задачу на DayZ-compatible scroll.
+Важно:
+фон должен быть проверяемым визуально. Если alpha/color у PanelWidget не работает — не продолжать усиливать тот же неработающий способ.
+
+По длинному тексту:
+
+Не возвращать:
+- VScrollToPos01;
+- VScrollStep;
+- IsScrollbarVisible.
+
+Предпочтительные варианты по порядку:
+
+A. Найти рабочий DayZ-compatible ScrollWidget / ScrollPanel pattern в существующих layout/script примерах и применить минимально.
+B. Если ScrollWidget требует неизвестного API или рискован — сделать безопасную page-систему:
+   - текст делится на страницы/куски;
+   - добавить кнопки “Описание ↑”, “Описание ↓” или “Страница + / -”;
+   - для DialogPanel аналогично;
+   - это менее красиво, но надёжнее, чем неподдерживаемый scroll API.
+
+Моё мнение:
+лучше сначала гарантированно сделать непрозрачный фон, а scroll решить самым безопасным способом. Если настоящий ScrollWidget не удастся подтвердить по примерам, использовать page/fallback-механику.
 
 --------------------------------------------------------------------------------
 SCOPE ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это срочный compile hotfix.
+Это UI-задача только для QuestMenu readability.
 
 Агент должен:
-- найти все использования неподдерживаемых методов:
-  - VScrollToPos01
-  - VScrollStep
-  - IsScrollbarVisible
-- убрать или безопасно отключить эти вызовы;
-- проверить оба UI-файла, потому что ошибка показалась в QuestJournalUI.c, но похожая логика есть и в QuestUI.c;
-- сохранить остальную UI-логику без изменений;
+- проверить, почему текущий фон не даёт нужной непрозрачности;
+- заменить или дополнить фон DayZ-compatible способом;
+- сделать QuestMenu визуально читаемым поверх игрового мира;
+- найти безопасный способ длинного текста для DescriptionPanel и DialogPanel;
+- не использовать неподдерживаемый MultilineTextWidget scroll API;
+- сохранить текущий mapping:
+  - DescriptionPanel = quest.description / цели / прогресс / награды;
+  - DialogPanel = triggerActions[].dialogText / NPC dialog;
 - вернуть отчёт в чат.
 
 Агент не должен:
-- реализовывать новый scroll;
-- менять layout;
 - менять JSON;
-- менять server-side код;
-- менять Quest Editor;
+- менять server;
 - менять RPC/sync;
-- менять Documentation;
-- чинить другие найденные проблемы;
+- менять Quest Editor;
+- менять quest logic;
+- менять Offer / Completion / Reward архитектуру;
+- трогать Doors and Barricades Fixed;
 - делать commit/push/reset/clean.
 
 --------------------------------------------------------------------------------
@@ -197,9 +215,17 @@ SCOPE ЗАДАЧИ
 
 Разрешено менять только:
 
-1. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+1. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 
 2. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+
+Дополнительно разрешено читать, но не менять:
+
+3. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+
+4. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+
+QuestJournal в этой задаче не править, если ошибка касается только QuestMenu.
 
 --------------------------------------------------------------------------------
 ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
@@ -207,7 +233,7 @@ SCOPE ЗАДАЧИ
 
 Запрещено менять:
 
-- D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+- D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
 - D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 - D:\GitHub\Silver_77_Quests\Silver_77_Quests_Server\
 - D:\GitHub\Silver_77_Quests\JSON_Quvest\
@@ -240,103 +266,139 @@ SCOPE ЗАДАЧИ
 ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-1. Проверить QuestJournalUI.c
+1. Проанализировать текущий QuestMenu.layout
 
-Найти все использования:
+Проверить:
+
+- QuestMenuRoot;
+- BackgroundOverlay;
+- QuestPanel;
+- DescriptionPanel;
+- DialogPanel;
+- RoutePanel;
+- кнопочные зоны.
+
+Нужно понять:
+- почему текущий BackgroundOverlay визуально не затемняет мир;
+- почему QuestPanel / panels выглядят прозрачными, несмотря на color alpha;
+- работает ли PanelWidgetClass color как реальная заливка в DayZ runtime;
+- нужен ли ImageWidgetClass / другой widget type для реального фона.
+
+2. Исправить фон QuestMenu
+
+Требование:
+
+- QuestMenu должен иметь реально тёмный читаемый фон;
+- игровой мир должен быть значительно затемнён или перекрыт;
+- action prompt за окном не должен мешать чтению;
+- не отключать сам action prompt через input/action систему;
+- решать только визуально.
+
+Допустимые варианты:
+
+- заменить BackgroundOverlay на DayZ-compatible ImageWidgetClass / FrameWidgetClass, если это стабильно работает;
+- добавить непрозрачные backing-виджеты под панели;
+- сделать QuestPanel и внутренние панели реально непрозрачными через widget type, который рендерит background;
+- если fullscreen overlay не работает, сделать хотя бы непрозрачную большую подложку под всей центральной областью QuestMenu.
+
+3. Сделать безопасный способ чтения длинного DescriptionText
+
+Запрещено использовать:
 
 - VScrollToPos01
 - VScrollStep
 - IsScrollbarVisible
-- HandleScrollableTextWheel
-- ResetScrollableText
-- OnMouseWheel
 
-Исправить так, чтобы файл больше не вызывал неподдерживаемые методы MultilineTextWidget.
+Вариант A:
+Если найден рабочий DayZ-compatible ScrollWidget / ScrollPanel pattern:
+- использовать его минимально;
+- не переписывать весь UI;
+- не менять mapping Description/Dialog.
 
-Допустимый безопасный вариант:
+Вариант B:
+Если ScrollWidget pattern не подтверждён:
+- реализовать page/fallback-механику для DescriptionPanel;
+- например:
+  - хранить полный description text в переменной;
+  - показывать только часть строк/символов;
+  - добавить кнопки или обработку Page Up / Page Down;
+  - вывести индикатор страницы, например “Описание 1/3”.
 
-- ResetScrollableText оставить как пустую no-op функцию;
-- HandleScrollableTextWheel удалить или сделать всегда return false;
-- OnMouseWheel оставить для переключения квестов в списке, если эта логика уже была рабочей;
-- не использовать VScrollToPos01 / VScrollStep / IsScrollbarVisible.
+Важно:
+fallback должен быть простым и компилируемым.
 
-Пример безопасной no-op функции:
+4. Сделать безопасный способ чтения длинного DialogText
 
-void ResetScrollableText(MultilineTextWidget widget)
-{
-    // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
-}
+Аналогично DescriptionText.
 
-Пример безопасного отключения scroll helper:
-
-bool HandleScrollableTextWheel(Widget w, MultilineTextWidget textWidget, int wheel)
-{
-    return false;
-}
-
-2. Проверить QuestUI.c
-
-Найти все использования:
+Запрещено использовать:
 
 - VScrollToPos01
 - VScrollStep
 - IsScrollbarVisible
-- HandleScrollableTextWheel
-- ResetScrollableText
-- OnMouseWheel
 
-Исправить так, чтобы файл больше не вызывал неподдерживаемые методы MultilineTextWidget.
+Вариант A:
+Если найден рабочий ScrollWidget / ScrollPanel pattern:
+- применить минимально.
 
-Допустимый безопасный вариант:
+Вариант B:
+Если нет:
+- реализовать page/fallback-механику для DialogPanel;
+- например “Диалог 1/2”.
 
-void ResetScrollableText(MultilineTextWidget widget)
-{
-    // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
-}
+5. Не ломать текущие кнопки
 
-Для варианта helper-а с panelWidget:
+Сохранить:
 
-bool HandleScrollableTextWheel(Widget w, Widget panelWidget, MultilineTextWidget textWidget, int wheel)
-{
-    return false;
-}
+- AcceptButton;
+- CompleteButton;
+- CloseButton;
+- текущие тексты кнопок;
+- текущую логику OnClick;
+- текущую логику RefreshQuestList;
+- текущую логику UpdateQuestDetails;
+- текущую логику BuildQuestDialogText.
 
-3. Не трогать layout
+6. Не менять mapping Description / Dialog
 
-Не менять:
+Сохранить:
 
-- QuestMenu.layout
-- QuestJournal.layout
+DescriptionPanel / DescriptionText:
+- quest.description;
+- status;
+- requirements;
+- objectives;
+- deposited progress;
+- rewards.
 
-Overlay и визуальные изменения TASK 082 оставить как есть.
+DialogPanel / DialogText:
+- triggerActions[].dialogText;
+- current NPC dialog;
+- selected route dialog.
 
-4. Не реализовывать новый scroll
+Нельзя возвращать старый режим, где NPC dialogText подмешивался в DescriptionPanel.
 
-Если агент знает другой DayZ-compatible способ scroll:
-- не внедрять его сейчас;
-- описать в RECOMMENDED NEXT TASK.
+7. Проверить отсутствие unsupported API
 
-5. Проверить синтаксис
+После правок обязательно проверить:
 
-После правок проверить, что в разрешённых файлах:
-- нет вызовов VScrollToPos01;
-- нет вызовов VScrollStep;
-- нет вызовов IsScrollbarVisible;
-- нет очевидных синтаксических ошибок;
-- нет незакрытых скобок;
-- нет ссылок на удалённые функции.
+- нет VScrollToPos01;
+- нет VScrollStep;
+- нет IsScrollbarVisible.
+
+Ни в QuestUI.c, ни в QuestMenu.layout не должно быть решений, которые снова вызовут прошлую compile error.
 
 --------------------------------------------------------------------------------
 КОДИРОВКА
 --------------------------------------------------------------------------------
 
-Задача затрагивает .c файлы с русским текстом.
+Задача затрагивает .layout и .c файлы с кириллицей.
 
 Нужно соблюдать ENCODING_RULES.md:
 
 - не делать массовую перекодировку;
 - не ломать кириллицу;
-- не менять текстовые строки без необходимости;
+- не менять русские строки без необходимости;
 - не сохранять файл в неправильной кодировке;
 - если файл был UTF-8 без BOM — сохранить UTF-8 без BOM;
 - в отчёте указать ENCODING CHECK.
@@ -345,30 +407,30 @@ Overlay и визуальные изменения TASK 082 оставить к�
 ЖЁСТКИЕ РАМКИ ДЛЯ ЭТОЙ ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это только hotfix compile error.
+Это только QuestMenu readability task.
 
-Разрешено исправить только ошибку неподдерживаемого scroll API.
+Разрешено исправить только:
+
+- рабочий тёмный фон QuestMenu;
+- безопасное чтение длинного DescriptionText;
+- безопасное чтение длинного DialogText.
 
 Нельзя:
-- переделывать UI;
-- улучшать scroll;
-- менять layout;
-- менять размеры панелей;
-- менять фон;
-- менять список квестов;
-- менять кнопки;
-- менять квестовую логику;
-- менять server sync;
+- переделывать весь UI;
+- менять QuestJournal;
 - менять JSON;
-- менять документацию;
-- чинить другие ошибки, если они не связаны напрямую с текущим compile error.
+- менять server;
+- менять Quest Editor;
+- менять RPC/sync;
+- менять progress logic;
+- менять Offer / Completion / Reward;
+- менять структуру квестового контракта;
+- возвращать unsupported scroll API;
+- чинить другие ошибки, если они не связаны напрямую с QuestMenu readability.
 
-Если после исправления появится новая compile error в этих же двух разрешённых файлах и она напрямую связана с удалением scroll helper-ов:
-- можно исправить её в рамках этих же двух файлов.
-
-Если новая ошибка находится в другом файле:
-- не исправлять;
-- записать в PROBLEMS;
+Если полноценный ScrollWidget окажется рискованным:
+- не форсировать его;
+- сделать безопасный fallback или описать ограничение;
 - предложить следующую задачу.
 
 --------------------------------------------------------------------------------
@@ -377,28 +439,29 @@ Overlay и визуальные изменения TASK 082 оставить к�
 
 После правок проверить:
 
-1. В QuestJournalUI.c больше нет:
+1. В QuestUI.c нет:
    - VScrollToPos01
    - VScrollStep
    - IsScrollbarVisible
 
-2. В QuestUI.c больше нет:
-   - VScrollToPos01
-   - VScrollStep
-   - IsScrollbarVisible
+2. QuestMenu.layout синтаксически целый.
 
-3. OnMouseWheel не вызывает неподдерживаемый MultilineTextWidget scroll API.
+3. QuestUI.c синтаксически целый.
 
-4. ResetScrollableText не вызывает неподдерживаемый API.
+4. QuestMenu имеет реальный тёмный фон / backing.
 
-5. HandleScrollableTextWheel не вызывает неподдерживаемый API или удалён безопасно.
+5. DescriptionText имеет безопасный способ чтения длинного текста.
 
-6. Код синтаксически целый.
+6. DialogText имеет безопасный способ чтения длинного текста.
 
-7. Кириллица не повреждена.
+7. Кнопки не переименованы и не сломаны.
 
-8. CHANGED FILES содержит только:
-   - QuestJournalUI.c
+8. Mapping Description/Dialog не изменён.
+
+9. Кириллица не повреждена.
+
+10. CHANGED FILES содержит только:
+   - QuestMenu.layout
    - QuestUI.c
 
 --------------------------------------------------------------------------------
@@ -407,17 +470,20 @@ Overlay и визуальные изменения TASK 082 оставить к�
 
 Задача считается выполненной, если:
 
-1. Compile error по MultilineTextWidget.VScrollToPos01 устранён.
-2. В коде больше нет вызовов VScrollToPos01.
-3. В коде больше нет вызовов VScrollStep.
-4. В коде больше нет вызовов IsScrollbarVisible.
-5. Изменены только два разрешённых файла.
-6. Layout не менялся.
+1. QuestMenu получил реально рабочий тёмный фон / подложку.
+2. Игровой мир и action prompt визуально не мешают чтению.
+3. Длинный DescriptionText можно прочитать безопасным способом.
+4. Длинный DialogText можно прочитать безопасным способом.
+5. Неподдерживаемый MultilineTextWidget API не используется.
+6. Изменены только разрешённые файлы.
 7. JSON не менялся.
 8. Server не менялся.
-9. Documentation не менялась.
-10. Агент вернул отчёт в чат.
-11. В отчёте явно указано, что scroll временно отключён / отложен в отдельную задачу.
+9. Quest Editor не менялся.
+10. Documentation не менялась.
+11. Агент вернул отчёт в чат.
+12. В отчёте указан выбранный способ:
+   - ScrollWidget / ScrollPanel;
+   - или page/fallback.
 
 --------------------------------------------------------------------------------
 ОЖИДАЕМЫЙ ОТЧЁТ
@@ -426,40 +492,39 @@ Overlay и визуальные изменения TASK 082 оставить к�
 AGENT REPORT
 
 DONE:
-- что исправлено;
-- какие unsupported API вызовы удалены/отключены;
-- что QuestJournalUI.c проверен;
-- что QuestUI.c проверен.
+- что исправлено по фону;
+- какой widget/type использован для реального фона;
+- что сделано для DescriptionText;
+- что сделано для DialogText;
+- подтверждение, что unsupported API не возвращался.
 
 CHANGED FILES:
-- Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+- Silver_77_Quests_Client\gui\QuestMenu.layout
 - Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
 
 DIFF:
-- кратко описать, что изменено;
-- например:
-  - ResetScrollableText стал no-op;
-  - HandleScrollableTextWheel отключён / удалён;
-  - OnMouseWheel больше не вызывает MultilineTextWidget scroll API.
+- кратко описать изменения layout;
+- кратко описать изменения QuestUI.c;
+- указать, выбран ScrollWidget/ScrollPanel или fallback/page approach.
 
 ENCODING CHECK:
 - указать, что кириллица не повреждена;
 - указать, что массовая перекодировка не выполнялась.
 
 PROBLEMS:
-- длинные тексты снова могут обрезаться, потому что экспериментальный scroll отключён;
-- полноценный scroll требует отдельной DayZ-compatible задачи.
+- что не удалось проверить без запуска игры;
+- если ScrollWidget не применён — почему;
+- какие ограничения остались.
 
 QUESTIONS:
 - только реальные вопросы, если есть.
 
 RECOMMENDED NEXT TASK:
-- TASK 085 — найти DayZ-compatible способ scroll для QuestMenu / QuestJournal без неподдерживаемых методов MultilineTextWidget.
+- если нужно, предложить отдельную задачу на QuestJournal;
+- если нужно, предложить отдельную задачу на полноценный scrollbar.
 
 CONCLUSION:
-- compile hotfix выполнен;
-- неподдерживаемый scroll API убран;
-- мод должен пройти дальше этапа Mission script compile.
+- краткий вывод: QuestMenu должен стать читаемым, фон должен перекрывать мир, длинные тексты должны иметь безопасный способ чтения.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ

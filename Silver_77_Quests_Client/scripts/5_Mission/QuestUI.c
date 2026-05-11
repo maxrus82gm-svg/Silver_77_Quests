@@ -14,6 +14,12 @@ class QuestUIMenu extends UIScriptedMenu
     private MultilineTextWidget m_DialogText;
     private Widget m_DescriptionPanel;
     private Widget m_DialogPanel;
+    private TextWidget m_DescriptionPageInfo;
+    private TextWidget m_DialogPageInfo;
+    private ButtonWidget m_DescriptionPrevButton;
+    private ButtonWidget m_DescriptionNextButton;
+    private ButtonWidget m_DialogPrevButton;
+    private ButtonWidget m_DialogNextButton;
     private ButtonWidget m_AcceptButton;
     private ButtonWidget m_CompleteButton;
     private ButtonWidget m_CloseButton;
@@ -29,6 +35,10 @@ class QuestUIMenu extends UIScriptedMenu
     private int m_LastDataRevision;
     private bool m_WaitingForServer;
     private float m_ServerWaitTimer;
+    private ref array<string> m_DescriptionPages;
+    private ref array<string> m_DialogPages;
+    private int m_DescriptionPageIndex;
+    private int m_DialogPageIndex;
     
     void QuestUIMenu()
     {
@@ -40,6 +50,10 @@ class QuestUIMenu extends UIScriptedMenu
         m_LastDataRevision = -1;
         m_WaitingForServer = false;
         m_ServerWaitTimer = 0;
+        m_DescriptionPages = new array<string>;
+        m_DialogPages = new array<string>;
+        m_DescriptionPageIndex = 0;
+        m_DialogPageIndex = 0;
     }
     
     override Widget Init()
@@ -58,6 +72,12 @@ class QuestUIMenu extends UIScriptedMenu
         m_DialogText = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
         m_DescriptionPanel = layoutRoot.FindAnyWidget("DescriptionPanel");
         m_DialogPanel = layoutRoot.FindAnyWidget("DialogPanel");
+        m_DescriptionPageInfo = TextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionPageInfo"));
+        m_DialogPageInfo = TextWidget.Cast(layoutRoot.FindAnyWidget("DialogPageInfo"));
+        m_DescriptionPrevButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DescriptionPrevButton"));
+        m_DescriptionNextButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DescriptionNextButton"));
+        m_DialogPrevButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DialogPrevButton"));
+        m_DialogNextButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DialogNextButton"));
         m_AcceptButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AcceptButton"));
         m_CompleteButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CompleteButton"));
         m_CloseButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CloseButton"));
@@ -84,7 +104,8 @@ class QuestUIMenu extends UIScriptedMenu
         else
         {
             if (m_QuestDescription)
-                m_QuestDescription.SetText("Загрузка данных квестов...");
+                SetDescriptionPagedText("Загрузка данных квестов...");
+            SetDialogPagedText("");
         }
         
         return layoutRoot;
@@ -97,7 +118,8 @@ class QuestUIMenu extends UIScriptedMenu
         if (!m_Player || !QuestClientManager.HasSyncedPlayerData(m_Player))
         {
             if (m_QuestDescription)
-                m_QuestDescription.SetText("Загрузка данных квестов...");
+                SetDescriptionPagedText("Загрузка данных квестов...");
+            SetDialogPagedText("");
             return;
         }
         
@@ -155,6 +177,192 @@ class QuestUIMenu extends UIScriptedMenu
     {
         // Scroll helper disabled: current DayZ runtime does not expose MultilineTextWidget scroll API here.
         return false;
+    }
+
+    ref array<string> BuildPagedText(string text, int maxCharsPerLine, int maxLinesPerPage)
+    {
+        ref array<string> pages = new array<string>;
+        ref array<string> wrappedLines = new array<string>;
+
+        if (text == "")
+        {
+            pages.Insert("");
+            return pages;
+        }
+
+        TStringArray sourceLines = new TStringArray;
+        text.Split("\n", sourceLines);
+
+        foreach (string sourceLine : sourceLines)
+        {
+            if (sourceLine == "")
+            {
+                wrappedLines.Insert("");
+                continue;
+            }
+
+            TStringArray words = new TStringArray;
+            sourceLine.Split(" ", words);
+
+            string currentLine = "";
+            bool hadWord = false;
+
+            foreach (string word : words)
+            {
+                if (word == "")
+                    continue;
+
+                hadWord = true;
+                if (currentLine == "")
+                {
+                    currentLine = word;
+                    continue;
+                }
+
+                string candidateLine = currentLine + " " + word;
+                if (candidateLine.Length() <= maxCharsPerLine)
+                {
+                    currentLine = candidateLine;
+                }
+                else
+                {
+                    wrappedLines.Insert(currentLine);
+                    currentLine = word;
+                }
+            }
+
+            if (!hadWord)
+            {
+                wrappedLines.Insert("");
+                continue;
+            }
+
+            if (currentLine != "")
+                wrappedLines.Insert(currentLine);
+        }
+
+        string currentPage = "";
+        int currentLineCount = 0;
+        foreach (string wrappedLine : wrappedLines)
+        {
+            if (currentLineCount > 0)
+                currentPage += "\n";
+
+            currentPage += wrappedLine;
+            currentLineCount++;
+
+            if (currentLineCount >= maxLinesPerPage)
+            {
+                pages.Insert(currentPage);
+                currentPage = "";
+                currentLineCount = 0;
+            }
+        }
+
+        if (currentPage != "" || pages.Count() == 0)
+            pages.Insert(currentPage);
+
+        return pages;
+    }
+
+    void UpdatePagedTextControls(TextWidget pageInfoWidget, ButtonWidget prevButton, ButtonWidget nextButton, int currentPageIndex, int totalPages)
+    {
+        if (pageInfoWidget)
+            pageInfoWidget.SetText((currentPageIndex + 1).ToString() + "/" + totalPages.ToString());
+
+        if (prevButton)
+            prevButton.Enable(totalPages > 1 && currentPageIndex > 0);
+
+        if (nextButton)
+            nextButton.Enable(totalPages > 1 && currentPageIndex < totalPages - 1);
+    }
+
+    void ApplyDescriptionPage()
+    {
+        int totalPages = m_DescriptionPages.Count();
+        if (totalPages <= 0)
+        {
+            if (m_QuestDescription)
+                m_QuestDescription.SetText("");
+            UpdatePagedTextControls(m_DescriptionPageInfo, m_DescriptionPrevButton, m_DescriptionNextButton, 0, 1);
+            return;
+        }
+
+        if (m_DescriptionPageIndex < 0)
+            m_DescriptionPageIndex = 0;
+        if (m_DescriptionPageIndex >= totalPages)
+            m_DescriptionPageIndex = totalPages - 1;
+
+        if (m_QuestDescription)
+            m_QuestDescription.SetText(m_DescriptionPages.Get(m_DescriptionPageIndex));
+
+        UpdatePagedTextControls(m_DescriptionPageInfo, m_DescriptionPrevButton, m_DescriptionNextButton, m_DescriptionPageIndex, totalPages);
+    }
+
+    void ApplyDialogPage()
+    {
+        int totalPages = m_DialogPages.Count();
+        if (totalPages <= 0)
+        {
+            if (m_DialogText)
+                m_DialogText.SetText("");
+            UpdatePagedTextControls(m_DialogPageInfo, m_DialogPrevButton, m_DialogNextButton, 0, 1);
+            return;
+        }
+
+        if (m_DialogPageIndex < 0)
+            m_DialogPageIndex = 0;
+        if (m_DialogPageIndex >= totalPages)
+            m_DialogPageIndex = totalPages - 1;
+
+        if (m_DialogText)
+            m_DialogText.SetText(m_DialogPages.Get(m_DialogPageIndex));
+
+        UpdatePagedTextControls(m_DialogPageInfo, m_DialogPrevButton, m_DialogNextButton, m_DialogPageIndex, totalPages);
+    }
+
+    void SetDescriptionPagedText(string text)
+    {
+        m_DescriptionPages.Clear();
+        m_DescriptionPages = BuildPagedText(text, 46, 9);
+        m_DescriptionPageIndex = 0;
+        ApplyDescriptionPage();
+    }
+
+    void SetDialogPagedText(string text)
+    {
+        m_DialogPages.Clear();
+        m_DialogPages = BuildPagedText(text, 46, 4);
+        m_DialogPageIndex = 0;
+        ApplyDialogPage();
+    }
+
+    bool ChangeDescriptionPage(int delta)
+    {
+        if (!m_DescriptionPages || m_DescriptionPages.Count() <= 1)
+            return false;
+
+        int newPageIndex = m_DescriptionPageIndex + delta;
+        if (newPageIndex < 0 || newPageIndex >= m_DescriptionPages.Count())
+            return false;
+
+        m_DescriptionPageIndex = newPageIndex;
+        ApplyDescriptionPage();
+        return true;
+    }
+
+    bool ChangeDialogPage(int delta)
+    {
+        if (!m_DialogPages || m_DialogPages.Count() <= 1)
+            return false;
+
+        int newPageIndex = m_DialogPageIndex + delta;
+        if (newPageIndex < 0 || newPageIndex >= m_DialogPages.Count())
+            return false;
+
+        m_DialogPageIndex = newPageIndex;
+        ApplyDialogPage();
+        return true;
     }
 
     string SanitizeQuestUiLabel(string text)
@@ -509,6 +717,18 @@ class QuestUIMenu extends UIScriptedMenu
             Close();
             return true;
         }
+
+        if (w == m_DescriptionPrevButton)
+            return ChangeDescriptionPage(-1);
+
+        if (w == m_DescriptionNextButton)
+            return ChangeDescriptionPage(1);
+
+        if (w == m_DialogPrevButton)
+            return ChangeDialogPage(-1);
+
+        if (w == m_DialogNextButton)
+            return ChangeDialogPage(1);
         
         return false;
     }
@@ -533,6 +753,18 @@ class QuestUIMenu extends UIScriptedMenu
 
     override bool OnMouseWheel(Widget w, int x, int y, int wheel)
     {
+        if ((w == m_DescriptionPanel || w == m_QuestDescription) && wheel > 0)
+            return ChangeDescriptionPage(-1);
+
+        if ((w == m_DescriptionPanel || w == m_QuestDescription) && wheel < 0)
+            return ChangeDescriptionPage(1);
+
+        if ((w == m_DialogPanel || w == m_DialogText) && wheel > 0)
+            return ChangeDialogPage(-1);
+
+        if ((w == m_DialogPanel || w == m_DialogText) && wheel < 0)
+            return ChangeDialogPage(1);
+
         return super.OnMouseWheel(w, x, y, wheel);
     }
     
@@ -543,28 +775,18 @@ class QuestUIMenu extends UIScriptedMenu
         
         if (m_SelectedQuestId == "")
         {
-            m_QuestDescription.SetText("Выберите квест из списка");
-            ResetScrollableText(m_QuestDescription);
+            SetDescriptionPagedText("Выберите квест из списка");
             RefreshTriggerRouteList(null, "");
-            if (m_DialogText)
-            {
-                m_DialogText.SetText("");
-                ResetScrollableText(m_DialogText);
-            }
+            SetDialogPagedText("");
             return;
         }
         
         Silver77_Quest quest = QuestClientManager.GetQuestById(m_SelectedQuestId);
         if (!quest)
         {
-            m_QuestDescription.SetText("Квест не найден");
-            ResetScrollableText(m_QuestDescription);
+            SetDescriptionPagedText("Квест не найден");
             RefreshTriggerRouteList(null, "");
-            if (m_DialogText)
-            {
-                m_DialogText.SetText("");
-                ResetScrollableText(m_DialogText);
-            }
+            SetDialogPagedText("");
             return;
         }
         
@@ -636,21 +858,12 @@ class QuestUIMenu extends UIScriptedMenu
         if (m_WaitingForServer)
             desc += "\nЗапрос отправлен. Ждем ответ сервера...";
         
-        m_QuestDescription.SetText(desc);
-        ResetScrollableText(m_QuestDescription);
+        SetDescriptionPagedText(desc);
         
         RefreshTriggerRouteList(quest, status);
         
-        if (m_DialogText)
-        {
-            string dialogText = BuildQuestDialogText(quest, status, currentTriggerId, canAccept, canComplete, canClaimReward);
-            if (dialogText != "")
-                m_DialogText.SetText(dialogText);
-            else
-                m_DialogText.SetText("");
-
-            ResetScrollableText(m_DialogText);
-        }
+        string dialogText = BuildQuestDialogText(quest, status, currentTriggerId, canAccept, canComplete, canClaimReward);
+        SetDialogPagedText(dialogText);
     }
     
     string BuildQuestRequirementsText(Silver77_Quest quest)

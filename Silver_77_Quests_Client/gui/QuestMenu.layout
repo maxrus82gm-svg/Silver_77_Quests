@@ -12,7 +12,7 @@ FrameWidgetClass QuestMenuRoot {
  {
   PanelWidgetClass BackgroundOverlay {
    ignorepointer 1
-   color 0 0 0 0.82
+   color 0 0 0 0.96
    position 0 0
    size 1 1
    halign center_ref
@@ -22,9 +22,41 @@ FrameWidgetClass QuestMenuRoot {
    hexactsize 0
    vexactsize 0
   }
+  ButtonWidgetClass QuestPanelBackdrop {
+   ignorepointer 1
+   color 0 0 0 0.98
+   position 0 0
+   size 1040 620
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    TextWidgetClass QuestPanelBackdropText {
+     ignorepointer 1
+     position 0 0
+     size 1 1
+     halign center_ref
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     text ""
+     font "gui/fonts/metron12"
+     "exact text" 1
+     "size to text h" 0
+     "size to text v" 0
+     "text halign" center
+     "text valign" center
+    }
+   }
+  }
   PanelWidgetClass QuestPanel {
    ignorepointer 0
-   color 0.0549 0.0549 0.0549 0.992
+   color 0 0 0 1
    position 0 0
    size 980 560
    halign center_ref
@@ -85,7 +117,7 @@ FrameWidgetClass QuestMenuRoot {
     }
     PanelWidgetClass DescriptionPanel {
      ignorepointer 0
-     color 0.0118 0.0118 0.0118 0.96
+     color 0 0 0 1
      position 300 74
      size 420 204
      halign left_ref
@@ -99,7 +131,7 @@ FrameWidgetClass QuestMenuRoot {
        ignorepointer 1
        color 0.8902 0.8902 0.8902 1
        position 12 8
-       size 240 18
+       size 200 18
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -114,10 +146,91 @@ FrameWidgetClass QuestMenuRoot {
        "text halign" left
        "text valign" center
       }
+      TextWidgetClass DescriptionPageInfo {
+       ignorepointer 1
+       color 0.8902 0.8902 0.8902 1
+       position 248 8
+       size 72 18
+       halign left_ref
+       valign top_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "1/1"
+       font "gui/fonts/metron14"
+       "exact text" 1
+       "size to text h" 0
+       "size to text v" 0
+       "text halign" center
+       "text valign" center
+      }
+      ButtonWidgetClass DescriptionPrevButton {
+       ignorepointer 0
+       position 326 4
+       size 36 24
+       halign left_ref
+       valign top_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        TextWidgetClass DescriptionPrevButtonText {
+         ignorepointer 1
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "<"
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+      ButtonWidgetClass DescriptionNextButton {
+       ignorepointer 0
+       position 372 4
+       size 36 24
+       halign left_ref
+       valign top_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        TextWidgetClass DescriptionNextButtonText {
+         ignorepointer 1
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text ">"
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
       MultilineTextWidgetClass DescriptionText {
        ignorepointer 0
-       position 12 30
-       size 384 162
+       position 12 34
+       size 396 156
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -137,7 +250,7 @@ FrameWidgetClass QuestMenuRoot {
     }
     PanelWidgetClass RoutePanel {
      ignorepointer 0
-     color 0.0118 0.0118 0.0118 0.96
+     color 0 0 0 1
      position 740 74
      size 210 334
      halign left_ref
@@ -182,7 +295,7 @@ FrameWidgetClass QuestMenuRoot {
     }
     PanelWidgetClass DialogPanel {
      ignorepointer 0
-     color 0.0118 0.0118 0.0118 0.96
+     color 0 0 0 1
      position 300 286
      size 420 122
      halign left_ref
@@ -196,7 +309,7 @@ FrameWidgetClass QuestMenuRoot {
        ignorepointer 1
        color 0.9843 0.8431 0.3098 1
        position 12 8
-       size 240 18
+       size 180 18
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -211,10 +324,91 @@ FrameWidgetClass QuestMenuRoot {
        "text halign" left
        "text valign" center
       }
+      TextWidgetClass DialogPageInfo {
+       ignorepointer 1
+       color 0.9843 0.8431 0.3098 1
+       position 238 8
+       size 72 18
+       halign left_ref
+       valign top_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "1/1"
+       font "gui/fonts/metron14"
+       "exact text" 1
+       "size to text h" 0
+       "size to text v" 0
+       "text halign" center
+       "text valign" center
+      }
+      ButtonWidgetClass DialogPrevButton {
+       ignorepointer 0
+       position 316 4
+       size 36 24
+       halign left_ref
+       valign top_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        TextWidgetClass DialogPrevButtonText {
+         ignorepointer 1
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "<"
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+      ButtonWidgetClass DialogNextButton {
+       ignorepointer 0
+       position 362 4
+       size 36 24
+       halign left_ref
+       valign top_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        TextWidgetClass DialogNextButtonText {
+         ignorepointer 1
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text ">"
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
       MultilineTextWidgetClass DialogText {
        ignorepointer 0
-       position 12 30
-       size 384 80
+       position 12 34
+       size 396 74
        halign left_ref
        valign top_ref
        hexactpos 1
