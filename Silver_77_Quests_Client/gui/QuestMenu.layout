@@ -121,7 +121,7 @@ FrameWidgetClass QuestMenuRoot {
      ignorepointer 0
      color 0 0 0 1
      position 300 74
-     size 420 204
+     size 430 204
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -152,8 +152,8 @@ FrameWidgetClass QuestMenuRoot {
       TextListboxWidgetClass DescriptionText {
        clipchildren 0
        ignorepointer 0
-       position 10 34
-       size 400 156
+       position 8 34
+       size 414 156
        halign left_ref
        valign top_ref
        hexactpos 1
@@ -219,7 +219,7 @@ FrameWidgetClass QuestMenuRoot {
      ignorepointer 0
      color 0 0 0 1
      position 300 286
-     size 420 122
+     size 430 122
      halign left_ref
      valign top_ref
      hexactpos 1
@@ -250,8 +250,8 @@ FrameWidgetClass QuestMenuRoot {
       TextListboxWidgetClass DialogText {
        clipchildren 0
        ignorepointer 0
-       position 10 34
-       size 400 74
+       position 8 34
+       size 414 74
        halign left_ref
        valign top_ref
        hexactpos 1

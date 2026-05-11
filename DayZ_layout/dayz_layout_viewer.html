@@ -598,6 +598,10 @@
             return node.type === 'TextWidgetClass' || node.type === 'MultilineTextWidgetClass';
         }
 
+        function isListboxNode(node) {
+            return node.type === 'TextListboxWidgetClass';
+        }
+
         function getNodeDepth(node) {
             let depth = 0;
             let current = node;
@@ -1104,6 +1108,63 @@
             return typeName.replace('WidgetClass', '');
         }
 
+        function appendListboxPreview(div, renderScale) {
+            const previewLayer = document.createElement('div');
+            previewLayer.style.position = 'absolute';
+            previewLayer.style.left = '6px';
+            previewLayer.style.top = '6px';
+            previewLayer.style.right = '6px';
+            previewLayer.style.bottom = '6px';
+            previewLayer.style.pointerEvents = 'none';
+            previewLayer.style.overflow = 'hidden';
+
+            const scrollbarWidth = Math.max(6, Math.round(8 * renderScale));
+            const scrollbarTrack = document.createElement('div');
+            scrollbarTrack.style.position = 'absolute';
+            scrollbarTrack.style.top = '0';
+            scrollbarTrack.style.right = '0';
+            scrollbarTrack.style.bottom = '0';
+            scrollbarTrack.style.width = scrollbarWidth + 'px';
+            scrollbarTrack.style.background = 'rgba(255, 255, 255, 0.08)';
+            scrollbarTrack.style.borderLeft = '1px solid rgba(255, 255, 255, 0.1)';
+
+            const scrollbarThumb = document.createElement('div');
+            scrollbarThumb.style.position = 'absolute';
+            scrollbarThumb.style.left = '1px';
+            scrollbarThumb.style.right = '1px';
+            scrollbarThumb.style.top = '12%';
+            scrollbarThumb.style.height = '28%';
+            scrollbarThumb.style.background = 'rgba(255, 255, 255, 0.28)';
+            scrollbarThumb.style.borderRadius = '999px';
+            scrollbarTrack.appendChild(scrollbarThumb);
+
+            const rowsLayer = document.createElement('div');
+            rowsLayer.style.position = 'absolute';
+            rowsLayer.style.left = '0';
+            rowsLayer.style.top = '0';
+            rowsLayer.style.right = (scrollbarWidth + 6) + 'px';
+            rowsLayer.style.bottom = '0';
+            rowsLayer.style.display = 'flex';
+            rowsLayer.style.flexDirection = 'column';
+            rowsLayer.style.gap = Math.max(3, Math.round(4 * renderScale)) + 'px';
+
+            const widths = ['92%', '88%', '95%', '84%', '90%', '78%'];
+            for (let rowIndex = 0; rowIndex < widths.length; rowIndex++) {
+                const row = document.createElement('div');
+                row.style.height = Math.max(4, Math.round(6 * renderScale)) + 'px';
+                row.style.width = widths[rowIndex];
+                row.style.background = rowIndex === 0
+                    ? 'rgba(255, 213, 79, 0.32)'
+                    : 'rgba(240, 234, 219, 0.24)';
+                row.style.borderRadius = '999px';
+                rowsLayer.appendChild(row);
+            }
+
+            previewLayer.appendChild(rowsLayer);
+            previewLayer.appendChild(scrollbarTrack);
+            div.appendChild(previewLayer);
+        }
+
         function renderLayout(layoutData, renderScale) {
             container.innerHTML = '';
             applyViewportToContainer(layoutData.viewportRect, renderScale);
@@ -1115,6 +1176,7 @@
                 }
 
                 const nodeIsText = isTextNode(node);
+                const nodeIsListbox = isListboxNode(node);
                 const div = document.createElement('div');
                 div.className = 'ui-element';
                 div.dataset.nodeId = String(node.id);
@@ -1131,6 +1193,9 @@
                 if (nodeIsText) {
                     div.style.backgroundColor = 'transparent';
                     div.style.border = node.color ? '1px solid rgba(255, 255, 255, 0.12)' : '1px dashed rgba(102, 102, 102, 0.35)';
+                } else if (nodeIsListbox) {
+                    div.style.backgroundColor = node.color ? colorToRgba(node.color, 0.9) : 'rgba(10, 10, 10, 0.9)';
+                    div.style.border = '1px solid rgba(255, 255, 255, 0.18)';
                 } else if (node.color) {
                     div.style.backgroundColor = colorToRgba(node.color);
                     div.style.border = '1px solid rgba(0, 0, 0, 0.3)';
@@ -1164,6 +1229,10 @@
                     textElement.style.pointerEvents = 'none';
                     textLayer.appendChild(textElement);
                     div.appendChild(textLayer);
+                }
+
+                if (nodeIsListbox) {
+                    appendListboxPreview(div, renderScale);
                 }
 
                 const debugLabel = document.createElement('div');
@@ -1273,37 +1342,38 @@
             if (rootName === 'QuestMenuRoot') {
                 const questPanel = findNodeByName('QuestPanel');
                 const questListbox = findNodeByName('QuestListbox');
-                const acceptButtonText = findNodeByName('AcceptButtonText');
+                const descriptionText = findNodeByName('DescriptionText');
+                const dialogText = findNodeByName('DialogText');
                 const closeButtonText = findNodeByName('CloseButtonText');
 
                 results.push({
-                    status: compareRect(questPanel, { x: (viewport.w - 920) / 2, y: (viewport.h - 560) / 2, w: 920, h: 560 }) ? 'ok' : 'fail',
+                    status: compareRect(questPanel, { x: (viewport.w - 980) / 2, y: (viewport.h - 560) / 2, w: 980, h: 560 }) ? 'ok' : 'fail',
                     label: 'QuestPanel',
                     message: questPanel ? `finalRect ${formatRect(questPanel.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: compareRect(questListbox, { x: ((viewport.w - 920) / 2) + 30, y: ((viewport.h - 560) / 2) + 82, w: 330, h: 250 }) ? 'ok' : 'fail',
+                    status: compareRect(questListbox, { x: ((viewport.w - 980) / 2) + 30, y: ((viewport.h - 560) / 2) + 82, w: 250, h: 450 }) ? 'ok' : 'fail',
                     label: 'QuestListbox',
                     message: questListbox ? `finalRect ${formatRect(questListbox.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: compareRect(acceptButtonText, { x: ((viewport.w - 920) / 2) + 390, y: ((viewport.h - 560) / 2) + 420, w: 220, h: 48 }) ? 'ok' : 'fail',
-                    label: 'AcceptButtonText',
-                    message: acceptButtonText ? `finalRect ${formatRect(acceptButtonText.finalRect)}` : 'Widget not found'
+                    status: compareRect(descriptionText, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 108, w: 414, h: 156 }) ? 'ok' : 'fail',
+                    label: 'DescriptionText',
+                    message: descriptionText ? `finalRect ${formatRect(descriptionText.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: compareRect(dialogText, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 320, w: 414, h: 74 }) ? 'ok' : 'fail',
+                    label: 'DialogText',
+                    message: dialogText ? `finalRect ${formatRect(dialogText.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
                     status: closeButtonText && closeButtonText.text === 'Закрыть рот и уйти' ? 'ok' : 'warn',
                     label: 'CloseButtonText text',
                     message: closeButtonText ? `"${closeButtonText.text}"` : 'Widget not found'
-                });
-
-                results.push({
-                    status: acceptButtonText && getNodeProp(acceptButtonText, 'text halign', 'left') === 'center' && getNodeProp(acceptButtonText, 'text valign', 'top') === 'center' ? 'ok' : 'warn',
-                    label: 'AcceptButtonText alignment',
-                    message: acceptButtonText ? `${getNodeProp(acceptButtonText, 'text halign', 'left')} / ${getNodeProp(acceptButtonText, 'text valign', 'top')}` : 'Widget not found'
                 });
 
                 state.sanityReport = { profile: 'QuestMenu', viewport, results };

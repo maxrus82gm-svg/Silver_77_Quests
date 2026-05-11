@@ -4,8 +4,8 @@
 
 const int MENU_QUEST_UI = 77777;
 const int MENU_QUEST_JOURNAL_UI = 77778;
-const int QUEST_UI_DESCRIPTION_MAX_CHARS_PER_LINE = 60;
-const int QUEST_UI_DIALOG_MAX_CHARS_PER_LINE = 62;
+const int QUEST_UI_DESCRIPTION_MAX_CHARS_PER_LINE = 72;
+const int QUEST_UI_DIALOG_MAX_CHARS_PER_LINE = 74;
 
 class QuestUIMenu extends UIScriptedMenu
 {
@@ -146,6 +146,69 @@ class QuestUIMenu extends UIScriptedMenu
         }
     }
 
+    float GetQuestUiCharWeight(string character)
+    {
+        if (character == " " || character == "\t")
+            return 0.35;
+
+        if (character == "." || character == "," || character == ":" || character == ";" || character == "!" || character == "?" || character == "'" || character == "\"" || character == "`")
+            return 0.45;
+
+        if (character == "(" || character == ")" || character == "[" || character == "]" || character == "{" || character == "}" || character == "|" || character == "/")
+            return 0.55;
+
+        if (character == "-" || character == "_" || character == "+" || character == "=")
+            return 0.65;
+
+        if (character == "i" || character == "l" || character == "I" || character == "1")
+            return 0.55;
+
+        if (character == "m" || character == "w" || character == "M" || character == "W" || character == "@")
+            return 1.2;
+
+        return 1.0;
+    }
+
+    float GetQuestUiTextWeight(string text)
+    {
+        float totalWeight = 0.0;
+        for (int characterIndex = 0; characterIndex < text.Length(); characterIndex++)
+        {
+            totalWeight += GetQuestUiCharWeight(text.Substring(characterIndex, 1));
+        }
+
+        return totalWeight;
+    }
+
+    ref array<string> SplitQuestUiWordByWeight(string word, int maxCharsPerLine)
+    {
+        ref array<string> chunks = new array<string>;
+        string currentChunk = "";
+
+        for (int characterIndex = 0; characterIndex < word.Length(); characterIndex++)
+        {
+            string character = word.Substring(characterIndex, 1);
+            string candidateChunk = currentChunk + character;
+            if (currentChunk != "" && GetQuestUiTextWeight(candidateChunk) > maxCharsPerLine)
+            {
+                chunks.Insert(currentChunk);
+                currentChunk = character;
+            }
+            else
+            {
+                currentChunk = candidateChunk;
+            }
+        }
+
+        if (currentChunk != "")
+            chunks.Insert(currentChunk);
+
+        if (chunks.Count() == 0)
+            chunks.Insert(word);
+
+        return chunks;
+    }
+
     ref array<string> BuildWrappedTextLines(string text, int maxCharsPerLine)
     {
         ref array<string> wrappedLines = new array<string>;
@@ -181,34 +244,27 @@ class QuestUIMenu extends UIScriptedMenu
                 hadWord = true;
                 if (currentLine == "")
                 {
-                    if (word.Length() <= maxCharsPerLine)
+                    if (GetQuestUiTextWeight(word) <= maxCharsPerLine)
                     {
                         currentLine = word;
                     }
                     else
                     {
-                        int wordOffsetDirect = 0;
-                        while (wordOffsetDirect < word.Length())
+                        ref array<string> directChunks = SplitQuestUiWordByWeight(word, maxCharsPerLine);
+                        for (int directChunkIndex = 0; directChunkIndex < directChunks.Count(); directChunkIndex++)
                         {
-                            int remainingDirect = word.Length() - wordOffsetDirect;
-                            int chunkLengthDirect = maxCharsPerLine;
-                            if (remainingDirect < chunkLengthDirect)
-                                chunkLengthDirect = remainingDirect;
-
-                            string directChunk = word.Substring(wordOffsetDirect, chunkLengthDirect);
-                            if (remainingDirect > maxCharsPerLine)
+                            string directChunk = directChunks.Get(directChunkIndex);
+                            if (directChunkIndex < directChunks.Count() - 1)
                                 wrappedLines.Insert(directChunk);
                             else
                                 currentLine = directChunk;
-
-                            wordOffsetDirect += chunkLengthDirect;
                         }
                     }
                     continue;
                 }
 
                 string candidateLine = currentLine + " " + word;
-                if (candidateLine.Length() <= maxCharsPerLine)
+                if (GetQuestUiTextWeight(candidateLine) <= maxCharsPerLine)
                 {
                     currentLine = candidateLine;
                 }
@@ -217,27 +273,20 @@ class QuestUIMenu extends UIScriptedMenu
                     wrappedLines.Insert(currentLine);
                     currentLine = "";
 
-                    if (word.Length() <= maxCharsPerLine)
+                    if (GetQuestUiTextWeight(word) <= maxCharsPerLine)
                     {
                         currentLine = word;
                     }
                     else
                     {
-                        int wordOffsetWrapped = 0;
-                        while (wordOffsetWrapped < word.Length())
+                        ref array<string> wrappedChunks = SplitQuestUiWordByWeight(word, maxCharsPerLine);
+                        for (int wrappedChunkIndex = 0; wrappedChunkIndex < wrappedChunks.Count(); wrappedChunkIndex++)
                         {
-                            int remainingWrapped = word.Length() - wordOffsetWrapped;
-                            int chunkLengthWrapped = maxCharsPerLine;
-                            if (remainingWrapped < chunkLengthWrapped)
-                                chunkLengthWrapped = remainingWrapped;
-
-                            string wrappedChunk = word.Substring(wordOffsetWrapped, chunkLengthWrapped);
-                            if (remainingWrapped > maxCharsPerLine)
+                            string wrappedChunk = wrappedChunks.Get(wrappedChunkIndex);
+                            if (wrappedChunkIndex < wrappedChunks.Count() - 1)
                                 wrappedLines.Insert(wrappedChunk);
                             else
                                 currentLine = wrappedChunk;
-
-                            wordOffsetWrapped += chunkLengthWrapped;
                         }
                     }
                 }

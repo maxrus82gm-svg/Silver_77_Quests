@@ -566,6 +566,41 @@
       "npcBackItems": [
         "Crossbow"
       ]
+    },
+    {
+      "id": "trigger_new",
+      "position": [
+        12451.297852,
+        98.553253,
+        13558.348633
+      ],
+      "radius": 2,
+      "focusHeight": 1.2,
+      "focusRadius": 1,
+      "questIds": [],
+      "hintText": "Георгий (Гога)",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Seth",
+      "npcPosition": [
+        12451.297852,
+        98.553253,
+        13558.348633
+      ],
+      "npcOrientation": [
+        0,
+        0,
+        0
+      ],
+      "npcLoadout": [
+        "weldinggoggles_mung",
+        "FS_ForestOldCap_ColorBase",
+        "Raincoat_Yellow",
+        "WorkingGloves_Beige",
+        "WorkingGloves_Yellow",
+        "CombatBoots_Green"
+      ],
+      "npcHandsItem": "СЯ527_CAMO",
+      "npcBackItems": []
     }
   ]
 }
