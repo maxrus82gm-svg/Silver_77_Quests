@@ -423,7 +423,7 @@
         "quest_hunter_1",
         "quest_hunter_2"
       ],
-      "hintText": "[F] Коля (Ворон)",
+      "hintText": "Коля (Ворон)",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Mirek",
       "npcPosition": [
@@ -463,7 +463,7 @@
         "quest_fisherman_1",
         "quest_fisherman_2"
       ],
-      "hintText": "[F] Рыбак Гаврила",
+      "hintText": "Рыбак Гаврила",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Boris",
       "npcPosition": [
@@ -503,7 +503,7 @@
         "quest_Rasputin_1",
         "quest_hunter_2"
       ],
-      "hintText": "[F] Федор (Распутин)",
+      "hintText": "Федор (Распутин)",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Oliver",
       "npcPosition": [
@@ -568,7 +568,7 @@
       ]
     },
     {
-      "id": "trigger_new",
+      "id": "Georgiy_Bar_Orugka",
       "position": [
         12451.297852,
         98.553253,
@@ -587,7 +587,7 @@
         13558.348633
       ],
       "npcOrientation": [
-        0,
+        40,
         0,
         0
       ],
@@ -595,9 +595,10 @@
         "weldinggoggles_mung",
         "FS_ForestOldCap_ColorBase",
         "Raincoat_Yellow",
-        "WorkingGloves_Beige",
+        "HunterPants_Summer",
         "WorkingGloves_Yellow",
-        "CombatBoots_Green"
+        "CombatBoots_Green",
+        ""
       ],
       "npcHandsItem": "СЯ527_CAMO",
       "npcBackItems": []
