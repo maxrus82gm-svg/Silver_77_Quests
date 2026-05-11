@@ -600,8 +600,10 @@
         "CombatBoots_Green",
         ""
       ],
-      "npcHandsItem": "СЯ527_CAMO",
-      "npcBackItems": []
+      "npcHandsItem": "",
+      "npcBackItems": [
+        "СЯ527_CAMO"
+      ]
     }
   ]
 }
