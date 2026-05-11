@@ -117,10 +117,10 @@ FrameWidgetClass QuestMenuRoot {
      vexactsize 1
      font "gui/fonts/metron16"
     }
-     PanelWidgetClass DescriptionPanel {
-      ignorepointer 0
-      color 0 0 0 1
-      position 300 74
+    PanelWidgetClass DescriptionPanel {
+     ignorepointer 0
+     color 0 0 0 1
+     position 300 74
      size 430 204
      halign left_ref
      valign top_ref
@@ -163,51 +163,31 @@ FrameWidgetClass QuestMenuRoot {
        style blank
        "Scrollbar V" 1
        {
-        GridSpacerWidgetClass DescriptionContent {
+        MultilineTextWidgetClass DescriptionText {
          clipchildren 0
-         ignorepointer 1
+         ignorepointer 0
          position 0 0
-         size 394 1
+         size 394 600
          halign left_ref
          valign top_ref
          hexactpos 1
          vexactpos 1
          hexactsize 1
-         vexactsize 0
-         style Empty
-         Padding 0
-         Margin 0
-         "Size To Content H" 0
-         "Size To Content V" 1
-         Columns 1
-         Rows 1
-         {
-          RichTextWidgetClass DescriptionText {
-           clipchildren 0
-           ignorepointer 0
-           position 0 0
-           size 394 1
-           halign left_ref
-           valign top_ref
-           hexactpos 1
-           vexactpos 1
-           hexactsize 1
-           vexactsize 0
-           color 0.9412 0.9176 0.8588 1
-           style None
-           font "gui/fonts/metron16"
-           "exact text" 1
-           "size to text h" 0
-           "size to text v" 1
-           "text halign" left
-           "text valign" top
-           wrap 1
-           "condense whitespace" 1
-          }
-         }
+         vexactsize 1
+         color 0.9412 0.9176 0.8588 1
+         style None
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" top
+         wrap 1
+         "condense whitespace" 1
         }
        }
       }
+     }
     }
     PanelWidgetClass RoutePanel {
      ignorepointer 0
@@ -255,10 +235,10 @@ FrameWidgetClass QuestMenuRoot {
       }
      }
     }
-      PanelWidgetClass DialogPanel {
-      ignorepointer 0
-      color 0 0 0 1
-      position 300 286
+    PanelWidgetClass DialogPanel {
+     ignorepointer 0
+     color 0 0 0 1
+     position 300 286
      size 430 122
      halign left_ref
      valign top_ref
@@ -301,51 +281,31 @@ FrameWidgetClass QuestMenuRoot {
        style blank
        "Scrollbar V" 1
        {
-        GridSpacerWidgetClass DialogContent {
+        MultilineTextWidgetClass DialogText {
          clipchildren 0
-         ignorepointer 1
+         ignorepointer 0
          position 0 0
-         size 394 1
+         size 394 300
          halign left_ref
          valign top_ref
          hexactpos 1
          vexactpos 1
          hexactsize 1
-         vexactsize 0
-         style Empty
-         Padding 0
-         Margin 0
-         "Size To Content H" 0
-         "Size To Content V" 1
-         Columns 1
-         Rows 1
-         {
-          RichTextWidgetClass DialogText {
-           clipchildren 0
-           ignorepointer 0
-           position 0 0
-           size 394 1
-           halign left_ref
-           valign top_ref
-           hexactpos 1
-           vexactpos 1
-           hexactsize 1
-           vexactsize 0
-           color 1 0.8353 0.3098 1
-           style None
-           font "gui/fonts/metron16"
-           "exact text" 1
-           "size to text h" 0
-           "size to text v" 1
-           "text halign" left
-           "text valign" top
-           wrap 1
-           "condense whitespace" 1
-          }
-         }
+         vexactsize 1
+         color 1 0.8353 0.3098 1
+         style None
+         font "gui/fonts/metron16"
+         "exact text" 1
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" top
+         wrap 1
+         "condense whitespace" 1
         }
        }
       }
+     }
     }
     ButtonWidgetClass AcceptButton {
      ignorepointer 0

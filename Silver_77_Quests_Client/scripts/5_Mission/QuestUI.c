@@ -11,10 +11,8 @@ class QuestUIMenu extends UIScriptedMenu
     private TextListboxWidget m_TriggerRouteList;
     private ScrollWidget m_DescriptionScroll;
     private ScrollWidget m_DialogScroll;
-    private Widget m_DescriptionContent;
-    private Widget m_DialogContent;
-    private RichTextWidget m_QuestDescription;
-    private RichTextWidget m_DialogText;
+    private MultilineTextWidget m_QuestDescription;
+    private MultilineTextWidget m_DialogText;
     private ButtonWidget m_AcceptButton;
     private ButtonWidget m_CompleteButton;
     private ButtonWidget m_CloseButton;
@@ -57,10 +55,8 @@ class QuestUIMenu extends UIScriptedMenu
         m_TriggerRouteList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TriggerRouteListbox"));
         m_DescriptionScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("DescriptionScroll"));
         m_DialogScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("DialogScroll"));
-        m_DescriptionContent = layoutRoot.FindAnyWidget("DescriptionContent");
-        m_DialogContent = layoutRoot.FindAnyWidget("DialogContent");
-        m_QuestDescription = RichTextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
-        m_DialogText = RichTextWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
+        m_QuestDescription = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
+        m_DialogText = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
         m_AcceptButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AcceptButton"));
         m_CompleteButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CompleteButton"));
         m_CloseButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CloseButton"));
@@ -165,30 +161,6 @@ class QuestUIMenu extends UIScriptedMenu
         scrollWidget.VScrollToPos01(0);
     }
 
-    void SyncRichTextContentSize(Widget contentWidget, RichTextWidget textWidget)
-    {
-        if (!contentWidget || !textWidget)
-            return;
-
-        float contentWidth = 0;
-        float contentHeight = 0;
-        float textWidth = 0;
-        float textHeight = 0;
-        float richContentHeight = 0;
-
-        contentWidget.GetSize(contentWidth, contentHeight);
-        textWidget.GetSize(textWidth, textHeight);
-        richContentHeight = textWidget.GetContentHeight();
-
-        if (richContentHeight < 1)
-            richContentHeight = textHeight;
-
-        textWidget.SetSize(textWidth, richContentHeight);
-        contentWidget.SetSize(contentWidth, richContentHeight);
-        textWidget.Update();
-        contentWidget.Update();
-    }
-
     void SetDescriptionText(string text)
     {
         if (!m_QuestDescription)
@@ -196,9 +168,6 @@ class QuestUIMenu extends UIScriptedMenu
 
         m_QuestDescription.SetText(text);
         m_QuestDescription.Update();
-        SyncRichTextContentSize(m_DescriptionContent, m_QuestDescription);
-        if (m_DescriptionScroll)
-            m_DescriptionScroll.Update();
         ResetScrollWidgetToTop(m_DescriptionScroll);
     }
 
@@ -209,9 +178,6 @@ class QuestUIMenu extends UIScriptedMenu
 
         m_DialogText.SetText(text);
         m_DialogText.Update();
-        SyncRichTextContentSize(m_DialogContent, m_DialogText);
-        if (m_DialogScroll)
-            m_DialogScroll.Update();
         ResetScrollWidgetToTop(m_DialogScroll);
     }
 
