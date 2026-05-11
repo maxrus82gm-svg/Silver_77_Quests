@@ -10,16 +10,8 @@ class QuestUIMenu extends UIScriptedMenu
     private TextWidget m_Title;
     private TextListboxWidget m_QuestList;
     private TextListboxWidget m_TriggerRouteList;
-    private MultilineTextWidget m_QuestDescription;
-    private MultilineTextWidget m_DialogText;
-    private Widget m_DescriptionPanel;
-    private Widget m_DialogPanel;
-    private TextWidget m_DescriptionPageInfo;
-    private TextWidget m_DialogPageInfo;
-    private ButtonWidget m_DescriptionPrevButton;
-    private ButtonWidget m_DescriptionNextButton;
-    private ButtonWidget m_DialogPrevButton;
-    private ButtonWidget m_DialogNextButton;
+    private TextListboxWidget m_QuestDescription;
+    private TextListboxWidget m_DialogText;
     private ButtonWidget m_AcceptButton;
     private ButtonWidget m_CompleteButton;
     private ButtonWidget m_CloseButton;
@@ -35,10 +27,6 @@ class QuestUIMenu extends UIScriptedMenu
     private int m_LastDataRevision;
     private bool m_WaitingForServer;
     private float m_ServerWaitTimer;
-    private ref array<string> m_DescriptionPages;
-    private ref array<string> m_DialogPages;
-    private int m_DescriptionPageIndex;
-    private int m_DialogPageIndex;
     
     void QuestUIMenu()
     {
@@ -50,10 +38,6 @@ class QuestUIMenu extends UIScriptedMenu
         m_LastDataRevision = -1;
         m_WaitingForServer = false;
         m_ServerWaitTimer = 0;
-        m_DescriptionPages = new array<string>;
-        m_DialogPages = new array<string>;
-        m_DescriptionPageIndex = 0;
-        m_DialogPageIndex = 0;
     }
     
     override Widget Init()
@@ -68,16 +52,8 @@ class QuestUIMenu extends UIScriptedMenu
         m_Title = TextWidget.Cast(layoutRoot.FindAnyWidget("TitleText"));
         m_QuestList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("QuestListbox"));
         m_TriggerRouteList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TriggerRouteListbox"));
-        m_QuestDescription = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
-        m_DialogText = MultilineTextWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
-        m_DescriptionPanel = layoutRoot.FindAnyWidget("DescriptionPanel");
-        m_DialogPanel = layoutRoot.FindAnyWidget("DialogPanel");
-        m_DescriptionPageInfo = TextWidget.Cast(layoutRoot.FindAnyWidget("DescriptionPageInfo"));
-        m_DialogPageInfo = TextWidget.Cast(layoutRoot.FindAnyWidget("DialogPageInfo"));
-        m_DescriptionPrevButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DescriptionPrevButton"));
-        m_DescriptionNextButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DescriptionNextButton"));
-        m_DialogPrevButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DialogPrevButton"));
-        m_DialogNextButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("DialogNextButton"));
+        m_QuestDescription = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("DescriptionText"));
+        m_DialogText = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("DialogText"));
         m_AcceptButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AcceptButton"));
         m_CompleteButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CompleteButton"));
         m_CloseButton = ButtonWidget.Cast(layoutRoot.FindAnyWidget("CloseButton"));
@@ -104,8 +80,8 @@ class QuestUIMenu extends UIScriptedMenu
         else
         {
             if (m_QuestDescription)
-                SetDescriptionPagedText("Загрузка данных квестов...");
-            SetDialogPagedText("");
+                SetDescriptionText("Загрузка данных квестов...");
+            SetDialogText("");
         }
         
         return layoutRoot;
@@ -118,8 +94,8 @@ class QuestUIMenu extends UIScriptedMenu
         if (!m_Player || !QuestClientManager.HasSyncedPlayerData(m_Player))
         {
             if (m_QuestDescription)
-                SetDescriptionPagedText("Загрузка данных квестов...");
-            SetDialogPagedText("");
+                SetDescriptionText("Загрузка данных квестов...");
+            SetDialogText("");
             return;
         }
         
@@ -168,26 +144,14 @@ class QuestUIMenu extends UIScriptedMenu
         }
     }
 
-    void ResetScrollableText(MultilineTextWidget widget)
+    ref array<string> BuildWrappedTextLines(string text, int maxCharsPerLine)
     {
-        // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
-    }
-
-    bool HandleScrollableTextWheel(Widget w, Widget panelWidget, MultilineTextWidget textWidget, int wheel)
-    {
-        // Scroll helper disabled: current DayZ runtime does not expose MultilineTextWidget scroll API here.
-        return false;
-    }
-
-    ref array<string> BuildPagedText(string text, int maxCharsPerLine, int maxLinesPerPage)
-    {
-        ref array<string> pages = new array<string>;
         ref array<string> wrappedLines = new array<string>;
 
         if (text == "")
         {
-            pages.Insert("");
-            return pages;
+            wrappedLines.Insert("");
+            return wrappedLines;
         }
 
         TStringArray sourceLines = new TStringArray;
@@ -215,7 +179,29 @@ class QuestUIMenu extends UIScriptedMenu
                 hadWord = true;
                 if (currentLine == "")
                 {
-                    currentLine = word;
+                    if (word.Length() <= maxCharsPerLine)
+                    {
+                        currentLine = word;
+                    }
+                    else
+                    {
+                        int wordOffsetDirect = 0;
+                        while (wordOffsetDirect < word.Length())
+                        {
+                            int remainingDirect = word.Length() - wordOffsetDirect;
+                            int chunkLengthDirect = maxCharsPerLine;
+                            if (remainingDirect < chunkLengthDirect)
+                                chunkLengthDirect = remainingDirect;
+
+                            string directChunk = word.Substring(wordOffsetDirect, chunkLengthDirect);
+                            if (remainingDirect > maxCharsPerLine)
+                                wrappedLines.Insert(directChunk);
+                            else
+                                currentLine = directChunk;
+
+                            wordOffsetDirect += chunkLengthDirect;
+                        }
+                    }
                     continue;
                 }
 
@@ -227,7 +213,31 @@ class QuestUIMenu extends UIScriptedMenu
                 else
                 {
                     wrappedLines.Insert(currentLine);
-                    currentLine = word;
+                    currentLine = "";
+
+                    if (word.Length() <= maxCharsPerLine)
+                    {
+                        currentLine = word;
+                    }
+                    else
+                    {
+                        int wordOffsetWrapped = 0;
+                        while (wordOffsetWrapped < word.Length())
+                        {
+                            int remainingWrapped = word.Length() - wordOffsetWrapped;
+                            int chunkLengthWrapped = maxCharsPerLine;
+                            if (remainingWrapped < chunkLengthWrapped)
+                                chunkLengthWrapped = remainingWrapped;
+
+                            string wrappedChunk = word.Substring(wordOffsetWrapped, chunkLengthWrapped);
+                            if (remainingWrapped > maxCharsPerLine)
+                                wrappedLines.Insert(wrappedChunk);
+                            else
+                                currentLine = wrappedChunk;
+
+                            wordOffsetWrapped += chunkLengthWrapped;
+                        }
+                    }
                 }
             }
 
@@ -241,128 +251,39 @@ class QuestUIMenu extends UIScriptedMenu
                 wrappedLines.Insert(currentLine);
         }
 
-        string currentPage = "";
-        int currentLineCount = 0;
+        if (wrappedLines.Count() == 0)
+            wrappedLines.Insert("");
+
+        return wrappedLines;
+    }
+
+    void FillScrollableTextList(TextListboxWidget listWidget, string text, int maxCharsPerLine, int rowColor)
+    {
+        if (!listWidget)
+            return;
+
+        listWidget.ClearItems();
+
+        ref array<string> wrappedLines = BuildWrappedTextLines(text, maxCharsPerLine);
         foreach (string wrappedLine : wrappedLines)
         {
-            if (currentLineCount > 0)
-                currentPage += "\n";
+            string displayLine = wrappedLine;
+            if (displayLine == "")
+                displayLine = " ";
 
-            currentPage += wrappedLine;
-            currentLineCount++;
-
-            if (currentLineCount >= maxLinesPerPage)
-            {
-                pages.Insert(currentPage);
-                currentPage = "";
-                currentLineCount = 0;
-            }
+            int row = listWidget.AddItem(displayLine, null, 0);
+            listWidget.SetItemColor(row, 0, rowColor);
         }
-
-        if (currentPage != "" || pages.Count() == 0)
-            pages.Insert(currentPage);
-
-        return pages;
     }
 
-    void UpdatePagedTextControls(TextWidget pageInfoWidget, ButtonWidget prevButton, ButtonWidget nextButton, int currentPageIndex, int totalPages)
+    void SetDescriptionText(string text)
     {
-        if (pageInfoWidget)
-            pageInfoWidget.SetText((currentPageIndex + 1).ToString() + "/" + totalPages.ToString());
-
-        if (prevButton)
-            prevButton.Enable(totalPages > 1 && currentPageIndex > 0);
-
-        if (nextButton)
-            nextButton.Enable(totalPages > 1 && currentPageIndex < totalPages - 1);
+        FillScrollableTextList(m_QuestDescription, text, 44, 0xFFF0EADB);
     }
 
-    void ApplyDescriptionPage()
+    void SetDialogText(string text)
     {
-        int totalPages = m_DescriptionPages.Count();
-        if (totalPages <= 0)
-        {
-            if (m_QuestDescription)
-                m_QuestDescription.SetText("");
-            UpdatePagedTextControls(m_DescriptionPageInfo, m_DescriptionPrevButton, m_DescriptionNextButton, 0, 1);
-            return;
-        }
-
-        if (m_DescriptionPageIndex < 0)
-            m_DescriptionPageIndex = 0;
-        if (m_DescriptionPageIndex >= totalPages)
-            m_DescriptionPageIndex = totalPages - 1;
-
-        if (m_QuestDescription)
-            m_QuestDescription.SetText(m_DescriptionPages.Get(m_DescriptionPageIndex));
-
-        UpdatePagedTextControls(m_DescriptionPageInfo, m_DescriptionPrevButton, m_DescriptionNextButton, m_DescriptionPageIndex, totalPages);
-    }
-
-    void ApplyDialogPage()
-    {
-        int totalPages = m_DialogPages.Count();
-        if (totalPages <= 0)
-        {
-            if (m_DialogText)
-                m_DialogText.SetText("");
-            UpdatePagedTextControls(m_DialogPageInfo, m_DialogPrevButton, m_DialogNextButton, 0, 1);
-            return;
-        }
-
-        if (m_DialogPageIndex < 0)
-            m_DialogPageIndex = 0;
-        if (m_DialogPageIndex >= totalPages)
-            m_DialogPageIndex = totalPages - 1;
-
-        if (m_DialogText)
-            m_DialogText.SetText(m_DialogPages.Get(m_DialogPageIndex));
-
-        UpdatePagedTextControls(m_DialogPageInfo, m_DialogPrevButton, m_DialogNextButton, m_DialogPageIndex, totalPages);
-    }
-
-    void SetDescriptionPagedText(string text)
-    {
-        m_DescriptionPages.Clear();
-        m_DescriptionPages = BuildPagedText(text, 46, 9);
-        m_DescriptionPageIndex = 0;
-        ApplyDescriptionPage();
-    }
-
-    void SetDialogPagedText(string text)
-    {
-        m_DialogPages.Clear();
-        m_DialogPages = BuildPagedText(text, 46, 4);
-        m_DialogPageIndex = 0;
-        ApplyDialogPage();
-    }
-
-    bool ChangeDescriptionPage(int delta)
-    {
-        if (!m_DescriptionPages || m_DescriptionPages.Count() <= 1)
-            return false;
-
-        int newPageIndex = m_DescriptionPageIndex + delta;
-        if (newPageIndex < 0 || newPageIndex >= m_DescriptionPages.Count())
-            return false;
-
-        m_DescriptionPageIndex = newPageIndex;
-        ApplyDescriptionPage();
-        return true;
-    }
-
-    bool ChangeDialogPage(int delta)
-    {
-        if (!m_DialogPages || m_DialogPages.Count() <= 1)
-            return false;
-
-        int newPageIndex = m_DialogPageIndex + delta;
-        if (newPageIndex < 0 || newPageIndex >= m_DialogPages.Count())
-            return false;
-
-        m_DialogPageIndex = newPageIndex;
-        ApplyDialogPage();
-        return true;
+        FillScrollableTextList(m_DialogText, text, 44, 0xFFFFD54F);
     }
 
     string SanitizeQuestUiLabel(string text)
@@ -718,18 +639,6 @@ class QuestUIMenu extends UIScriptedMenu
             return true;
         }
 
-        if (w == m_DescriptionPrevButton)
-            return ChangeDescriptionPage(-1);
-
-        if (w == m_DescriptionNextButton)
-            return ChangeDescriptionPage(1);
-
-        if (w == m_DialogPrevButton)
-            return ChangeDialogPage(-1);
-
-        if (w == m_DialogNextButton)
-            return ChangeDialogPage(1);
-        
         return false;
     }
     
@@ -753,18 +662,6 @@ class QuestUIMenu extends UIScriptedMenu
 
     override bool OnMouseWheel(Widget w, int x, int y, int wheel)
     {
-        if ((w == m_DescriptionPanel || w == m_QuestDescription) && wheel > 0)
-            return ChangeDescriptionPage(-1);
-
-        if ((w == m_DescriptionPanel || w == m_QuestDescription) && wheel < 0)
-            return ChangeDescriptionPage(1);
-
-        if ((w == m_DialogPanel || w == m_DialogText) && wheel > 0)
-            return ChangeDialogPage(-1);
-
-        if ((w == m_DialogPanel || w == m_DialogText) && wheel < 0)
-            return ChangeDialogPage(1);
-
         return super.OnMouseWheel(w, x, y, wheel);
     }
     
@@ -775,18 +672,18 @@ class QuestUIMenu extends UIScriptedMenu
         
         if (m_SelectedQuestId == "")
         {
-            SetDescriptionPagedText("Выберите квест из списка");
+            SetDescriptionText("Выберите квест из списка");
             RefreshTriggerRouteList(null, "");
-            SetDialogPagedText("");
+            SetDialogText("");
             return;
         }
         
         Silver77_Quest quest = QuestClientManager.GetQuestById(m_SelectedQuestId);
         if (!quest)
         {
-            SetDescriptionPagedText("Квест не найден");
+            SetDescriptionText("Квест не найден");
             RefreshTriggerRouteList(null, "");
-            SetDialogPagedText("");
+            SetDialogText("");
             return;
         }
         
@@ -858,12 +755,12 @@ class QuestUIMenu extends UIScriptedMenu
         if (m_WaitingForServer)
             desc += "\nЗапрос отправлен. Ждем ответ сервера...";
         
-        SetDescriptionPagedText(desc);
+        SetDescriptionText(desc);
         
         RefreshTriggerRouteList(quest, status);
         
         string dialogText = BuildQuestDialogText(quest, status, currentTriggerId, canAccept, canComplete, canClaimReward);
-        SetDialogPagedText(dialogText);
+        SetDialogText(dialogText);
     }
     
     string BuildQuestRequirementsText(Silver77_Quest quest)

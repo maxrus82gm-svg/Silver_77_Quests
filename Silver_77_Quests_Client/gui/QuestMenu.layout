@@ -146,88 +146,8 @@ FrameWidgetClass QuestMenuRoot {
        "text halign" left
        "text valign" center
       }
-      TextWidgetClass DescriptionPageInfo {
-       ignorepointer 1
-       color 0.8902 0.8902 0.8902 1
-       position 248 8
-       size 72 18
-       halign left_ref
-       valign top_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 1
-       vexactsize 1
-       text "1/1"
-       font "gui/fonts/metron14"
-       "exact text" 1
-       "size to text h" 0
-       "size to text v" 0
-       "text halign" center
-       "text valign" center
-      }
-      ButtonWidgetClass DescriptionPrevButton {
-       ignorepointer 0
-       position 326 4
-       size 36 24
-       halign left_ref
-       valign top_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 1
-       vexactsize 1
-       {
-        TextWidgetClass DescriptionPrevButtonText {
-         ignorepointer 1
-         position 0 0
-         size 1 1
-         halign center_ref
-         valign center_ref
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         text "<"
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" center
-         "text valign" center
-        }
-       }
-      }
-      ButtonWidgetClass DescriptionNextButton {
-       ignorepointer 0
-       position 372 4
-       size 36 24
-       halign left_ref
-       valign top_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 1
-       vexactsize 1
-       {
-        TextWidgetClass DescriptionNextButtonText {
-         ignorepointer 1
-         position 0 0
-         size 1 1
-         halign center_ref
-         valign center_ref
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         text ">"
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" center
-         "text valign" center
-        }
-       }
-      }
-      MultilineTextWidgetClass DescriptionText {
+      TextListboxWidgetClass DescriptionText {
+       clipchildren 0
        ignorepointer 0
        position 12 34
        size 396 156
@@ -237,14 +157,12 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text "Выберите квест из списка"
+       color 1 1 1 0.65
+       style Default
+       "title visible" 0
+       lines 1
+       "highlight row" 0
        font "gui/fonts/metron16"
-       "exact text" 1
-       "size to text h" 0
-       "size to text v" 0
-       "text halign" left
-       "text valign" top
-       wrap 1
       }
      }
     }
@@ -324,88 +242,8 @@ FrameWidgetClass QuestMenuRoot {
        "text halign" left
        "text valign" center
       }
-      TextWidgetClass DialogPageInfo {
-       ignorepointer 1
-       color 0.9843 0.8431 0.3098 1
-       position 238 8
-       size 72 18
-       halign left_ref
-       valign top_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 1
-       vexactsize 1
-       text "1/1"
-       font "gui/fonts/metron14"
-       "exact text" 1
-       "size to text h" 0
-       "size to text v" 0
-       "text halign" center
-       "text valign" center
-      }
-      ButtonWidgetClass DialogPrevButton {
-       ignorepointer 0
-       position 316 4
-       size 36 24
-       halign left_ref
-       valign top_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 1
-       vexactsize 1
-       {
-        TextWidgetClass DialogPrevButtonText {
-         ignorepointer 1
-         position 0 0
-         size 1 1
-         halign center_ref
-         valign center_ref
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         text "<"
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" center
-         "text valign" center
-        }
-       }
-      }
-      ButtonWidgetClass DialogNextButton {
-       ignorepointer 0
-       position 362 4
-       size 36 24
-       halign left_ref
-       valign top_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 1
-       vexactsize 1
-       {
-        TextWidgetClass DialogNextButtonText {
-         ignorepointer 1
-         position 0 0
-         size 1 1
-         halign center_ref
-         valign center_ref
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         text ">"
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" center
-         "text valign" center
-        }
-       }
-      }
-      MultilineTextWidgetClass DialogText {
+      TextListboxWidgetClass DialogText {
+       clipchildren 0
        ignorepointer 0
        position 12 34
        size 396 74
@@ -415,14 +253,12 @@ FrameWidgetClass QuestMenuRoot {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text ""
+       color 1 1 1 0.65
+       style Default
+       "title visible" 0
+       lines 1
+       "highlight row" 0
        font "gui/fonts/metron16"
-       "exact text" 1
-       "size to text h" 0
-       "size to text v" 0
-       "text halign" left
-       "text valign" top
-       wrap 1
       }
      }
     }
