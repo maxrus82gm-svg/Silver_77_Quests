@@ -1422,25 +1422,25 @@
                 const closeButtonText = findNodeByName('CloseButtonText');
 
                 results.push({
-                    status: compareRect(questPanel, { x: (viewport.w - 980) / 2, y: (viewport.h - 560) / 2, w: 980, h: 560 }) ? 'ok' : 'fail',
+                    status: compareRect(questPanel, { x: (viewport.w - 980) / 2, y: (viewport.h - 650) / 2, w: 980, h: 650 }) ? 'ok' : 'fail',
                     label: 'QuestPanel',
                     message: questPanel ? `finalRect ${formatRect(questPanel.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: compareRect(questListbox, { x: ((viewport.w - 980) / 2) + 30, y: ((viewport.h - 560) / 2) + 82, w: 250, h: 450 }) ? 'ok' : 'fail',
+                    status: compareRect(questListbox, { x: ((viewport.w - 980) / 2) + 30, y: ((viewport.h - 650) / 2) + 82, w: 250, h: 450 }) ? 'ok' : 'fail',
                     label: 'QuestListbox',
                     message: questListbox ? `finalRect ${formatRect(questListbox.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: compareRect(descriptionScroll, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 108, w: 414, h: 156 }) ? 'ok' : 'fail',
+                    status: compareRect(descriptionScroll, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 650) / 2) + 108, w: 414, h: 224 }) ? 'ok' : 'fail',
                     label: 'DescriptionScroll',
                     message: descriptionScroll ? `finalRect ${formatRect(descriptionScroll.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: compareRect(dialogScroll, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 320, w: 414, h: 74 }) ? 'ok' : 'fail',
+                    status: compareRect(dialogScroll, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 650) / 2) + 392, w: 414, h: 116 }) ? 'ok' : 'fail',
                     label: 'DialogScroll',
                     message: dialogScroll ? `finalRect ${formatRect(dialogScroll.finalRect)}` : 'Widget not found'
                 });
