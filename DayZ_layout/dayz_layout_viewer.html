@@ -1446,15 +1446,15 @@
                 });
 
                 results.push({
-                    status: descriptionContent && descriptionText && descriptionContent.type === 'FrameWidgetClass' && descriptionText.type === 'MultilineTextWidgetClass' ? 'ok' : 'warn',
-                    label: 'Description multiline stack',
-                    message: descriptionContent && descriptionText ? `${descriptionContent.type} -> ${descriptionText.type}` : 'Widget not found'
+                    status: !descriptionContent && descriptionText && descriptionText.type === 'MultilineTextWidgetClass' ? 'ok' : 'warn',
+                    label: 'Description direct multiline stack',
+                    message: descriptionText ? `${descriptionContent ? `${descriptionContent.type} -> ` : ''}${descriptionText.type}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: dialogContent && dialogText && dialogContent.type === 'FrameWidgetClass' && dialogText.type === 'MultilineTextWidgetClass' ? 'ok' : 'warn',
-                    label: 'Dialog multiline stack',
-                    message: dialogContent && dialogText ? `${dialogContent.type} -> ${dialogText.type}` : 'Widget not found'
+                    status: !dialogContent && dialogText && dialogText.type === 'MultilineTextWidgetClass' ? 'ok' : 'warn',
+                    label: 'Dialog direct multiline stack',
+                    message: dialogText ? `${dialogContent ? `${dialogContent.type} -> ` : ''}${dialogText.type}` : 'Widget not found'
                 });
 
                 results.push({
