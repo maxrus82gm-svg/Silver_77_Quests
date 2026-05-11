@@ -152,42 +152,36 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- Создана папка `Documentation/SplitDoc`.
-- Созданы и заполнены `AGENT_RULES.md`, `ENCODING_RULES.md`, `DAYZ_RPC_SYNC_RULES.md`, `QUEST_EDITOR_RULES.md`, `QUEST_JSON_CONTRACT.md`, `QUEST_UI_RULES.md`, `DAYZ_LAYOUT_VIEWER_RULES.md`, `SERVER_PROFILE_RULES.md`, `TASK_HISTORY.md`.
-- В `AGENT_RULES.md` закреплены новые правила: ChatGPT всегда даёт полный `БЛОК 1`, краткую задачу агенту, своё мнение / предпочтительное решение, полный `REVIEW`, а новые правила поручает внести в нужный `SplitDoc`.
-- В `AGENT_RULES.md` закреплено новое правило: если задача разрешает, агент сам обновляет `AGENT REPORT`, `REVIEW / STATUS`, `TASK_HISTORY` и новые правила в нужных `SplitDoc`.
-- `AGENT_TASK_LOOP.md` сокращён до рабочего shell-документа с матрицей чтения, `БЛОКОМ 1`, `БЛОКОМ 2`, `БЛОКОМ 3` и ссылкой на `TASK_HISTORY.md`.
-- В `БЛОК 3` внесён `TASK 079 REVIEW`.
-- В `TASK_HISTORY.md` добавлены записи по `TASK 079` и `TASK 080`.
+- В `AGENT_TASK_LOOP.md` зафиксировано, что commit `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800` принят после runtime-проверки как текущий рабочий baseline `QuestMenu`.
+- В `БЛОКЕ 3` обновлён `TASK 101 REVIEW`: статус переведён из условного в runtime-accepted.
+- В `TASK_HISTORY.md` добавлены записи по `TASK 101` и `TASK 102`.
+- В документации зафиксированы текущие свойства baseline:
+  - `Description/Dialog` увеличены по вертикали;
+  - `Scrollbar V` отключён;
+  - стек остаётся `ScrollWidget -> MultilineTextWidget`;
+  - `QuestUI.c` не менялся;
+  - `wrapper/mask/SizeToChild/RichText/EditBox` не используются;
+  - очень длинный текст всё ещё может обрезаться;
+  - тема `scroll/clipping` отложена.
 
 CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\AGENT_RULES.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\DAYZ_RPC_SYNC_RULES.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_EDITOR_RULES.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_JSON_CONTRACT.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_UI_RULES.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\DAYZ_LAYOUT_VIEWER_RULES.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\SERVER_PROFILE_RULES.md`
 - `P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md`
 
 DIFF:
-- Огромные постоянные правила вынесены из `AGENT_TASK_LOOP.md` в тематические `SplitDoc`.
-- История задач вынесена в отдельный `TASK_HISTORY.md`.
-- Общее агентское поведение и процесс постановки задач теперь собраны в `AGENT_RULES.md`.
-- Encoding, RPC/sync, editor, JSON contract, UI, layout viewer и server profile разделены по отдельным документам.
-- Старый конфликт со ссылкой на "будущую TASK 079" внутри UI-заметок устранён за счёт вынесения backlog-правил из loop-файла.
+- В `AGENT_TASK_LOOP.md` обновлён последний `AGENT REPORT` под `TASK 102`.
+- В `AGENT_TASK_LOOP.md` обновлён `TASK 101 REVIEW`: runtime-проверка пользователя подтверждает, что текущий вариант пока принимается как рабочий baseline.
+- В `TASK_HISTORY.md` добавлена история принятия `TASK 101` и документирующего `TASK 102`.
+- Зафиксирован commit baseline: `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800`.
 
 PROBLEMS:
-- В проекте уже существуют пересекающиеся документы: `Documentation/RUSSIAN_ENCODING.md`, `Documentation/QUEST_LOGIC_SPEC.md`, `Documentation/README_JSON_CONFIG.md`. Они не менялись, но теперь есть риск двойного канона, если `SplitDoc` и старые документы начнут расходиться.
-- `TASK_HISTORY.md` перенесён как рабочая история из старого loop-файла. Если нужен полный аудит всех прошлых задач вне этого списка, это потребует отдельной задачи.
+- `P:` в этой сессии не смонтирован, поэтому документация обновлена в рабочей копии `D:\Dayz\Silver_77_Quests`, которая используется как локальное зеркало проекта.
 
 QUESTIONS:
 - Нет.
 
 CONCLUSION:
-- `SplitDoc`-структура создана, постоянные правила разнесены по темам, а `AGENT_TASK_LOOP.md` переведён в рабочий shell-формат. Код, JSON, мод, layout и внешние канонические документы не менялись.
+- Runtime-проверка пользователя приняла `TASK 101` как текущий рабочий baseline `QuestMenu`, и это состояние теперь явно зафиксировано в `AGENT_TASK_LOOP.md` и `TASK_HISTORY.md` без правок UI-кода.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
@@ -204,7 +198,10 @@ CONCLUSION:
 TASK 101 REVIEW
 
 Статус:
-Принято условно, нужна runtime-проверка.
+Принято после runtime-проверки пользователя.
+
+Commit baseline:
+`2fc3212f8a381efd7d33bdd60ff2491f5b5e3800`
 
 Что изменено:
 - QuestPanelBackdrop: 1040x620 -> 1040x710
@@ -227,6 +224,17 @@ Buttons:
 - AcceptButton y: 420 -> 540
 - CompleteButton y: 420 -> 540
 - CloseButton y: 490 -> 594
+
+Подтверждено в runtime:
+- текущий вариант визуально нормальный и пока принимается как рабочий baseline;
+- `Description/Dialog` увеличены по вертикали;
+- `Scrollbar V` отключён;
+- используется простой стек `ScrollWidget -> MultilineTextWidget`;
+- `QuestUI.c` не менялся;
+- `wrapper/mask/SizeToChild/RichText/EditBox` не используются.
+
+Known limitation:
+- очень длинный текст может обрезаться, потому что scroll/clipping тема пока отложена.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
