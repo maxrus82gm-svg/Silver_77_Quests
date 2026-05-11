@@ -103,3 +103,15 @@
 Для viewer-задач:
 
 - `Documentation/SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md`
+
+## 10. Совместимость с DayZ_layout viewer
+
+Если задача меняет `QuestMenu`, `QuestJournal`, `.layout`, `UIScriptedMenu`, `widget classes`, `styles`, `scroll`-паттерны или структуру UI, агент обязан сразу учитывать совместимость с `DayZ_layout viewer`.
+
+Это означает:
+
+- проверить, сможет ли `DayZ_layout viewer` корректно показать новые или изменённые UI-элементы;
+- проверить, понимает ли viewer новые `widget classes`, `styles`, контейнеры, scroll-паттерны и изменения структуры меню;
+- если viewer не поддерживает новый элемент или показывает его некорректно, не исправлять viewer вне scope, а явно указать это в `PROBLEMS`;
+- если viewer отстал от актуального UI, предложить отдельную задачу на обновление `DayZ_layout`;
+- обновлять viewer вместе с UI только если текущая задача прямо разрешает менять viewer.
