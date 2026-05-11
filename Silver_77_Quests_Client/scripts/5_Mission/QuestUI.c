@@ -148,29 +148,12 @@ class QuestUIMenu extends UIScriptedMenu
 
     void ResetScrollableText(MultilineTextWidget widget)
     {
-        if (!widget)
-            return;
-
-        widget.VScrollToPos01(0);
+        // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
     }
 
     bool HandleScrollableTextWheel(Widget w, Widget panelWidget, MultilineTextWidget textWidget, int wheel)
     {
-        if (!w || !textWidget)
-            return false;
-
-        if (w != panelWidget && w != textWidget)
-            return false;
-
-        if (!textWidget.IsScrollbarVisible())
-            return false;
-
-        if (wheel > 0)
-            return textWidget.VScrollStep(-1);
-
-        if (wheel < 0)
-            return textWidget.VScrollStep(1);
-
+        // Scroll helper disabled: current DayZ runtime does not expose MultilineTextWidget scroll API here.
         return false;
     }
 
@@ -550,12 +533,6 @@ class QuestUIMenu extends UIScriptedMenu
 
     override bool OnMouseWheel(Widget w, int x, int y, int wheel)
     {
-        if (HandleScrollableTextWheel(w, m_DescriptionPanel, m_QuestDescription, wheel))
-            return true;
-
-        if (HandleScrollableTextWheel(w, m_DialogPanel, m_DialogText, wheel))
-            return true;
-
         return super.OnMouseWheel(w, x, y, wheel);
     }
     

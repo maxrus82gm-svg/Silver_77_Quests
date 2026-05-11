@@ -176,26 +176,12 @@ class QuestJournalUIMenu extends UIScriptedMenu
 
     void ResetScrollableText(MultilineTextWidget widget)
     {
-        if (!widget)
-            return;
-
-        widget.VScrollToPos01(0);
+        // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
     }
 
     bool HandleScrollableTextWheel(Widget w, MultilineTextWidget textWidget, int wheel)
     {
-        if (!w || !textWidget || w != textWidget)
-            return false;
-
-        if (!textWidget.IsScrollbarVisible())
-            return false;
-
-        if (wheel > 0)
-            return textWidget.VScrollStep(-1);
-
-        if (wheel < 0)
-            return textWidget.VScrollStep(1);
-
+        // Scroll helper disabled: current DayZ runtime does not expose MultilineTextWidget scroll API here.
         return false;
     }
     

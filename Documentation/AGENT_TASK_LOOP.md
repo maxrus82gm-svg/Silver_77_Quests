@@ -56,10 +56,10 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 083 — Аналитика мода PB_DoorsAndBarricades: понять устройство и причину пропавшей коллизии
+TASK 084 — Hotfix compile error после TASK 082: убрать неподдерживаемый scroll API из Quest UI
 
 Статус:
-Новая активная аналитическая задача для агента.
+Новая активная срочная задача для агента.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -69,367 +69,337 @@ TASK 083 — Аналитика мода PB_DoorsAndBarricades: понять у�
 
 1. D:\GitHub\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
 2. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\AGENT_RULES.md
-3. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
-4. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
+3. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\QUEST_UI_RULES.md
+4. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
+5. D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
 
 Агент обязан соблюдать принцип жёстких рамок:
 
-- это аналитическая задача;
-- ничего не менять;
-- не чинить “заодно”;
-- не перепаковывать PBO;
-- не удалять и не переносить файлы;
-- если найдена проблема вне scope — записать в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK, но не исправлять сам.
+- делать только то, что прямо указано в этом БЛОКЕ 1;
+- не чинить “заодно” соседние проблемы;
+- не расширять задачу самостоятельно;
+- менять только явно разрешённые файлы;
+- не трогать JSON, server, editor, layout и documentation;
+- если найден другой способ scroll или другая UI-проблема — записать в PROBLEMS / RECOMMENDED NEXT TASK, но не исправлять в этой задаче.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-Пользователь распаковал PBO мода дверей:
+После TASK 082 были собраны моды, обновлены на сервере и выполнен запуск.
 
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\addons\PB_DoorsAndBarricades.pbo
+При старте сервер/клиент получил compile error:
 
-Распакованное содержимое находится в папке:
+Can't compile "Mission" script module!
 
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\
+Silver_77_Quests/scripts/5_Mission/questjournalui.c(182):
+Undefined function 'MultilineTextWidget.VScrollToPos01'
 
-Также пользователь указал commit:
+Актуальный commit / hash:
 
-d814d0c2d6a0a688e8b23c781534d7229c9929c9
+296532875c6ab908cc1f20c2bb4f2f7ab3eb1904
 
-Мод относится к DayZ Doors / Barricades / Walls / Gates / Windows / Kits.
+Ошибка связана с изменениями TASK 082, где была добавлена экспериментальная scroll-логика для MultilineTextWidget через методы:
 
-Главная проблема:
-у объектов мода пропала или не работает коллизия.
+- VScrollToPos01
+- VScrollStep
+- IsScrollbarVisible
 
-Нужно понять:
-- как мод устроен;
-- какие классы и модели используются;
-- где задаётся физика / collision / construction;
-- почему collision может отсутствовать;
-- что проверять дальше;
-- какую следующую безопасную задачу поставить для фикса.
+В текущем DayZ runtime эти методы у MultilineTextWidget не доступны, поэтому Mission script module не компилируется.
+
+Важно:
+TASK 082 была принята условно, и в REVIEW уже был отмечен риск, что scroll через VScrollStep / VScrollToPos01 требует проверки в runtime.
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 083
+ЦЕЛЬ TASK 084
 --------------------------------------------------------------------------------
 
-Сделать аналитический разбор мода PB_DoorsAndBarricades и дать техническое заключение:
+Вернуть компиляцию Mission script module.
 
-1. Какие основные классы есть в config.cpp.
-2. От чего они наследуются.
-3. Какие классы являются kit-объектами.
-4. Какие классы являются установленными buildable-объектами.
-5. Какие модели .p3d используются.
-6. Какие настройки могут влиять на collision.
-7. Есть ли в config.cpp подозрительные поля:
-   - physLayer
-   - simulation
-   - createProxyPhysicsOnInit
-   - createdProxiesOnInit
-   - collision_data
-   - carveNavmesh
-   - placement
-   - bounding
-   - class Construction
-8. Есть ли в скриптах логика, которая может скрывать / создавать / заменять объект после установки.
-9. Есть ли признаки, что проблема может быть не в config.cpp, а в .p3d Geometry LOD.
-10. Дать список вероятных причин исчезновения коллизии по степени вероятности.
-11. Предложить следующую безопасную TASK 084 для точечной проверки или фикса.
+Нужно убрать или безопасно отключить неподдерживаемый scroll API из Quest UI кода.
+
+Главная цель:
+мод должен снова компилироваться и запускаться.
+
+Это не задача на полноценную реализацию scroll.
 
 --------------------------------------------------------------------------------
 МОЁ МНЕНИЕ / ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
 --------------------------------------------------------------------------------
 
 Предпочтительное решение:
-сначала не чинить, а понять устройство мода.
 
-По DayZ buildable-объектам проблема коллизии часто бывает не только в config.cpp.
+Сделать минимальный hotfix.
 
-Самые вероятные зоны риска:
+Не откатывать всю TASK 082.
+Не трогать overlay.
+Не трогать layout.
+Не трогать подпись “Список квестов”.
+Не трогать цвета, панели, размеры и mapping Description/Dialog.
 
-1. В модели .p3d нет корректного Geometry LOD / Fire Geometry / View Geometry.
-2. Geometry LOD есть, но не соответствует named selections или components.
-3. createProxyPhysicsOnInit / createdProxiesOnInit не создают нужную deployed-физику.
-4. collision_data[] пустой или не соответствует construction part.
-5. Объект наследуется от Fence, но кастомная модель не повторяет нужную структуру vanilla Fence.
-6. Скрипт после установки создаёт объект без нужного deployed state / animation source.
-7. Объект визуально появляется, но физический proxy / geometry не активируется.
-8. Model path / selection / memory point / proxy не совпадает с тем, что ожидает config и scripts.
+Нужно убрать только ту часть, которая ломает компиляцию:
 
-На этой задаче нельзя сразу править.
+- VScrollToPos01
+- VScrollStep
+- IsScrollbarVisible
+- helper-функции, которые их вызывают;
+- OnMouseWheel-логику, если она зависит от этих helper-функций.
 
-Нужно составить карту мода, найти наиболее вероятный источник проблемы и предложить следующий точечный шаг.
+Лучший безопасный вариант:
+
+1. В QuestJournalUI.c:
+   - сделать ResetScrollableText безопасной пустой функцией или удалить её вызовы;
+   - убрать вызовы VScrollToPos01;
+   - отключить HandleScrollableTextWheel, если он использует VScrollStep / IsScrollbarVisible;
+   - OnMouseWheel должен снова работать только для выбора квестов в списке, без scroll MultilineTextWidget.
+
+2. В QuestUI.c:
+   - сделать ResetScrollableText безопасной пустой функцией или удалить её вызовы;
+   - убрать вызовы VScrollToPos01;
+   - отключить HandleScrollableTextWheel, если он использует VScrollStep / IsScrollbarVisible;
+   - OnMouseWheel не должен вызывать неподдерживаемый scroll API.
+
+3. Если после удаления этих вызовов длинные тексты снова обрезаются:
+   - это ожидаемый временный откат scroll-функции;
+   - записать это в PROBLEMS;
+   - предложить отдельную следующую задачу на DayZ-compatible scroll.
 
 --------------------------------------------------------------------------------
 SCOPE ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это только аналитика.
+Это срочный compile hotfix.
 
 Агент должен:
-- читать файлы;
-- анализировать config / scripts / models;
-- составить карту классов;
-- найти вероятные причины проблемы collision;
-- предложить следующую задачу.
+- найти все использования неподдерживаемых методов:
+  - VScrollToPos01
+  - VScrollStep
+  - IsScrollbarVisible
+- убрать или безопасно отключить эти вызовы;
+- проверить оба UI-файла, потому что ошибка показалась в QuestJournalUI.c, но похожая логика есть и в QuestUI.c;
+- сохранить остальную UI-логику без изменений;
+- вернуть отчёт в чат.
 
 Агент не должен:
-- править файлы;
-- перепаковывать PBO;
-- запускать фиксы;
-- менять config.cpp;
-- менять .p3d;
-- менять scripts;
-- менять JSON/XML;
-- менять основной мод Silver_77_Quests;
-- делать commit.
+- реализовывать новый scroll;
+- менять layout;
+- менять JSON;
+- менять server-side код;
+- менять Quest Editor;
+- менять RPC/sync;
+- менять Documentation;
+- чинить другие найденные проблемы;
+- делать commit/push/reset/clean.
 
 --------------------------------------------------------------------------------
-РАЗРЕШЁННЫЕ ФАЙЛЫ И ПАПКИ ДЛЯ ЧТЕНИЯ
+РАЗРЕШЁННЫЕ ФАЙЛЫ ДЛЯ ПРАВОК
 --------------------------------------------------------------------------------
 
-Можно читать:
+Разрешено менять только:
 
-D:\GitHub\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md
-D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\AGENT_RULES.md
-D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
-D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
+1. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
 
-Можно читать распакованный мод:
-
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\addons\
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\PB_DoorsAndBarricades\
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\config.cpp
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.c
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.p3d
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.rvmat
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.cpp
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.json
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\*.xml
-D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\**\$PBOPREFIX$
-
-Если фактический путь отличается:
-- найти папку распакованного PB_DoorsAndBarricades внутри репозитория;
-- указать реальный путь в отчёте.
+2. D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
 
 --------------------------------------------------------------------------------
 ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
 --------------------------------------------------------------------------------
 
-Запрещено:
-- менять любые файлы;
-- перепаковывать PBO;
-- запускать Addon Builder;
-- менять config.cpp;
-- менять .p3d;
-- менять scripts .c;
-- менять JSON;
-- менять XML;
-- менять types.xml;
-- менять основной Silver_77_Quests_Client;
-- менять основной Silver_77_Quests_Server;
-- менять Quest Editor;
-- менять Documentation / SplitDoc;
-- удалять файлы;
-- переносить файлы;
-- переименовывать файлы;
-- делать git commit;
-- делать git push;
-- делать git reset;
-- делать git clean;
-- делать git checkout для отката.
+Запрещено менять:
 
-Это только аналитика.
+- D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+- D:\GitHub\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+- D:\GitHub\Silver_77_Quests\Silver_77_Quests_Server\
+- D:\GitHub\Silver_77_Quests\JSON_Quvest\
+- D:\GitHub\Silver_77_Quests\DayZ_layout\
+- D:\GitHub\Silver_77_Quests\Documentation\
+- D:\GitHub\Silver_77_Quests\Documentation\SplitDoc\
+- D:\GitHub\Silver_77_Quests\Support\
+- D:\GitHub\Silver_77_Quests\Doors and Barricades Fixed\
+- любые quest JSON;
+- любые server profile файлы;
+- любые PBO.
 
-Если агент нашёл очевидное решение:
-не исправлять, а описать в CONCLUSION и предложить TASK 084.
+Запрещено делать:
+
+- git commit;
+- git push;
+- git reset;
+- git clean;
+- git checkout;
+- перенос файлов;
+- удаление файлов;
+- переименование файлов;
+- перепаковку PBO;
+- запуск Addon Builder;
+- изменение JSON-контракта;
+- изменение RPC/sync;
+- изменение логики Offer / Completion / Reward.
 
 --------------------------------------------------------------------------------
-ЧТО ИМЕННО НУЖНО ПРОВЕРИТЬ
+ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-1. Структура распакованного PBO
+1. Проверить QuestJournalUI.c
 
-Нужно вывести дерево верхнего уровня:
+Найти все использования:
 
-- есть ли config.cpp;
-- есть ли Scripts;
-- есть ли Data / models / .p3d;
-- есть ли textures / rvmat;
-- есть ли modded scripts;
-- есть ли settings/config JSON;
-- есть ли types.xml;
-- есть ли $PBOPREFIX$.
+- VScrollToPos01
+- VScrollStep
+- IsScrollbarVisible
+- HandleScrollableTextWheel
+- ResetScrollableText
+- OnMouseWheel
 
-2. config.cpp
+Исправить так, чтобы файл больше не вызывал неподдерживаемые методы MultilineTextWidget.
 
-Нужно найти и описать:
+Допустимый безопасный вариант:
 
-- CfgPatches;
-- CfgMods;
-- CfgVehicles;
-- базовые классы;
-- kit-классы;
-- deployed/buildable-классы;
-- door/barricade/wall/gate/window классы;
-- model paths;
-- physLayer;
-- simulation;
-- bounding;
-- createProxyPhysicsOnInit;
-- createdProxiesOnInit;
-- collision_data;
-- class Construction;
-- AnimationSources;
-- attachments;
-- hiddenSelections;
-- rotation / animation sources;
-- inheritance chain.
+- ResetScrollableText оставить как пустую no-op функцию;
+- HandleScrollableTextWheel удалить или сделать всегда return false;
+- OnMouseWheel оставить для переключения квестов в списке, если эта логика уже была рабочей;
+- не использовать VScrollToPos01 / VScrollStep / IsScrollbarVisible.
 
-Особенно проверить классы, похожие на:
+Пример безопасной no-op функции:
 
-- PBDoorsBase
-- PBDoorsKitBase
-- PB_PlankDoor
-- PB_WoodDoor
-- PB_MetalDoor
-- PB_PlankBarricade
-- PB_MetalBarricade
-- PB_BrickBarricade
-- PB_PlankDoorBarricade
-- PB_MetalDoorBarricade
-- PB_BrickDoorBarricade
-- PB_WoodWall
-- PB_MetalWall
-- PB_WoodGate
-- PB_MetalGate
-- PB_PlankWindow
-- PB_MetalWindow
-- все *_Kit классы
+void ResetScrollableText(MultilineTextWidget widget)
+{
+    // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
+}
 
-3. Модели .p3d
+Пример безопасного отключения scroll helper:
 
-Нужно перечислить .p3d модели, которые используются для дверей / баррикад / стен / ворот / окон.
+bool HandleScrollableTextWheel(Widget w, MultilineTextWidget textWidget, int wheel)
+{
+    return false;
+}
 
-Если возможно без изменения файлов:
-- проверить имена моделей;
-- проверить, существуют ли файлы по путям из config.cpp;
-- указать, какие модели нужно открыть в Object Builder для проверки Geometry LOD.
+2. Проверить QuestUI.c
 
-Важно:
-агент может не уметь надёжно читать внутренние LOD .p3d.
-Если не может проверить LOD напрямую, он должен честно сказать:
+Найти все использования:
 
-"Нужно открыть модель в Object Builder и проверить Geometry / Fire Geometry / View Geometry LOD".
+- VScrollToPos01
+- VScrollStep
+- IsScrollbarVisible
+- HandleScrollableTextWheel
+- ResetScrollableText
+- OnMouseWheel
 
-4. Скрипты
+Исправить так, чтобы файл больше не вызывал неподдерживаемые методы MultilineTextWidget.
 
-Нужно проверить Scripts:
+Допустимый безопасный вариант:
 
-- есть ли классы установки kit;
-- есть ли placement logic;
-- есть ли OnPlacementComplete;
-- есть ли create object / replace object logic;
-- есть ли SetAnimationPhase;
-- есть ли HideSelection / ShowSelection;
-- есть ли CreateDynamicPhysics / SetDynamicPhysicsLifeTime / dBody / collision-related calls;
-- есть ли Init / EEInit / OnStoreLoad / AfterStoreLoad logic;
-- есть ли логика, которая переводит объект в Deployed state;
-- есть ли logic для gates/doors open/close.
+void ResetScrollableText(MultilineTextWidget widget)
+{
+    // Scroll reset disabled: MultilineTextWidget does not support VScrollToPos01 in current DayZ runtime.
+}
 
-5. Construction / collision
+Для варианта helper-а с panelWidget:
 
-Нужно отдельно проверить:
+bool HandleScrollableTextWheel(Widget w, Widget panelWidget, MultilineTextWidget textWidget, int wheel)
+{
+    return false;
+}
 
-- class Construction;
-- collision_data[];
-- required_parts[];
-- conflicted_parts[];
-- is_gate;
-- id;
-- material_type;
-- build_action_type;
-- dismantle_action_type;
-- proxy physics;
-- deployed selections.
+3. Не трогать layout
 
-6. Вероятные причины пропавшей коллизии
+Не менять:
 
-Составить список вероятных причин по приоритету:
+- QuestMenu.layout
+- QuestJournal.layout
 
-Например:
-A. Нет Geometry LOD в .p3d.
-B. Geometry LOD есть, но не настроены components / mass / named selections.
-C. Неправильная настройка createProxyPhysicsOnInit / createdProxiesOnInit.
-D. Пустой collision_data[] для Construction.
-E. Неверный inheritance / simulation / physLayer.
-F. Скрипт ставит не тот объект или не переводит его в Deployed state.
-G. Модель путь неверный или визуальный объект есть, но physical geometry не активируется.
-H. Коллизия есть только у части/selection, которая скрыта animation source.
-I. Объект наследуется от Fence, но кастомная модель не соответствует vanilla fence expectations.
+Overlay и визуальные изменения TASK 082 оставить как есть.
 
-7. Что проверить вручную в Object Builder
+4. Не реализовывать новый scroll
 
-Дать пользователю список:
+Если агент знает другой DayZ-compatible способ scroll:
+- не внедрять его сейчас;
+- описать в RECOMMENDED NEXT TASK.
 
-- какие .p3d открыть;
-- какие LOD проверить;
-- какие named selections проверить;
-- какие components должны быть в Geometry LOD;
-- какие свойства geometry важны;
-- что сравнить с vanilla Fence / Gate / Watchtower;
-- где посмотреть Fire Geometry / View Geometry;
-- что проверить по mass / convexity / components.
+5. Проверить синтаксис
 
-8. Следующая задача
-
-Предложить TASK 084:
-
-Варианты:
-- TASK 084A — точечная проверка config.cpp collision/proxy settings;
-- TASK 084B — проверка/исправление .p3d Geometry LOD;
-- TASK 084C — тестовый фикс createProxyPhysicsOnInit / createdProxiesOnInit / collision_data;
-- TASK 084D — проверка скрипта установки kit/deployed object.
-
-Выбрать один наиболее вероятный вариант по результатам анализа.
+После правок проверить, что в разрешённых файлах:
+- нет вызовов VScrollToPos01;
+- нет вызовов VScrollStep;
+- нет вызовов IsScrollbarVisible;
+- нет очевидных синтаксических ошибок;
+- нет незакрытых скобок;
+- нет ссылок на удалённые функции.
 
 --------------------------------------------------------------------------------
 КОДИРОВКА
 --------------------------------------------------------------------------------
 
-Если агент читает .cpp / .c / .xml / .json с кириллицей:
+Задача затрагивает .c файлы с русским текстом.
 
-- не менять кодировку;
-- не сохранять файлы;
-- если видит кракозябры, указать в отчёте;
-- это аналитика, поэтому ничего не перекодировать.
+Нужно соблюдать ENCODING_RULES.md:
+
+- не делать массовую перекодировку;
+- не ломать кириллицу;
+- не менять текстовые строки без необходимости;
+- не сохранять файл в неправильной кодировке;
+- если файл был UTF-8 без BOM — сохранить UTF-8 без BOM;
+- в отчёте указать ENCODING CHECK.
 
 --------------------------------------------------------------------------------
 ЖЁСТКИЕ РАМКИ ДЛЯ ЭТОЙ ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это аналитическая задача.
+Это только hotfix compile error.
 
-Агент не имеет права менять файлы.
+Разрешено исправить только ошибку неподдерживаемого scroll API.
 
-Если найдено очевидное решение:
+Нельзя:
+- переделывать UI;
+- улучшать scroll;
+- менять layout;
+- менять размеры панелей;
+- менять фон;
+- менять список квестов;
+- менять кнопки;
+- менять квестовую логику;
+- менять server sync;
+- менять JSON;
+- менять документацию;
+- чинить другие ошибки, если они не связаны напрямую с текущим compile error.
+
+Если после исправления появится новая compile error в этих же двух разрешённых файлах и она напрямую связана с удалением scroll helper-ов:
+- можно исправить её в рамках этих же двух файлов.
+
+Если новая ошибка находится в другом файле:
 - не исправлять;
-- записать в CONCLUSION;
-- предложить TASK 084.
+- записать в PROBLEMS;
+- предложить следующую задачу.
 
-Если найдено несколько проблем:
-- ранжировать их;
-- не чинить ни одну.
+--------------------------------------------------------------------------------
+ПРОВЕРКИ
+--------------------------------------------------------------------------------
 
-Если для анализа нужен файл вне разрешённой зоны:
-- не читать/не менять без необходимости;
-- указать в PROBLEMS, какой файл нужен и почему.
+После правок проверить:
 
-Если проблема найдена вне задачи:
-- писать в PROBLEMS / QUESTIONS / RECOMMENDED NEXT TASK;
-- не исправлять сам.
+1. В QuestJournalUI.c больше нет:
+   - VScrollToPos01
+   - VScrollStep
+   - IsScrollbarVisible
+
+2. В QuestUI.c больше нет:
+   - VScrollToPos01
+   - VScrollStep
+   - IsScrollbarVisible
+
+3. OnMouseWheel не вызывает неподдерживаемый MultilineTextWidget scroll API.
+
+4. ResetScrollableText не вызывает неподдерживаемый API.
+
+5. HandleScrollableTextWheel не вызывает неподдерживаемый API или удалён безопасно.
+
+6. Код синтаксически целый.
+
+7. Кириллица не повреждена.
+
+8. CHANGED FILES содержит только:
+   - QuestJournalUI.c
+   - QuestUI.c
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
@@ -437,17 +407,17 @@ I. Объект наследуется от Fence, но кастомная мо�
 
 Задача считается выполненной, если:
 
-1. Дано дерево верхнего уровня распакованного мода.
-2. Описаны основные классы config.cpp.
-3. Разделены kit-классы и deployed/buildable-классы.
-4. Описаны model paths и .p3d, которые нужно проверить.
-5. Найдены collision-related настройки config.cpp.
-6. Проверены scripts на placement/deployed/collision логику.
-7. Составлен список вероятных причин пропавшей коллизии.
-8. Дана ручная checklist-проверка для Object Builder.
-9. Предложена следующая TASK 084.
-10. Ничего не изменялось.
-11. CHANGED FILES содержит “ничего не изменялось”.
+1. Compile error по MultilineTextWidget.VScrollToPos01 устранён.
+2. В коде больше нет вызовов VScrollToPos01.
+3. В коде больше нет вызовов VScrollStep.
+4. В коде больше нет вызовов IsScrollbarVisible.
+5. Изменены только два разрешённых файла.
+6. Layout не менялся.
+7. JSON не менялся.
+8. Server не менялся.
+9. Documentation не менялась.
+10. Агент вернул отчёт в чат.
+11. В отчёте явно указано, что scroll временно отключён / отложен в отдельную задачу.
 
 --------------------------------------------------------------------------------
 ОЖИДАЕМЫЙ ОТЧЁТ
@@ -455,57 +425,41 @@ I. Объект наследуется от Fence, но кастомная мо�
 
 AGENT REPORT
 
-ANALYSIS:
-- кратко как устроен мод;
-- что найдено по config.cpp;
-- что найдено по scripts;
-- что найдено по models;
-- где вероятнее всего зона проблемы collision.
-
-STRUCTURE:
-- дерево верхнего уровня распакованного PBO;
-- основные папки и файлы.
-
-CLASSES:
-- базовые классы;
-- kit-классы;
-- deployed/buildable-классы;
-- какие классы наследуются от чего.
-
-MODELS:
-- список .p3d;
-- какие классы используют какие модели;
-- какие модели нужно проверить в Object Builder.
-
-COLLISION FINDINGS:
-- physLayer;
-- simulation;
-- createProxyPhysicsOnInit;
-- createdProxiesOnInit;
-- collision_data;
-- Construction;
-- Geometry LOD risk;
-- скриптовые риски.
-
-LIKELY CAUSES:
-- список причин по вероятности.
-
-MANUAL CHECKLIST:
-- что пользователю проверить руками в Object Builder / игре.
+DONE:
+- что исправлено;
+- какие unsupported API вызовы удалены/отключены;
+- что QuestJournalUI.c проверен;
+- что QuestUI.c проверен.
 
 CHANGED FILES:
-- ничего не изменялось.
+- Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+- Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+
+DIFF:
+- кратко описать, что изменено;
+- например:
+  - ResetScrollableText стал no-op;
+  - HandleScrollableTextWheel отключён / удалён;
+  - OnMouseWheel больше не вызывает MultilineTextWidget scroll API.
+
+ENCODING CHECK:
+- указать, что кириллица не повреждена;
+- указать, что массовая перекодировка не выполнялась.
 
 PROBLEMS:
-- что не удалось проверить;
-- какие файлы / LOD требуют ручной проверки;
-- какие проблемы найдены вне scope.
+- длинные тексты снова могут обрезаться, потому что экспериментальный scroll отключён;
+- полноценный scroll требует отдельной DayZ-compatible задачи.
+
+QUESTIONS:
+- только реальные вопросы, если есть.
 
 RECOMMENDED NEXT TASK:
-- предложить TASK 084 с чёткой областью и разрешёнными файлами.
+- TASK 085 — найти DayZ-compatible способ scroll для QuestMenu / QuestJournal без неподдерживаемых методов MultilineTextWidget.
 
 CONCLUSION:
-- краткий вывод: где вероятнее всего причина пропавшей коллизии.
+- compile hotfix выполнен;
+- неподдерживаемый scroll API убран;
+- мод должен пройти дальше этапа Mission script compile.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
