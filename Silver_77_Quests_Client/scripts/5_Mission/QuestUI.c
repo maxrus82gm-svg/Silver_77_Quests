@@ -4,6 +4,8 @@
 
 const int MENU_QUEST_UI = 77777;
 const int MENU_QUEST_JOURNAL_UI = 77778;
+const int QUEST_UI_DESCRIPTION_MAX_CHARS_PER_LINE = 60;
+const int QUEST_UI_DIALOG_MAX_CHARS_PER_LINE = 62;
 
 class QuestUIMenu extends UIScriptedMenu
 {
@@ -278,12 +280,13 @@ class QuestUIMenu extends UIScriptedMenu
 
     void SetDescriptionText(string text)
     {
-        FillScrollableTextList(m_QuestDescription, text, 44, 0xFFF0EADB);
+        // Description keeps source line boundaries so quest items/objectives stay separated.
+        FillScrollableTextList(m_QuestDescription, text, QUEST_UI_DESCRIPTION_MAX_CHARS_PER_LINE, 0xFFF0EADB);
     }
 
     void SetDialogText(string text)
     {
-        FillScrollableTextList(m_DialogText, text, 44, 0xFFFFD54F);
+        FillScrollableTextList(m_DialogText, text, QUEST_UI_DIALOG_MAX_CHARS_PER_LINE, 0xFFFFD54F);
     }
 
     string SanitizeQuestUiLabel(string text)
@@ -1151,6 +1154,8 @@ class QuestUIMenu extends UIScriptedMenu
         super.OnShow();
         GetGame().GetInput().ChangeGameFocus(1);
         GetGame().GetUIManager().ShowUICursor(true);
+        if (GetGame().GetMission() && GetGame().GetMission().GetHud())
+            GetGame().GetMission().GetHud().Show(false);
         
         MissionGameplay mission = MissionGameplay.Cast(GetGame().GetMission());
         if (mission)
@@ -1167,6 +1172,8 @@ class QuestUIMenu extends UIScriptedMenu
         super.OnHide();
         GetGame().GetInput().ChangeGameFocus(-1);
         GetGame().GetUIManager().ShowUICursor(false);
+        if (GetGame().GetMission() && GetGame().GetMission().GetHud())
+            GetGame().GetMission().GetHud().Show(true);
         
         MissionGameplay mission = MissionGameplay.Cast(GetGame().GetMission());
         if (mission)

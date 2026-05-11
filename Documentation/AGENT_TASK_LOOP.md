@@ -56,10 +56,10 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 086 — Изучить scroll в @Trader и заменить fallback-пагинацию QuestMenu на настоящий DayZ-compatible scroll
+TASK 087 — QuestMenu polish: нормальный перенос строк в scroll и устранение мешающего action prompt
 
 Статус:
-Новая активная UI-задача после ручной проверки в игре.
+Новая активная UI-polish задача после ручной проверки TASK 086 в игре.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -79,132 +79,139 @@ TASK 086 — Изучить scroll в @Trader и заменить fallback-па�
 - не чинить “заодно” соседние проблемы;
 - не расширять задачу самостоятельно;
 - менять только явно разрешённые файлы;
-- читать @Trader только как технический референс;
-- не менять @Trader;
-- не копировать чужой мод целиком;
 - не трогать JSON, server, editor, RPC/sync и quest logic;
+- не менять @Trader;
+- не возвращать fallback-пагинацию с кнопками < / >;
 - не возвращать неподдерживаемый MultilineTextWidget API:
   - VScrollToPos01
   - VScrollStep
-  - IsScrollbarVisible;
-- если точный способ Trader-scroll не подходит для Description/Dialog, сначала описать проблему в PROBLEMS, а не ломать QuestMenu.
+  - IsScrollbarVisible.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-После TASK 085 QuestMenu получил fallback/page approach для DescriptionText и DialogText.
+После TASK 086 в игре подтверждено:
 
-Ручная проверка показала:
+1. Scroll заработал.
+   Подход через TextListboxWidget правильный.
 
-1. Page/fallback через кнопки < / > — не подходит как финальное решение.
-   Пользователь явно указал:
-   “Это решение как сейчас не годится. Нужен именно scroll.”
+2. Но перенос строк плохой.
+   Текст переносится слишком рано и выглядит как стихи.
+   Нужно, чтобы строка заполняла ширину окна почти полностью.
 
-2. В качестве рабочего примера есть распакованный мод Trader:
+3. В DescriptionPanel есть предметное описание / цели.
+   Для него нужно правило:
+   - каждый предмет / цель начинается с новой строки;
+   - если строка предмета не влезает — она переносится;
+   - следующий предмет всё равно начинается с новой строки.
 
-P:\Silver_77_Quests\@Trader
+4. В DialogPanel текст короткий, но он тоже должен идти в ширину окна.
+   Не нужно резать его слишком короткими строками.
 
-На скриншоте Trader UI видно, что там есть настоящий scroll:
-- список предметов прокручивается;
-- есть вертикальный красный scrollbar;
-- UI выглядит как нормальный DayZ-compatible интерфейс со scroll;
-- фон Trader UI лучше перекрывает игровой мир.
+5. Фон / backing всё ещё не решает проблему.
+   Prompt “Проверить пульс [УДЕРЖИВАЙТЕ]” продолжает мешать чтению.
 
-Нужно изучить, как scroll реализован в @Trader:
-- через какие layout widget classes;
-- через какие script classes;
-- какие методы используются;
-- как связаны list/text widget и scrollbar;
-- можно ли этот паттерн безопасно перенести в QuestMenu.
+Важное наблюдение:
+Если action prompt рисуется поверх QuestMenu, то обычный фон внутри QuestMenu может не перекрыть его вообще, потому что prompt может находиться в другом UI-layer. Нужно проверить, можно ли безопасно скрывать / подавлять action prompt на время открытого QuestMenu, а не пытаться бесконечно усиливать фон.
 
-Актуальный hash / commit:
+Актуальный hash:
 
-85e241d0a93d9325964be346438fe0801730d2cb
+a6fc5ebb003bcf85847fb4bca28f3cda8698d5b9
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 086
+ЦЕЛЬ TASK 087
 --------------------------------------------------------------------------------
 
-Заменить текущую fallback-пагинацию QuestMenu на настоящий DayZ-compatible scroll, основанный на проверенном паттерне из @Trader.
+Довести QuestMenu до читаемого состояния после внедрения настоящего scroll.
 
-Главная цель:
+Нужно:
 
-1. DescriptionPanel должен иметь настоящий scroll.
-2. DialogPanel должен иметь настоящий scroll.
-3. Кнопки < / > и page-индикаторы из TASK 085 должны быть удалены, если scroll успешно реализован.
-4. Нельзя использовать неподдерживаемые методы MultilineTextWidget:
-   - VScrollToPos01
-   - VScrollStep
-   - IsScrollbarVisible
-5. Не сломать Offer / Completion / Reward.
-6. Не менять JSON-контракт.
-7. Не трогать серверную логику.
-8. Не трогать QuestJournal в этой задаче.
+1. Оставить TextListboxWidget scroll.
+2. Исправить алгоритм переноса строк.
+3. Сделать DescriptionText читаемым по ширине окна.
+4. Сделать DialogText читаемым по ширине окна.
+5. Сохранить предметы / цели как отдельные логические строки.
+6. Устранить или безопасно скрыть мешающий action prompt “Проверить пульс [УДЕРЖИВАЙТЕ]” на время открытого QuestMenu.
+7. Не ломать Offer / Completion / Reward.
+8. Не менять JSON-контракт.
+9. Не трогать серверную логику.
+10. Не трогать QuestJournal в этой задаче.
 
 --------------------------------------------------------------------------------
 МОЁ МНЕНИЕ / ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
 --------------------------------------------------------------------------------
 
-Предпочтительное решение:
+Предпочтительное решение по тексту:
 
-Сначала изучить @Trader, а не угадывать.
+Сохранить TextListboxWidget, потому что scroll работает.
 
-Нужно найти конкретно:
-- layout-файл Trader menu;
-- widget, который даёт scroll;
-- script-класс Trader menu;
-- как script наполняет список/текст;
-- как работает scrollbar;
-- какие методы DayZ API используются;
-- какие из них безопасны и компилируются.
+Проблема сейчас не в scroll, а в line-wrap.
 
-Моё предпочтение:
+Нужно увеличить допустимую длину строки в script:
+- сейчас строки режутся слишком рано;
+- нужно подобрать maxCharsPerLine ближе к реальной ширине окна.
 
-Если Trader использует TextListboxWidget с нативной прокруткой:
-- рассмотреть вариант заменить длинные Description/Dialog text areas на scrollable list/text containers;
-- например, разбивать текст на строки и добавлять строки в TextListboxWidget;
-- тогда DayZ сам даст нативный scrollbar, как в Trader.
+Но важно не просто увеличить число символов.
 
-Если Trader использует ScrollWidget / ScrollPanel:
-- перенести этот layout/script pattern минимально;
-- не переписывать весь QuestMenu.
+Нужна логика “paragraph / item aware wrapping”:
 
-Если Trader scroll подходит только для списков, но не для MultilineTextWidget:
-- не пытаться снова скроллить MultilineTextWidget unsupported API;
-- лучше сделать scrollable TextListbox-based display для Description/Dialog.
+1. Обычные абзацы:
+   - заполнять строку словами до лимита;
+   - переносить только когда следующее слово уже не влезает.
 
-Текущее page/fallback-решение считать временным и заменить, если найден рабочий scroll.
+2. Пустые строки:
+   - сохранять как разделители.
+
+3. Предметные строки / цели:
+   - каждая строка, которая уже начинается как отдельный пункт, должна начинаться с новой строки;
+   - например:
+     - "- Принести: PotatoSeed x120"
+     - "  Сдано: 23 / 120"
+     - "  Можно сдавать частями"
+   - если такая строка длинная, она переносится внутри себя;
+   - но следующий предмет / следующая цель не должен приклеиваться к предыдущему переносу.
+
+4. DialogText:
+   - использовать более широкий лимит строки;
+   - не делать стихи;
+   - короткий диалог должен занимать ширину окна естественно.
+
+Предпочтительное решение по prompt / фону:
+
+Сначала проверить, может ли QuestMenu визуально перекрыть prompt.
+Если prompt рисуется поверх QuestMenu другим UI-layer, то усиление фона не поможет.
+
+В этом случае предпочтительное решение:
+- при открытии QuestMenu временно подавлять / скрывать action prompt;
+- при закрытии QuestMenu возвращать обычное состояние.
 
 Важно:
-- не копировать лишнюю торговую логику;
-- не переносить RPC Trader;
-- не переносить safezone;
-- не переносить currency/item logic;
-- взять только UI-scroll pattern.
+- не ломать input/action систему глобально;
+- не удалять action prompt навсегда;
+- не менять общую систему взаимодействий;
+- сделать только временное поведение “пока QuestMenu открыт”.
+
+Если в проекте уже есть OnQuestMenuOpened / OnQuestMenuClosed:
+- проверить, можно ли использовать эти места для блокировки prompt;
+- если там уже есть флаг открытого QuestMenu — использовать его.
 
 --------------------------------------------------------------------------------
 SCOPE ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это UI-задача только для QuestMenu scroll.
+Это UI-polish задача только для QuestMenu.
 
 Агент должен:
 
-1. Изучить @Trader как reference.
-2. Найти, как в Trader реализован scroll.
-3. Описать найденный scroll pattern в отчёте.
-4. Перенести подход на QuestMenu.
-5. Заменить fallback/page approach для DescriptionText и DialogText на настоящий scroll.
-6. Удалить или отключить page-кнопки и page-индикаторы из QuestMenu, если scroll успешно реализован.
-7. Сохранить текущий mapping:
-   - DescriptionPanel = quest.description / статус / цели / прогресс / награды;
-   - DialogPanel = triggerActions[].dialogText / текущий NPC dialog.
-8. Сохранить текущие основные кнопки:
-   - ВЗЯТЬ КВЕСТ
-   - СДАТЬ КВЕСТ
-   - Закрыть рот и уйти
-9. Вернуть отчёт в чат.
+1. Исправить перенос строк в QuestMenu scroll.
+2. Сохранить рабочий TextListboxWidget scroll.
+3. Убрать “стихотворный” перенос.
+4. Сделать описание / цели / предметы читаемыми.
+5. Сделать диалог читаемым.
+6. Проверить, почему prompt “Проверить пульс” не перекрывается фоном.
+7. Если prompt рисуется поверх меню — безопасно скрывать / подавлять его только на время открытого QuestMenu.
+8. Вернуть отчёт в чат.
 
 Агент не должен:
 
@@ -222,6 +229,24 @@ SCOPE ЗАДАЧИ
 - запускать Addon Builder.
 
 --------------------------------------------------------------------------------
+РАЗРЕШЁННЫЕ ФАЙЛЫ ДЛЯ ПРАВОК
+--------------------------------------------------------------------------------
+
+Разрешено менять:
+
+1. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+
+2. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+
+Дополнительно разрешено менять только если это прямо нужно для временного скрытия action prompt при открытом QuestMenu:
+
+3. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\MissionGameplay.c
+
+Если action prompt управляется другим клиентским файлом в 5_Mission и без него задачу невозможно решить:
+- сначала указать файл в PROBLEMS;
+- менять его только если он напрямую отвечает за показ prompt и изменение минимальное.
+
+--------------------------------------------------------------------------------
 РАЗРЕШЁННЫЕ ФАЙЛЫ И ПАПКИ ДЛЯ ЧТЕНИЯ
 --------------------------------------------------------------------------------
 
@@ -233,54 +258,31 @@ SCOPE ЗАДАЧИ
 4. P:\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
 5. P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
 
-Можно читать @Trader:
+Можно читать текущий UI:
 
-6. P:\Silver_77_Quests\@Trader\
+6. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+7. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+8. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\MissionGameplay.c
 
-Особенно искать и читать внутри @Trader:
+Можно читать для поиска prompt logic:
 
-- *.layout
-- *.c
-- *.cpp
-- *.h
-- config.cpp
-- scripts\
-- gui\
-- layouts\
-- menu-related файлы
-- Trader menu UI files
-- файлы, где встречаются:
-  - Scroll
-  - Scrollbar
-  - Listbox
-  - TextListbox
-  - OnMouseWheel
-  - Slider
-  - VScroll
-  - Update
-  - AddItem
-  - ClearItems
-  - SelectRow
+9. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\
+10. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\4_World\
 
-Можно читать текущий QuestMenu:
-
-7. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
-8. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
-
-Можно читать, но не менять:
-
-9. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
-10. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
-
---------------------------------------------------------------------------------
-РАЗРЕШЁННЫЕ ФАЙЛЫ ДЛЯ ПРАВОК
---------------------------------------------------------------------------------
-
-Разрешено менять только:
-
-1. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
-
-2. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+Искать по словам:
+- Action
+- Prompt
+- Проверить пульс
+- QuestMenuOpened
+- QuestMenuClosed
+- OnQuestMenuOpened
+- OnQuestMenuClosed
+- current quest
+- interaction
+- show prompt
+- hint
+- input
+- action text
 
 --------------------------------------------------------------------------------
 ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
@@ -325,153 +327,130 @@ SCOPE ЗАДАЧИ
 ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-1. Найти Trader UI files
+1. Исправить line-wrap для DescriptionText
 
-В @Trader найти файлы, отвечающие за торговое меню.
+В QuestUI.c проверить:
+
+- BuildWrappedTextLines
+- FillScrollableTextList
+- SetDescriptionText
+
+Нужно добиться:
+
+- строка заполняется почти на всю ширину DescriptionText;
+- перенос идёт по словам;
+- перенос происходит только когда следующее слово не помещается;
+- пустые строки сохраняются;
+- строки-пункты остаются отдельными логическими блоками.
+
+Важно для целей / предметов:
+
+Если исходный текст содержит строки:
+
+- Принести: PotatoSeed x120
+  Сдано: 23 / 120
+  Можно сдавать частями
+- Принести: другой предмет x2
+
+то результат должен сохранять структуру:
+
+- первый предмет начинается с новой строки;
+- дополнительные строки первого предмета идут под ним;
+- если строка первого предмета длинная — она переносится;
+- второй предмет начинается с новой строки, а не приклеивается к переносу первого.
+
+2. Исправить line-wrap для DialogText
+
+В QuestUI.c проверить:
+
+- SetDialogText
+- FillScrollableTextList
+- BuildWrappedTextLines
+
+Нужно добиться:
+
+- диалог не режется слишком коротко;
+- текст идёт по ширине DialogText;
+- переносится только при заполнении ширины;
+- короткий диалог выглядит как нормальный текст, а не как стихотворение.
+
+3. Настроить разные параметры ширины
+
+DescriptionText и DialogText могут иметь разные размеры.
+
+Нужно использовать разные maxCharsPerLine, если это нужно:
+
+- DescriptionText может иметь один лимит;
+- DialogText может иметь другой лимит.
+
+Подобрать значения по текущей ширине layout.
+
+Если текущие значения слишком маленькие, увеличить.
+
+4. Убрать лишнюю визуальную “строчность”
+
+Если TextListboxWidget подсвечивает каждую строку красным или выглядит как selected list:
+- проверить, можно ли убрать selected/highlight для DescriptionText/DialogText;
+- не ломать scroll;
+- не делать большой редизайн.
+
+5. Проверить фон и action prompt
+
+Проверить, почему prompt “Проверить пульс [УДЕРЖИВАЙТЕ]” всё ещё мешает.
 
 Нужно определить:
 
-- layout-файл меню Trader;
-- script-файл меню Trader;
-- где создаётся меню;
-- где находятся виджеты списка;
-- где находится scrollbar;
-- какой widget class используется для scroll;
-- как script наполняет список;
-- как обрабатывается OnMouseWheel;
-- используется ли TextListboxWidget;
-- используется ли ScrollWidget / ScrollPanel;
-- используется ли SliderWidget;
-- используется ли стандартный scrollbar layout.
+A. Фон QuestMenu не работает вообще.
+B. Фон работает, но action prompt рисуется поверх меню.
+C. QuestMenu не получает UI focus, поэтому prompt продолжает отображаться.
+D. OnQuestMenuOpened / OnQuestMenuClosed уже есть, но не подавляют prompt.
 
-2. Описать scroll pattern Trader
+Если prompt рисуется поверх QuestMenu:
+- не пытаться бесконечно усиливать фон;
+- реализовать минимальное временное скрытие prompt на время открытого QuestMenu.
 
-В отчёте кратко описать:
+6. Безопасно скрыть / подавить prompt при открытом QuestMenu
 
-- какие widget classes дают scroll;
-- какие имена виджетов используются;
-- какие script methods используются;
-- есть ли ручная обработка колеса мыши;
-- есть ли встроенный scrollbar;
-- можно ли применить этот подход к QuestMenu.
+Если найдено место, где prompt формируется или показывается:
 
-3. Выбрать безопасный способ переноса
+- добавить проверку “QuestMenu открыт”;
+- если QuestMenu открыт — не показывать prompt;
+- при закрытии QuestMenu поведение должно вернуться.
 
-Вариант A — если Trader использует TextListboxWidget scroll:
+Если в MissionGameplay уже есть флаг или функции:
+- OnQuestMenuOpened
+- OnQuestMenuClosed
 
-- сделать Description как scrollable list/text block на базе TextListboxWidget или аналогичного виджета;
-- разбивать full description text на строки;
-- добавлять строки в список;
-- использовать нативный scrollbar списка;
-- аналогично для Dialog.
+использовать их.
 
-Вариант B — если Trader использует ScrollWidget / ScrollPanel:
+Если такого флага нет:
+- добавить минимальный bool только в нужном клиентском UI/mission классе;
+- не менять server;
+- не менять RPC;
+- не менять action систему глобально.
 
-- применить такой же layout pattern к DescriptionPanel и DialogPanel;
-- сохранить текст внутри scrollable container;
-- не использовать unsupported MultilineTextWidget API.
+7. Сохранить scroll
 
-Вариант C — если Trader использует другой безопасный widget:
+Не откатывать TextListboxWidget scroll.
 
-- перенести только UI-scroll pattern;
-- объяснить в отчёте, почему выбран именно он.
+Запрещено возвращать:
+- MultilineTextWidget scroll;
+- page fallback;
+- кнопки < / >;
+- VScrollToPos01;
+- VScrollStep;
+- IsScrollbarVisible.
 
-4. Убрать fallback-пагинацию TASK 085
-
-Если настоящий scroll реализован:
-
-Удалить или отключить из QuestMenu.layout:
-
-- DescriptionPageInfo
-- DescriptionPrevButton
-- DescriptionNextButton
-- DialogPageInfo
-- DialogPrevButton
-- DialogNextButton
-
-Удалить или отключить из QuestUI.c:
-
-- m_DescriptionPageInfo
-- m_DialogPageInfo
-- m_DescriptionPrevButton
-- m_DescriptionNextButton
-- m_DialogPrevButton
-- m_DialogNextButton
-- m_DescriptionPages
-- m_DialogPages
-- m_DescriptionPageIndex
-- m_DialogPageIndex
-- BuildPagedText
-- UpdatePagedTextControls
-- ApplyDescriptionPage
-- ApplyDialogPage
-- SetDescriptionPagedText
-- SetDialogPagedText
-- ChangeDescriptionPage
-- ChangeDialogPage
-
-И заменить это на scroll-compatible implementation.
-
-Если часть этих функций больше не нужна — удалить.
-Если безопаснее временно оставить неиспользуемыми — не оставлять мёртвый код без причины. Лучше убрать, если компиляция позволяет.
-
-5. Реализовать scroll для DescriptionPanel
-
-DescriptionPanel должен показывать:
-
-- quest.description;
-- status;
-- requirements;
-- objectives;
-- deposited progress;
-- rewards.
-
-Текст должен быть читаем через настоящий scroll.
-
-Нельзя возвращать старый режим, где NPC dialogText подмешивался в DescriptionPanel.
-
-6. Реализовать scroll для DialogPanel
-
-DialogPanel должен показывать:
-
-- triggerActions[].dialogText;
-- current NPC dialog;
-- selected route dialog.
-
-Текст должен быть читаем через настоящий scroll.
-
-7. Сохранить фон / readability
-
-Фон из TASK 085 можно оставить или минимально поправить, если это связано с layout-перестройкой под scroll.
-
-Не делать отдельный большой редизайн.
-
-Требование:
-- фон должен оставаться лучше, чем до TASK 085;
-- не возвращать прозрачный QuestMenu;
-- action prompt должен меньше мешать чтению.
-
-8. Проверить отсутствие unsupported API
-
-После правок обязательно проверить, что в QuestUI.c нет executable-вызовов:
-
-- VScrollToPos01
-- VScrollStep
-- IsScrollbarVisible
-
-Если эти слова встречаются только в комментарии — допустимо, но лучше убрать комментарии с этими именами, чтобы не путать будущий поиск.
-
-9. Проверить compile-safety
+8. Проверить compile-safety
 
 Проверить:
 
 - QuestUI.c синтаксически целый;
 - QuestMenu.layout синтаксически целый;
-- нет ссылок на удалённые widget names;
-- нет ссылок на удалённые variables;
-- OnClick не ссылается на удалённые page-buttons;
-- OnMouseWheel не ссылается на удалённые page-state variables;
-- UpdateQuestDetails пишет текст в новую scroll-систему.
+- если менялся MissionGameplay.c — он синтаксически целый;
+- нет ссылок на удалённые page variables;
+- нет ссылок на удалённые page buttons;
+- нет unsupported scroll API.
 
 --------------------------------------------------------------------------------
 КОДИРОВКА
@@ -492,13 +471,15 @@ DialogPanel должен показывать:
 ЖЁСТКИЕ РАМКИ ДЛЯ ЭТОЙ ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это только QuestMenu scroll task на основе @Trader reference.
+Это только QuestMenu scroll polish + prompt visibility fix.
 
 Разрешено исправить только:
 
-- заменить fallback-пагинацию на настоящий scroll;
-- сохранить/минимально поправить фон QuestMenu, если это связано с layout-scroll;
-- изучить @Trader как reference.
+- перенос строк DescriptionText;
+- перенос строк DialogText;
+- сохранение логических строк целей/предметов;
+- минимальное подавление мешающего action prompt на время открытого QuestMenu;
+- минимальную правку QuestMenu background, если это нужно вместе с prompt fix.
 
 Нельзя:
 
@@ -510,18 +491,14 @@ DialogPanel должен показывать:
 - менять progress logic;
 - менять Offer / Completion / Reward;
 - менять структуру квестового контракта;
-- переносить Trader gameplay logic;
-- переносить Trader RPC;
-- переносить Trader economy/currency logic;
 - менять @Trader;
 - возвращать unsupported scroll API;
-- чинить другие ошибки, если они не связаны напрямую с QuestMenu scroll.
+- возвращать page fallback;
+- чинить другие ошибки, если они не связаны напрямую с QuestMenu readability.
 
-Если Trader pattern не удаётся безопасно перенести:
-
-- не ломать QuestMenu;
-- оставить текущий рабочий fallback только если иначе будет хуже;
-- подробно описать, почему scroll не перенесён;
+Если prompt невозможно скрыть в разрешённых файлах:
+- не ломать систему;
+- описать в PROBLEMS, какой файл/механизм нужен;
 - предложить следующую точечную задачу.
 
 --------------------------------------------------------------------------------
@@ -530,26 +507,28 @@ DialogPanel должен показывать:
 
 После правок проверить:
 
-1. @Trader изучен как reference.
-2. В отчёте указан конкретный Trader scroll pattern.
-3. QuestMenu.layout синтаксически целый.
-4. QuestUI.c синтаксически целый.
-5. DescriptionPanel имеет настоящий scroll.
-6. DialogPanel имеет настоящий scroll.
-7. Page/fallback кнопки удалены или больше не используются.
-8. В QuestUI.c нет executable-вызовов:
+1. Scroll через TextListboxWidget сохранён.
+2. DescriptionText не режется “стихами”.
+3. DialogText не режется “стихами”.
+4. Строки целей / предметов начинаются с новой строки.
+5. Длинная строка предмета переносится, если не влезает.
+6. Следующий предмет начинается с новой строки.
+7. В QuestUI.c нет executable-вызовов:
    - VScrollToPos01
    - VScrollStep
    - IsScrollbarVisible
-9. Кнопки не сломаны:
+8. Page fallback не возвращён.
+9. Кнопки < / > не возвращены.
+10. QuestMenu.layout синтаксически целый.
+11. QuestUI.c синтаксически целый.
+12. Если менялся MissionGameplay.c — он синтаксически целый.
+13. Кнопки не сломаны:
    - ВЗЯТЬ КВЕСТ
    - СДАТЬ КВЕСТ
    - Закрыть рот и уйти
-10. Mapping Description/Dialog не изменён.
-11. Кириллица не повреждена.
-12. CHANGED FILES содержит только:
-   - QuestMenu.layout
-   - QuestUI.c
+14. Mapping Description/Dialog не изменён.
+15. Prompt “Проверить пульс” не должен мешать чтению при открытом QuestMenu.
+16. Кириллица не повреждена.
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
@@ -557,19 +536,20 @@ DialogPanel должен показывать:
 
 Задача считается выполненной, если:
 
-1. Найден и описан scroll pattern из @Trader.
-2. QuestMenu использует настоящий DayZ-compatible scroll.
-3. DescriptionText / DescriptionPanel читается через scroll.
-4. DialogText / DialogPanel читается через scroll.
-5. Fallback page approach из TASK 085 удалён или отключён.
-6. Неподдерживаемый MultilineTextWidget API не используется.
-7. Изменены только разрешённые файлы.
-8. @Trader не менялся.
+1. Scroll работает через TextListboxWidget.
+2. DescriptionText использует ширину окна нормально.
+3. DialogText использует ширину окна нормально.
+4. Предметы / цели сохраняют логическую структуру.
+5. Следующий предмет начинается с новой строки.
+6. Prompt “Проверить пульс” не мешает чтению QuestMenu.
+7. Неподдерживаемый MultilineTextWidget API не используется.
+8. Page fallback не возвращён.
 9. JSON не менялся.
 10. Server не менялся.
 11. Quest Editor не менялся.
-12. Documentation не менялась.
-13. Агент вернул отчёт в чат.
+12. @Trader не менялся.
+13. Documentation не менялась.
+14. Агент вернул отчёт в чат.
 
 --------------------------------------------------------------------------------
 ОЖИДАЕМЫЙ ОТЧЁТ
@@ -578,29 +558,27 @@ DialogPanel должен показывать:
 AGENT REPORT
 
 DONE:
-- какие Trader files были изучены;
-- какой scroll pattern найден;
-- что изменено в QuestMenu.layout;
-- что изменено в QuestUI.c;
-- что сделано с fallback/page approach;
-- подтверждение, что unsupported API не возвращался.
-
-TRADER SCROLL PATTERN:
-- layout file;
-- script file;
-- widget classes;
-- scrollbar/listbox/scroll implementation;
-- какие элементы перенесены как подход;
-- какие элементы Trader не переносились.
+- что исправлено в переносе строк;
+- какие параметры maxCharsPerLine изменены;
+- как теперь сохраняются строки предметов / целей;
+- что сделано с DialogText;
+- что выяснено по action prompt;
+- что сделано, чтобы prompt не мешал.
 
 CHANGED FILES:
-- Silver_77_Quests_Client\gui\QuestMenu.layout
 - Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+- Silver_77_Quests_Client\gui\QuestMenu.layout
+- Silver_77_Quests_Client\scripts\5_Mission\MissionGameplay.c, если менялся
 
 DIFF:
-- кратко описать изменения layout;
 - кратко описать изменения QuestUI.c;
-- указать, чем заменена page-пагинация.
+- кратко описать изменения QuestMenu.layout;
+- кратко описать изменения MissionGameplay.c, если менялся.
+
+PROMPT / BACKGROUND ANALYSIS:
+- почему фон не перекрывал prompt;
+- prompt был поверх меню или фон реально не работал;
+- какое минимальное решение применено.
 
 ENCODING CHECK:
 - указать, что кириллица не повреждена;
@@ -608,18 +586,17 @@ ENCODING CHECK:
 
 PROBLEMS:
 - что не удалось проверить без запуска игры;
-- если Trader pattern частично несовместим — почему;
 - какие ограничения остались.
 
 QUESTIONS:
 - только реальные вопросы, если есть.
 
 RECOMMENDED NEXT TASK:
-- если нужно, предложить отдельную задачу на QuestJournal;
-- если нужно, предложить отдельную задачу на улучшение внешнего вида scroll.
+- если нужно, предложить отдельную задачу на внешний polish QuestMenu;
+- если нужно, предложить отдельную задачу на QuestJournal.
 
 CONCLUSION:
-- краткий вывод: QuestMenu теперь должен использовать настоящий scroll по DayZ-compatible паттерну из Trader.
+- краткий вывод: scroll сохранён, перенос строк улучшен, prompt больше не должен мешать QuestMenu.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
@@ -685,72 +662,31 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 085 REVIEW
+TASK 086 REVIEW / STATUS
 
 Статус:
-Принято условно.
+Принято частично.
 
 Что принято:
-- Scope соблюдён.
-- Изменены только разрешённые файлы:
-  - Silver_77_Quests_Client\gui\QuestMenu.layout
-  - Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
-- QuestJournal не трогался.
-- JSON не трогался.
-- Server не трогался.
-- Quest Editor не трогался.
-- Documentation / SplitDoc не трогались.
-- Неподдерживаемый MultilineTextWidget scroll API не возвращался:
-  - VScrollToPos01
-  - VScrollStep
-  - IsScrollbarVisible
-- Для DescriptionText реализован fallback/page approach.
-- Для DialogText реализован fallback/page approach.
-- Добавлены page-индикаторы и кнопки переключения страниц.
-- OnMouseWheel теперь безопасно листает страницы Description/Dialog, а не вызывает unsupported scroll API.
-- Mapping Description/Dialog сохранён:
-  - DescriptionPanel = описание, статус, цели, прогресс, награды;
-  - DialogPanel = NPC dialog / triggerActions[].dialogText.
-- Фон усилен через QuestPanelBackdrop и непрозрачные panel backing.
+- Scroll наконец заработал.
+- Подход через TextListboxWidget подтверждён в игре.
+- Fallback-пагинация с кнопками < / > больше не нужна.
+- Это правильное направление.
 
-Что требует ручной проверки в игре:
-1. Компилируется ли Mission script module после изменений.
-2. Не вызывает ли ButtonWidgetClass QuestPanelBackdrop побочных эффектов в input/click handling.
-3. Действительно ли фон стал непрозрачным и перекрывает игровой мир/action prompt.
-4. Не перекрывает ли QuestPanelBackdrop реальные кнопки.
-5. Видны ли кнопки DescriptionPrevButton / DescriptionNextButton.
-6. Видны ли кнопки DialogPrevButton / DialogNextButton.
-7. Работают ли кнопки < / > для описания.
-8. Работают ли кнопки < / > для диалога.
-9. Листается ли Description/Dialog колесом мыши при наведении на соответствующую панель.
-10. Не ломаются ли основные кнопки:
-    - ВЗЯТЬ КВЕСТ
-    - СДАТЬ КВЕСТ
-    - Закрыть рот и уйти
-11. Не сломались ли Offer / Completion / Reward.
-12. Не повреждена ли кириллица.
-13. Достаточно ли размер страниц: сейчас Description разбивается примерно на 46 символов x 9 строк, Dialog на 46 символов x 4 строки.
-
-Риски:
-- Это не настоящий scrollbar, а fallback-пагинация.
-- Page-разбивка по символам может иногда резать текст неидеально, особенно при длинных className или длинных словах.
-- ButtonWidgetClass как backing-слой может сработать лучше визуально, но это обязательно надо проверить в игре: он не должен перехватывать клики, потому что стоит ignorepointer 1.
-- Если фон всё ещё будет прозрачным, значит проблема не только в alpha/color, и нужно будет искать DayZ-способ через ImageWidget/texture/background из vanilla UI.
+Что не принято как финал:
+- Перенос строк сейчас слишком короткий, выглядит как стихи.
+- Текст должен заполнять ширину окна почти полностью и переноситься только когда строка реально не влезает.
+- Предметные строки должны начинаться с новой строки.
+- Если предметная строка длинная и не влезает — она переносится внутри себя.
+- Следующий предмет всё равно должен начинаться с новой строки.
+- Диалоговый текст тоже должен использовать ширину окна, а не ломаться короткими строками.
+- Фон всё ещё не решён.
+- Prompt “Проверить пульс [УДЕРЖИВАЙТЕ]” всё ещё рисуется поверх/мешает читать.
 
 Вывод:
-TASK 085 выполнена корректно в рамках задачи. Принимается условно до ручной проверки в игре.
-
-Следующий шаг:
-Пересобрать клиентский PBO, запустить сервер/клиент и проверить QuestMenu на NPC с длинным текстом.
-
-Если всё работает:
-- TASK 085 можно закрывать.
-
-Если фон всё ещё прозрачный:
-- следующая задача должна быть только про реальный DayZ background/texture backing.
-
-Если пагинация работает, но неудобна:
-- отдельная задача на улучшение UX страниц или поиск подтверждённого ScrollWidget/ScrollPanel.
+TASK 086 закрывать полностью рано.
+Технически scroll найден и заработал, но нужен следующий polish/fix:
+TASK 087 — QuestMenu scroll text wrap + action prompt / background fix.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
