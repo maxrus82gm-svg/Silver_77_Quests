@@ -56,10 +56,10 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 092 — Hotfix: вернуть отображение Description/Dialog после ScrollWidget + MultilineTextWidget
+TASK 093 — QuestMenu: ограничить ScrollWidget text внутри панелей и уменьшить шаг прокрутки
 
 Статус:
-Срочный UI hotfix после runtime-проверки TASK 091.
+UI polish / hotfix после runtime-проверки TASK 092.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -76,122 +76,155 @@ TASK 092 — Hotfix: вернуть отображение Description/Dialog п
 
 Агент обязан соблюдать принцип жёстких рамок:
 
-- делать только hotfix по пропавшему тексту Description/Dialog;
-- не чинить “заодно” соседние UI-проблемы;
+- делать только настройку ScrollWidget + MultilineTextWidget для Description/Dialog;
 - не менять архитектуру квестов;
 - не менять JSON-контракт;
 - не трогать server;
 - не трогать Quest Editor;
 - не трогать QuestJournal;
 - не трогать @Trader;
-- не делать git commit / push / reset / clean;
-- если ScrollWidget + MultilineTextWidget не удаётся быстро починить — описать проблему в отчёте, а не уходить в новую архитектуру.
+- не возвращать TextListboxWidget;
+- не переходить на RichTextWidget;
+- не переходить на MultilineEditBoxWidget;
+- не делать большой редизайн QuestMenu;
+- не делать git commit / push / reset / clean.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-После TASK 091 QuestMenu компилируется и открывается, но в игре пропал текст:
+После TASK 092 текст Description/Dialog снова появился.
 
-- DescriptionPanel показывает заголовок “Описание квеста”, но сам текст описания не виден.
-- DialogPanel показывает заголовок “Диалог NPC”, но сам диалог не виден.
-- QuestListbox отображается.
-- RoutePanel отображается.
-- Кнопки отображаются.
+Это подтвердило, что связка:
 
-Значит проблема, скорее всего, не в данных квеста, а в отображении DescriptionText/DialogText после перехода на:
+ScrollWidgetClass
+  MultilineTextWidgetClass
 
-ScrollWidgetClass DescriptionScroll
-  MultilineTextWidgetClass DescriptionText
+в целом работает.
 
-ScrollWidgetClass DialogScroll
-  MultilineTextWidgetClass DialogText
+Положительный результат:
+- native wrap работает;
+- текст появился;
+- scroll выглядит как родной DayZ scroll.
 
-В текущем layout у вложенных MultilineTextWidget стоит:
+Но runtime-проверка показала новые проблемы:
 
-size 414 1
-"size to text v" 1
+1. Текст выходит за рамки своих областей.
+   При прокрутке Description/Dialog текст визуально уходит поверх других частей меню:
+   - выше своей панели;
+   - поверх заголовков;
+   - поверх кнопок;
+   - иногда выглядит так, будто текст не клипается внутри окна ScrollWidget.
 
-Вероятная причина:
-DayZ runtime не растягивает MultilineTextWidget внутри ScrollWidget по высоте через "size to text v" так, как ожидалось. Из-за этого текст может иметь высоту 1 или клипаться внутри ScrollWidget.
+2. Шаг прокрутки слишком большой.
+   Scroll двигает текст слишком резко / дискретно.
+   Нужно сделать прокрутку чувствительнее, чтобы текст двигался меньшими шагами.
+
+Текущий layout после TASK 092 примерно такой:
+
+DescriptionScroll size 414 156
+  DescriptionText size 394 600
+
+DialogScroll size 414 74
+  DialogText size 394 300
+
+Вероятная причина проблемы:
+- внутренний MultilineTextWidget получил большую высоту, но ScrollWidget/родительский контейнер не клипает его визуально;
+- возможно, clipchildren нужно включить/настроить на правильных родителях;
+- возможно, нужен дополнительный внутренний content-контейнер внутри ScrollWidget;
+- возможно, требуется другое свойство ScrollWidget / child widget для корректного clipping.
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 092
+ЦЕЛЬ TASK 093
 --------------------------------------------------------------------------------
 
-Вернуть видимый текст Description/Dialog в QuestMenu.
+Сохранить рабочую архитектуру ScrollWidget + MultilineTextWidget, но довести её до нормального отображения:
 
-Нужно:
-
-1. Сохранить тестовую архитектуру ScrollWidget + MultilineTextWidget, если это возможно.
-2. Исправить отображение DescriptionText.
-3. Исправить отображение DialogText.
-4. Не возвращаться к TextListboxWidget без отдельного разрешения.
-5. Не переходить на RichTextWidget или MultilineEditBoxWidget без отдельной задачи.
-6. Не менять quest logic.
-7. Не трогать JSON/server/QuestJournal/@Trader.
+1. DescriptionText должен быть виден только внутри области DescriptionScroll.
+2. DialogText должен быть виден только внутри области DialogScroll.
+3. Текст не должен выходить поверх заголовков, кнопок, RoutePanel или других элементов.
+4. Native wrap должен сохраниться.
+5. ScrollWidget должен сохраниться.
+6. Шаг прокрутки должен стать меньше / чувствительнее, если это возможно безопасно.
+7. QuestListbox и TriggerRouteListbox не трогать.
 
 --------------------------------------------------------------------------------
 МОЁ МНЕНИЕ / ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
 --------------------------------------------------------------------------------
 
-Сначала проверить гипотезу с высотой.
+Сначала нужно решить clipping.
 
-Скорее всего, проблема в этом:
+Предпочтительный порядок проверки:
 
-MultilineTextWidgetClass DescriptionText {
-  size 414 1
-  "size to text v" 1
-}
+1. Проверить clipchildren у:
+   - DescriptionPanel
+   - DescriptionScroll
+   - DescriptionText
+   - DialogPanel
+   - DialogScroll
+   - DialogText
 
-MultilineTextWidgetClass DialogText {
-  size 414 1
-  "size to text v" 1
-}
+2. Убедиться, что ScrollWidget реально является clipping container.
 
-Нужно временно дать внутреннему MultilineTextWidget нормальную высоту, чтобы ScrollWidget получил видимый content.
+3. Если одного clipchildren недостаточно, попробовать паттерн:
 
-Предпочтительный минимальный fix:
+DescriptionPanel
+  ScrollWidgetClass DescriptionScroll
+    PanelWidgetClass DescriptionContent
+      MultilineTextWidgetClass DescriptionText
 
-DescriptionScroll:
-- оставить размер контейнера примерно 414 x 156;
-- DescriptionText сделать уже на ширину scrollbar-зоны;
-- DescriptionText дать фиксированную большую высоту, например:
-  - size 394 600
+DialogPanel
+  ScrollWidgetClass DialogScroll
+    PanelWidgetClass DialogContent
+      MultilineTextWidgetClass DialogText
 
-DialogScroll:
-- оставить размер контейнера примерно 414 x 74;
-- DialogText сделать уже на ширину scrollbar-зоны;
-- DialogText дать фиксированную большую высоту, например:
-  - size 394 300
+Где:
+- ScrollWidget имеет видимую область и scrollbar;
+- Content/Panel имеет большую высоту;
+- MultilineTextWidget находится внутри Content;
+- clipping должен происходить на уровне ScrollWidget.
 
-Почему ширина 394:
-- чтобы текст не залезал под вертикальный scrollbar;
-- если scrollbar занимает около 16–20 px, нужно оставить запас.
+4. Если DayZ ScrollWidget требует content-wrapper типа:
+   - WrapSpacerWidgetClass
+   - GridSpacerWidgetClass
+   - PanelWidgetClass
 
-Если после такого текст появится:
-- значит проблема была именно в auto-height/size-to-text внутри ScrollWidget;
-- дальше отдельной задачей можно будет красиво подобрать высоту/поведение.
+то использовать минимальный подход, который ближе к vanilla/reference.
 
-Если текст не появится:
-- не уходить в новую архитектуру;
-- описать проблему в PROBLEMS;
-- предложить отдельную задачу на RichTextWidget или возврат к TextListboxWidget.
+5. Не возвращать TextListboxWidget.
+6. Не переходить на RichTextWidget/EditBox в этой задаче.
+
+По шагу прокрутки:
+
+Нужно найти безопасный способ уменьшить scroll step.
+
+Проверить:
+- есть ли layout-свойство у ScrollWidget для step/speed;
+- есть ли script API для более мелкого scroll;
+- можно ли перехватить OnMouseWheel для DescriptionScroll/DialogScroll и делать меньший шаг через ScrollWidget;
+- не будет ли это конфликтовать с native scroll.
+
+Если безопасного способа быстро нет:
+- не ломать scroll;
+- описать в PROBLEMS;
+- предложить отдельную задачу на scroll sensitivity.
 
 --------------------------------------------------------------------------------
 SCOPE ЗАДАЧИ
 --------------------------------------------------------------------------------
 
-Это только hotfix отображения Description/Dialog.
+Это только UI polish текущей ScrollWidget + MultilineTextWidget схемы.
 
 Агент должен:
 
-1. Проверить текущие блоки DescriptionScroll/DescriptionText.
-2. Проверить текущие блоки DialogScroll/DialogText.
-3. Исправить размеры вложенных MultilineTextWidget так, чтобы текст стал видимым.
-4. Сохранить ScrollWidget + MultilineTextWidget.
-5. Проверить QuestUI.c на очевидные проблемы с SetText.
-6. Вернуть отчёт в чат.
+1. Исправить clipping DescriptionText внутри DescriptionScroll.
+2. Исправить clipping DialogText внутри DialogScroll.
+3. Сохранить native wrap.
+4. Сохранить ScrollWidget.
+5. Проверить возможность уменьшить шаг прокрутки.
+6. Если возможно безопасно — уменьшить шаг прокрутки.
+7. Проверить DayZ_layout viewer compatibility.
+8. Вернуть отчёт в чат.
 
 Агент не должен:
 
@@ -205,9 +238,9 @@ SCOPE ЗАДАЧИ
 - менять @Trader;
 - менять QuestListbox;
 - менять TriggerRouteListbox;
+- возвращать TextListboxWidget для Description/Dialog;
 - переходить на RichTextWidget;
 - переходить на MultilineEditBoxWidget;
-- возвращать TextListboxWidget без отдельной команды;
 - делать большой редизайн QuestMenu;
 - делать commit/push/reset/clean;
 - перепаковывать PBO;
@@ -223,14 +256,24 @@ SCOPE ЗАДАЧИ
 
 2. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
 
-QuestUI.c менять только если там есть явная причина пропажи текста:
-- неправильный cast;
-- неправильное имя widget;
-- SetText не вызывается;
-- текст очищается;
-- reset scroll вызывает проблему.
+QuestUI.c менять только если нужно:
+- настроить scroll reset;
+- уменьшить шаг прокрутки;
+- обработать OnMouseWheel для DescriptionScroll/DialogScroll;
+- исправить явную проблему с SetText/Update/reset.
 
-DayZ_layout viewer в этой задаче не менять, если он не нужен для hotfix.
+Дополнительно разрешено менять только если DayZ_layout viewer перестал корректно показывать актуальный QuestMenu.layout:
+
+3. P:\Silver_77_Quests\DayZ_layout\*
+
+DayZ_layout менять только минимально:
+- поддержка content-wrapper внутри ScrollWidget;
+- preview clipping/scroll-зоны;
+- отображение ScrollWidget + MultilineTextWidget.
+
+Если viewer уже показывает достаточно корректно:
+- DayZ_layout не менять;
+- указать это в отчёте.
 
 --------------------------------------------------------------------------------
 РАЗРЕШЁННЫЕ ФАЙЛЫ И ПАПКИ ДЛЯ ЧТЕНИЯ
@@ -256,6 +299,25 @@ DayZ_layout viewer в этой задаче не менять, если он н�
 10. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
 11. P:\Silver_77_Quests\@Trader\
 12. P:\Silver_77_Quests\DayZ_layout\
+
+Если есть доступ к vanilla/extracted DayZ layouts/scripts — можно читать как reference, но не менять.
+
+Искать по словам:
+
+- ScrollWidgetClass
+- clipchildren
+- WrapSpacerWidgetClass
+- GridSpacerWidgetClass
+- PanelWidgetClass
+- Scrollbar V
+- VScrollStep
+- VScrollToPos01
+- GetVScrollPos01
+- OnMouseWheel
+- ContentScroll
+- MultilineTextWidgetClass
+- size to text v
+- wrap
 
 --------------------------------------------------------------------------------
 ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
@@ -299,9 +361,9 @@ DayZ_layout viewer в этой задаче не менять, если он н�
 ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-1. Проверить QuestMenu.layout
+1. Проверить clipping в QuestMenu.layout
 
-Проверить блоки:
+Проверить:
 
 - DescriptionPanel
 - DescriptionScroll
@@ -310,80 +372,87 @@ DayZ_layout viewer в этой задаче не менять, если он н�
 - DialogScroll
 - DialogText
 
-Особое внимание:
+Нужно добиться:
+- текст DescriptionText не рисуется за пределами DescriptionScroll;
+- текст DialogText не рисуется за пределами DialogScroll.
 
-- size у DescriptionText;
-- size у DialogText;
-- clipchildren;
-- "size to text v";
-- wrap 1;
-- положение внутри ScrollWidget;
-- ширина с учётом scrollbar.
+2. Исправить структуру внутри ScrollWidget, если нужно
 
-2. Исправить высоту DescriptionText
+Если текущая структура:
 
-Если сейчас:
+ScrollWidgetClass DescriptionScroll
+  MultilineTextWidgetClass DescriptionText
 
-DescriptionText size 414 1
+не клипает child-текст, попробовать добавить content wrapper:
 
-заменить на фиксированную content-height высоту, например:
+ScrollWidgetClass DescriptionScroll
+  PanelWidgetClass DescriptionContent
+    MultilineTextWidgetClass DescriptionText
 
-DescriptionText size 394 600
+ScrollWidgetClass DialogScroll
+  PanelWidgetClass DialogContent
+    MultilineTextWidgetClass DialogText
 
-Требования:
-
-- сохранить wrap 1;
-- сохранить text halign left;
-- сохранить text valign top;
-- оставить внутри DescriptionScroll;
-- не делать TextListboxWidget;
-- не делать RichTextWidget.
-
-3. Исправить высоту DialogText
-
-Если сейчас:
-
-DialogText size 414 1
-
-заменить на фиксированную content-height высоту, например:
-
-DialogText size 394 300
+Или использовать другой vanilla-compatible content wrapper, если reference показывает лучший вариант.
 
 Требования:
+- ScrollWidget остаётся видимой областью;
+- content-wrapper имеет большую высоту;
+- MultilineTextWidget находится внутри wrapper;
+- wrapper/text не должны рисоваться за пределами scroll viewport.
 
-- сохранить wrap 1;
-- сохранить text halign left;
-- сохранить text valign top;
-- оставить внутри DialogScroll;
-- не делать TextListboxWidget;
-- не делать RichTextWidget.
+3. Настроить размеры
 
-4. Проверить ширину
+Учитывать scrollbar:
 
-Учитывать scrollbar.
+- DescriptionScroll width 414;
+- внутренний текст может быть около 394 width;
+- DescriptionContent height должен быть достаточным для scroll;
+- DialogContent height должен быть достаточным для scroll.
 
-Если ScrollWidget имеет width 414, то внутренний text лучше сделать не 414, а примерно 394, чтобы текст не залезал под scrollbar.
+Не делать высоту слишком огромной без необходимости.
+Если фиксированная высота остаётся единственным рабочим вариантом:
+- оставить разумные значения;
+- указать риск в PROBLEMS.
+
+4. Уменьшить шаг прокрутки, если возможно
+
+Проверить безопасные варианты:
+
+A. Layout-свойство ScrollWidget для шага прокрутки, если существует.
+
+B. OnMouseWheel в QuestUI.c:
+- если wheel пришёл на DescriptionScroll или DescriptionText — прокручивать DescriptionScroll меньшим шагом;
+- если wheel пришёл на DialogScroll или DialogText — прокручивать DialogScroll меньшим шагом;
+- не вызывать scroll API на MultilineTextWidget;
+- не ломать обычный scroll.
+
+C. Использовать ScrollWidget API:
+- GetVScrollPos01
+- VScrollToPos01
+- VScrollStep
+
+только если это безопасно и компилируется.
+
+Важно:
+- не возвращать старые ошибки, где scroll API вызывался на MultilineTextWidget;
+- если нет уверенности, лучше не менять scroll sensitivity в этой задаче, а описать next task.
 
 5. Проверить QuestUI.c
 
-Убедиться:
+Если менялся QuestUI.c, проверить:
 
-- m_QuestDescription кастуется как MultilineTextWidget;
-- m_DialogText кастуется как MultilineTextWidget;
-- m_DescriptionScroll кастуется как ScrollWidget;
-- m_DialogScroll кастуется как ScrollWidget;
-- SetDescriptionText вызывает m_QuestDescription.SetText(text);
-- SetDialogText вызывает m_DialogText.SetText(text);
+- нет scroll API на MultilineTextWidget;
 - нет ClearItems/AddItem/SetItemColor для Description/Dialog;
-- Scroll API не вызывается на MultilineTextWidget.
+- QuestListbox/TriggerRouteListbox не затронуты;
+- SetDescriptionText/SetDialogText всё ещё используют SetText.
 
-6. Не делать новую архитектуру
+6. Проверить DayZ_layout viewer
 
-Если фикс высоты кажется недостаточным:
-- не переходить на RichTextWidget;
-- не переходить на MultilineEditBoxWidget;
-- не возвращать TextListboxWidget;
-- написать в PROBLEMS, что подход требует отдельной задачи.
+Если layout структура изменилась:
+- проверить, показывает ли viewer ScrollWidget + content wrapper + MultilineTextWidget;
+- если viewer совсем не показывает новую структуру — минимально обновить viewer;
+- не делать большой viewer redesign.
 
 --------------------------------------------------------------------------------
 ПРОВЕРКИ
@@ -393,29 +462,31 @@ DialogText size 394 300
 
 1. QuestMenu.layout синтаксически целый.
 2. QuestUI.c синтаксически целый, если менялся.
-3. DescriptionText остался MultilineTextWidgetClass.
-4. DialogText остался MultilineTextWidgetClass.
-5. DescriptionScroll остался ScrollWidgetClass.
-6. DialogScroll остался ScrollWidgetClass.
-7. DescriptionText больше не имеет высоту 1.
-8. DialogText больше не имеет высоту 1.
-9. DescriptionText имеет ширину с запасом под scrollbar.
-10. DialogText имеет ширину с запасом под scrollbar.
-11. SetDescriptionText использует SetText.
-12. SetDialogText использует SetText.
-13. QuestListbox не изменён.
-14. TriggerRouteListbox не изменён.
-15. JSON не менялся.
-16. Server не менялся.
-17. QuestJournal не менялся.
-18. @Trader не менялся.
-19. Кириллица не повреждена.
+3. DescriptionText виден.
+4. DialogText виден.
+5. DescriptionText не выходит за пределы DescriptionScroll.
+6. DialogText не выходит за пределы DialogScroll.
+7. Текст не рисуется поверх заголовков.
+8. Текст не рисуется поверх кнопок.
+9. Текст не рисуется поверх RoutePanel.
+10. Native wrap сохранён.
+11. ScrollWidget сохранён.
+12. Scroll крутится.
+13. Если менялся шаг scroll — он стал меньше.
+14. Scroll API не вызывается на MultilineTextWidget.
+15. QuestListbox не изменён.
+16. TriggerRouteListbox не изменён.
+17. JSON не менялся.
+18. Server не менялся.
+19. QuestJournal не менялся.
+20. @Trader не менялся.
+21. Кириллица не повреждена.
 
 --------------------------------------------------------------------------------
 КОДИРОВКА
 --------------------------------------------------------------------------------
 
-Задача затрагивает .layout и, возможно, .c файлы.
+Задача затрагивает .layout, возможно .c и возможно viewer html.
 
 Нужно соблюдать ENCODING_RULES.md:
 
@@ -432,19 +503,22 @@ DialogText size 394 300
 
 Задача считается выполненной, если:
 
-1. DescriptionText больше не имеет высоту 1.
-2. DialogText больше не имеет высоту 1.
-3. Description/Dialog остаются ScrollWidget + MultilineTextWidget.
-4. Ручной maxCharsPerLine не возвращён.
-5. TextListboxWidget для Description/Dialog не возвращён.
-6. RichTextWidget не используется.
-7. MultilineEditBoxWidget не используется.
-8. QuestListbox и TriggerRouteListbox не изменены.
-9. Quest logic не изменена.
-10. JSON не изменён.
-11. Server не изменён.
-12. QuestJournal не изменён.
-13. Агент вернул отчёт в чат.
+1. Description/Dialog остаются ScrollWidget + MultilineTextWidget.
+2. DescriptionText виден только внутри своей области.
+3. DialogText виден только внутри своей области.
+4. Текст не выходит поверх других частей меню.
+5. Native wrap сохранён.
+6. Scroll работает.
+7. Если удалось безопасно — шаг прокрутки уменьшен.
+8. TextListboxWidget для Description/Dialog не возвращён.
+9. RichTextWidget не используется.
+10. MultilineEditBoxWidget не используется.
+11. QuestListbox и TriggerRouteListbox не изменены.
+12. Quest logic не изменена.
+13. JSON не изменён.
+14. Server не изменён.
+15. QuestJournal не изменён.
+16. Агент вернул отчёт в чат.
 
 --------------------------------------------------------------------------------
 ОЖИДАЕМЫЙ ОТЧЁТ
@@ -453,26 +527,37 @@ DialogText size 394 300
 AGENT REPORT
 
 DONE:
-- что исправлено;
-- какая была вероятная причина пропажи текста;
-- какие размеры поставлены для DescriptionText/DialogText;
-- остался ли ScrollWidget + MultilineTextWidget.
+- что исправлено по clipping;
+- осталась ли структура ScrollWidget + MultilineTextWidget;
+- менялась ли структура content внутри ScrollWidget;
+- удалось ли уменьшить scroll step.
 
 CHANGED FILES:
 - Silver_77_Quests_Client\gui\QuestMenu.layout
 - Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c, если менялся
+- DayZ_layout\..., если менялся
 
 DIFF:
 - кратко описать изменения layout;
-- кратко описать изменения script, если были.
+- кратко описать изменения script, если были;
+- кратко описать изменения viewer, если были.
 
 RUNTIME EXPECTATION:
-- что должно измениться в игре после hotfix.
+- что должно измениться в игре.
+
+SCROLL SENSITIVITY:
+- удалось ли уменьшить шаг;
+- каким способом;
+- если не удалось — почему.
 
 COMPILE-SAFETY CHECK:
 - нет cast mismatch;
 - нет listbox methods на MultilineTextWidget;
 - нет scroll API на MultilineTextWidget.
+
+DAYZ_LAYOUT CHECK:
+- проверялся ли viewer;
+- нужно ли было его менять.
 
 ENCODING CHECK:
 - указать, что кириллица не повреждена;
@@ -483,11 +568,11 @@ PROBLEMS:
 - какие риски остаются.
 
 RECOMMENDED NEXT TASK:
-- если hotfix сработает — runtime polish ScrollWidget + MultilineTextWidget;
-- если hotfix не сработает — отдельная задача на RichTextWidget или возврат к TextListboxWidget.
+- если clipping исправлен — polish scroll sensitivity / размеры;
+- если clipping не исправлен — отдельная задача на RichTextWidget или возврат к TextListboxWidget.
 
 CONCLUSION:
-- краткий вывод: текст должен снова появиться или почему подход требует отдельного решения.
+- краткий вывод: текст теперь должен оставаться внутри своих областей, scroll сохранён.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
