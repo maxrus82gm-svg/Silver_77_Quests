@@ -595,7 +595,9 @@
         }
 
         function isTextNode(node) {
-            return node.type === 'TextWidgetClass' || node.type === 'MultilineTextWidgetClass';
+            return node.type === 'TextWidgetClass'
+                || node.type === 'MultilineTextWidgetClass'
+                || node.type === 'RichTextWidgetClass';
         }
 
         function isListboxNode(node) {
@@ -620,7 +622,7 @@
             if (!isTextNode(node)) {
                 return 0;
             }
-            return node.type === 'MultilineTextWidgetClass' ? 1 : 2;
+            return node.type === 'MultilineTextWidgetClass' || node.type === 'RichTextWidgetClass' ? 1 : 2;
         }
 
         function getNodeZOrder(node) {
@@ -1411,6 +1413,10 @@
             if (rootName === 'QuestMenuRoot') {
                 const questPanel = findNodeByName('QuestPanel');
                 const questListbox = findNodeByName('QuestListbox');
+                const descriptionScroll = findNodeByName('DescriptionScroll');
+                const dialogScroll = findNodeByName('DialogScroll');
+                const descriptionContent = findNodeByName('DescriptionContent');
+                const dialogContent = findNodeByName('DialogContent');
                 const descriptionText = findNodeByName('DescriptionText');
                 const dialogText = findNodeByName('DialogText');
                 const closeButtonText = findNodeByName('CloseButtonText');
@@ -1428,15 +1434,27 @@
                 });
 
                 results.push({
-                    status: compareRect(descriptionText, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 108, w: 414, h: 156 }) ? 'ok' : 'fail',
-                    label: 'DescriptionText',
-                    message: descriptionText ? `finalRect ${formatRect(descriptionText.finalRect)}` : 'Widget not found'
+                    status: compareRect(descriptionScroll, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 108, w: 414, h: 156 }) ? 'ok' : 'fail',
+                    label: 'DescriptionScroll',
+                    message: descriptionScroll ? `finalRect ${formatRect(descriptionScroll.finalRect)}` : 'Widget not found'
                 });
 
                 results.push({
-                    status: compareRect(dialogText, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 320, w: 414, h: 74 }) ? 'ok' : 'fail',
-                    label: 'DialogText',
-                    message: dialogText ? `finalRect ${formatRect(dialogText.finalRect)}` : 'Widget not found'
+                    status: compareRect(dialogScroll, { x: ((viewport.w - 980) / 2) + 308, y: ((viewport.h - 560) / 2) + 320, w: 414, h: 74 }) ? 'ok' : 'fail',
+                    label: 'DialogScroll',
+                    message: dialogScroll ? `finalRect ${formatRect(dialogScroll.finalRect)}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: descriptionContent && descriptionText && descriptionText.type === 'RichTextWidgetClass' ? 'ok' : 'warn',
+                    label: 'Description rich text stack',
+                    message: descriptionContent && descriptionText ? `${descriptionContent.type} -> ${descriptionText.type}` : 'Widget not found'
+                });
+
+                results.push({
+                    status: dialogContent && dialogText && dialogText.type === 'RichTextWidgetClass' ? 'ok' : 'warn',
+                    label: 'Dialog rich text stack',
+                    message: dialogContent && dialogText ? `${dialogContent.type} -> ${dialogText.type}` : 'Widget not found'
                 });
 
                 results.push({

@@ -163,27 +163,48 @@ FrameWidgetClass QuestMenuRoot {
        style blank
        "Scrollbar V" 1
        {
-        MultilineTextWidgetClass DescriptionText {
+        GridSpacerWidgetClass DescriptionContent {
          clipchildren 0
-         ignorepointer 0
+         ignorepointer 1
          position 0 0
-         size 394 600
+         size 394 1
          halign left_ref
          valign top_ref
          hexactpos 1
          vexactpos 1
          hexactsize 1
-         vexactsize 1
-         color 0.9412 0.9176 0.8588 1
-         style None
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" left
-         "text valign" top
-         wrap 1
-         "condense whitespace" 1
+         vexactsize 0
+         style Empty
+         Padding 0
+         Margin 0
+         "Size To Content H" 0
+         "Size To Content V" 1
+         Columns 1
+         Rows 1
+         {
+          RichTextWidgetClass DescriptionText {
+           clipchildren 0
+           ignorepointer 0
+           position 0 0
+           size 394 1
+           halign left_ref
+           valign top_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 1
+           vexactsize 0
+           color 0.9412 0.9176 0.8588 1
+           style None
+           font "gui/fonts/metron16"
+           "exact text" 1
+           "size to text h" 0
+           "size to text v" 1
+           "text halign" left
+           "text valign" top
+           wrap 1
+           "condense whitespace" 1
+          }
+         }
         }
        }
       }
@@ -280,27 +301,48 @@ FrameWidgetClass QuestMenuRoot {
        style blank
        "Scrollbar V" 1
        {
-        MultilineTextWidgetClass DialogText {
+        GridSpacerWidgetClass DialogContent {
          clipchildren 0
-         ignorepointer 0
+         ignorepointer 1
          position 0 0
-         size 394 300
+         size 394 1
          halign left_ref
          valign top_ref
          hexactpos 1
          vexactpos 1
          hexactsize 1
-         vexactsize 1
-         color 1 0.8353 0.3098 1
-         style None
-         font "gui/fonts/metron16"
-         "exact text" 1
-         "size to text h" 0
-         "size to text v" 0
-         "text halign" left
-         "text valign" top
-         wrap 1
-         "condense whitespace" 1
+         vexactsize 0
+         style Empty
+         Padding 0
+         Margin 0
+         "Size To Content H" 0
+         "Size To Content V" 1
+         Columns 1
+         Rows 1
+         {
+          RichTextWidgetClass DialogText {
+           clipchildren 0
+           ignorepointer 0
+           position 0 0
+           size 394 1
+           halign left_ref
+           valign top_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 1
+           vexactsize 0
+           color 1 0.8353 0.3098 1
+           style None
+           font "gui/fonts/metron16"
+           "exact text" 1
+           "size to text h" 0
+           "size to text v" 1
+           "text halign" left
+           "text valign" top
+           wrap 1
+           "condense whitespace" 1
+          }
+         }
         }
        }
       }

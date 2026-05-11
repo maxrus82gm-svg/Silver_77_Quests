@@ -56,10 +56,10 @@
 
 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 095 — Анализ: найти правильный DayZ pattern для ScrollWidget + wrapped text после разъезда QuestMenu
+TASK 096 — QuestMenu: тестово заменить Description/Dialog на ScrollWidget + Size-To-Content container + RichTextWidget
 
 Статус:
-Аналитическая задача после runtime-проверки TASK 094.
+Тестовая UI-задача после аналитики TASK 095.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
@@ -75,82 +75,77 @@ TASK 095 — Анализ: найти правильный DayZ pattern для S
 
 2. MultilineTextWidget:
    - даёт native word wrap;
-   - лучше подходит для Description/Dialog как для обычного текста.
+   - но в связке ScrollWidget + MultilineTextWidget напрямую оказался нестабилен для нашего QuestMenu:
+     - текст появлялся;
+     - native wrap работал;
+     - но clipping и геометрия в runtime были нестабильны;
+     - фиксированные размеры 394x600 / 394x300 оказались не нормальной моделью content-height.
 
-3. ScrollWidget + MultilineTextWidget:
-   - в целом запускается;
-   - текст появляется;
-   - native wrap работает;
-   - scrollbar выглядит как родной DayZ.
+3. TASK 095 показал, что более правильное направление:
+   - ScrollWidget;
+   - внутри size-to-content container;
+   - внутри RichTextWidgetClass как read-only wrapped text.
 
-Но после попыток довести схему до нормального clipping появились проблемы:
+Текущий прямой стек:
 
-- Description/Dialog визуально разъезжаются;
-- текст может выходить за рамки своих областей;
-- элементы меню могут накладываться друг на друга;
-- DayZ_layout viewer показывает, что геометрия ScrollWidget/MultilineTextWidget стала нестабильной;
-- фиксированная большая высота внутренних текстовых widgets, например 394x600 и 394x300, может влиять на итоговую компоновку;
-- content-wrapper внутри ScrollWidget тоже не дал стабильного результата.
+ScrollWidgetClass
+  MultilineTextWidgetClass
 
-Нужно остановить правки вслепую и провести повторную аналитику с учётом уже полученного опыта.
+больше не развивать как основное направление.
 
 --------------------------------------------------------------------------------
-ЦЕЛЬ TASK 095
+ЦЕЛЬ TASK 096
 --------------------------------------------------------------------------------
 
-Найти правильный DayZ-compatible pattern для длинного wrapped text со scroll внутри QuestMenu.
+Тестово заменить Description/Dialog в QuestMenu на новый DayZ-compatible content stack:
 
-Нужно выяснить:
+ScrollWidgetClass
+  WrapSpacerWidgetClass или GridSpacerWidgetClass
+    RichTextWidgetClass
 
-1. Почему текущий ScrollWidget + MultilineTextWidget разъезжает layout.
-2. Как в vanilla DayZ сделаны scrollable text blocks.
-3. Как правильно задавать размеры content внутри ScrollWidget.
-4. Нужно ли использовать:
-   - MultilineTextWidget;
-   - RichTextWidget;
-   - MultilineEditBoxWidget;
-   - HtmlWidget;
-   - WrapSpacerWidget;
-   - GridSpacerWidget;
-   - PanelWidget wrapper.
-5. Какой вариант лучше применить именно для QuestMenu Description/Dialog.
-6. Что надо менять в следующей практической задаче.
-7. Нужно ли перед этим обновлять DayZ_layout viewer.
+Цель:
+
+1. Сохранить native scroll через ScrollWidget.
+2. Получить wrapped text через RichTextWidget.
+3. Уйти от фиксированной высоты 394x600 / 394x300 как основной модели.
+4. Использовать Size-To-Content container для расчёта высоты контента.
+5. Сохранить Description/Dialog как read-only текстовые области.
+6. Не трогать QuestListbox и TriggerRouteListbox.
+7. Проверить и при необходимости минимально обновить DayZ_layout viewer под RichTextWidgetClass.
 
 --------------------------------------------------------------------------------
 ЖЁСТКИЕ РАМКИ
 --------------------------------------------------------------------------------
 
-Это аналитическая задача.
+Агент обязан:
 
-Агент НЕ должен менять:
-
-- QuestMenu.layout;
-- QuestUI.c;
-- DayZ_layout viewer;
-- JSON;
-- server;
-- QuestJournal;
-- @Trader;
-- Documentation;
-- любые .c;
-- любые .layout;
-- любые PBO.
-
-Агент должен только читать, анализировать и вернуть отчёт в чат.
+- делать только то, что прямо указано в этой задаче;
+- не чинить “заодно” соседние проблемы;
+- не менять архитектуру квестов;
+- не менять JSON-контракт;
+- не трогать server;
+- не трогать Quest Editor;
+- не трогать QuestJournal;
+- не трогать @Trader;
+- не делать большой редизайн QuestMenu;
+- не делать git commit / push / reset / clean;
+- если RichTextWidget не компилируется или не работает — остановиться и описать проблему в PROBLEMS.
 
 Запрещено:
 
-- делать git commit;
-- делать git push;
-- делать git reset;
-- делать git clean;
+- возвращать TextListboxWidget для Description/Dialog;
+- переходить на MultilineEditBoxWidget в этой задаче;
+- переходить на HtmlWidget в этой задаче;
+- менять JSON;
+- менять server;
+- менять QuestJournal;
+- менять quest logic;
+- менять Offer / Completion / Reward;
 - перепаковывать PBO;
-- запускать Addon Builder;
-- исправлять “заодно”.
+- запускать Addon Builder.
 
 --------------------------------------------------------------------------------
-ЧТО НУЖНО ПРОЧИТАТЬ
+ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
 --------------------------------------------------------------------------------
 
 Обязательно прочитать:
@@ -162,180 +157,301 @@ TASK 095 — Анализ: найти правильный DayZ pattern для S
 5. P:\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md
 6. P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md
 
-Прочитать текущие файлы QuestMenu:
+Прочитать текущий UI:
 
 7. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
 8. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
 
-Можно читать, но не менять:
+Можно читать для reference, но не менять:
 
 9. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
 10. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
 11. P:\Silver_77_Quests\DayZ_layout\
 12. P:\Silver_77_Quests\@Trader\
 
-Также обязательно посмотреть распакованные vanilla DayZ reference на диске D, если доступны:
+Можно читать vanilla/reference на диске D, если доступны:
 
 13. D:\Dayz\gui\layouts\
 14. D:\Dayz\scripts\5_mission\gui\
 15. D:\Dayz\scripts\
-16. D:\Dayz\gui\layouts\script_console\
-17. D:\Dayz\gui\layouts\new_ui\
-18. D:\Dayz\gui\layouts\new_ui\mods_menu\
-19. D:\Dayz\gui\layouts\new_ui\options\
-20. D:\Dayz\gui\layouts\day_z_book.layout
-21. D:\Dayz\scripts\5_mission\gui\bookmenu.c
+16. D:\Dayz\gui\layouts\new_ui\
+17. D:\Dayz\gui\layouts\new_ui\mods_menu\
+18. D:\Dayz\gui\layouts\new_ui\options\
+19. D:\Dayz\gui\layouts\script_console\
+
+Особенно полезно свериться с примерами, найденными в TASK 095:
+
+- options_menu.layout
+- character_creation.layout
+- mods_menu_detailed_entry.layout
+- mods_menu_detailed.layout
+- credits_menu.layout
+- server_browser_tab.layout
+- scrolltest.layout
 
 --------------------------------------------------------------------------------
-ЧТО ИСКАТЬ
+РАЗРЕШЁННЫЕ ФАЙЛЫ ДЛЯ ПРАВОК
 --------------------------------------------------------------------------------
 
-Искать по словам:
+Разрешено менять:
 
-- ScrollWidgetClass
-- MultilineTextWidgetClass
-- RichTextWidgetClass
-- MultilineEditBoxWidgetClass
-- HtmlWidget
-- WrapSpacerWidgetClass
-- GridSpacerWidgetClass
-- PanelWidgetClass
-- ContentScroll
-- Content
-- Description
-- Details
-- Info
-- Notes
-- Book
-- Credits
-- ModsMenu
-- UniversalInfoDialog
-- script_console_universal_info_dialog
-- Scrollbar V
-- clipchildren
-- size to text v
-- wrap
-- condense whitespace
-- SetText
-- SetContentOffset
-- GetContentHeight
-- SetLineBreakingOverride
-- VScrollToPos
-- VScrollToPos01
-- VScrollStep
-- GetVScrollPos
-- OnMouseWheel
+1. P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestMenu.layout
+
+2. P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+
+Дополнительно разрешено менять только если DayZ_layout viewer не показывает актуальный QuestMenu.layout корректно после перехода на RichTextWidgetClass:
+
+3. P:\Silver_77_Quests\DayZ_layout\*
+
+DayZ_layout менять только минимально:
+
+- добавить поддержку RichTextWidgetClass как текстового widget;
+- показать его текст/рамку/размеры в preview;
+- показать структуру ScrollWidget -> Size-To-Content container -> RichTextWidget;
+- не переписывать viewer полностью;
+- не делать большой viewer redesign.
+
+Если viewer уже показывает новую структуру достаточно корректно:
+- DayZ_layout не менять;
+- указать это в отчёте.
 
 --------------------------------------------------------------------------------
-ЧТО ИМЕННО НУЖНО ВЫЯСНИТЬ
+ЗАПРЕЩЁННЫЕ ФАЙЛЫ И ДЕЙСТВИЯ
 --------------------------------------------------------------------------------
 
-1. Текущая проблема QuestMenu
+Запрещено менять:
 
-Проанализировать текущий QuestMenu.layout и QuestUI.c.
+- P:\Silver_77_Quests\@Trader\
+- P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c
+- P:\Silver_77_Quests\Silver_77_Quests_Client\gui\QuestJournal.layout
+- P:\Silver_77_Quests\Silver_77_Quests_Server\
+- P:\Silver_77_Quests\JSON_Quvest\
+- P:\Silver_77_Quests\Documentation\
+- P:\Silver_77_Quests\Documentation\SplitDoc\
+- P:\Silver_77_Quests\Support\
+- P:\Silver_77_Quests\Doors and Barricades Fixed\
+- любые quest JSON;
+- любые server profile файлы;
+- любые PBO.
 
-Ответить:
+Запрещено делать:
 
-- какая сейчас структура Description/Dialog;
-- какие размеры у ScrollWidget;
-- какие размеры у MultilineTextWidget;
-- почему большая высота child widget может разносить layout;
-- почему content-wrapper мог сделать хуже;
-- где именно viewer показывает разъезд;
-- есть ли признаки неправильных скобок/вложенности в layout;
-- есть ли риск, что элемент оказался не в том parent block.
+- git commit;
+- git push;
+- git reset;
+- git clean;
+- git checkout;
+- перенос файлов;
+- удаление файлов;
+- переименование файлов;
+- перепаковку PBO;
+- запуск Addon Builder;
+- изменение JSON-контракта;
+- изменение RPC/sync;
+- изменение логики Offer / Completion / Reward;
+- переход на MultilineEditBoxWidget;
+- переход на HtmlWidget;
+- возврат к TextListboxWidget для Description/Dialog.
 
-2. Правильный vanilla pattern
+--------------------------------------------------------------------------------
+ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
+--------------------------------------------------------------------------------
 
-Найти в vanilla DayZ или reference примеры:
+1. Изменить Description stack в QuestMenu.layout
 
-- scrollable long text;
-- wrapped long text;
-- text inside ScrollWidget;
-- scrollable dialog/info panels;
-- book/credits/info dialog/mod details screens.
+Текущий проблемный стек:
 
-Для каждого найденного примера указать:
+ScrollWidgetClass DescriptionScroll
+  MultilineTextWidgetClass DescriptionText
 
-- файл layout;
-- файл script, если есть;
-- widget stack;
-- как задаётся scroll;
-- как задаётся content size;
-- есть ли wrapper;
-- используется ли MultilineTextWidget / RichTextWidget / EditBox / HtmlWidget;
-- как решён clipping.
+Нужно тестово заменить на:
 
-3. Сравнить варианты для QuestMenu
+ScrollWidgetClass DescriptionScroll
+  WrapSpacerWidgetClass или GridSpacerWidgetClass DescriptionContent
+    RichTextWidgetClass DescriptionText
 
-Сравнить варианты:
+Требования:
 
-Вариант A:
-ScrollWidget + MultilineTextWidget напрямую.
+- DescriptionScroll остаётся ScrollWidgetClass.
+- DescriptionContent должен быть size-to-content по вертикали.
+- DescriptionText должен быть RichTextWidgetClass.
+- DescriptionText должен иметь wrap 1, если это свойство поддерживается.
+- DescriptionText должен быть read-only display text.
+- DescriptionText должен занимать ширину с запасом под scrollbar.
+- Не использовать фиксированную высоту 600 как основной способ content-height.
+- Не возвращать TextListboxWidget.
 
-Вариант B:
-ScrollWidget + Panel/Spacer wrapper + MultilineTextWidget.
+2. Изменить Dialog stack в QuestMenu.layout
 
-Вариант C:
-ScrollWidget + RichTextWidget.
+Текущий проблемный стек:
 
-Вариант D:
-ScrollWidget + MultilineEditBoxWidget в read-only/disabled режиме.
+ScrollWidgetClass DialogScroll
+  MultilineTextWidgetClass DialogText
 
-Вариант E:
-HtmlWidget / book-like pattern.
+Нужно тестово заменить на:
 
-Для каждого варианта указать:
+ScrollWidgetClass DialogScroll
+  WrapSpacerWidgetClass или GridSpacerWidgetClass DialogContent
+    RichTextWidgetClass DialogText
 
-- плюсы;
-- минусы;
-- риск разъезда layout;
-- риск compile error;
-- риск runtime error;
-- качество native wrap;
-- качество scroll;
-- насколько сложно поддержать в DayZ_layout viewer;
-- подходит ли для QuestMenu Description/Dialog.
+Требования:
 
-4. Проверить DayZ_layout viewer
+- DialogScroll остаётся ScrollWidgetClass.
+- DialogContent должен быть size-to-content по вертикали.
+- DialogText должен быть RichTextWidgetClass.
+- DialogText должен иметь wrap 1, если это свойство поддерживается.
+- DialogText должен быть read-only display text.
+- DialogText должен занимать ширину с запасом под scrollbar.
+- Не использовать фиксированную высоту 300 как основной способ content-height.
+- Не возвращать TextListboxWidget.
 
-Проверить:
+3. Изменить QuestUI.c под RichTextWidget
 
-- корректно ли viewer отображает текущий QuestMenu.layout;
-- не вводит ли viewer в заблуждение по позициям;
-- понимает ли он ScrollWidgetClass;
-- понимает ли он MultilineTextWidgetClass;
-- корректно ли отображает вложенность ScrollWidget -> child;
-- нужно ли отдельное обновление viewer перед следующими UI-правками.
+Заменить типы:
+
+Было сейчас:
+- private MultilineTextWidget m_QuestDescription;
+- private MultilineTextWidget m_DialogText;
+
+Должно стать:
+- private RichTextWidget m_QuestDescription;
+- private RichTextWidget m_DialogText;
+
+В Init():
+
+- найти DescriptionText;
+- найти DialogText;
+- кастовать их как RichTextWidget.
+
+SetDescriptionText(text):
+
+- должен делать SetText(text) на RichTextWidget;
+- должен делать Update(), если это безопасно и компилируется;
+- reset scroll делать только на DescriptionScroll.
+
+SetDialogText(text):
+
+- должен делать SetText(text) на RichTextWidget;
+- должен делать Update(), если это безопасно и компилируется;
+- reset scroll делать только на DialogScroll.
 
 Важно:
-по нашему правилу, если меняем QuestMenu/layout/widget stack, совместимость с DayZ_layout viewer должна учитываться.
 
-5. Дать рекомендацию
+- не вызывать scroll API на RichTextWidget;
+- scroll API только на ScrollWidget;
+- если RichTextWidget не поддерживает какой-то метод, не костылить — описать в PROBLEMS.
 
-В конце отчёта дать чёткий вывод:
+4. Убрать MultilineText-specific code
 
-- какой pattern лучше выбрать дальше;
-- нужно ли откатиться к TextListboxWidget временно;
-- или стоит продолжать ScrollWidget + MultilineTextWidget;
-- или перейти на RichTextWidget;
-- какие конкретно файлы менять в следующей практической задаче;
-- нужен ли отдельный viewer update;
-- какой самый безопасный следующий TASK.
+Удалить или отключить для Description/Dialog:
+
+- MultilineTextWidget casts;
+- SetLineBreakingOverride(LinebreakOverrideMode.LINEBREAK_WESTERN) для Description/Dialog.
+
+Если RichTextWidget имеет свой аналог line breaking/wrap и он подтверждён reference — можно использовать.
+Если нет — оставить только layout wrap / native rich text behavior.
+
+5. Проверить scroll reset
+
+Сохранить reset scroll только через ScrollWidget:
+
+- m_DescriptionScroll.VScrollToPos01(0)
+- m_DialogScroll.VScrollToPos01(0)
+
+Если `VScrollToPos01(0)` на ScrollWidget компилируется — оставить.
+Если появится compile error — убрать reset scroll и указать в PROBLEMS.
+
+6. Проверить QuestListbox / RoutePanel
+
+Не менять:
+
+- QuestListbox
+- TriggerRouteListbox
+- RoutePanel
+- кнопки
+- Offer / Completion / Reward logic
+
+7. Проверить DayZ_layout viewer
+
+По правилу SplitDoc нужно проверить viewer.
+
+Если после RichTextWidget viewer не показывает текстовые области нормально:
+
+- минимально обновить dayz_layout_viewer.html;
+- добавить RichTextWidgetClass в text-node detection;
+- добавить preview RichTextWidgetClass как текстового блока;
+- не переписывать viewer целиком.
+
+Если viewer показывает структуру достаточно:
+- не менять viewer;
+- написать в DAYZ_LAYOUT CHECK.
+
+--------------------------------------------------------------------------------
+ПРОВЕРКИ
+--------------------------------------------------------------------------------
+
+После правок проверить:
+
+1. QuestMenu.layout синтаксически целый.
+2. QuestUI.c синтаксически целый.
+3. DescriptionText теперь RichTextWidgetClass.
+4. DialogText теперь RichTextWidgetClass.
+5. DescriptionScroll остался ScrollWidgetClass.
+6. DialogScroll остался ScrollWidgetClass.
+7. DescriptionContent существует как size-to-content container.
+8. DialogContent существует как size-to-content container.
+9. m_QuestDescription кастуется как RichTextWidget.
+10. m_DialogText кастуется как RichTextWidget.
+11. SetDescriptionText использует SetText.
+12. SetDialogText использует SetText.
+13. Scroll API не вызывается на RichTextWidget.
+14. Reset scroll, если есть, вызывается только на ScrollWidget.
+15. MultilineTextWidget больше не используется для Description/Dialog.
+16. TextListboxWidget не возвращён для Description/Dialog.
+17. QuestListbox не изменён.
+18. TriggerRouteListbox не изменён.
+19. JSON не менялся.
+20. Server не менялся.
+21. QuestJournal не менялся.
+22. @Trader не менялся.
+23. DayZ_layout viewer проверен.
+24. Кириллица не повреждена.
+
+--------------------------------------------------------------------------------
+КОДИРОВКА
+--------------------------------------------------------------------------------
+
+Задача затрагивает .layout, .c и возможно viewer html.
+
+Нужно соблюдать ENCODING_RULES.md:
+
+- не делать массовую перекодировку;
+- не ломать кириллицу;
+- не менять русские строки без необходимости;
+- не сохранять файл в неправильной кодировке;
+- если файл был UTF-8 без BOM — сохранить UTF-8 без BOM;
+- в отчёте указать ENCODING CHECK.
 
 --------------------------------------------------------------------------------
 КРИТЕРИИ ГОТОВНОСТИ
 --------------------------------------------------------------------------------
 
-Задача считается выполненной, если агент вернул аналитический отчёт, где есть:
+Задача считается выполненной, если:
 
-1. Анализ текущего разъезда QuestMenu.
-2. Проверка вложенности layout.
-3. Проверка vanilla/reference examples на диске D.
-4. Сравнение минимум 3 вариантов text + scroll.
-5. Рекомендация лучшего варианта.
-6. Отдельный вывод по DayZ_layout viewer.
-7. Подтверждение, что файлы не менялись.
+1. Description/Dialog тестово переведены на ScrollWidget + Size-To-Content container + RichTextWidget.
+2. TextListboxWidget для Description/Dialog не возвращён.
+3. MultilineTextWidget для Description/Dialog больше не используется.
+4. ScrollWidget сохранён.
+5. QuestListbox и TriggerRouteListbox не изменены.
+6. Quest logic не изменена.
+7. JSON не изменён.
+8. Server не изменён.
+9. QuestJournal не изменён.
+10. DayZ_layout viewer проверен и при необходимости минимально обновлён.
+11. Агент вернул отчёт в чат.
+
+Если RichTextWidget не компилируется или не отображается:
+- задача всё равно может считаться выполненной как тест, если агент не ушёл в новую архитектуру, а честно описал проблему в PROBLEMS и предложил следующий безопасный вариант.
 
 --------------------------------------------------------------------------------
 ОЖИДАЕМЫЙ ОТЧЁТ
@@ -344,45 +460,51 @@ HtmlWidget / book-like pattern.
 AGENT REPORT
 
 DONE:
-- что было изучено;
-- какие файлы/папки просмотрены;
-- какие reference examples найдены.
-
-CURRENT QUESTMENU ANALYSIS:
-- текущая структура Description/Dialog;
-- что может вызывать разъезд;
-- есть ли подозрения на неправильную вложенность/скобки/layout size.
-
-VANILLA / REFERENCE FINDINGS:
-- найденные примеры;
-- widget stack каждого примера;
-- как там устроены scroll + text + clipping.
-
-OPTIONS:
-- вариант A;
-- вариант B;
-- вариант C;
-- вариант D;
-- плюсы/минусы/риски.
-
-DAYZ_LAYOUT VIEWER CHECK:
-- корректно ли viewer показывает текущую структуру;
-- что viewer не умеет;
-- нужно ли обновлять viewer.
-
-RECOMMENDATION:
-- какой вариант выбрать дальше;
-- какие файлы менять в следующей задаче;
-- чего не делать.
+- что изменено в QuestMenu.layout;
+- что изменено в QuestUI.c;
+- какой container выбран: WrapSpacerWidgetClass или GridSpacerWidgetClass;
+- используется ли RichTextWidgetClass;
+- менялся ли DayZ_layout viewer.
 
 CHANGED FILES:
-- должно быть: none.
+- Silver_77_Quests_Client\gui\QuestMenu.layout
+- Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c
+- DayZ_layout\..., если менялся
+
+DIFF:
+- кратко описать изменения layout;
+- кратко описать изменения script;
+- кратко описать изменения viewer, если были.
+
+COMPILE-SAFETY CHECK:
+- нет cast mismatch;
+- нет scroll API на RichTextWidget;
+- reset scroll только на ScrollWidget;
+- QuestListbox/TriggerRouteListbox сохранены.
+
+DAYZ_LAYOUT CHECK:
+- показывает ли viewer ScrollWidget + content container + RichTextWidget;
+- обновлялся ли viewer;
+- какие ограничения viewer остаются.
+
+RUNTIME EXPECTATION:
+- что должно измениться в игре;
+- что нужно проверить руками.
+
+ENCODING CHECK:
+- указать, что кириллица не повреждена;
+- указать, что массовая перекодировка не выполнялась.
 
 PROBLEMS:
-- что не удалось подтвердить.
+- что не удалось проверить без запуска игры;
+- если RichTextWidget не подходит — почему.
+
+RECOMMENDED NEXT TASK:
+- если RichTextWidget работает — runtime polish;
+- если не работает — отдельная задача на MultilineEditBoxWidget по vanilla pattern.
 
 CONCLUSION:
-- краткий вывод: куда двигаться дальше.
+- краткий вывод: тестовый переход на RichTextWidget выполнен или почему остановлен.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ЗАДАЧИ
@@ -448,59 +570,50 @@ CONCLUSION:
 ## НАЧАЛО REVIEW
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-TASK 093 REVIEW
+TASK 095 REVIEW
 
 Статус:
-Принято условно.
+Принято.
 
 Что принято:
-- Архитектура ScrollWidget + MultilineTextWidget сохранена.
-- TextListboxWidget для Description/Dialog не возвращался.
-- RichTextWidget не использовался.
-- MultilineEditBoxWidget не использовался.
-- Добавлен content-wrapper:
-  - DescriptionContent
-  - DialogContent
-- Clipping включён на нескольких уровнях:
-  - DescriptionPanel
-  - DescriptionScroll
-  - DescriptionContent
-  - DescriptionText
-  - DialogPanel
-  - DialogScroll
-  - DialogContent
-  - DialogText
-- QuestListbox не изменён.
-- TriggerRouteListbox не изменён.
-- JSON не менялся.
-- Server не менялся.
-- QuestJournal не менялся.
-- DayZ_layout viewer не менялся, и это нормально: новый wrapper — обычный PanelWidgetClass, viewer уже должен его показывать.
-- Scroll sensitivity уменьшена через QuestUI.c, а не через костыль в layout.
-- Scroll API применяется только к ScrollWidget.
+- Агент правильно остановил ветку ScrollWidget + MultilineTextWidget напрямую.
+- Правильно определил, что проблема не только в размерах панелей, а в неверной модели scroll-content.
+- Правильно заметил, что фиксированные 394x600 / 394x300 — это не нормальная модель content-height.
+- Правильно отделил:
+  - native wrap;
+  - scroll container;
+  - content sizing;
+  - clipping.
+- Правильно проверил влияние DayZ_layout viewer:
+  - viewer помогает видеть структуру;
+  - но не моделирует реальный clipping;
+  - поэтому viewer не может быть единственным арбитром scroll-поведения.
+- Правильно нашёл, что самый подтверждённый vanilla-pattern для длинного scrollable text — это MultilineEditBoxWidget в scroll-контейнере.
+- Но также логично предложил сначала попробовать более чистый read-only вариант:
+  - ScrollWidget
+  - Size-To-Content container
+  - RichTextWidget
 
-Что нужно проверить в игре:
-1. Компилируется ли `current = current.GetParent();` в `IsWidgetInside(...)`.
-2. Компилируется ли `scrollWidget.GetVScrollPos()`.
-3. Компилируется ли `scrollWidget.VScrollToPos(nextPos)`.
-4. Текст Description больше не выходит выше своей панели.
-5. Текст Dialog больше не выходит выше/ниже своей панели.
-6. Текст не рисуется поверх кнопок.
-7. Текст не рисуется поверх RoutePanel.
-8. Колёсико мыши действительно стало мягче.
-9. Drag scrollbar всё ещё работает.
-10. Не конфликтует ли кастомный `OnMouseWheel` с родным ScrollWidget scroll.
-11. Scroll не сбрасывается наверх во время чтения.
-12. Кнопки и выбор квеста работают.
+Главный вывод:
+Текущий прямой вариант:
 
-Возможный риск:
-`OnMouseWheel` теперь вручную перехватывает scroll. Если DayZ всё равно параллельно обрабатывает родной scroll, может быть двойной эффект. Но так как метод возвращает `true`, по идее событие должно считаться обработанным.
+ScrollWidget
+  MultilineTextWidget
 
-Ещё один риск:
-Если `GetVScrollPos()` возвращает значение не в пикселях, а в другой шкале, шаг `18.0` может быть слишком маленьким или странным. Это проверяется только runtime.
+лучше больше не развивать.
 
-Вывод:
-TASK 093 сделан правильно по направлению. Это аккуратная доработка текущей рабочей схемы, без отката и без смены widget-стека. Теперь надо проверить в игре именно clipping и ощущение scroll wheel.
+Следующий разумный практический шаг:
+TASK 096 — тестово перейти на vanilla-style content stack.
+
+Предпочтительный путь:
+ScrollWidget
+  WrapSpacerWidgetClass или GridSpacerWidgetClass
+    RichTextWidgetClass
+
+Сразу с разрешением минимально обновить DayZ_layout viewer, потому что viewer сейчас не считает RichTextWidgetClass текстовым виджетом.
+
+Резервный путь:
+Если RichTextWidget не заведётся — отдельной задачей пробовать MultilineEditBoxWidget по vanilla-паттерну script_console_universal_info_dialog.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ REVIEW
