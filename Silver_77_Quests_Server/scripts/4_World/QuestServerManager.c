@@ -1511,6 +1511,212 @@ class QuestServerManager
         return !HasOpenPendingRewardsForAttempt(progress, attemptId);
     }
 
+    static int EnsureCurrentAttemptId(PlayerQuestProgress progress)
+    {
+        if (!progress)
+            return 0;
+
+        EnsureRewardProgressState(progress);
+
+        if (progress.currentAttemptId <= 0 || progress.currentAttemptId <= progress.lastFinalizedAttemptId)
+        {
+            progress.currentAttemptId = progress.lastFinalizedAttemptId + 1;
+            if (progress.currentAttemptId <= 0)
+                progress.currentAttemptId = 1;
+        }
+
+        return progress.currentAttemptId;
+    }
+
+    static void MarkCurrentAttemptFinalized(PlayerQuestProgress progress)
+    {
+        if (!progress)
+            return;
+
+        int attemptId = progress.currentAttemptId;
+        if (attemptId <= 0)
+            attemptId = EnsureCurrentAttemptId(progress);
+
+        if (attemptId > 0 && progress.lastFinalizedAttemptId < attemptId)
+            progress.lastFinalizedAttemptId = attemptId;
+    }
+
+    static EntityAI TryCreateRewardItemSafe(PlayerBase player, string className, bool spawnOnGround)
+    {
+        if (!GetGame().IsServer() || !player || className == "")
+            return null;
+
+        EntityAI item = null;
+
+        if (!spawnOnGround)
+            item = player.GetInventory().CreateInInventory(className);
+
+        if (!item)
+            item = EntityAI.Cast(GetGame().CreateObjectEx(className, player.GetPosition(), ECE_PLACE_ON_SURFACE | ECE_KEEPHEIGHT));
+
+        return item;
+    }
+
+    static QuestPendingRewardProgress CreatePendingRewardBatch(PlayerQuestProgress progress, string rewardId, int attemptId, string stage, string triggerId, string actionType, array<ref Silver77_QuestItem> rewardItems)
+    {
+        if (!progress || rewardId == "" || attemptId <= 0)
+            return null;
+
+        QuestPendingRewardProgress pendingReward = new QuestPendingRewardProgress();
+        pendingReward.questId = progress.questId;
+        pendingReward.attemptId = attemptId;
+        pendingReward.rewardId = rewardId;
+        pendingReward.stage = stage;
+        pendingReward.triggerId = triggerId;
+        pendingReward.actionType = actionType;
+        pendingReward.status = "pending";
+        pendingReward.createdAt = GetCurrentUnixTimeUTC();
+        pendingReward.updatedAt = pendingReward.createdAt;
+
+        if (rewardItems)
+        {
+            foreach (Silver77_QuestItem rewardItem : rewardItems)
+            {
+                if (!rewardItem || rewardItem.className == "" || rewardItem.quantity <= 0)
+                    continue;
+
+                QuestRewardItemProgress itemProgress = new QuestRewardItemProgress();
+                itemProgress.className = rewardItem.className;
+                itemProgress.need = rewardItem.quantity;
+                itemProgress.given = 0;
+                itemProgress.spawnOnGround = rewardItem.spawnOnGround;
+                pendingReward.items.Insert(itemProgress);
+            }
+        }
+
+        return pendingReward;
+    }
+
+    static bool IsPendingRewardFullyDelivered(QuestPendingRewardProgress pendingReward)
+    {
+        if (!pendingReward || !pendingReward.items)
+            return true;
+
+        foreach (QuestRewardItemProgress itemProgress : pendingReward.items)
+        {
+            if (!itemProgress)
+                continue;
+
+            if (itemProgress.given < itemProgress.need)
+                return false;
+        }
+
+        return true;
+    }
+
+    static bool HasAnyPendingRewardItemGiven(QuestPendingRewardProgress pendingReward)
+    {
+        if (!pendingReward || !pendingReward.items)
+            return false;
+
+        foreach (QuestRewardItemProgress itemProgress : pendingReward.items)
+        {
+            if (itemProgress && itemProgress.given > 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    static bool TryDeliverPendingRewardItemsSafe(PlayerBase player, PlayerQuestProgress progress, QuestPendingRewardProgress pendingReward)
+    {
+        if (!player || !progress || !pendingReward)
+            return false;
+
+        EnsureRewardProgressState(progress);
+
+        if (!pendingReward.items)
+            pendingReward.items = new array<ref QuestRewardItemProgress>;
+
+        int deliveredThisCall = 0;
+        int now = GetCurrentUnixTimeUTC();
+        pendingReward.lastError = "";
+
+        for (int i = 0; i < pendingReward.items.Count(); i++)
+        {
+            QuestRewardItemProgress itemProgress = pendingReward.items.Get(i);
+            if (!itemProgress || itemProgress.className == "")
+                continue;
+
+            int remaining = itemProgress.need - itemProgress.given;
+            while (remaining > 0)
+            {
+                EntityAI createdItem = TryCreateRewardItemSafe(player, itemProgress.className, itemProgress.spawnOnGround);
+                if (!createdItem)
+                {
+                    itemProgress.lastError = "CreateInInventory/CreateObjectEx returned null for " + itemProgress.className;
+                    pendingReward.lastError = itemProgress.lastError;
+                    pendingReward.updatedAt = now;
+
+                    if (deliveredThisCall > 0 || HasAnyPendingRewardItemGiven(pendingReward))
+                        pendingReward.status = "partial";
+                    else
+                        pendingReward.status = "failed";
+
+                    Print("[Silver_77_Quests] Safe reward delivery failed: questId=" + progress.questId + " rewardId=" + pendingReward.rewardId + " attemptId=" + pendingReward.attemptId.ToString() + " item=" + itemProgress.className);
+                    return false;
+                }
+
+                itemProgress.given++;
+                itemProgress.lastError = "";
+                deliveredThisCall++;
+                remaining--;
+                pendingReward.updatedAt = GetCurrentUnixTimeUTC();
+            }
+        }
+
+        if (IsPendingRewardFullyDelivered(pendingReward))
+        {
+            pendingReward.status = "delivered";
+            pendingReward.lastError = "";
+            MarkPendingRewardDelivered(progress, pendingReward.rewardId, pendingReward.attemptId);
+            return true;
+        }
+
+        if (deliveredThisCall > 0)
+            pendingReward.status = "partial";
+        else if (pendingReward.status == "")
+            pendingReward.status = "pending";
+
+        pendingReward.updatedAt = GetCurrentUnixTimeUTC();
+        return false;
+    }
+
+    static bool TryDeliverFinalRewardBatchSafe(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress, string triggerId, array<ref Silver77_QuestItem> rewardItems)
+    {
+        if (!player || !quest || !progress)
+            return false;
+
+        if (!rewardItems || rewardItems.Count() == 0)
+            return true;
+
+        int attemptId = EnsureCurrentAttemptId(progress);
+        if (attemptId <= 0)
+            return false;
+
+        string rewardId = BuildRewardId(quest.id, attemptId, "reward", triggerId, "reward", 0);
+        if (HasDeliveredReward(progress, rewardId, attemptId))
+            return true;
+
+        QuestPendingRewardProgress pendingReward = FindPendingReward(progress, rewardId, attemptId);
+        if (!pendingReward)
+        {
+            pendingReward = CreatePendingRewardBatch(progress, rewardId, attemptId, "reward", triggerId, "reward", rewardItems);
+            AddPendingReward(progress, pendingReward);
+            pendingReward = FindPendingReward(progress, rewardId, attemptId);
+        }
+
+        if (!pendingReward)
+            return false;
+
+        return TryDeliverPendingRewardItemsSafe(player, progress, pendingReward);
+    }
+
     static string GetQuestStatus(PlayerBase player, string questId)
     {
         PlayerQuestData data = GetPlayerData(player);
@@ -1902,6 +2108,8 @@ class QuestServerManager
 
         if (progress)
         {
+            EnsureRewardProgressState(progress);
+            EnsureCurrentAttemptId(progress);
             progress.status = "active";
             ClearObjectiveProgress(progress);
             ClearCompletionProgress(progress);
@@ -2099,13 +2307,52 @@ class QuestServerManager
 
             if (!QuestHasRoleTriggers(quest.rewardTriggerIds) && AreAllCompletionTriggersDone(quest, progress))
             {
-                FinalizeQuestReward(player, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
+                bool finalRewardDeliveredInCompletion = TryDeliverFinalRewardBatchSafe(player, quest, progress, triggerId, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
+                if (!finalRewardDeliveredInCompletion)
+                {
+                    MarkQuestAsRewardPending(progress);
+                    SavePlayerData(data);
+                    g_ServerQuestDataRevision++;
+                    Print("[Silver_77_Quests] Final reward delivery pending for quest: " + questId + " via trigger " + triggerId);
+                    return false;
+                }
+
+                RecordStageVisit(progress, triggerId, "reward");
+                MarkCurrentAttemptFinalized(progress);
                 MarkQuestAsCompleted(progress);
             }
 
             SavePlayerData(data);
             g_ServerQuestDataRevision++;
             Print("[Silver_77_Quests] Player completed quest stage: " + questId + " via trigger " + triggerId);
+            return true;
+        }
+
+        if (status == "reward_pending" && !QuestHasRoleTriggers(quest.rewardTriggerIds) && QuestRoleContains(quest.completionTriggerIds, triggerId))
+        {
+            if (!AreAllCompletionTriggersDone(quest, progress))
+            {
+                Print("[Silver_77_Quests] Final reward retry blocked, completion chain is not done for quest: " + questId);
+                return false;
+            }
+
+            bool finalRewardRetryDelivered = TryDeliverFinalRewardBatchSafe(player, quest, progress, triggerId, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
+            if (!finalRewardRetryDelivered)
+            {
+                MarkQuestAsRewardPending(progress);
+                SavePlayerData(data);
+                g_ServerQuestDataRevision++;
+                Print("[Silver_77_Quests] Final reward retry still pending for quest: " + questId + " via trigger " + triggerId);
+                return false;
+            }
+
+            RecordStageVisit(progress, triggerId, "reward");
+            MarkCurrentAttemptFinalized(progress);
+            MarkQuestAsCompleted(progress);
+
+            SavePlayerData(data);
+            g_ServerQuestDataRevision++;
+            Print("[Silver_77_Quests] Player received final reward and completed quest: " + questId + " via trigger " + triggerId);
             return true;
         }
 
@@ -2141,8 +2388,18 @@ class QuestServerManager
                 }
             }
 
-            FinalizeQuestReward(player, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
+            bool finalRewardDelivered = TryDeliverFinalRewardBatchSafe(player, quest, progress, triggerId, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
+            if (!finalRewardDelivered)
+            {
+                MarkQuestAsRewardPending(progress);
+                SavePlayerData(data);
+                g_ServerQuestDataRevision++;
+                Print("[Silver_77_Quests] Final reward delivery pending for quest: " + questId + " via trigger " + triggerId);
+                return false;
+            }
+
             RecordStageVisit(progress, triggerId, "reward");
+            MarkCurrentAttemptFinalized(progress);
             MarkQuestAsCompleted(progress);
 
             SavePlayerData(data);

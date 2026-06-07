@@ -50,98 +50,175 @@
 # 🟦 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА ДЛЯ АГЕНТА
 ================================================================================
 
-TASK 108 — Analysis / Runtime Check: проверить почему завершённый квест снова доступен и зафиксировать поведение выдачи при полном инвентаре
+TASK 109 — Implementation: safe reward delivery core + подключение к финальному Reward
 
 Статус:
-Аналитико-диагностическая задача. Код, JSON, layout, server profile и player progress не менять.
+Реализационная задача с жёсткими рамками.
+
+Код менять можно только в рамках безопасной выдачи финальной награды.
+Offer / giveItems и Completion rewards в этой задаче не подключать к новой safe-логике.
 
 --------------------------------------------------------------------------------
 КОНТЕКСТ
 --------------------------------------------------------------------------------
 
-После TASK 106 был сделан билд клиента и сервера.
+По предыдущим задачам подтверждено:
 
-Пользователь проверил квест в игре:
-
-1. Квестовое меню открывается.
-2. Квесты отображаются.
-3. Диалог NPC отображается.
-4. Один из квестов после завершения снова стал доступен.
-5. У пользователя был полный инвентарь.
-6. Предметы, которые не влезли в инвентарь, сбросились на землю.
-
-Наблюдение по выдаче предметов:
-fallback на землю при полном инвентаре фактически работает.
-
-Но нужно понять:
-почему квест снова стал доступен.
-
-Возможные причины:
-
-- квест repeatable;
-- cooldown уже прошёл;
-- player progress был очищен или создан заново;
-- использован другой SteamID / другой profile;
-- lastCompletedTime старый или некорректный;
-- статус квеста был сброшен;
-- логика repeat/cooldown работает как задумано;
-- или есть баг, из-за которого одноразовый квест снова доступен.
-
---------------------------------------------------------------------------------
-ЦЕЛЬ TASK 108
---------------------------------------------------------------------------------
-
-Провести диагностику без правок.
-
-Нужно ответить:
-
-1. Почему конкретный квест снова стал доступен после завершения.
-2. Является ли это ожидаемым поведением по JSON и текущей логике.
-3. Включён ли у квеста repeatable.
-4. Какой у квеста cooldownSeconds.
-5. Какой статус квеста записан в player progress.
-6. Какой lastCompletedTime записан в player progress.
-7. Создались ли новые поля из TASK 106:
+1. TASK 106 добавил фундамент progress:
    - currentAttemptId;
    - lastFinalizedAttemptId;
-   - pendingRewards;
-   - deliveredRewards.
-8. Не был ли player progress создан заново.
-9. Не используется ли другой SteamID / другой profile.
-10. Подтвердить по коду и/или логам, что fallback выдачи предметов на землю при полном инвентаре соответствует текущей реализации.
-11. Сформулировать, нужно ли менять repeat/cooldown-логику в следующих задачах.
+   - pendingRewards[];
+   - deliveredRewards[].
+
+2. Текущая выдача предметов работает так:
+   - сначала попытка положить предмет в инвентарь;
+   - если не влезает, fallback создаёт предмет на земле.
+
+3. Runtime-проверка пользователя подтвердила:
+   при полном инвентаре предметы действительно падают на землю.
+
+4. Но текущая выдача всё ещё небезопасна:
+   - результат CreateObjectEx не проверяется;
+   - нет guaranteed delivery;
+   - нет довыдачи остатка;
+   - нет защиты от partial-выдачи;
+   - success выдачи не влияет на completed;
+   - cooldown стартует после completed, даже если награда могла фактически не создаться.
+
+5. Нужно начать безопасную систему с самого важного места:
+   финальный Reward, потому что он закрывает квест и запускает repeat/cooldown через lastCompletedTime.
+
+--------------------------------------------------------------------------------
+ЦЕЛЬ TASK 109
+--------------------------------------------------------------------------------
+
+Сделать safe reward delivery core и подключить его только к финальному Reward.
+
+Нужно реализовать серверную safe-функцию выдачи reward batch, которая:
+
+1. Работает по ключу:
+   questId + attemptId + rewardId.
+
+2. Создаёт или использует pendingReward.
+
+3. Проверяет deliveredReward перед выдачей:
+   если reward уже delivered для текущего attemptId, повторно не выдавать.
+
+4. Если pendingReward уже partial или failed:
+   довыдавать только остаток.
+
+5. Для каждого предмета:
+   - пробовать создать в инвентаре;
+   - если не получилось, пробовать создать на земле;
+   - проверять результат создания;
+   - увеличивать given только если объект реально создан.
+
+6. Обновлять pendingRewards:
+   - pending;
+   - partial;
+   - failed;
+   - delivered.
+
+7. При полной успешной выдаче:
+   - добавить запись в deliveredRewards;
+   - пометить pendingReward как delivered;
+   - разрешить MarkQuestAsCompleted.
+
+8. При partial/failed:
+   - НЕ делать MarkQuestAsCompleted;
+   - НЕ запускать cooldown;
+   - оставить квест в состоянии reward_pending;
+   - сохранить progress;
+   - дать возможность повторить выдачу позже.
+
+9. Не выдавать лишнего при повторном нажатии.
+
+--------------------------------------------------------------------------------
+ВАЖНО ПРО attemptId
+--------------------------------------------------------------------------------
+
+Для safe reward delivery нужен attemptId.
+
+В рамках TASK 109 разрешено минимально подключить attemptId к жизненному циклу квеста:
+
+1. При AcceptQuest:
+   - если currentAttemptId <= 0, установить currentAttemptId = lastFinalizedAttemptId + 1;
+   - если квест был completed и повторно берётся после cooldown, создать новый attemptId = lastFinalizedAttemptId + 1;
+   - не очищать deliveredRewards;
+   - не очищать pendingRewards без отдельной причины.
+
+2. При успешном финальном Reward:
+   - если награда полностью delivered;
+   - перед или во время завершения квеста обновить lastFinalizedAttemptId = currentAttemptId.
+
+3. Старые deliveredRewards с другим attemptId не должны блокировать выдачу в новой попытке.
+
+Главное правило:
+deliveredReward считается уже выданным только если совпали rewardId и attemptId текущей попытки.
+
+--------------------------------------------------------------------------------
+ЧТО НЕ НУЖНО ДЕЛАТЬ В TASK 109
+--------------------------------------------------------------------------------
+
+Не подключать safe delivery к:
+
+- Offer / giveItems;
+- Completion rewards.
+
+Не менять:
+
+- dev-квесты в JSON_Quvest;
+- layout;
+- UI;
+- диалоги;
+- objectives;
+- rewards по смыслу;
+- server profile вручную;
+- player progress вручную.
+
+Не делать полноценную UX-систему сообщений игроку.
+Можно добавить server Print/debug log, если нужно для диагностики.
+
+Не переносить окончательно cooldown/repeat на отдельную финализацию attempt, кроме минимального условия:
+если final reward не delivered, MarkQuestAsCompleted не вызывается и cooldown не стартует.
 
 --------------------------------------------------------------------------------
 ЖЁСТКИЕ РАМКИ
 --------------------------------------------------------------------------------
 
-Это только диагностика.
+Разрешено менять:
 
-Запрещено менять любые файлы.
+1. Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
 
-Запрещено:
+Разрешено менять только при реальной необходимости компиляции:
 
-- менять .c файлы;
-- менять .json файлы;
-- менять .layout файлы;
-- менять документацию;
-- менять server profile;
-- менять player progress;
-- чистить player progress;
-- удалять progress;
-- запускать reset progress;
-- делать git commit;
-- делать git push;
-- делать git reset;
-- делать git clean;
-- делать git checkout;
-- запускать Addon Builder;
-- перепаковывать PBO.
+2. Silver_77_Quests_Client/scripts/3_Game/PlayerQuestData.c
+
+Запрещено менять:
+
+- JSON_Quvest/
+- DayZ_layout/
+- Documentation/
+- Documentation/AGENT_TASK_LOOP.md
+- Documentation/SplitDoc/TASK_HISTORY.md
+- Silver_77_Quests_Client/scripts/4_World/QuestClientManager.c
+- Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c
+- любые layout-файлы
+- server profile
+- player progress
+- PBO
+
+Запрещено делать:
+
+- git commit
+- git push
+- git reset
+- git clean
+- git checkout
+- запуск Addon Builder
+- перепаковку PBO
 
 Git контролирует пользователь.
-
-Если найдена проблема, её нужно только описать в отчёте и предложить следующую задачу.
-Ничего не исправлять.
 
 --------------------------------------------------------------------------------
 ЧТО НУЖНО ПРОЧИТАТЬ ПЕРЕД НАЧАЛОМ
@@ -159,129 +236,160 @@ Git контролирует пользователь.
 Обязательно проверить код:
 
 1. Silver_77_Quests_Client/scripts/3_Game/PlayerQuestData.c
-2. Silver_77_Quests_Client/scripts/3_Game/QuestData.c
-3. Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
-4. Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c
-5. Silver_77_Quests_Client/scripts/4_World/QuestClientManager.c
+2. Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c
 
-Разрешено читать:
+Можно читать для понимания, но не менять:
 
 1. JSON_Quvest/Silver_77_Quests.json
-2. server profile quest JSON, если он доступен локально
-3. player progress JSON, если он доступен локально
-4. server RPT / script logs, если они доступны локально
+2. Silver_77_Quests_Client/scripts/3_Game/QuestData.c
+3. Silver_77_Quests_Client/scripts/4_World/QuestClientManager.c
+4. Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c
 
 --------------------------------------------------------------------------------
 ЧТО ИМЕННО НУЖНО СДЕЛАТЬ
 --------------------------------------------------------------------------------
 
-1. Найти квест, который снова стал доступен.
+1. Найти текущую выдачу финального Reward.
 
-По скриншоту это квест с названием:
+Проверить места:
 
-Картошка с маслицем
+- FinalizeQuestReward;
+- CompleteQuest;
+- ветка rewardTriggerIds;
+- ветка финального reward без отдельного Reward trigger, если она есть;
+- MarkQuestAsCompleted;
+- SpawnQuestItem.
 
-Нужно найти его в JSON_Quvest/Silver_77_Quests.json и определить его questId.
+2. Добавить safe-функцию создания предмета.
 
-2. Проверить JSON-настройки этого квеста.
+Смысл функции:
 
-Нужно выписать:
-
-- questId;
-- title/name;
-- repeatable;
-- cooldownSeconds;
-- offerTriggerIds;
-- completionTriggerIds;
-- rewardTriggerIds;
-- rewards;
-- giveItems;
-- triggerActions, связанные с Offer / Completion / Reward.
-
-3. Проверить текущую repeat/cooldown-логику в коде.
-
-Нужно найти и описать:
-
-- где проверяется repeatable;
-- где проверяется cooldownSeconds;
-- где используется lastCompletedTime;
-- где квест снова становится доступным;
-- при каких условиях completed-квест можно взять повторно.
-
-4. Проверить player progress.
-
-Если player progress доступен, найти запись по questId и выписать:
-
-- questId;
-- status;
-- lastCompletedTime;
-- currentAttemptId;
-- lastFinalizedAttemptId;
-- pendingRewards;
-- deliveredRewards;
-- objectiveProgress;
-- completedCompletionTriggerIds;
-- stageVisits.
+- получить player и Silver77_QuestItem;
+- попытаться создать предмет в инвентаре, если spawnOnGround не требует землю сразу;
+- если инвентарь не принял, создать предмет на земле;
+- вернуть успех только если реально получен объект EntityAI;
+- не считать успешной выдачу, если CreateInInventory и CreateObjectEx вернули null.
 
 Важно:
-ничего в progress не менять.
+не менять смысл quantity/spawnOnGround относительно текущей SpawnQuestItem.
+Если текущий SpawnQuestItem содержит особую обработку quantity, здоровья, stack или другого поля, safe-логика должна повторять это поведение максимально близко.
 
-5. Проверить, был ли progress создан заново.
+3. Добавить safe-функцию выдачи reward batch.
 
-Признаки:
+Примерный смысл:
 
-- отсутствует старая запись по questId;
-- lastCompletedTime = 0;
-- status = available, хотя квест проходился;
-- другой steamId;
-- другой путь profile;
-- новый файл player progress.
+- TryDeliverRewardBatchSafe(player, quest, progress, triggerId, rewardItems, stage/actionType)
 
-6. Проверить fallback на землю.
+Функция должна:
 
-Пользователь сообщил runtime-наблюдение:
-при полном инвентаре предметы сбросились на землю.
+- получить currentAttemptId;
+- построить стабильный rewardId;
+- проверить deliveredRewards по rewardId + attemptId;
+- если already delivered, вернуть success/no-op;
+- найти или создать pendingReward;
+- выдать только остаток need - given;
+- обновить given только после реального создания предмета;
+- если всё выдано, status = delivered;
+- если часть выдана, status = partial;
+- если ничего не выдано, status = failed или pending с lastError;
+- записать lastError при ошибке;
+- обновить updatedAt.
 
-Нужно сверить это с кодом:
+4. Подключить safe delivery только к финальному Reward.
 
-- где вызывается CreateInInventory;
-- где fallback на CreateObjectEx;
-- проверяется ли результат CreateObjectEx;
-- есть ли сообщение игроку;
-- влияет ли успех выдачи на status квеста.
+Подключить в местах, где rewardPhase == true или где финальная награда закрывает квест.
 
-7. Сделать вывод:
+Правило:
 
-- квест снова доступен потому что repeatable/cooldown;
-- или потому что progress сброшен/другой;
-- или потому что есть баг;
-- или без player progress/RPT точно подтвердить нельзя.
+- если safe delivery вернула success:
+  - RecordStageVisit reward;
+  - MarkQuestAsCompleted;
+  - SavePlayerData;
+  - g_ServerQuestDataRevision++.
 
-8. Предложить следующую задачу.
+- если safe delivery вернула partial/failed:
+  - НЕ вызывать MarkQuestAsCompleted;
+  - progress.status = reward_pending;
+  - SavePlayerData;
+  - g_ServerQuestDataRevision++;
+  - вернуть true или false в зависимости от текущего стиля кода, но квест не должен стать completed.
 
-Если поведение нормальное:
-предложить TASK 109 на safe-функцию выдачи предметов.
+Важно:
+Completion rewards с actionType completion пока оставить на старой выдаче.
 
-Если поведение ошибочное:
-предложить отдельную TASK на исправление repeat/cooldown или progress-state.
+5. Минимально подключить currentAttemptId.
+
+В AcceptQuest:
+
+- при первом взятии квеста установить currentAttemptId = lastFinalizedAttemptId + 1, если currentAttemptId <= 0;
+- при повторном взятии completed repeatable-квеста после cooldown установить новый currentAttemptId = lastFinalizedAttemptId + 1;
+- не использовать старые deliveredRewards для новой попытки.
+
+6. Обновить lastFinalizedAttemptId при успешном completed.
+
+Когда финальная награда полностью delivered и квест переводится в completed:
+
+- lastFinalizedAttemptId должен стать currentAttemptId, если currentAttemptId больше 0.
+
+7. Не менять JSON_Quvest.
+
+В отчёте явно указать:
+
+- JSON_Quvest не менялся;
+- dev-квесты не менялись;
+- смысл rewards/objectives/dialogs не менялся.
+
+8. Не менять UI.
+
+Сообщения игроку можно оставить на следующую задачу.
+
+9. Проверить риски компиляции.
+
+Если DayZ tools недоступны, не запускать сборку.
+Но нужно сделать самопроверку кода:
+- нет ли очевидных ошибок сигнатур;
+- нет ли обращения к null-массивам;
+- нет ли смены поведения Offer/Completion;
+- нет ли случайного изменения JSON/UI.
+
+--------------------------------------------------------------------------------
+ОЖИДАЕМОЕ ПОВЕДЕНИЕ ПОСЛЕ TASK 109
+--------------------------------------------------------------------------------
+
+1. Финальный Reward при полном инвентаре:
+   - пробует инвентарь;
+   - если не получилось, создаёт на земле;
+   - если объект создан, считается delivered.
+
+2. Если предмет не создался нигде:
+   - квест не становится completed;
+   - cooldown не стартует;
+   - pendingReward остаётся в progress;
+   - следующая попытка выдачи должна довыдать остаток.
+
+3. Повторное нажатие на Reward:
+   - не выдаёт уже delivered награду повторно;
+   - если была partial, довыдаёт только остаток.
+
+4. Старый deliveredReward другого attemptId:
+   - не блокирует новую попытку repeatable-квеста.
 
 --------------------------------------------------------------------------------
 МОЁ МНЕНИЕ / ПРЕДПОЧТИТЕЛЬНОЕ РЕШЕНИЕ
 --------------------------------------------------------------------------------
 
-Моё мнение:
+Лучшее решение для TASK 109:
 
-Сейчас не нужно сразу исправлять код.
+1. Не ломать старую выдачу целиком.
+2. Добавить safe delivery рядом с текущей логикой.
+3. Подключить только финальный Reward.
+4. Не трогать Offer и Completion.
+5. Не трогать JSON.
+6. Не трогать UI.
+7. Если safe reward failed/partial, переводить квест в reward_pending, а не completed.
 
-Нужно сначала понять, почему квест снова доступен:
-
-1. Если квест repeatable и cooldown прошёл — это нормальное старое поведение.
-2. Если progress был пересоздан — это не баг квеста, а эффект нового/чистого progress.
-3. Если квест не repeatable, но снова доступен при сохранённом progress — это баг.
-4. Если cooldown стартует сразу после completed, это уже известный риск, который нужно будет исправлять после внедрения safe reward delivery.
-
-Факт, что предметы падают на землю при полном инвентаре, полезен:
-текущий fallback работает, но он всё ещё не гарантирует безопасную выдачу, потому что результат CreateObjectEx не проверяется и нет pendingRewards-довыдачи.
+Главное:
+финальный Reward не должен запускать completed/cooldown, пока награда не подтверждена как delivered.
 
 --------------------------------------------------------------------------------
 ФОРМАТ ОТЧЁТА
@@ -292,41 +400,41 @@ Git контролирует пользователь.
 AGENT REPORT
 
 DONE:
-- что было проверено
+- что сделано
 
 READ FILES:
 - какие файлы прочитаны
 
-QUEST CHECK:
-- questId
-- название квеста
-- repeatable
-- cooldownSeconds
-- Offer / Completion / Reward triggers
-- rewards / giveItems
+CHANGED FILES:
+- какие файлы изменены
 
-PLAYER PROGRESS CHECK:
-- путь progress-файла, если проверялся
-- steamId, если найден
-- status
-- lastCompletedTime
-- currentAttemptId
-- lastFinalizedAttemptId
-- pendingRewards
-- deliveredRewards
-- признаки старого или нового progress
+SAFE DELIVERY CORE:
+- какие функции добавлены
+- как проверяется CreateInInventory
+- как проверяется CreateObjectEx
+- как считается need/given/failed
+- как обновляются pendingRewards/deliveredRewards
 
-REPEAT / COOLDOWN CHECK:
-- где в коде проверяется repeatable
-- где проверяется cooldown
-- почему квест снова доступен
-- это норма или риск
+REWARD CONNECTION:
+- где подключена safe delivery к финальному Reward
+- какие старые места остались без изменений
+- что происходит при success
+- что происходит при partial/failed
 
-FULL INVENTORY / GROUND FALLBACK CHECK:
-- где код пытается положить предмет в инвентарь
-- где fallback создаёт предмет на земле
-- проверяется ли результат
-- соответствует ли это runtime-наблюдению пользователя
+ATTEMPT_ID CHECK:
+- где создаётся currentAttemptId
+- где обновляется lastFinalizedAttemptId
+- как исключена блокировка новой попытки старым deliveredReward
+
+JSON_QUEST_CHECK:
+- менялся ли JSON_Quvest
+- подтверждение, что dev-квесты не затронуты
+
+BEHAVIOR CHECK:
+- Offer/giveItems не подключались к safe delivery
+- Completion rewards не подключались к safe delivery
+- cooldown напрямую не переписывался
+- MarkQuestAsCompleted не вызывается при failed/partial final reward
 
 PROBLEMS:
 - реальные проблемы и риски
@@ -335,10 +443,10 @@ QUESTIONS:
 - только реальные вопросы
 
 RECOMMENDED NEXT TASK:
-- предложить следующий безопасный шаг
+- следующий безопасный шаг
 
 CONCLUSION:
-- короткий итог: почему квест снова доступен и что делать дальше
+- короткий итог, готова ли safe delivery для финального Reward
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
