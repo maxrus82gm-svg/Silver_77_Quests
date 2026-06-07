@@ -11,7 +11,7 @@
 
 Постоянные правила вынесены в:
 
-- `Documentation/SplitDoc/AGENT_RULES.md`
+- `Documentation/SplitDoc/START.md`
 - `Documentation/SplitDoc/ENCODING_RULES.md`
 - `Documentation/SplitDoc/DAYZ_RPC_SYNC_RULES.md`
 - `Documentation/SplitDoc/QUEST_EDITOR_RULES.md`
@@ -26,7 +26,7 @@
 Агент всегда читает:
 
 - `Documentation/AGENT_TASK_LOOP.md`
-- `Documentation/SplitDoc/AGENT_RULES.md`
+- `Documentation/SplitDoc/START.md`
 
 ## Матрица чтения SplitDoc
 
@@ -152,7 +152,7 @@ Git контролирует пользователь.
 Обязательно прочитать:
 
 1. Documentation/AGENT_TASK_LOOP.md
-2. Documentation/SplitDoc/AGENT_RULES.md
+2. Documentation/SplitDoc/START.md
 3. Documentation/SplitDoc/TASK_HISTORY.md
 
 Дополнительно проверить все SplitDoc, где есть ссылки на `AGENT_RULES.md`.
@@ -163,11 +163,10 @@ Git контролирует пользователь.
 
 Разрешено менять:
 
-1. Documentation/SplitDoc/AGENT_RULES.md
-2. Documentation/SplitDoc/START.md
-3. Documentation/AGENT_TASK_LOOP.md
-4. Documentation/SplitDoc/TASK_HISTORY.md
-5. другие файлы Documentation/SplitDoc/* только если в них есть ссылка на `AGENT_RULES.md`
+1. Documentation/SplitDoc/START.md
+2. Documentation/AGENT_TASK_LOOP.md
+3. Documentation/SplitDoc/TASK_HISTORY.md
+4. другие файлы Documentation/SplitDoc/* только если в них есть ссылка на `AGENT_RULES.md`
 
 Важно:
 если инструмент не поддерживает физическое rename, можно:
@@ -346,36 +345,39 @@ CONCLUSION:
 AGENT REPORT
 
 DONE:
-- В `AGENT_TASK_LOOP.md` зафиксировано, что commit `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800` принят после runtime-проверки как текущий рабочий baseline `QuestMenu`.
-- В `БЛОКЕ 3` обновлён `TASK 101 REVIEW`: статус переведён из условного в runtime-accepted.
-- В `TASK_HISTORY.md` добавлены записи по `TASK 101` и `TASK 102`.
-- В документации зафиксированы текущие свойства baseline:
-  - `Description/Dialog` увеличены по вертикали;
-  - `Scrollbar V` отключён;
-  - стек остаётся `ScrollWidget -> MultilineTextWidget`;
-  - `QuestUI.c` не менялся;
-  - `wrapper/mask/SizeToChild/RichText/EditBox` не используются;
-  - очень длинный текст всё ещё может обрезаться;
-  - тема `scroll/clipping` отложена.
+- `Documentation/SplitDoc/AGENT_RULES.md` физически заменён на `Documentation/SplitDoc/START.md`.
+- Все старые правила из `AGENT_RULES.md` сохранены в `START.md`.
+- В `START.md` добавлен раздел `## Правила Git / репозитория`.
+- В Git-правило добавлен рабочий путь проекта: `P:\Silver_77_Quests`.
+- Обновлены актуальные ссылки обязательного чтения на `START.md`.
 
 CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\START.md`
 - `P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md`
 
 DIFF:
-- В `AGENT_TASK_LOOP.md` обновлён последний `AGENT REPORT` под `TASK 102`.
-- В `AGENT_TASK_LOOP.md` обновлён `TASK 101 REVIEW`: runtime-проверка пользователя подтверждает, что текущий вариант пока принимается как рабочий baseline.
-- В `TASK_HISTORY.md` добавлена история принятия `TASK 101` и документирующего `TASK 102`.
-- Зафиксирован commit baseline: `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800`.
+- `AGENT_RULES.md` переименован/заменён на `START.md`.
+- В `AGENT_TASK_LOOP.md` постоянная карта правил и обязательное чтение указывают на `START.md`.
+- В `START.md` добавлены правила проверки GitHub после отчёта Codex и обязательный формат начала REVIEW.
+- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена запись по `TASK 103`.
+
+GIT RULES CHECK:
+- `START.md` содержит формат `СТАТУС КОММИТА`.
+- Правило сохраняет commit message как есть, включая `+`, `01`, `02`.
+- Правило требует честно писать, если message не подтверждён.
+- Правило запрещает ассистенту утверждать, что он видит локальные изменения.
+- Зафиксировано, что Git контролирует пользователь.
+
+ENCODING CHECK:
+- Документные файлы сохранены как UTF-8 без BOM.
+- Кириллица в изменённых документах читается корректно.
 
 PROBLEMS:
-- `P:` в этой сессии не смонтирован, поэтому документация обновлена в рабочей копии `D:\Dayz\Silver_77_Quests`, которая используется как локальное зеркало проекта.
-
-QUESTIONS:
 - Нет.
 
 CONCLUSION:
-- Runtime-проверка пользователя приняла `TASK 101` как текущий рабочий baseline `QuestMenu`, и это состояние теперь явно зафиксировано в `AGENT_TASK_LOOP.md` и `TASK_HISTORY.md` без правок UI-кода.
+- TASK 103 выполнен как документационная правка: стартовый документ правил теперь `START.md`, Git/review-правило добавлено, код/JSON/layout/server/PBO не менялись.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА

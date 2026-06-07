@@ -43,6 +43,7 @@
 - `TASK 080` — выполнена агентом, ожидает review. Создана структура `SplitDoc`, постоянные правила вынесены по темам, `AGENT_TASK_LOOP.md` сокращён до рабочего shell-документа. Зафиксированы новые правила о том, как ChatGPT формирует `БЛОК 1` и как агент при разрешении задачи обновляет `AGENT REPORT`, `REVIEW / STATUS`, `TASK_HISTORY` и новые правила.
 - `TASK 101` — принято после runtime-проверки пользователя. Commit baseline: `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800`. Для `QuestMenu` выбран компромиссный рабочий вариант: `Description/Dialog` увеличены по вертикали, `Scrollbar V` отключён, стек остаётся `ScrollWidget -> MultilineTextWidget`, `QuestUI.c` не менялся. `wrapper/mask/SizeToChild/RichText/EditBox` не используются. Известное ограничение: очень длинный текст может обрезаться; тема `scroll/clipping` отложена.
 - `TASK 102` — выполнена как документационная фиксация runtime-accepted baseline после `TASK 101`. В `AGENT_TASK_LOOP.md` и `TASK_HISTORY.md` записано, что commit `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800` принят как текущий рабочий вариант `QuestMenu`.
+- `TASK 103` — выполнена документационная правка. `AGENT_RULES.md` переименован/заменён на `START.md`; `START.md` теперь главный стартовый документ правил. Добавлены правила Git review: после отчёта Codex REVIEW должен начинаться с `СТАТУС КОММИТА`, commit message указывается как есть, неподтверждённый message отмечается честно, ассистент не утверждает, что видит локальные изменения, а проверяет GitHub/push. В правило добавлен рабочий путь проекта `P:\Silver_77_Quests`.
 
 ## Примечание
 
