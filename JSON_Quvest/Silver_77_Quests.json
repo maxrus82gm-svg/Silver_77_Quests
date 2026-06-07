@@ -134,7 +134,7 @@
           "className": "Carp",
           "quantity": 12,
           "removeOnComplete": 1,
-          "useItemQuantity": 1,
+          "useItemQuantity": 0,
           "allowPartialTurnIn": 1
         }
       ],
@@ -279,7 +279,7 @@
       "id": "quest_hunter_2",
       "name": "Поставка провизии",
       "description": "Охотник просит доставить провизию Распутину: забери задание у охотника, отнеси 12 картофелин Распутину и затем вернись к охотнику за завершением.",
-      "repeatable": 0,
+      "repeatable": 1,
       "cooldownSeconds": 0,
       "requiresPrevious": "",
       "requiredQuestIds": [],
@@ -355,7 +355,7 @@
       "name": "Газики всегда в цене.",
       "description": "Здорова, меня Пуля кличут.",
       "repeatable": 1,
-      "cooldownSeconds": 350000,
+      "cooldownSeconds": 500000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
