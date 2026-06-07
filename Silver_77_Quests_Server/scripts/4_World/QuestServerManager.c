@@ -410,7 +410,7 @@ void Silver77_ServerAppendUniqueTriggerId(array<string> target, string triggerId
 {
     if (!target || triggerId == "" || target.Find(triggerId) != -1)
         return;
-    
+
     target.Insert(triggerId);
 }
 
@@ -418,7 +418,7 @@ void Silver77_ServerAppendUniqueTriggerIds(array<string> source, array<string> t
 {
     if (!source || !target)
         return;
-    
+
     foreach (string triggerId : source)
     {
         Silver77_ServerAppendUniqueTriggerId(target, triggerId);
@@ -429,17 +429,17 @@ void Silver77_ServerNormalizeSingleTriggerRoleIds(array<string> triggerIds)
 {
     if (!triggerIds)
         return;
-    
+
     array<string> normalizedTriggerIds = new array<string>;
     foreach (string triggerId : triggerIds)
     {
         if (triggerId == "")
             continue;
-        
+
         normalizedTriggerIds.Insert(triggerId);
         break;
     }
-    
+
     triggerIds.Clear();
     foreach (string normalizedTriggerId : normalizedTriggerIds)
     {
@@ -451,40 +451,40 @@ void SeedDefaultQuestRoles(Silver77_QuestConfig config)
 {
     if (!config || !config.quests || !config.triggers)
         return;
-    
+
     foreach (Silver77_Quest quest : config.quests)
     {
         if (!quest)
             continue;
-        
+
         if (!quest.offerTriggerIds)
             quest.offerTriggerIds = new array<string>;
-        
+
         if (!quest.completionTriggerIds)
             quest.completionTriggerIds = new array<string>;
-        
+
         if (!quest.rewardTriggerIds)
             quest.rewardTriggerIds = new array<string>;
-        
+
         if (!quest.triggerActions)
             quest.triggerActions = new array<ref Silver77_QuestTriggerAction>;
-        
+
         array<string> assignedTriggerIds = new array<string>;
         foreach (Silver77_QuestTriggerConfig trigger : config.triggers)
         {
             if (!trigger || !trigger.questIds)
                 continue;
-            
+
             if (trigger.questIds.Find(quest.id) != -1)
                 Silver77_ServerAppendUniqueTriggerId(assignedTriggerIds, trigger.id);
         }
-        
+
         Silver77_ServerNormalizeSingleTriggerRoleIds(quest.offerTriggerIds);
         Silver77_ServerNormalizeSingleTriggerRoleIds(quest.rewardTriggerIds);
-        
+
         if (quest.offerTriggerIds.Count() == 0 && assignedTriggerIds.Count() > 0)
             Silver77_ServerAppendUniqueTriggerId(quest.offerTriggerIds, assignedTriggerIds.Get(0));
-        
+
         if (quest.rewardTriggerIds.Count() == 0 && assignedTriggerIds.Count() > 0)
             Silver77_ServerAppendUniqueTriggerId(quest.rewardTriggerIds, assignedTriggerIds.Get(0));
     }
@@ -494,84 +494,84 @@ void NormalizeQuestConfig(Silver77_QuestConfig config)
 {
     if (!config)
         return;
-    
+
     if (!config.quests)
         config.quests = new array<ref Silver77_Quest>;
-    
+
     if (!config.triggers)
         config.triggers = new array<ref Silver77_QuestTriggerConfig>;
-    
+
     foreach (Silver77_Quest quest : config.quests)
     {
         if (!quest)
             continue;
-        
+
         if (!quest.giveItems)
             quest.giveItems = new array<ref Silver77_QuestItem>;
-        
+
         if (!quest.objectives)
             quest.objectives = new array<ref Silver77_QuestObjective>;
-        
+
         if (!quest.rewards)
             quest.rewards = new array<ref Silver77_QuestItem>;
-        
+
         if (!quest.requiredQuestIds)
             quest.requiredQuestIds = new array<string>;
-        
+
         if (!quest.offerTriggerIds)
             quest.offerTriggerIds = new array<string>;
-        
+
         if (!quest.completionTriggerIds)
             quest.completionTriggerIds = new array<string>;
-        
+
         if (!quest.rewardTriggerIds)
             quest.rewardTriggerIds = new array<string>;
-        
+
         if (!quest.triggerActions)
             quest.triggerActions = new array<ref Silver77_QuestTriggerAction>;
-        
+
         Silver77_ServerNormalizeSingleTriggerRoleIds(quest.offerTriggerIds);
         Silver77_ServerNormalizeSingleTriggerRoleIds(quest.rewardTriggerIds);
-        
+
         foreach (Silver77_QuestTriggerAction action : quest.triggerActions)
         {
             if (!action)
                 continue;
-            
+
             if (!action.rewards)
                 action.rewards = new array<ref Silver77_QuestItem>;
         }
     }
-    
+
     foreach (Silver77_QuestTriggerConfig trigger : config.triggers)
     {
         if (!trigger)
             continue;
-        
+
         if (!trigger.position)
             trigger.position = new array<float>;
-        
+
         if (!trigger.questIds)
             trigger.questIds = new array<string>;
-        
+
         if (!trigger.npcPosition)
             trigger.npcPosition = new array<float>;
-        
+
         if (!trigger.npcOrientation)
             trigger.npcOrientation = new array<float>;
-        
+
         if (!trigger.npcLoadout)
             trigger.npcLoadout = new array<string>;
-        
+
         if (!trigger.npcBackItems)
             trigger.npcBackItems = new array<string>;
-        
+
         if (trigger.radius <= 0)
             trigger.radius = 2.0;
-        
+
         if (trigger.focusHeight <= 0)
             trigger.focusHeight = 1.2;
-        
+
         if (trigger.focusRadius <= 0)
             trigger.focusRadius = 1.0;
     }
@@ -583,16 +583,16 @@ Silver77_QuestTriggerConfig Silver77_FindTriggerInConfig(Silver77_QuestConfig co
 {
     if (!config || !config.triggers)
         return null;
-    
+
     foreach (Silver77_QuestTriggerConfig trigger : config.triggers)
     {
         if (!trigger)
             continue;
-        
+
         if (trigger.id == triggerId)
             return trigger;
     }
-    
+
     return null;
 }
 
@@ -600,7 +600,7 @@ void Silver77_CopyFloatArray(array<float> source, array<float> target)
 {
     if (!source || !target)
         return;
-    
+
     target.Clear();
     foreach (float value : source)
     {
@@ -612,7 +612,7 @@ void Silver77_CopyStringArray(array<string> source, array<string> target)
 {
     if (!source || !target)
         return;
-    
+
     target.Clear();
     foreach (string value : source)
     {
@@ -624,7 +624,7 @@ void Silver77_ApplyDefaultTriggerNpcSettings(Silver77_QuestTriggerConfig trigger
 {
     if (!trigger || !defaultTrigger)
         return;
-    
+
     trigger.spawnNpc = defaultTrigger.spawnNpc;
     trigger.npcClassName = defaultTrigger.npcClassName;
     Silver77_CopyFloatArray(defaultTrigger.npcPosition, trigger.npcPosition);
@@ -638,16 +638,16 @@ bool Silver77_MigrateQuestConfig(Silver77_QuestConfig config)
 {
     if (!config)
         return false;
-    
+
     if (config.version >= SILVER77_QUEST_CONFIG_VERSION)
         return false;
-    
+
     Silver77_QuestConfig defaultConfig = CreateDefaultQuestConfig();
     NormalizeQuestConfig(defaultConfig);
-    
+
     Silver77_ApplyDefaultTriggerNpcSettings(Silver77_FindTriggerInConfig(config, "fisherman_trigger"), Silver77_FindTriggerInConfig(defaultConfig, "fisherman_trigger"));
     Silver77_ApplyDefaultTriggerNpcSettings(Silver77_FindTriggerInConfig(config, "hunter_trigger"), Silver77_FindTriggerInConfig(defaultConfig, "hunter_trigger"));
-    
+
     config.version = SILVER77_QUEST_CONFIG_VERSION;
     Print("[Silver_77_Quests] Migrated quest config to version " + SILVER77_QUEST_CONFIG_VERSION);
     return true;
@@ -666,20 +666,20 @@ bool Silver77_SaveQuestConfigFile(string configPath, Silver77_QuestConfig config
 {
     if (!config)
         return false;
-    
+
     NormalizeQuestConfig(config);
     Silver77_EnsureQuestConfigDirectory();
     Print("[Silver_77_Quests] Saving quest config to: " + configPath);
     JsonFileLoader<Silver77_QuestConfig>.JsonSaveFile(configPath, config);
-    
+
     if (FileExist(configPath))
     {
         Print("[Silver_77_Quests] Quest config saved via JsonSaveFile: " + configPath);
         return true;
     }
-    
+
     Print("[Silver_77_Quests] WARNING: JsonSaveFile did not create quest config, trying serializer fallback...");
-    
+
     string fileContent;
     JsonSerializer serializer = new JsonSerializer();
     if (!serializer.WriteToString(config, true, fileContent))
@@ -687,29 +687,29 @@ bool Silver77_SaveQuestConfigFile(string configPath, Silver77_QuestConfig config
         Print("[Silver_77_Quests] ERROR: Failed to serialize quest config in fallback writer");
         return false;
     }
-    
+
     if (fileContent == "")
     {
         Print("[Silver_77_Quests] ERROR: Quest config serializer fallback returned empty content");
         return false;
     }
-    
+
     FileHandle handle = OpenFile(configPath, FileMode.WRITE);
     if (handle == 0)
     {
         Print("[Silver_77_Quests] ERROR: OpenFile WRITE failed for quest config in fallback writer: " + configPath);
         return false;
     }
-    
+
     FPrint(handle, fileContent);
     CloseFile(handle);
-    
+
     if (!FileExist(configPath))
     {
         Print("[Silver_77_Quests] ERROR: Failed to save quest config at: " + configPath);
         return false;
     }
-    
+
     Print("[Silver_77_Quests] Quest config saved via serializer fallback: " + configPath);
     return true;
 }
@@ -723,11 +723,11 @@ void LoadQuestConfig()
         Print("[Silver_77_Quests] Client using in-memory default config until server sync arrives");
         return;
     }
-    
+
     string configPath = SILVER77_QUEST_CONFIG_PATH;
     Print("[Silver_77_Quests] Loading quest config from: " + configPath);
     Silver77_EnsureQuestConfigDirectory();
-    
+
     if (!FileExist(configPath))
     {
         Print("[Silver_77_Quests] Config not found, creating default...");
@@ -757,7 +757,7 @@ class QuestServerManager
     {
         if (!GetGame().IsServer())
             return;
-        
+
         if (!g_ServerQuestConfig)
         {
             Print("[Silver_77_Quests] Quest config was not initialized yet, loading now");
@@ -765,28 +765,28 @@ class QuestServerManager
             SpawnConfiguredNpcs();
             return;
         }
-        
+
         if (!FileExist(SILVER77_QUEST_CONFIG_PATH))
         {
             Print("[Silver_77_Quests] Quest config object exists, but file is missing. Saving default/current config...");
             Silver77_SaveQuestConfigFile(SILVER77_QUEST_CONFIG_PATH, g_ServerQuestConfig);
         }
     }
-    
+
     static void EnsureQuestNpcsSpawned()
     {
         if (!GetGame().IsServer())
             return;
-        
+
         EnsureServerQuestConfigLoaded();
-        
+
         if (!g_ServerQuestNpcObjects || g_ServerQuestNpcObjects.Count() == 0)
         {
             Print("[Silver_77_Quests] Quest NPC cache is empty, spawning configured NPCs now");
             SpawnConfiguredNpcs();
         }
     }
-    
+
     static void Init()
     {
         LoadQuestConfig();
@@ -796,7 +796,7 @@ class QuestServerManager
         g_ServerQuestDataRevision++;
         Print("[Silver_77_Quests] QuestServerManager initialized");
     }
-    
+
     static void CleanupQuestNpcs()
     {
         if (!g_ServerQuestNpcObjects)
@@ -804,68 +804,68 @@ class QuestServerManager
             g_ServerQuestNpcObjects = new array<Object>;
             return;
         }
-        
+
         foreach (Object npcObject : g_ServerQuestNpcObjects)
         {
             if (npcObject)
                 GetGame().ObjectDelete(npcObject);
         }
-        
+
         g_ServerQuestNpcObjects.Clear();
     }
-    
+
     static void SpawnConfiguredNpcs()
     {
         if (!GetGame().IsServer())
             return;
-        
+
         CleanupQuestNpcs();
-        
+
         if (!g_ServerQuestConfig || !g_ServerQuestConfig.triggers)
             return;
-        
+
         foreach (Silver77_QuestTriggerConfig trigger : g_ServerQuestConfig.triggers)
         {
             SpawnNpcForTrigger(trigger);
         }
     }
-    
+
     static void SpawnNpcForTrigger(Silver77_QuestTriggerConfig trigger)
     {
         if (!trigger || !trigger.spawnNpc)
             return;
-        
+
         if (trigger.npcClassName == "")
         {
             Print("[Silver_77_Quests] NPC class is empty for trigger: " + trigger.id);
             return;
         }
-        
+
         if (!Silver77_HasVector(trigger.position) && !Silver77_HasVector(trigger.npcPosition))
         {
             Print("[Silver_77_Quests] NPC position is invalid for trigger: " + trigger.id);
             return;
         }
-        
+
         vector triggerPosition = Silver77_VectorFromArray(trigger.position, vector.Zero);
         vector npcPosition = Silver77_VectorFromArray(trigger.npcPosition, triggerPosition);
         vector npcOrientation = Silver77_VectorFromArray(trigger.npcOrientation, vector.Zero);
-        
+
         Object npcObject = GetGame().CreateObjectEx(trigger.npcClassName, npcPosition, ECE_PLACE_ON_SURFACE);
         if (!npcObject)
         {
             Print("[Silver_77_Quests] Failed to spawn NPC " + trigger.npcClassName + " for trigger: " + trigger.id);
             return;
         }
-        
+
         g_ServerQuestNpcObjects.Insert(npcObject);
         npcObject.SetPosition(npcPosition);
         npcObject.SetOrientation(npcOrientation);
-        
+
         EntityAI npcEntity = EntityAI.Cast(npcObject);
         if (npcEntity)
             npcEntity.SetAllowDamage(false);
-        
+
         PlayerBase npcPlayer = PlayerBase.Cast(npcObject);
         if (npcPlayer)
         {
@@ -876,31 +876,31 @@ class QuestServerManager
         {
             Print("[Silver_77_Quests] Spawned NPC object is not PlayerBase: " + trigger.npcClassName);
         }
-        
+
         Print("[Silver_77_Quests] Spawned quest NPC " + trigger.npcClassName + " for trigger " + trigger.id + " at " + npcPosition.ToString());
     }
-    
+
     static bool Silver77_HasVector(array<float> values)
     {
         if (!values)
             return false;
-        
+
         return values.Count() >= 3;
     }
-    
+
     static vector Silver77_VectorFromArray(array<float> values, vector fallback)
     {
         if (Silver77_HasVector(values))
             return Vector(values[0], values[1], values[2]);
-        
+
         return fallback;
     }
-    
+
     static void ApplyNpcLoadout(PlayerBase npcPlayer, Silver77_QuestTriggerConfig trigger)
     {
         if (!npcPlayer || !trigger)
             return;
-        
+
         if (trigger.npcLoadout)
         {
             foreach (string loadoutItem : trigger.npcLoadout)
@@ -908,7 +908,7 @@ class QuestServerManager
                 AddNpcAttachment(npcPlayer, loadoutItem, trigger.id);
             }
         }
-        
+
         if (trigger.npcBackItems)
         {
             foreach (string backItem : trigger.npcBackItems)
@@ -916,7 +916,7 @@ class QuestServerManager
                 AddNpcAttachment(npcPlayer, backItem, trigger.id);
             }
         }
-        
+
         if (trigger.npcHandsItem != "")
         {
             EntityAI handsItem = npcPlayer.GetHumanInventory().CreateInHands(trigger.npcHandsItem);
@@ -924,54 +924,54 @@ class QuestServerManager
                 Print("[Silver_77_Quests] Failed to put NPC item in hands: " + trigger.npcHandsItem + " for trigger: " + trigger.id);
         }
     }
-    
+
     static void AddNpcAttachment(PlayerBase npcPlayer, string className, string triggerId)
     {
         if (!npcPlayer || className == "")
             return;
-        
+
         EntityAI attachment = npcPlayer.GetInventory().CreateAttachment(className);
         if (!attachment)
             Print("[Silver_77_Quests] Failed to attach NPC item: " + className + " for trigger: " + triggerId);
     }
-    
+
     static Silver77_Quest GetQuestById(string questId)
     {
         EnsureServerQuestConfigLoaded();
-        
+
         if (!g_ServerQuestConfig || !g_ServerQuestConfig.quests)
             return null;
-        
+
         foreach (Silver77_Quest quest : g_ServerQuestConfig.quests)
         {
             if (!quest)
                 continue;
-            
+
             if (quest.id == questId)
                 return quest;
         }
         return null;
     }
-    
+
     static string GetPlayerSteamId(PlayerBase player)
     {
         if (!player || !player.GetIdentity())
             return "";
-        
+
         return player.GetIdentity().GetId();
     }
-    
+
     static PlayerQuestData GetPlayerData(PlayerBase player)
     {
         EnsureServerQuestConfigLoaded();
-        
+
         string steamId = GetPlayerSteamId(player);
         if (steamId == "")
             return null;
-        
+
         if (!g_ServerPlayerQuestData)
             g_ServerPlayerQuestData = new map<string, ref PlayerQuestData>;
-        
+
         if (!g_ServerPlayerQuestData.Contains(steamId))
         {
             Print("[Silver_77_Quests][PROGRESS_DEBUG] GetPlayerData: steamId not in memory, calling LoadPlayerData for " + steamId);
@@ -980,7 +980,7 @@ class QuestServerManager
                 data = LoadPlayerData(steamId);
             else
                 data = CreatePlayerData(steamId);
-            
+
             g_ServerPlayerQuestData.Insert(steamId, data);
         }
         else
@@ -991,14 +991,14 @@ class QuestServerManager
                 progressCount = existingData.progress.Count();
             Print("[Silver_77_Quests][PROGRESS_DEBUG] GetPlayerData: steamId found in memory for " + steamId + " with " + progressCount + " progress entries");
         }
-        
+
         PlayerQuestData playerData = g_ServerPlayerQuestData.Get(steamId);
         if (EnsurePlayerProgress(playerData) && GetGame().IsServer())
             SavePlayerData(playerData);
-        
+
         return playerData;
     }
-    
+
     static PlayerQuestData CreatePlayerData(string steamId)
     {
         PlayerQuestData data = new PlayerQuestData();
@@ -1006,28 +1006,28 @@ class QuestServerManager
         EnsurePlayerProgress(data);
         return data;
     }
-    
+
     static PlayerQuestData LoadPlayerData(string steamId)
     {
         PlayerQuestData data = new PlayerQuestData();
         string filePath = "$profile:Silver_77_Quests/players/" + steamId + ".json";
-        
+
         Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: steamId=" + steamId);
         Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: filePath=" + filePath);
-        
+
         bool fileExists = FileExist(filePath);
         Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: FileExist=" + fileExists);
-        
+
         if (fileExists)
         {
             JsonFileLoader<PlayerQuestData>.JsonLoadFile(filePath, data);
-            
+
             int loadedProgressCount = 0;
             if (data.progress)
                 loadedProgressCount = data.progress.Count();
-            
+
             Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: JsonLoadFile completed, loaded " + loadedProgressCount + " progress entries");
-            
+
             if (data.progress)
             {
                 foreach (PlayerQuestProgress progress : data.progress)
@@ -1036,41 +1036,41 @@ class QuestServerManager
                         Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: loaded questId=" + progress.questId + " status=" + progress.status);
                 }
             }
-            
+
             if (data.steamId == "")
                 data.steamId = steamId;
-            
+
             if (EnsurePlayerProgress(data))
                 SavePlayerData(data);
-            
+
             return data;
         }
-        
+
         Print("[Silver_77_Quests][PROGRESS_DEBUG] LoadPlayerData: file not found, creating new PlayerQuestData");
         data = CreatePlayerData(steamId);
         SavePlayerData(data);
         return data;
     }
-    
+
     static void SavePlayerData(PlayerQuestData data)
     {
         if (!GetGame().IsServer() || !data || data.steamId == "")
             return;
-        
+
         if (!FileExist("$profile:Silver_77_Quests"))
             MakeDirectory("$profile:Silver_77_Quests");
-        
+
         if (!FileExist("$profile:Silver_77_Quests/players"))
             MakeDirectory("$profile:Silver_77_Quests/players");
-        
+
         string filePath = "$profile:Silver_77_Quests/players/" + data.steamId + ".json";
-        
+
         int progressCount = 0;
         if (data.progress)
             progressCount = data.progress.Count();
-        
+
         Print("[Silver_77_Quests][PROGRESS_DEBUG] SavePlayerData: steamId=" + data.steamId + " filePath=" + filePath + " progressCount=" + progressCount);
-        
+
         if (data.progress)
         {
             foreach (PlayerQuestProgress progress : data.progress)
@@ -1079,31 +1079,31 @@ class QuestServerManager
                     Print("[Silver_77_Quests][PROGRESS_DEBUG] SavePlayerData: saving questId=" + progress.questId + " status=" + progress.status);
             }
         }
-        
+
         JsonFileLoader<PlayerQuestData>.JsonSaveFile(filePath, data);
     }
-    
+
     static bool EnsurePlayerProgress(PlayerQuestData data)
     {
         if (!data)
             return false;
-        
+
         bool changed = false;
-        
+
         if (!data.progress)
         {
             data.progress = new array<ref PlayerQuestProgress>;
             changed = true;
         }
-        
+
         if (!g_ServerQuestConfig || !g_ServerQuestConfig.quests)
             return changed;
-        
+
         foreach (Silver77_Quest quest : g_ServerQuestConfig.quests)
         {
             if (!quest)
                 continue;
-            
+
             if (!FindProgress(data, quest.id))
             {
                 PlayerQuestProgress progress = new PlayerQuestProgress();
@@ -1120,7 +1120,7 @@ class QuestServerManager
                     existingProgress.objectiveProgress = new array<ref PlayerQuestObjectiveProgress>;
                     changed = true;
                 }
-                
+
                 if (existingProgress && !existingProgress.completedCompletionTriggerIds)
                 {
                     existingProgress.completedCompletionTriggerIds = new array<string>;
@@ -1132,172 +1132,209 @@ class QuestServerManager
                     existingProgress.stageVisits = new array<ref PlayerQuestStageVisit>;
                     changed = true;
                 }
+
+                if (existingProgress && EnsureRewardProgressState(existingProgress))
+                    changed = true;
             }
         }
-        
+
         return changed;
     }
-    
+
+    static bool EnsureRewardProgressState(PlayerQuestProgress progress)
+    {
+        if (!progress)
+            return false;
+
+        bool changed = false;
+
+        if (!progress.pendingRewards)
+        {
+            progress.pendingRewards = new array<ref QuestPendingRewardProgress>;
+            changed = true;
+        }
+
+        if (!progress.deliveredRewards)
+        {
+            progress.deliveredRewards = new array<ref QuestDeliveredRewardProgress>;
+            changed = true;
+        }
+
+        if (progress.pendingRewards)
+        {
+            foreach (QuestPendingRewardProgress pendingReward : progress.pendingRewards)
+            {
+                if (pendingReward && !pendingReward.items)
+                {
+                    pendingReward.items = new array<ref QuestRewardItemProgress>;
+                    changed = true;
+                }
+            }
+        }
+
+        return changed;
+    }
+
     static PlayerQuestProgress FindProgress(PlayerQuestData data, string questId)
     {
         if (!data || !data.progress)
             return null;
-        
+
         foreach (PlayerQuestProgress progress : data.progress)
         {
             if (progress.questId == questId)
                 return progress;
         }
-        
+
         return null;
     }
-    
+
     static Silver77_QuestTriggerConfig GetTriggerById(string triggerId)
     {
         EnsureServerQuestConfigLoaded();
-        
+
         if (!g_ServerQuestConfig || !g_ServerQuestConfig.triggers || triggerId == "")
             return null;
-        
+
         foreach (Silver77_QuestTriggerConfig trigger : g_ServerQuestConfig.triggers)
         {
             if (!trigger)
                 continue;
-            
+
             if (trigger.id == triggerId)
                 return trigger;
         }
-        
+
         return null;
     }
-    
+
     static void AppendUniqueTriggerId(array<string> target, string triggerId)
     {
         if (!target || triggerId == "" || target.Find(triggerId) != -1)
             return;
-        
+
         target.Insert(triggerId);
     }
-    
+
     static void AppendUniqueTriggerIds(array<string> source, array<string> target)
     {
         if (!source || !target)
             return;
-        
+
         foreach (string triggerId : source)
         {
             AppendUniqueTriggerId(target, triggerId);
         }
     }
-    
+
     static void AppendFirstValidTriggerId(array<string> source, array<string> target)
     {
         if (!source || !target)
             return;
-        
+
         foreach (string triggerId : source)
         {
             if (triggerId == "")
                 continue;
-            
+
             AppendUniqueTriggerId(target, triggerId);
             return;
         }
     }
-    
+
     static bool IsQuestAssignedToTrigger(string questId, string triggerId)
     {
         if (questId == "" || triggerId == "")
             return false;
-        
+
         Silver77_QuestTriggerConfig trigger = GetTriggerById(triggerId);
         if (!trigger || !trigger.questIds)
             return false;
-        
+
         return trigger.questIds.Find(questId) != -1;
     }
-    
+
     static array<string> GetAssignedTriggerIdsForQuest(string questId)
     {
         array<string> triggerIds = new array<string>;
         EnsureServerQuestConfigLoaded();
-        
+
         if (!g_ServerQuestConfig || !g_ServerQuestConfig.triggers || questId == "")
             return triggerIds;
-        
+
         foreach (Silver77_QuestTriggerConfig trigger : g_ServerQuestConfig.triggers)
         {
             if (!trigger || !trigger.questIds)
                 continue;
-            
+
             if (trigger.questIds.Find(questId) != -1)
                 AppendUniqueTriggerId(triggerIds, trigger.id);
         }
-        
+
         return triggerIds;
     }
-    
+
     static array<string> GetQuestOfferTriggerIds(Silver77_Quest quest)
     {
         array<string> triggerIds = new array<string>;
         if (!quest)
             return triggerIds;
-        
+
         AppendFirstValidTriggerId(quest.offerTriggerIds, triggerIds);
         return triggerIds;
     }
-    
+
     static array<string> GetQuestCompletionTriggerIds(Silver77_Quest quest)
     {
         array<string> triggerIds = new array<string>;
         if (!quest)
             return triggerIds;
-        
+
         AppendUniqueTriggerIds(quest.completionTriggerIds, triggerIds);
         return triggerIds;
     }
-    
+
     static array<string> GetQuestRewardTriggerIds(Silver77_Quest quest)
     {
         array<string> triggerIds = new array<string>;
         if (!quest)
             return triggerIds;
-        
+
         AppendFirstValidTriggerId(quest.rewardTriggerIds, triggerIds);
         return triggerIds;
     }
-    
+
     static Silver77_QuestTriggerAction GetQuestTriggerAction(Silver77_Quest quest, string triggerId, string actionType)
     {
         if (!quest || !quest.triggerActions || triggerId == "" || actionType == "")
             return null;
-        
+
         foreach (Silver77_QuestTriggerAction action : quest.triggerActions)
         {
             if (!action)
                 continue;
-            
+
             if (action.triggerId == triggerId && action.actionType == actionType)
                 return action;
         }
-        
+
         return null;
     }
-    
+
     static string GetQuestTriggerActionDialogText(Silver77_Quest quest, string triggerId, string actionType)
     {
         Silver77_QuestTriggerAction action = GetQuestTriggerAction(quest, triggerId, actionType);
         if (!action)
             return "";
-        
+
         return action.dialogText;
     }
-    
+
     static array<ref Silver77_QuestItem> ResolveQuestRewardItemsForTrigger(Silver77_Quest quest, string triggerId, bool rewardPhase)
     {
         if (!quest)
             return null;
-        
+
         Silver77_QuestTriggerAction action;
         if (rewardPhase)
         {
@@ -1307,90 +1344,214 @@ class QuestServerManager
         {
             action = GetQuestTriggerAction(quest, triggerId, "completion");
         }
-        
+
         if (action && action.rewards && action.rewards.Count() > 0)
             return action.rewards;
-        
+
         if (!rewardPhase || !quest.rewards)
             return null;
-        
+
         return quest.rewards;
     }
-    
+
     static bool IsQuestTriggerAllowed(Silver77_Quest quest, string triggerId, array<string> allowedTriggerIds)
     {
         if (!quest || triggerId == "")
             return false;
-        
+
         if (!IsQuestAssignedToTrigger(quest.id, triggerId))
             return false;
-        
+
         if (!allowedTriggerIds || allowedTriggerIds.Count() == 0)
             return true;
-        
+
         return allowedTriggerIds.Find(triggerId) != -1;
     }
-    
+
     static PlayerQuestProgress GetOrCreateProgress(PlayerQuestData data, string questId)
     {
         PlayerQuestProgress progress = FindProgress(data, questId);
         if (progress)
+        {
+            EnsureRewardProgressState(progress);
             return progress;
-        
+        }
+
         if (!data)
             return null;
-        
+
         if (!data.progress)
             data.progress = new array<ref PlayerQuestProgress>;
-        
+
         progress = new PlayerQuestProgress();
         progress.questId = questId;
         progress.status = "available";
         data.progress.Insert(progress);
         return progress;
     }
-    
+
+    static string BuildRewardId(string questId, int attemptId, string stage, string triggerId, string actionType, int index)
+    {
+        return questId + ":" + attemptId.ToString() + ":" + stage + ":" + triggerId + ":" + actionType + ":" + index.ToString();
+    }
+
+    static QuestPendingRewardProgress FindPendingReward(PlayerQuestProgress progress, string rewardId, int attemptId)
+    {
+        if (!progress || !progress.pendingRewards || rewardId == "" || attemptId <= 0)
+            return null;
+
+        foreach (QuestPendingRewardProgress pendingReward : progress.pendingRewards)
+        {
+            if (!pendingReward)
+                continue;
+
+            if (pendingReward.rewardId == rewardId && pendingReward.attemptId == attemptId)
+                return pendingReward;
+        }
+
+        return null;
+    }
+
+    static bool HasDeliveredReward(PlayerQuestProgress progress, string rewardId, int attemptId)
+    {
+        if (!progress || !progress.deliveredRewards || rewardId == "" || attemptId <= 0)
+            return false;
+
+        foreach (QuestDeliveredRewardProgress deliveredReward : progress.deliveredRewards)
+        {
+            if (!deliveredReward)
+                continue;
+
+            if (deliveredReward.rewardId == rewardId && deliveredReward.attemptId == attemptId)
+                return true;
+        }
+
+        return false;
+    }
+
+    static bool AddPendingReward(PlayerQuestProgress progress, QuestPendingRewardProgress reward)
+    {
+        if (!progress || !reward || reward.rewardId == "" || reward.attemptId <= 0)
+            return false;
+
+        EnsureRewardProgressState(progress);
+
+        if (FindPendingReward(progress, reward.rewardId, reward.attemptId))
+            return false;
+
+        if (reward.questId == "")
+            reward.questId = progress.questId;
+
+        if (reward.status == "")
+            reward.status = "pending";
+
+        if (!reward.items)
+            reward.items = new array<ref QuestRewardItemProgress>;
+
+        if (reward.createdAt <= 0)
+            reward.createdAt = GetCurrentUnixTimeUTC();
+
+        reward.updatedAt = GetCurrentUnixTimeUTC();
+        progress.pendingRewards.Insert(reward);
+        return true;
+    }
+
+    static bool MarkPendingRewardDelivered(PlayerQuestProgress progress, string rewardId, int attemptId)
+    {
+        QuestPendingRewardProgress pendingReward = FindPendingReward(progress, rewardId, attemptId);
+        if (!pendingReward)
+            return false;
+
+        EnsureRewardProgressState(progress);
+
+        pendingReward.status = "delivered";
+        pendingReward.updatedAt = GetCurrentUnixTimeUTC();
+
+        if (!HasDeliveredReward(progress, rewardId, attemptId))
+        {
+            QuestDeliveredRewardProgress deliveredReward = new QuestDeliveredRewardProgress();
+            deliveredReward.questId = pendingReward.questId;
+            deliveredReward.attemptId = pendingReward.attemptId;
+            deliveredReward.rewardId = pendingReward.rewardId;
+            deliveredReward.stage = pendingReward.stage;
+            deliveredReward.triggerId = pendingReward.triggerId;
+            deliveredReward.actionType = pendingReward.actionType;
+            deliveredReward.deliveredAt = pendingReward.updatedAt;
+            progress.deliveredRewards.Insert(deliveredReward);
+        }
+
+        return true;
+    }
+
+    static bool HasOpenPendingRewardsForAttempt(PlayerQuestProgress progress, int attemptId)
+    {
+        if (!progress || !progress.pendingRewards || attemptId <= 0)
+            return false;
+
+        foreach (QuestPendingRewardProgress pendingReward : progress.pendingRewards)
+        {
+            if (!pendingReward)
+                continue;
+
+            if (pendingReward.attemptId == attemptId && pendingReward.status != "delivered")
+                return true;
+        }
+
+        return false;
+    }
+
+    static bool IsAttemptFullyFinalized(PlayerQuestProgress progress, int attemptId)
+    {
+        if (!progress || attemptId <= 0)
+            return false;
+
+        if (progress.lastFinalizedAttemptId < attemptId)
+            return false;
+
+        return !HasOpenPendingRewardsForAttempt(progress, attemptId);
+    }
+
     static string GetQuestStatus(PlayerBase player, string questId)
     {
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         if (progress)
             return progress.status;
-        
+
         return "available";
     }
-    
+
     static void SetQuestStatus(PlayerBase player, string questId, string status)
     {
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = GetOrCreateProgress(data, questId);
         if (!progress)
             return;
-        
+
         progress.status = status;
         SavePlayerData(data);
         g_ServerQuestDataRevision++;
     }
-    
+
     static void ClearObjectiveProgress(PlayerQuestProgress progress)
     {
         if (!progress)
             return;
-        
+
         if (!progress.objectiveProgress)
             progress.objectiveProgress = new array<ref PlayerQuestObjectiveProgress>;
-        
+
         progress.objectiveProgress.Clear();
     }
-    
+
     static void ClearCompletionProgress(PlayerQuestProgress progress)
     {
         if (!progress)
             return;
-        
+
         if (!progress.completedCompletionTriggerIds)
             progress.completedCompletionTriggerIds = new array<string>;
-        
+
         progress.completedCompletionTriggerIds.Clear();
     }
 
@@ -1440,108 +1601,108 @@ class QuestServerManager
         progress.stageVisits.Insert(stageVisit);
         return true;
     }
-    
+
     static bool QuestRoleContains(array<string> triggerIds, string triggerId)
     {
         if (!triggerIds || triggerId == "")
             return false;
-        
+
         return triggerIds.Find(triggerId) != -1;
     }
-    
+
     static bool QuestHasRoleTriggers(array<string> triggerIds)
     {
         return triggerIds && triggerIds.Count() > 0;
     }
-    
+
     static bool IsCompletionTriggerDone(PlayerQuestProgress progress, string triggerId)
     {
         if (!progress || !progress.completedCompletionTriggerIds || triggerId == "")
             return false;
-        
+
         return progress.completedCompletionTriggerIds.Find(triggerId) != -1;
     }
-    
+
     static bool MarkCompletionTriggerDone(PlayerQuestProgress progress, string triggerId)
     {
         if (!progress || triggerId == "")
             return false;
-        
+
         if (!progress.completedCompletionTriggerIds)
             progress.completedCompletionTriggerIds = new array<string>;
-        
+
         if (progress.completedCompletionTriggerIds.Find(triggerId) != -1)
             return false;
-        
+
         progress.completedCompletionTriggerIds.Insert(triggerId);
         return true;
     }
-    
+
     static bool AreAllCompletionTriggersDone(Silver77_Quest quest, PlayerQuestProgress progress)
     {
         if (!quest || !quest.completionTriggerIds || quest.completionTriggerIds.Count() == 0)
             return true;
-        
+
         foreach (string triggerId : quest.completionTriggerIds)
         {
             if (triggerId == "")
                 continue;
-            
+
             if (!IsCompletionTriggerDone(progress, triggerId))
                 return false;
         }
-        
+
         return true;
     }
-    
+
     static PlayerQuestObjectiveProgress GetOrCreateObjectiveProgress(PlayerQuestProgress progress, int objectiveIndex, string className)
     {
         if (!progress)
             return null;
-        
+
         if (!progress.objectiveProgress)
             progress.objectiveProgress = new array<ref PlayerQuestObjectiveProgress>;
-        
+
         foreach (PlayerQuestObjectiveProgress objectiveProgress : progress.objectiveProgress)
         {
             if (!objectiveProgress)
                 continue;
-            
+
             if (objectiveProgress.objectiveIndex == objectiveIndex && objectiveProgress.className == className)
                 return objectiveProgress;
         }
-        
+
         PlayerQuestObjectiveProgress newProgress = new PlayerQuestObjectiveProgress();
         newProgress.objectiveIndex = objectiveIndex;
         newProgress.className = className;
         progress.objectiveProgress.Insert(newProgress);
         return newProgress;
     }
-    
+
     static float GetDepositedObjectiveQuantity(PlayerQuestProgress progress, int objectiveIndex, string className)
     {
         if (!progress || !progress.objectiveProgress)
             return 0;
-        
+
         foreach (PlayerQuestObjectiveProgress objectiveProgress : progress.objectiveProgress)
         {
             if (!objectiveProgress)
                 continue;
-            
+
             if (objectiveProgress.objectiveIndex == objectiveIndex && objectiveProgress.className == className)
                 return objectiveProgress.depositedQuantity;
         }
-        
+
         return 0;
     }
-    
+
     static float GetQuestObjectiveDeposited(PlayerBase player, string questId, int objectiveIndex, string className)
     {
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         return GetDepositedObjectiveQuantity(progress, objectiveIndex, className);
     }
-    
+
     static int GetCurrentUnixTimeUTC()
     {
         int year = 0;
@@ -1550,13 +1711,13 @@ class QuestServerManager
         int hour = 0;
         int minute = 0;
         int second = 0;
-        
+
         GetYearMonthDayUTC(year, month, day);
         GetHourMinuteSecondUTC(hour, minute, second);
-        
+
         if (year < 1970)
             return GetGame().GetTime() / 1000;
-        
+
         int days = 0;
         for (int y = 1970; y < year; y++)
         {
@@ -1565,27 +1726,27 @@ class QuestServerManager
             else
                 days += 365;
         }
-        
+
         for (int m = 1; m < month; m++)
         {
             days += GetDaysInMonth(year, m);
         }
-        
+
         days += day - 1;
         return days * 86400 + hour * 3600 + minute * 60 + second;
     }
-    
+
     static bool IsLeapYear(int year)
     {
         if (year % 400 == 0)
             return true;
-        
+
         if (year % 100 == 0)
             return false;
-        
+
         return year % 4 == 0;
     }
-    
+
     static int GetDaysInMonth(int year, int month)
     {
         switch (month)
@@ -1617,87 +1778,87 @@ class QuestServerManager
             case 12:
                 return 31;
         }
-        
+
         return 30;
     }
-    
+
     static bool IsQuestOnCooldown(PlayerBase player, string questId)
     {
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest || !quest.repeatable || quest.cooldownSeconds <= 0)
             return false;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         if (!progress || progress.lastCompletedTime == 0)
             return false;
-        
+
         int currentTime = GetCurrentUnixTimeUTC();
         if (progress.lastCompletedTime > currentTime)
             return false;
-        
+
         int timePassed = currentTime - progress.lastCompletedTime;
         return timePassed < quest.cooldownSeconds;
     }
-    
+
     static bool AreQuestRequirementsCompleted(PlayerBase player, Silver77_Quest quest)
     {
         if (!player || !quest)
             return false;
-        
+
         if (quest.requiresPrevious != "")
         {
             if (!IsQuestRequirementCompleted(player, quest.requiresPrevious))
                 return false;
         }
-        
+
         if (quest.requiredQuestIds)
         {
             foreach (string requiredQuestId : quest.requiredQuestIds)
             {
                 if (requiredQuestId == "")
                     continue;
-                
+
                 if (!IsQuestRequirementCompleted(player, requiredQuestId))
                     return false;
             }
         }
-        
+
         return true;
     }
-    
+
     static bool IsQuestRequirementCompleted(PlayerBase player, string questId)
     {
         if (!player || questId == "")
             return false;
-        
+
         if (GetQuestStatus(player, questId) == "completed")
             return true;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         if (progress && progress.lastCompletedTime > 0)
             return true;
-        
+
         return false;
     }
-    
+
     static bool CanAcceptQuest(PlayerBase player, string questId, string triggerId = "")
     {
         if (!player || questId == "")
             return false;
-        
+
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest)
             return false;
-        
+
         string status = GetQuestStatus(player, questId);
         if (status == "active")
             return false;
-        
+
         if (status == "reward_pending")
             return false;
-        
+
         if (status == "completed")
         {
             if (!quest.repeatable)
@@ -1705,40 +1866,40 @@ class QuestServerManager
             if (IsQuestOnCooldown(player, questId))
                 return false;
         }
-        
+
         if (!AreQuestRequirementsCompleted(player, quest))
             return false;
-        
+
         if (triggerId != "" && !IsQuestTriggerAllowed(quest, triggerId, GetQuestOfferTriggerIds(quest)))
             return false;
-        
+
         return true;
     }
-    
+
     static bool AcceptQuest(PlayerBase player, string questId, string triggerId = "")
     {
         if (!GetGame().IsServer() || !CanAcceptQuest(player, questId, triggerId))
             return false;
-        
+
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest)
             return false;
-        
+
         string steamId = GetPlayerSteamId(player);
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = GetOrCreateProgress(data, questId);
-        
+
         string statusBefore = "";
         if (progress)
             statusBefore = progress.status;
-        
+
         Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: steamId=" + steamId + " questId=" + questId + " triggerId=" + triggerId + " statusBefore=" + statusBefore);
-        
+
         foreach (Silver77_QuestItem giveItem : quest.giveItems)
         {
             SpawnQuestItem(player, giveItem);
         }
-        
+
         if (progress)
         {
             progress.status = "active";
@@ -1747,55 +1908,55 @@ class QuestServerManager
             ClearStageVisits(progress);
             RecordStageVisit(progress, triggerId, "offer");
         }
-        
+
         Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: statusAfter=" + progress.status + " calling SavePlayerData");
-        
+
         SavePlayerData(data);
         g_ServerQuestDataRevision++;
         Print("[Silver_77_Quests] Player accepted quest: " + questId + " via trigger " + triggerId);
         return true;
     }
-    
+
     static bool CanCompleteQuest(PlayerBase player, string questId, string triggerId = "")
     {
         if (!player || questId == "")
             return false;
-        
+
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest)
             return false;
-        
+
         string status = GetQuestStatus(player, questId);
         if (status != "active")
             return false;
-        
+
         if (triggerId != "" && !IsQuestTriggerAllowed(quest, triggerId, GetQuestCompletionTriggerIds(quest)))
             return false;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         if (triggerId != "" && IsCompletionTriggerDone(progress, triggerId))
             return false;
-        
+
         return AreQuestObjectivesReadyForCompletion(player, quest, progress);
     }
-    
+
     static bool CanDepositQuestItems(PlayerBase player, string questId, string triggerId = "")
     {
         if (!player || questId == "")
             return false;
-        
+
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest)
             return false;
-        
+
         if (GetQuestStatus(player, questId) != "active")
             return false;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         bool canDepositHere = false;
-        
+
         if (triggerId != "")
         {
             if (IsQuestTriggerAllowed(quest, triggerId, GetQuestCompletionTriggerIds(quest)) && !IsCompletionTriggerDone(progress, triggerId))
@@ -1803,103 +1964,103 @@ class QuestServerManager
             else if (!QuestHasRoleTriggers(quest.completionTriggerIds) && IsQuestTriggerAllowed(quest, triggerId, GetQuestRewardTriggerIds(quest)))
                 canDepositHere = true;
         }
-        
+
         if (!canDepositHere)
             return false;
-        
+
         for (int i = 0; i < quest.objectives.Count(); i++)
         {
             Silver77_QuestObjective objective = quest.objectives.Get(i);
             if (!objective || objective.type != "item" || !objective.allowPartialTurnIn)
                 continue;
-            
+
             float deposited = GetDepositedObjectiveQuantity(progress, i, objective.className);
             if (deposited >= objective.quantity)
                 continue;
-            
+
             if (CountPlayerItems(player, objective.className, objective.useItemQuantity) > 0)
                 return true;
         }
-        
+
         return false;
     }
-    
+
     static bool CanClaimReward(PlayerBase player, string questId, string triggerId = "")
     {
         if (!player || questId == "")
             return false;
-        
+
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest)
             return false;
-        
+
         string status = GetQuestStatus(player, questId);
         if (status != "active" && status != "reward_pending")
             return false;
-        
+
         if (triggerId != "" && !IsQuestTriggerAllowed(quest, triggerId, GetQuestRewardTriggerIds(quest)))
             return false;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = FindProgress(data, questId);
         if (!AreAllCompletionTriggersDone(quest, progress))
             return false;
-        
+
         if (QuestHasRoleTriggers(quest.completionTriggerIds))
             return true;
-        
+
         return AreQuestObjectivesReadyForCompletion(player, quest, progress);
     }
-    
+
     static void FinalizeQuestReward(PlayerBase player, array<ref Silver77_QuestItem> rewardItems)
     {
         if (!player || !rewardItems)
             return;
-        
+
         foreach (Silver77_QuestItem reward : rewardItems)
         {
             if (!reward)
                 continue;
-            
+
             SpawnQuestItem(player, reward);
         }
     }
-    
+
     static void MarkQuestAsRewardPending(PlayerQuestProgress progress)
     {
         if (!progress)
             return;
-        
+
         progress.status = "reward_pending";
     }
-    
+
     static void MarkQuestAsCompleted(PlayerQuestProgress progress)
     {
         if (!progress)
             return;
-        
+
         progress.lastCompletedTime = GetCurrentUnixTimeUTC();
         progress.status = "completed";
         ClearObjectiveProgress(progress);
         ClearCompletionProgress(progress);
     }
-    
+
     static bool CompleteQuest(PlayerBase player, string questId, string triggerId = "")
     {
         if (!GetGame().IsServer() || !player || questId == "")
             return false;
-        
+
         Silver77_Quest quest = GetQuestById(questId);
         if (!quest)
             return false;
-        
+
         string status = GetQuestStatus(player, questId);
         if (status != "active" && status != "reward_pending")
             return false;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         PlayerQuestProgress progress = GetOrCreateProgress(data, questId);
-        
+
         if (status == "active" && QuestRoleContains(quest.completionTriggerIds, triggerId) && !IsCompletionTriggerDone(progress, triggerId))
         {
             bool depositedSomething = DepositPartialQuestItems(player, quest, progress);
@@ -1908,19 +2069,19 @@ class QuestServerManager
                 SavePlayerData(data);
                 g_ServerQuestDataRevision++;
             }
-            
+
             if (!AreQuestObjectivesReadyForCompletion(player, quest, progress))
                 return depositedSomething;
-            
+
             for (int i = 0; i < quest.objectives.Count(); i++)
             {
                 Silver77_QuestObjective objective = quest.objectives.Get(i);
                 if (!objective)
                     continue;
-                
+
                 if (objective.type == "item" && objective.removeOnComplete && !objective.allowPartialTurnIn)
                     RemoveItemsFromPlayer(player, objective.className, objective.quantity, objective.useItemQuantity);
-                
+
                 if (objective.type == "item" && !objective.allowPartialTurnIn)
                 {
                     PlayerQuestObjectiveProgress objectiveProgress = GetOrCreateObjectiveProgress(progress, i, objective.className);
@@ -1928,26 +2089,26 @@ class QuestServerManager
                         objectiveProgress.depositedQuantity = objective.quantity;
                 }
             }
-            
+
             MarkCompletionTriggerDone(progress, triggerId);
             RecordStageVisit(progress, triggerId, "completion");
             FinalizeQuestReward(player, ResolveQuestRewardItemsForTrigger(quest, triggerId, false));
-            
+
             if (QuestHasRoleTriggers(quest.rewardTriggerIds) && AreAllCompletionTriggersDone(quest, progress))
                 MarkQuestAsRewardPending(progress);
-            
+
             if (!QuestHasRoleTriggers(quest.rewardTriggerIds) && AreAllCompletionTriggersDone(quest, progress))
             {
                 FinalizeQuestReward(player, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
                 MarkQuestAsCompleted(progress);
             }
-            
+
             SavePlayerData(data);
             g_ServerQuestDataRevision++;
             Print("[Silver_77_Quests] Player completed quest stage: " + questId + " via trigger " + triggerId);
             return true;
         }
-        
+
         if (QuestRoleContains(quest.rewardTriggerIds, triggerId))
         {
             if (!AreAllCompletionTriggersDone(quest, progress))
@@ -1955,7 +2116,7 @@ class QuestServerManager
                 Print("[Silver_77_Quests] Reward blocked, completion chain is not done for quest: " + questId);
                 return false;
             }
-            
+
             bool rewardDepositedSomething = false;
             if (!QuestHasRoleTriggers(quest.completionTriggerIds))
             {
@@ -1965,131 +2126,131 @@ class QuestServerManager
                     SavePlayerData(data);
                     g_ServerQuestDataRevision++;
                 }
-                
+
                 if (!AreQuestObjectivesReadyForCompletion(player, quest, progress))
                     return rewardDepositedSomething;
-                
+
                 for (int rewardObjectiveIndex = 0; rewardObjectiveIndex < quest.objectives.Count(); rewardObjectiveIndex++)
                 {
                     Silver77_QuestObjective rewardObjective = quest.objectives.Get(rewardObjectiveIndex);
                     if (!rewardObjective)
                         continue;
-                    
+
                     if (rewardObjective.type == "item" && rewardObjective.removeOnComplete && !rewardObjective.allowPartialTurnIn)
                         RemoveItemsFromPlayer(player, rewardObjective.className, rewardObjective.quantity, rewardObjective.useItemQuantity);
                 }
             }
-            
+
             FinalizeQuestReward(player, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
             RecordStageVisit(progress, triggerId, "reward");
             MarkQuestAsCompleted(progress);
-            
+
             SavePlayerData(data);
             g_ServerQuestDataRevision++;
             Print("[Silver_77_Quests] Player received reward and completed quest: " + questId + " via trigger " + triggerId);
             return true;
         }
-        
+
         return false;
     }
-    
+
     static bool DepositPartialQuestItems(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress)
     {
         if (!player || !quest || !progress || !quest.objectives)
             return false;
-        
+
         bool depositedSomething = false;
-        
+
         for (int i = 0; i < quest.objectives.Count(); i++)
         {
             Silver77_QuestObjective objective = quest.objectives.Get(i);
             if (!objective || objective.type != "item" || !objective.allowPartialTurnIn)
                 continue;
-            
+
             PlayerQuestObjectiveProgress objectiveProgress = GetOrCreateObjectiveProgress(progress, i, objective.className);
             if (!objectiveProgress)
                 continue;
-            
+
             float remaining = objective.quantity - objectiveProgress.depositedQuantity;
             if (remaining <= 0)
                 continue;
-            
+
             float available = CountPlayerItems(player, objective.className, objective.useItemQuantity);
             if (available <= 0)
                 continue;
-            
+
             float toDeposit = available;
             if (toDeposit > remaining)
                 toDeposit = remaining;
-            
+
             if (toDeposit <= 0)
                 continue;
-            
+
             RemoveItemsFromPlayer(player, objective.className, toDeposit, objective.useItemQuantity);
             objectiveProgress.depositedQuantity += toDeposit;
             if (objectiveProgress.depositedQuantity > objective.quantity)
                 objectiveProgress.depositedQuantity = objective.quantity;
-            
+
             depositedSomething = true;
             Print("[Silver_77_Quests] Deposited partial objective for " + quest.id + ": " + objective.className + " +" + toDeposit + " (" + objectiveProgress.depositedQuantity + "/" + objective.quantity + ")");
         }
-        
+
         return depositedSomething;
     }
-    
+
     static bool AreQuestObjectivesReadyForCompletion(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress)
     {
         if (!player || !quest || !quest.objectives)
             return false;
-        
+
         for (int i = 0; i < quest.objectives.Count(); i++)
         {
             Silver77_QuestObjective objective = quest.objectives.Get(i);
             if (!objective || objective.type != "item")
                 continue;
-            
+
             if (objective.allowPartialTurnIn)
             {
                 float deposited = GetDepositedObjectiveQuantity(progress, i, objective.className);
                 if (deposited < objective.quantity)
                     return false;
-                
+
                 continue;
             }
-            
+
             float completed = GetDepositedObjectiveQuantity(progress, i, objective.className);
             if (completed >= objective.quantity)
                 continue;
-            
+
             if (!PlayerHasItemAmount(player, objective.className, objective.quantity, objective.useItemQuantity))
                 return false;
         }
-        
+
         return true;
     }
-    
+
     static bool PlayerHasItems(PlayerBase player, string className, int quantity, bool useItemQuantity = false)
     {
         return PlayerHasItemAmount(player, className, quantity, useItemQuantity);
     }
-    
+
     static bool PlayerHasItemAmount(PlayerBase player, string className, float quantity, bool useItemQuantity = false)
     {
         if (!player || className == "" || quantity <= 0)
             return false;
-        
+
         return CountPlayerItems(player, className, useItemQuantity) >= quantity;
     }
-    
+
     static float CountPlayerItems(PlayerBase player, string className, bool useItemQuantity = false)
     {
         if (!player || className == "")
             return 0;
-        
+
         float count = 0;
         array<EntityAI> items = new array<EntityAI>;
         player.GetInventory().EnumerateInventory(InventoryTraversalType.PREORDER, items);
-        
+
         foreach (EntityAI item : items)
         {
             if (item && item.IsKindOf(className))
@@ -2102,21 +2263,21 @@ class QuestServerManager
         }
         return count;
     }
-    
+
     static void RemoveItemsFromPlayer(PlayerBase player, string className, float quantity, bool useItemQuantity = false)
     {
         if (!player || className == "" || quantity <= 0)
             return;
-        
+
         float remaining = quantity;
         array<EntityAI> items = new array<EntityAI>;
         player.GetInventory().EnumerateInventory(InventoryTraversalType.PREORDER, items);
-        
+
         foreach (EntityAI item : items)
         {
             if (remaining <= 0)
                 break;
-            
+
             if (item && item.IsKindOf(className))
             {
                 if (useItemQuantity && item.HasQuantity())
@@ -2141,12 +2302,12 @@ class QuestServerManager
             }
         }
     }
-    
+
     static void SpawnQuestItem(PlayerBase player, Silver77_QuestItem questItem)
     {
         if (!GetGame().IsServer() || !player || !questItem || questItem.className == "")
             return;
-        
+
         for (int i = 0; i < questItem.quantity; i++)
         {
             if (questItem.spawnOnGround)
@@ -2163,92 +2324,92 @@ class QuestServerManager
             }
         }
     }
-    
+
     static bool RequestAcceptQuest(PlayerBase player, string questId, string triggerId = "")
     {
         if (!player || questId == "")
             return false;
-        
+
         if (GetGame().IsServer())
             return AcceptQuest(player, questId, triggerId);
-        
+
         Print("[Silver_77_Quests] Sending accept quest RPC: " + questId + " via trigger " + triggerId);
         GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_ACCEPT, new Param2<string, string>(questId, triggerId), true);
         return true;
     }
-    
+
     static bool RequestCompleteQuest(PlayerBase player, string questId, string triggerId = "")
     {
         if (!player || questId == "")
             return false;
-        
+
         if (GetGame().IsServer())
             return CompleteQuest(player, questId, triggerId);
-        
+
         Print("[Silver_77_Quests] Sending complete quest RPC: " + questId + " via trigger " + triggerId);
         GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_COMPLETE, new Param2<string, string>(questId, triggerId), true);
         return true;
     }
-    
+
     static void RequestConfigSync(PlayerBase player)
     {
         if (!player)
             return;
-        
+
         if (GetGame().IsServer())
         {
             SendConfigToClient(player);
             return;
         }
-        
+
         Print("[Silver_77_Quests] Sending quest config request RPC");
         GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_CONFIG_REQUEST, new Param1<bool>(true), true);
     }
-    
+
     static void RequestPlayerDataSync(PlayerBase player)
     {
         if (!player)
             return;
-        
+
         if (GetGame().IsServer())
         {
             SendPlayerDataToClient(player);
             return;
         }
-        
+
         Print("[Silver_77_Quests] Sending quest progress request RPC");
         GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA_REQUEST, new Param1<bool>(true), true);
     }
-    
+
     static void SendConfigToClient(PlayerBase player)
     {
         EnsureServerQuestConfigLoaded();
-        
+
         if (!GetGame().IsServer() || !player || !player.GetIdentity() || !g_ServerQuestConfig)
             return;
-        
+
         string payload = SerializeQuestConfigForClient();
         if (payload == "")
             return;
-        
+
         SendQuestConfigPayloadChunks(player, payload);
     }
-    
+
     static void SendPlayerDataToClient(PlayerBase player)
     {
         if (!GetGame().IsServer() || !player || !player.GetIdentity())
             return;
-        
+
         PlayerQuestData data = GetPlayerData(player);
         if (!data)
             return;
-        
+
         int progressCount = 0;
         if (data.progress)
             progressCount = data.progress.Count();
-        
+
         Print("[Silver_77_Quests][PROGRESS_DEBUG] SendPlayerDataToClient: steamId=" + data.steamId + " progressCount=" + progressCount.ToString());
-        
+
         if (data.progress)
         {
             foreach (PlayerQuestProgress progress : data.progress)
@@ -2257,45 +2418,45 @@ class QuestServerManager
                     Print("[Silver_77_Quests][PROGRESS_DEBUG] SendPlayerDataToClient: sending questId=" + progress.questId + " status=" + progress.status);
             }
         }
-        
+
         string payload = SerializePlayerDataForClient(data);
         if (payload == "")
             return;
-        
+
         Print("[Silver_77_Quests][VERSION_CHECK] SERVER TASK_053 PLAYER_DATA_RPC_FORMAT=PARAM3");
         Print("[Silver_77_Quests][VERSION_CHECK] SERVER ABOUT_TO_SEND_PARAM3 payloadLength=" + payload.Length().ToString());
         Print("[Silver_77_Quests][VERSION_CHECK] SERVER RPC_ID_PLAYER_DATA=" + SILVER77_QUEST_RPC_PLAYER_DATA.ToString());
-        
+
         SendPlayerDataPayloadChunks(player, payload);
     }
-    
+
     static void ApplySyncedConfig(Silver77_QuestConfig config)
     {
         if (!config)
             return;
-        
+
         NormalizeQuestConfig(config);
         g_ServerQuestConfig = config;
         g_ServerQuestConfigRevision++;
-        
+
         int questCount = 0;
         int triggerCount = 0;
         if (g_ServerQuestConfig.quests)
             questCount = g_ServerQuestConfig.quests.Count();
         if (g_ServerQuestConfig.triggers)
             triggerCount = g_ServerQuestConfig.triggers.Count();
-        
+
         Print("[Silver_77_Quests] Applied synced quest config: " + questCount + " quests, " + triggerCount + " triggers");
     }
-    
+
     static void ApplySyncedPlayerData(PlayerQuestData data)
     {
         if (!data || data.steamId == "")
             return;
-        
+
         if (!g_ServerPlayerQuestData)
             g_ServerPlayerQuestData = new map<string, ref PlayerQuestData>;
-        
+
         EnsurePlayerProgress(data);
         g_ServerPlayerQuestData.Set(data.steamId, data);
         g_ServerQuestDataRevision++;
@@ -2306,7 +2467,7 @@ class QuestServerManager
     {
         if (!g_ServerQuestConfig)
             return "";
-        
+
         string payload;
         JsonSerializer serializer = new JsonSerializer();
         if (!serializer.WriteToString(g_ServerQuestConfig, false, payload))
@@ -2314,13 +2475,13 @@ class QuestServerManager
             Print("[Silver_77_Quests] ERROR: Failed to serialize quest config for client sync");
             return "";
         }
-        
+
         if (payload == "")
         {
             Print("[Silver_77_Quests] ERROR: Quest config sync payload is empty");
             return "";
         }
-        
+
         return payload;
     }
 
@@ -2328,53 +2489,53 @@ class QuestServerManager
     {
         if (!player || !player.GetIdentity() || payload == "")
             return;
-        
+
         int payloadLength = payload.Length();
         int totalChunks = payloadLength / SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
         if ((payloadLength % SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE) != 0)
             totalChunks++;
-        
+
         if (totalChunks <= 0)
             totalChunks = 1;
-        
+
         for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++)
         {
             int offset = chunkIndex * SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
             int chunkLength = payloadLength - offset;
             if (chunkLength > SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE)
                 chunkLength = SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
-            
+
             string chunkPayload = payload.Substring(offset, chunkLength);
             GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_CONFIG_DATA, new Param3<int, int, string>(chunkIndex, totalChunks, chunkPayload), true, player.GetIdentity());
         }
-        
+
         Print("[Silver_77_Quests] Sent quest config to client in " + totalChunks + " chunks (" + payloadLength + " bytes)");
     }
-    
+
     private static void SendPlayerDataPayloadChunks(PlayerBase player, string payload)
     {
         if (!player || !player.GetIdentity() || payload == "")
             return;
-        
+
         int payloadLength = payload.Length();
         int totalChunks = payloadLength / SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
         if ((payloadLength % SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE) != 0)
             totalChunks++;
-        
+
         if (totalChunks <= 0)
             totalChunks = 1;
-        
+
         for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++)
         {
             int offset = chunkIndex * SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
             int chunkLength = payloadLength - offset;
             if (chunkLength > SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE)
                 chunkLength = SILVER77_QUEST_CONFIG_SYNC_CHUNK_SIZE;
-            
+
             string chunkPayload = payload.Substring(offset, chunkLength);
             GetGame().RPCSingleParam(player, SILVER77_QUEST_RPC_PLAYER_DATA, new Param3<int, int, string>(chunkIndex, totalChunks, chunkPayload), true, player.GetIdentity());
         }
-        
+
         Print("[Silver_77_Quests] Sent quest progress to client in " + totalChunks.ToString() + " chunks (" + payloadLength.ToString() + " bytes)");
     }
 
@@ -2382,7 +2543,7 @@ class QuestServerManager
     {
         if (!data)
             return "";
-        
+
         string payload;
         JsonSerializer serializer = new JsonSerializer();
         if (!serializer.WriteToString(data, false, payload))
@@ -2390,13 +2551,13 @@ class QuestServerManager
             Print("[Silver_77_Quests] ERROR: Failed to serialize player quest data for client sync");
             return "";
         }
-        
+
         if (payload == "")
         {
             Print("[Silver_77_Quests] ERROR: Player quest sync payload is empty");
             return "";
         }
-        
+
         return payload;
     }
 }
