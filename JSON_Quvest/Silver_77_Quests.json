@@ -280,7 +280,7 @@
       "name": "Поставка провизии",
       "description": "Охотник просит доставить провизию Распутину: забери задание у охотника, отнеси 12 картофелин Распутину и затем вернись к охотнику за завершением.",
       "repeatable": 1,
-      "cooldownSeconds": 0,
+      "cooldownSeconds": 700000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
