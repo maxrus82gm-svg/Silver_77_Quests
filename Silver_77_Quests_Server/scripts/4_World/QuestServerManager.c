@@ -2589,6 +2589,7 @@ class QuestServerManager
 
         float before = CountPlayerItems(player, className, useItemQuantity);
         float remaining = quantity;
+        float removedAmount = 0;
         array<EntityAI> items = new array<EntityAI>;
         player.GetInventory().EnumerateInventory(InventoryTraversalType.PREORDER, items);
 
@@ -2602,34 +2603,43 @@ class QuestServerManager
                 if (useItemQuantity && item.HasQuantity())
                 {
                     float itemQty = item.GetQuantity();
+                    if (itemQty <= 0)
+                        continue;
+
                     if (itemQty <= remaining)
                     {
+                        removedAmount += itemQty;
                         remaining -= itemQty;
                         item.Delete();
                     }
                     else
                     {
+                        removedAmount += remaining;
                         item.SetQuantity(itemQty - remaining);
                         remaining = 0;
                     }
                 }
                 else
                 {
+                    removedAmount += 1;
                     item.Delete();
                     remaining -= 1;
                 }
             }
         }
 
+        if (removedAmount > quantity)
+            removedAmount = quantity;
+
         float after = CountPlayerItems(player, className, useItemQuantity);
-        float removed = before - after;
-        if (removed < 0)
-            removed = 0;
+        float observedRemoved = before - after;
+        if (observedRemoved < 0)
+            observedRemoved = 0;
 
-        if (removed > quantity)
-            removed = quantity;
+        if (observedRemoved != removedAmount)
+            Print("[Silver_77_Quests] Objective remove count check for " + className + ": processed=" + removedAmount + ", observed=" + observedRemoved + ", requested=" + quantity);
 
-        return removed;
+        return removedAmount;
     }
 
     static void RemoveItemsFromPlayer(PlayerBase player, string className, float quantity, bool useItemQuantity = false)
