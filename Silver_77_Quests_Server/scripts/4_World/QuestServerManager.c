@@ -1687,7 +1687,7 @@ class QuestServerManager
         return false;
     }
 
-    static bool TryDeliverFinalRewardBatchSafe(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress, string triggerId, array<ref Silver77_QuestItem> rewardItems)
+    static bool TryDeliverQuestItemsBatchSafe(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress, string stage, string triggerId, string actionType, int index, array<ref Silver77_QuestItem> rewardItems)
     {
         if (!player || !quest || !progress)
             return false;
@@ -1699,22 +1699,54 @@ class QuestServerManager
         if (attemptId <= 0)
             return false;
 
-        string rewardId = BuildRewardId(quest.id, attemptId, "reward", triggerId, "reward", 0);
+        string rewardId = BuildRewardId(quest.id, attemptId, stage, triggerId, actionType, index);
         if (HasDeliveredReward(progress, rewardId, attemptId))
+        {
+            Print("[Silver_77_Quests] Safe delivery skipped already delivered reward: questId=" + quest.id + " stage=" + stage + " triggerId=" + triggerId + " rewardId=" + rewardId + " attemptId=" + attemptId.ToString());
             return true;
+        }
 
         QuestPendingRewardProgress pendingReward = FindPendingReward(progress, rewardId, attemptId);
         if (!pendingReward)
         {
-            pendingReward = CreatePendingRewardBatch(progress, rewardId, attemptId, "reward", triggerId, "reward", rewardItems);
+            pendingReward = CreatePendingRewardBatch(progress, rewardId, attemptId, stage, triggerId, actionType, rewardItems);
             AddPendingReward(progress, pendingReward);
             pendingReward = FindPendingReward(progress, rewardId, attemptId);
+            Print("[Silver_77_Quests] Safe delivery pending reward created: questId=" + quest.id + " stage=" + stage + " triggerId=" + triggerId + " rewardId=" + rewardId + " attemptId=" + attemptId.ToString());
+        }
+        else if (pendingReward.status != "delivered")
+        {
+            Print("[Silver_77_Quests] Safe delivery retry pending reward: questId=" + quest.id + " stage=" + stage + " triggerId=" + triggerId + " rewardId=" + rewardId + " attemptId=" + attemptId.ToString() + " status=" + pendingReward.status);
         }
 
         if (!pendingReward)
             return false;
 
-        return TryDeliverPendingRewardItemsSafe(player, progress, pendingReward);
+        bool delivered = TryDeliverPendingRewardItemsSafe(player, progress, pendingReward);
+        if (delivered)
+            Print("[Silver_77_Quests] Safe delivery delivered reward: questId=" + quest.id + " stage=" + stage + " triggerId=" + triggerId + " rewardId=" + rewardId + " attemptId=" + attemptId.ToString());
+        else
+            Print("[Silver_77_Quests] Safe delivery pending/failed reward: questId=" + quest.id + " stage=" + stage + " triggerId=" + triggerId + " rewardId=" + rewardId + " attemptId=" + attemptId.ToString() + " status=" + pendingReward.status);
+
+        return delivered;
+    }
+
+    static bool TryDeliverOfferGiveItemsSafe(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress, string triggerId)
+    {
+        if (!quest)
+            return false;
+
+        return TryDeliverQuestItemsBatchSafe(player, quest, progress, "offer", triggerId, "giveItems", 0, quest.giveItems);
+    }
+
+    static bool TryDeliverCompletionRewardBatchSafe(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress, string triggerId)
+    {
+        return TryDeliverQuestItemsBatchSafe(player, quest, progress, "completion", triggerId, "completion", 0, ResolveQuestRewardItemsForTrigger(quest, triggerId, false));
+    }
+
+    static bool TryDeliverFinalRewardBatchSafe(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress, string triggerId, array<ref Silver77_QuestItem> rewardItems)
+    {
+        return TryDeliverQuestItemsBatchSafe(player, quest, progress, "reward", triggerId, "reward", 0, rewardItems);
     }
 
     static string GetQuestStatus(PlayerBase player, string questId)
@@ -2101,23 +2133,38 @@ class QuestServerManager
 
         Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: steamId=" + steamId + " questId=" + questId + " triggerId=" + triggerId + " statusBefore=" + statusBefore);
 
-        foreach (Silver77_QuestItem giveItem : quest.giveItems)
-        {
-            SpawnQuestItem(player, giveItem);
-        }
-
         if (progress)
         {
             EnsureRewardProgressState(progress);
             EnsureCurrentAttemptId(progress);
-            progress.status = "active";
             ClearObjectiveProgress(progress);
             ClearCompletionProgress(progress);
             ClearStageVisits(progress);
+        }
+
+        bool offerGiveItemsDelivered = TryDeliverOfferGiveItemsSafe(player, quest, progress, triggerId);
+        if (!offerGiveItemsDelivered)
+        {
+            if (progress)
+                progress.status = "available";
+
+            SavePlayerData(data);
+            g_ServerQuestDataRevision++;
+            Print("[Silver_77_Quests] Offer giveItems delivery pending/failed for quest: " + questId + " via trigger " + triggerId);
+            return false;
+        }
+
+        if (progress)
+        {
+            progress.status = "active";
             RecordStageVisit(progress, triggerId, "offer");
         }
 
-        Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: statusAfter=" + progress.status + " calling SavePlayerData");
+        string statusAfter = "";
+        if (progress)
+            statusAfter = progress.status;
+
+        Print("[Silver_77_Quests][PROGRESS_DEBUG] AcceptQuest: statusAfter=" + statusAfter + " calling SavePlayerData");
 
         SavePlayerData(data);
         g_ServerQuestDataRevision++;
@@ -2287,9 +2334,17 @@ class QuestServerManager
                 return false;
             }
 
+            bool completionRewardDelivered = TryDeliverCompletionRewardBatchSafe(player, quest, progress, triggerId);
+            if (!completionRewardDelivered)
+            {
+                SavePlayerData(data);
+                g_ServerQuestDataRevision++;
+                Print("[Silver_77_Quests] Completion reward delivery pending/failed for quest: " + questId + " via trigger " + triggerId);
+                return false;
+            }
+
             MarkCompletionTriggerDone(progress, triggerId);
             RecordStageVisit(progress, triggerId, "completion");
-            FinalizeQuestReward(player, ResolveQuestRewardItemsForTrigger(quest, triggerId, false));
 
             if (QuestHasRoleTriggers(quest.rewardTriggerIds) && AreAllCompletionTriggersDone(quest, progress))
                 MarkQuestAsRewardPending(progress);
