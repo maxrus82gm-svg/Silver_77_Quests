@@ -2281,21 +2281,10 @@ class QuestServerManager
             if (!AreQuestObjectivesReadyForCompletion(player, quest, progress))
                 return depositedSomething;
 
-            for (int i = 0; i < quest.objectives.Count(); i++)
+            if (!ProcessQuestObjectivesForFinalReward(player, quest, progress))
             {
-                Silver77_QuestObjective objective = quest.objectives.Get(i);
-                if (!objective)
-                    continue;
-
-                if (objective.type == "item" && objective.removeOnComplete && !objective.allowPartialTurnIn)
-                    RemoveItemsFromPlayer(player, objective.className, objective.quantity, objective.useItemQuantity);
-
-                if (objective.type == "item" && !objective.allowPartialTurnIn)
-                {
-                    PlayerQuestObjectiveProgress objectiveProgress = GetOrCreateObjectiveProgress(progress, i, objective.className);
-                    if (objectiveProgress)
-                        objectiveProgress.depositedQuantity = objective.quantity;
-                }
+                Print("[Silver_77_Quests] Reward blocked because objectives are not safely processed for quest: " + questId + " via trigger " + triggerId);
+                return false;
             }
 
             MarkCompletionTriggerDone(progress, triggerId);
@@ -2333,6 +2322,12 @@ class QuestServerManager
             if (!AreAllCompletionTriggersDone(quest, progress))
             {
                 Print("[Silver_77_Quests] Final reward retry blocked, completion chain is not done for quest: " + questId);
+                return false;
+            }
+
+            if (!ProcessQuestObjectivesForFinalReward(player, quest, progress))
+            {
+                Print("[Silver_77_Quests] Final reward retry blocked because objectives are not safely processed for quest: " + questId + " via trigger " + triggerId);
                 return false;
             }
 
@@ -2377,15 +2372,12 @@ class QuestServerManager
                 if (!AreQuestObjectivesReadyForCompletion(player, quest, progress))
                     return rewardDepositedSomething;
 
-                for (int rewardObjectiveIndex = 0; rewardObjectiveIndex < quest.objectives.Count(); rewardObjectiveIndex++)
-                {
-                    Silver77_QuestObjective rewardObjective = quest.objectives.Get(rewardObjectiveIndex);
-                    if (!rewardObjective)
-                        continue;
+            }
 
-                    if (rewardObjective.type == "item" && rewardObjective.removeOnComplete && !rewardObjective.allowPartialTurnIn)
-                        RemoveItemsFromPlayer(player, rewardObjective.className, rewardObjective.quantity, rewardObjective.useItemQuantity);
-                }
+            if (!ProcessQuestObjectivesForFinalReward(player, quest, progress))
+            {
+                Print("[Silver_77_Quests] Reward blocked because objectives are not safely processed for quest: " + questId + " via trigger " + triggerId);
+                return false;
             }
 
             bool finalRewardDelivered = TryDeliverFinalRewardBatchSafe(player, quest, progress, triggerId, ResolveQuestRewardItemsForTrigger(quest, triggerId, true));
@@ -2443,16 +2435,85 @@ class QuestServerManager
             if (toDeposit <= 0)
                 continue;
 
-            RemoveItemsFromPlayer(player, objective.className, toDeposit, objective.useItemQuantity);
-            objectiveProgress.depositedQuantity += toDeposit;
+            float removedAmount = RemoveItemsFromPlayerCount(player, objective.className, toDeposit, objective.useItemQuantity);
+            if (removedAmount <= 0)
+            {
+                Print("[Silver_77_Quests] Objective remove failed for " + quest.id + ": " + objective.className + " needed " + toDeposit + ", removed 0");
+                continue;
+            }
+
+            objectiveProgress.depositedQuantity += removedAmount;
             if (objectiveProgress.depositedQuantity > objective.quantity)
                 objectiveProgress.depositedQuantity = objective.quantity;
 
             depositedSomething = true;
-            Print("[Silver_77_Quests] Deposited partial objective for " + quest.id + ": " + objective.className + " +" + toDeposit + " (" + objectiveProgress.depositedQuantity + "/" + objective.quantity + ")");
+            if (removedAmount < toDeposit)
+                Print("[Silver_77_Quests] Objective remove incomplete for " + quest.id + ": " + objective.className + " needed " + toDeposit + ", removed " + removedAmount);
+
+            Print("[Silver_77_Quests] Deposited partial objective for " + quest.id + ": " + objective.className + " +" + removedAmount + " (" + objectiveProgress.depositedQuantity + "/" + objective.quantity + ")");
         }
 
         return depositedSomething;
+    }
+
+    static bool ProcessQuestObjectivesForFinalReward(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress)
+    {
+        if (!player || !quest || !progress || !quest.objectives)
+            return false;
+
+        for (int i = 0; i < quest.objectives.Count(); i++)
+        {
+            Silver77_QuestObjective objective = quest.objectives.Get(i);
+            if (!objective || objective.type != "item")
+                continue;
+
+            if (objective.allowPartialTurnIn)
+            {
+                float deposited = GetDepositedObjectiveQuantity(progress, i, objective.className);
+                if (deposited < objective.quantity)
+                {
+                    Print("[Silver_77_Quests] Deposited quantity incomplete for " + quest.id + ": " + objective.className + " " + deposited + "/" + objective.quantity);
+                    return false;
+                }
+
+                continue;
+            }
+
+            float completed = GetDepositedObjectiveQuantity(progress, i, objective.className);
+            if (completed >= objective.quantity)
+                continue;
+
+            if (objective.removeOnComplete)
+            {
+                float available = CountPlayerItems(player, objective.className, objective.useItemQuantity);
+                if (available < objective.quantity)
+                {
+                    Print("[Silver_77_Quests] Required quantity missing for " + quest.id + ": " + objective.className + " available " + available + "/" + objective.quantity);
+                    return false;
+                }
+
+                float removedAmount = RemoveItemsFromPlayerCount(player, objective.className, objective.quantity, objective.useItemQuantity);
+                if (removedAmount < objective.quantity)
+                {
+                    Print("[Silver_77_Quests] Objective remove failed for " + quest.id + ": " + objective.className + " needed " + objective.quantity + ", removed " + removedAmount);
+                    return false;
+                }
+            }
+            else
+            {
+                if (!PlayerHasItemAmount(player, objective.className, objective.quantity, objective.useItemQuantity))
+                {
+                    Print("[Silver_77_Quests] Required quantity missing for non-removable objective " + quest.id + ": " + objective.className + " need " + objective.quantity);
+                    return false;
+                }
+            }
+
+            PlayerQuestObjectiveProgress objectiveProgress = GetOrCreateObjectiveProgress(progress, i, objective.className);
+            if (objectiveProgress)
+                objectiveProgress.depositedQuantity = objective.quantity;
+        }
+
+        return true;
     }
 
     static bool AreQuestObjectivesReadyForCompletion(PlayerBase player, Silver77_Quest quest, PlayerQuestProgress progress)
@@ -2521,11 +2582,12 @@ class QuestServerManager
         return count;
     }
 
-    static void RemoveItemsFromPlayer(PlayerBase player, string className, float quantity, bool useItemQuantity = false)
+    static float RemoveItemsFromPlayerCount(PlayerBase player, string className, float quantity, bool useItemQuantity = false)
     {
         if (!player || className == "" || quantity <= 0)
-            return;
+            return 0;
 
+        float before = CountPlayerItems(player, className, useItemQuantity);
         float remaining = quantity;
         array<EntityAI> items = new array<EntityAI>;
         player.GetInventory().EnumerateInventory(InventoryTraversalType.PREORDER, items);
@@ -2558,6 +2620,21 @@ class QuestServerManager
                 }
             }
         }
+
+        float after = CountPlayerItems(player, className, useItemQuantity);
+        float removed = before - after;
+        if (removed < 0)
+            removed = 0;
+
+        if (removed > quantity)
+            removed = quantity;
+
+        return removed;
+    }
+
+    static void RemoveItemsFromPlayer(PlayerBase player, string className, float quantity, bool useItemQuantity = false)
+    {
+        RemoveItemsFromPlayerCount(player, className, quantity, useItemQuantity);
     }
 
     static void SpawnQuestItem(PlayerBase player, Silver77_QuestItem questItem)

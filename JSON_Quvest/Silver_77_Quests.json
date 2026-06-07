@@ -6,7 +6,7 @@
       "name": "Картошечка с маслицем",
       "description": "Охотнику нужны припасы для жарехи: собери 120 картофелин, 2 лисички, 2 сыроежки и 2 белых гриба, затем вернись к нему с добычей.",
       "repeatable": 1,
-      "cooldownSeconds": 43200,
+      "cooldownSeconds": 500000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
@@ -31,7 +31,12 @@
           "rewards": [
             {
               "className": "Ammo_12gaPellets",
-              "quantity": 4,
+              "quantity": 100,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "LeatherSewingKit",
+              "quantity": 1,
               "spawnOnGround": 0
             }
           ]
@@ -91,7 +96,7 @@
       "name": "Рыба это вам не картошка!",
       "description": "Рыбак просит наловить для него 12 карпов. Добудь рыбу и принеси её обратно в точку сдачи.",
       "repeatable": 1,
-      "cooldownSeconds": 43200,
+      "cooldownSeconds": 450000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
@@ -146,7 +151,7 @@
       "name": "Взаимовыручка прежде всего!",
       "description": "Распутину нужны материалы для стоянки: подготовь 10 палок и 6 дров, затем вернись к нему и передай всё собранное.",
       "repeatable": 0,
-      "cooldownSeconds": 250000,
+      "cooldownSeconds": 300000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
@@ -209,7 +214,7 @@
       "name": "Поставка медицины",
       "description": "Рыбаку нужны медицинские припасы: подготовь 6 бинтов и принеси их обратно. После сдачи квест закроется у того же NPC.",
       "repeatable": 1,
-      "cooldownSeconds": 250000,
+      "cooldownSeconds": 550000,
       "requiresPrevious": "",
       "requiredQuestIds": [],
       "hideUntilRequirementsComplete": 0,
@@ -375,7 +380,7 @@
           "rewards": [
             {
               "className": "MoneyRuble5",
-              "quantity": 20,
+              "quantity": 80,
               "spawnOnGround": 0
             },
             {
@@ -401,7 +406,66 @@
           "className": "BandageDressing",
           "quantity": 3,
           "removeOnComplete": 1,
-          "useItemQuantity": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
+      "rewards": []
+    },
+    {
+      "id": "Georgiy_Bar_Orugka",
+      "name": "Поставки тушёнки",
+      "description": "Просьба поставить тушенку, в количестве 10 штук. Обещает вознаградить набором для шиться, и дефицитным точильным камнем, ну патронами 12 калибра 60 штук.",
+      "repeatable": 1,
+      "cooldownSeconds": 500000,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "Georgiy_Bar_Orugka"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "Georgiy_Bar_Orugka"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "Georgiy_Bar_Orugka",
+          "actionType": "offer",
+          "dialogText": "Здорова, у нас тут строительство, есть пробелы в обеспечении, критична провизия, если поставишь нам что то интересное, я дам тебе кое что интересно, знаю что тебя заинтересует. Патроны понятно, но у меня есть кое что поинтересней, инструменты по починке нынче в цене, оно и понятно, время такое что вещи начали опять ценить, ремонтировать стало не так зазорно как ранее. Принеси мне 6 банок добротной тушенки, а за нами не заржавеет.",
+          "rewards": []
+        },
+        {
+          "triggerId": "Georgiy_Bar_Orugka",
+          "actionType": "reward",
+          "dialogText": "Ооо! Как раз вовремя, мы тут с пацанами только что с города, искали хрень всякую, голодные как кабаны мутанты!) Держи, я как и обещал, вот.",
+          "rewards": [
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 6,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "Whetstone",
+              "quantity": 1,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "SewingKit",
+              "quantity": 1,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "KKCR_Opened_Bank_Stew",
+          "quantity": 10,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
           "allowPartialTurnIn": 1
         }
       ],
@@ -577,7 +641,9 @@
       "radius": 2,
       "focusHeight": 1.2,
       "focusRadius": 1,
-      "questIds": [],
+      "questIds": [
+        "Georgiy_Bar_Orugka"
+      ],
       "hintText": "Георгий (Гога)",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Seth",
