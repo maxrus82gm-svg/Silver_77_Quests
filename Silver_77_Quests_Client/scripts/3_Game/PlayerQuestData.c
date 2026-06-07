@@ -36,6 +36,8 @@ class QuestRewardItemProgress
     int need;
     int given;
     bool spawnOnGround;
+    bool setItemQuantity;
+    float itemQuantity;
     string lastError;
 
     void QuestRewardItemProgress()
@@ -44,6 +46,8 @@ class QuestRewardItemProgress
         need = 0;
         given = 0;
         spawnOnGround = false;
+        setItemQuantity = false;
+        itemQuantity = 0;
         lastError = "";
     }
 }

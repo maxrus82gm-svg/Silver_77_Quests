@@ -1557,6 +1557,20 @@ class QuestServerManager
         return item;
     }
 
+    static string GetRewardItemQuantityError(EntityAI item, string className, float itemQuantity)
+    {
+        if (!item)
+            return "Created item is null for " + className;
+
+        if (itemQuantity <= 0)
+            return "itemQuantity must be > 0 for " + className;
+
+        if (!item.HasQuantity())
+            return "Item does not support quantity for " + className;
+
+        return "";
+    }
+
     static QuestPendingRewardProgress CreatePendingRewardBatch(PlayerQuestProgress progress, string rewardId, int attemptId, string stage, string triggerId, string actionType, array<ref Silver77_QuestItem> rewardItems)
     {
         if (!progress || rewardId == "" || attemptId <= 0)
@@ -1585,6 +1599,8 @@ class QuestServerManager
                 itemProgress.need = rewardItem.quantity;
                 itemProgress.given = 0;
                 itemProgress.spawnOnGround = rewardItem.spawnOnGround;
+                itemProgress.setItemQuantity = rewardItem.setItemQuantity;
+                itemProgress.itemQuantity = rewardItem.itemQuantity;
                 pendingReward.items.Insert(itemProgress);
             }
         }
@@ -1660,6 +1676,28 @@ class QuestServerManager
 
                     Print("[Silver_77_Quests] Safe reward delivery failed: questId=" + progress.questId + " rewardId=" + pendingReward.rewardId + " attemptId=" + pendingReward.attemptId.ToString() + " item=" + itemProgress.className);
                     return false;
+                }
+
+                if (itemProgress.setItemQuantity)
+                {
+                    string itemQuantityError = GetRewardItemQuantityError(createdItem, itemProgress.className, itemProgress.itemQuantity);
+                    if (itemQuantityError != "")
+                    {
+                        createdItem.Delete();
+                        itemProgress.lastError = itemQuantityError;
+                        pendingReward.lastError = itemQuantityError;
+                        pendingReward.updatedAt = now;
+
+                        if (deliveredThisCall > 0 || HasAnyPendingRewardItemGiven(pendingReward))
+                            pendingReward.status = "partial";
+                        else
+                            pendingReward.status = "failed";
+
+                        Print("[Silver_77_Quests] Safe reward itemQuantity failed: questId=" + progress.questId + " rewardId=" + pendingReward.rewardId + " attemptId=" + pendingReward.attemptId.ToString() + " item=" + itemProgress.className + " error=" + itemQuantityError);
+                        return false;
+                    }
+
+                    createdItem.SetQuantity(itemProgress.itemQuantity);
                 }
 
                 itemProgress.given++;
@@ -2709,17 +2747,29 @@ class QuestServerManager
 
         for (int i = 0; i < questItem.quantity; i++)
         {
+            EntityAI createdItem = null;
             if (questItem.spawnOnGround)
             {
-                GetGame().CreateObjectEx(questItem.className, player.GetPosition(), ECE_PLACE_ON_SURFACE | ECE_KEEPHEIGHT);
+                createdItem = EntityAI.Cast(GetGame().CreateObjectEx(questItem.className, player.GetPosition(), ECE_PLACE_ON_SURFACE | ECE_KEEPHEIGHT));
             }
             else
             {
-                EntityAI item = player.GetInventory().CreateInInventory(questItem.className);
-                if (!item)
+                createdItem = player.GetInventory().CreateInInventory(questItem.className);
+                if (!createdItem)
+                    createdItem = EntityAI.Cast(GetGame().CreateObjectEx(questItem.className, player.GetPosition(), ECE_PLACE_ON_SURFACE | ECE_KEEPHEIGHT));
+            }
+
+            if (createdItem && questItem.setItemQuantity)
+            {
+                string itemQuantityError = GetRewardItemQuantityError(createdItem, questItem.className, questItem.itemQuantity);
+                if (itemQuantityError != "")
                 {
-                    GetGame().CreateObjectEx(questItem.className, player.GetPosition(), ECE_PLACE_ON_SURFACE | ECE_KEEPHEIGHT);
+                    createdItem.Delete();
+                    Print("[Silver_77_Quests] Legacy quest itemQuantity failed: item=" + questItem.className + " error=" + itemQuantityError);
+                    continue;
                 }
+
+                createdItem.SetQuantity(questItem.itemQuantity);
             }
         }
     }

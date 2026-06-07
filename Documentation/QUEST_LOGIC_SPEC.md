@@ -440,7 +440,54 @@ Carp x6 со useItemQuantity: 0
 
 ---
 
-## 13. Статусы квеста
+## 13. Внутреннее количество выдаваемых предметов
+
+Для выдаваемых предметов `quantity` всегда означает количество физических предметов / стаков.
+
+Выдаваемые предметы находятся в:
+
+- `giveItems[]`
+- `rewards[]`
+- `triggerActions[].rewards[]`
+
+Для каждого выдаваемого item можно указать:
+
+```json
+"setItemQuantity": 1,
+"itemQuantity": 5
+```
+
+Смысл:
+
+- `setItemQuantity = 0` — предмет создаётся как раньше;
+- `setItemQuantity = 1` — сервер после создания предмета выставляет ему внутреннее количество;
+- `itemQuantity` — внутренняя quantity каждого созданного физического предмета.
+
+Пример:
+
+```text
+Ammo_12gaPellets
+quantity = 1
+setItemQuantity = 1
+itemQuantity = 5
+```
+
+Ожидаемый результат: один физический стак `Ammo_12gaPellets` с quantity 5.
+
+Если указано `quantity = 2`, `setItemQuantity = 1`, `itemQuantity = 5`, сервер создаёт два физических стака и каждому ставит quantity 5.
+
+Важно не путать:
+
+- objective `useItemQuantity` — как считать и сдавать предметы игрока;
+- reward/give item `itemQuantity` — какую внутреннюю quantity поставить создаваемому предмету.
+
+Сервер применяет `itemQuantity` только из server quest config / server profile JSON. Клиентские RPC для accept/complete не передают `className`, `quantity`, `setItemQuantity`, `itemQuantity`, `rewards` или `giveItems`; клиент передаёт только `questId` и `triggerId`.
+
+Если `setItemQuantity = 1`, но созданный предмет не поддерживает quantity или `itemQuantity <= 0`, выдача не должна считаться успешной.
+
+---
+
+## 14. Статусы квеста
 
 Основные статусы:
 
@@ -457,7 +504,7 @@ Carp x6 со useItemQuantity: 0
 
 ---
 
-## 14. UI-правила
+## 15. UI-правила
 
 UI должен показывать игроку состояние квеста понятно.
 
@@ -484,7 +531,7 @@ UI должен показывать игроку состояние квест�
 
 ---
 
-## 15. Короткое правило
+## 16. Короткое правило
 
 Главное правило:
 

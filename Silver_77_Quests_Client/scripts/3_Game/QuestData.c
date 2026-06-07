@@ -14,12 +14,16 @@ class Silver77_QuestItem
     string className;
     int quantity;
     bool spawnOnGround;
+    bool setItemQuantity;
+    float itemQuantity;
     
     void Silver77_QuestItem()
     {
         className = "";
         quantity = 1;
         spawnOnGround = false;
+        setItemQuantity = false;
+        itemQuantity = 0;
     }
 }
 
