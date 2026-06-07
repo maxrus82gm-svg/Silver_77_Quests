@@ -2284,7 +2284,9 @@ function renderRewardItemFields(basePath, item) {
   return `
     <div class="field-grid">
       ${textField("Class Name (код предмета)", `${basePath}.className`, item.className, "Внутреннее имя предмета из игры. Например: SteakKnife.", "className")}
-      ${numberField("Quantity (количество)", `${basePath}.quantity`, item.quantity, "Сколько предметов выдать или наградить.", 1, "quantity")}
+      ${numberField("Quantity (количество)", `${basePath}.quantity`, item.quantity, "Сколько физических предметов / стаков создать.", 1, "quantity")}
+      ${toggleField("Set Item Quantity (задать внутреннее количество)", `${basePath}.setItemQuantity`, item.setItemQuantity, "Если включено, сервер после создания предмета выставит ему внутреннее quantity.", "setItemQuantity")}
+      ${numberField("Item Quantity (внутреннее количество)", `${basePath}.itemQuantity`, item.itemQuantity, "Какое внутреннее количество поставить каждому созданному физическому предмету.", 1, "itemQuantity")}
       ${toggleField("Spawn On Ground (положить на землю)", `${basePath}.spawnOnGround`, item.spawnOnGround, "Если включено, предмет появится рядом на земле, а не сразу у игрока.", "spawnOnGround")}
     </div>
   `;
@@ -2356,6 +2358,13 @@ function validateInventoryBlock(issues, questId, blockName, item, itemIndex) {
   if (!Number.isFinite(Number(item.quantity))) {
     issues.push(issue("error", `Не число в ${blockName}.quantity`, `Квест "${questId}" содержит некорректное количество в ${blockName} #${itemIndex + 1}.`));
   }
+
+  if (blockName !== "objectives" && Number(item.setItemQuantity)) {
+    const itemQuantity = Number(item.itemQuantity);
+    if (!Number.isFinite(itemQuantity) || itemQuantity <= 0) {
+      issues.push(issue("error", `Некорректное ${blockName}.itemQuantity`, `Квест "${questId}" содержит внутреннее количество <= 0 в ${blockName} #${itemIndex + 1} при включённом setItemQuantity.`));
+    }
+  }
 }
 
 function issue(level, title, message) {
@@ -2426,6 +2435,8 @@ function normalizeRewardItem(raw) {
   return {
     className: toText(item.className),
     quantity: parseNumber(item.quantity, 0),
+    setItemQuantity: toFlag(item.setItemQuantity, 0),
+    itemQuantity: parseNumber(item.itemQuantity, 0),
     spawnOnGround: toFlag(item.spawnOnGround, 0)
   };
 }
@@ -2548,6 +2559,8 @@ function createRewardItem() {
   return {
     className: "",
     quantity: 1,
+    setItemQuantity: 0,
+    itemQuantity: 0,
     spawnOnGround: 0
   };
 }
@@ -2812,6 +2825,8 @@ function attemptKnownRepairs(text) {
     "cooldownSeconds",
     "hideUntilRequirementsComplete",
     "spawnOnGround",
+    "setItemQuantity",
+    "itemQuantity",
     "removeOnComplete",
     "useItemQuantity",
     "allowPartialTurnIn",
@@ -3553,6 +3568,16 @@ function renderQuestEditor(quest, index) {
       ${sectionCard(
         "NPC Flow (роли и настройки по trigger / NPC)",
         renderQuestTriggerFlowSection(quest, index)
+      )}
+
+      ${sectionCard(
+        "Root Rewards (общие fallback rewards)",
+        `
+          <div class="stack">
+            <div class="muted">Общий список <code>quests[].rewards[]</code>. Reward-блоки с пустым локальным списком могут использовать эти награды как fallback.</div>
+            ${objectArrayEditor(`${base}.rewards`, quest.rewards, "reward-item", renderRewardItemFields)}
+          </div>
+        `
       )}
     </div>
   `;
