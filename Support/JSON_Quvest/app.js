@@ -111,6 +111,7 @@ function bindEvents() {
   });
   document.getElementById("importButton").addEventListener("click", () => elements.importInput.click());
   document.getElementById("validateButton").addEventListener("click", () => {
+    syncQuestIdsFromRoleBlocks();
     state.issues = validateData(state.data);
     updateBanner({
       kind: state.issues.some((issue) => issue.level === "error") ? "warning" : "success",
@@ -242,7 +243,7 @@ function handleEditorInput(event) {
     if (selectedTriggerId && state.selected?.kind === "quest") {
       const quest = state.data.quests[state.selected.index];
       addQuestFlowDraftTriggerId(quest, state.selected.index, selectedTriggerId);
-      state.npcFlowMode = "active";
+      state.npcFlowMode = "selected";
     } else {
       state.npcFlowMode = selectedTriggerId ? "selected" : "active";
     }
@@ -255,7 +256,8 @@ function handleEditorInput(event) {
     handleQuestFlowCardTriggerChange(
       Number(target.dataset.questIndex),
       target.dataset.currentTriggerId,
-      target.value
+      target.value,
+      target.dataset.currentRole
     );
     return;
   }
@@ -641,6 +643,7 @@ async function saveStackRulesNow(showBanner = false) {
 }
 
 async function handleCopyJson() {
+  syncQuestIdsFromRoleBlocks();
   const payload = JSON.stringify(state.data, null, 2);
   try {
     await navigator.clipboard.writeText(payload);
@@ -657,6 +660,7 @@ async function handleCopyJson() {
 }
 
 function handleExport() {
+  syncQuestIdsFromRoleBlocks();
   state.issues = validateData(state.data);
   const blockingIssues = getBlockingIssues(state.issues);
   if (blockingIssues.length) {
@@ -860,7 +864,7 @@ function handleQuestTriggerToggleChange(questIndex, triggerRole, triggerId, chec
   renderAll();
 }
 
-function handleQuestFlowCardTriggerChange(questIndex, currentTriggerId, nextTriggerId) {
+function handleQuestFlowCardTriggerChange(questIndex, currentTriggerId, nextTriggerId, currentRole = "") {
   const quest = state.data.quests[questIndex];
   if (!quest) {
     return;
@@ -918,21 +922,10 @@ function handleQuestFlowCardTriggerChange(questIndex, currentTriggerId, nextTrig
     return;
   }
 
-  if (questUsesTriggerInAnyRole(quest, sourceTriggerId)) {
-    state.npcFlowSelectedTriggerId = sourceTriggerId;
-    state.npcFlowMode = "active";
-    updateBanner({
-      kind: "warning",
-      text: `У блока ${sourceTriggerId} уже выбраны роли. Чтобы добавить другого NPC для Completion или Reward, используй отдельный блок цепочки.`
-    });
-    renderEditor();
-    renderHeader();
-    return;
-  }
-
-  const rolesToMove = ["offer", "completion", "reward"].filter((role) =>
-    getQuestRoleTriggerIds(quest, role).includes(sourceTriggerId)
-  );
+  const normalizedCurrentRole = String(currentRole || "").trim();
+  const rolesToMove = normalizedCurrentRole
+    ? [normalizedCurrentRole].filter((role) => getQuestRoleTriggerIds(quest, role).includes(sourceTriggerId))
+    : ["offer", "completion", "reward"].filter((role) => getQuestRoleTriggerIds(quest, role).includes(sourceTriggerId));
 
   if (!rolesToMove.length) {
     replaceQuestFlowDraftTriggerId(quest, questIndex, sourceTriggerId, targetTriggerId);
@@ -948,9 +941,9 @@ function handleQuestFlowCardTriggerChange(questIndex, currentTriggerId, nextTrig
     quest[fieldName] = updateStringArrayMembership(quest[fieldName], targetTriggerId, true);
   });
 
-  moveQuestTriggerAction(quest, "offer", sourceTriggerId, targetTriggerId);
-  moveQuestTriggerAction(quest, "completion", sourceTriggerId, targetTriggerId);
-  moveQuestTriggerAction(quest, "reward", sourceTriggerId, targetTriggerId);
+  rolesToMove.forEach((role) => {
+    moveQuestTriggerAction(quest, role, sourceTriggerId, targetTriggerId);
+  });
 
   setQuestVisibleInTrigger(quest.id, sourceTriggerId, questUsesTriggerInAnyRole(quest, sourceTriggerId));
   setQuestVisibleInTrigger(quest.id, targetTriggerId, true);
@@ -964,7 +957,7 @@ function handleQuestFlowCardTriggerChange(questIndex, currentTriggerId, nextTrig
   touchState({
     banner: {
       kind: "success",
-      text: `Блок NPC перенесён с ${sourceTriggerId} на ${targetTriggerId}.`
+      text: `Блок ${rolesToMove.join(", ")} перенесён с ${sourceTriggerId} на ${targetTriggerId}.`
     }
   });
   renderAll();
@@ -1286,6 +1279,50 @@ function syncAllQuestTriggerActions(data = state.data) {
   });
 }
 
+function syncQuestIdsFromRoleBlocks(data = state.data) {
+  if (!data) {
+    return;
+  }
+
+  const quests = normalizeArray(data.quests);
+  const triggers = normalizeArray(data.triggers);
+  const questById = new Map();
+
+  quests.forEach((quest) => {
+    const questId = String(quest?.id || "").trim();
+    if (questId) {
+      questById.set(questId, quest);
+    }
+  });
+
+  triggers.forEach((trigger) => {
+    trigger.questIds = normalizeQuestIdArray(trigger.questIds).filter((questId) => {
+      const quest = questById.get(questId);
+      return quest && questUsesTriggerInAnyRoleFromData(quest, trigger.id);
+    });
+  });
+
+  quests.forEach((quest) => {
+    const questId = String(quest?.id || "").trim();
+    if (!questId) {
+      return;
+    }
+
+    getQuestFlowActiveTriggerIds(quest).forEach((triggerId) => {
+      const trigger = triggers.find((entry) => entry.id === triggerId);
+      if (!trigger) {
+        return;
+      }
+
+      const nextQuestIds = Array.from(new Set(normalizeQuestIdArray(trigger.questIds)));
+      if (!nextQuestIds.includes(questId)) {
+        nextQuestIds.push(questId);
+      }
+      trigger.questIds = nextQuestIds;
+    });
+  });
+}
+
 function removeTriggerIdFromQuestRoles(triggerId) {
   const normalizedTriggerId = String(triggerId || "").trim();
   if (!normalizedTriggerId) {
@@ -1599,6 +1636,7 @@ function pickInitialSelection(data, currentSelection) {
 
 function touchState(options = {}) {
   state.dirty = true;
+  syncQuestIdsFromRoleBlocks();
   syncAllQuestTriggerActions();
   state.issues = validateData(state.data);
 
@@ -1616,6 +1654,7 @@ function touchStackRules() {
 }
 
 function renderAll() {
+  syncQuestIdsFromRoleBlocks();
   syncAllQuestTriggerActions();
   state.npcFlowMode = normalizeNpcFlowMode(state.npcFlowMode);
   state.npcFlowSelectedTriggerId = normalizeNpcFlowSelectedTriggerId(state.npcFlowSelectedTriggerId);
@@ -3211,10 +3250,9 @@ function renderQuestFlowCardTriggerPicker(questIndex, currentTriggerId, options 
   if (options.locked) {
     return `
       <div class="quest-flow-card-picker quest-flow-card-picker--locked">
-        <span class="quest-flow-picker-label">NPC / trigger этого блока</span>
+        <span class="quest-flow-picker-label">Выбран NPC</span>
         <div class="quest-flow-card-value">
           <strong>${escapeHtml(getTriggerDisplayLabel(currentTriggerId))}</strong>
-          <span class="field-key">блок зафиксирован</span>
         </div>
       </div>
     `;
@@ -3236,7 +3274,8 @@ function renderQuestFlowCardTriggerPicker(questIndex, currentTriggerId, options 
       <select
         data-role="quest-flow-card-trigger-picker"
         data-quest-index="${questIndex}"
-        data-current-trigger-id="${escapeAttribute(currentTriggerId)}">
+        data-current-trigger-id="${escapeAttribute(currentTriggerId)}"
+        data-current-role="${escapeAttribute(options.currentRole || "")}">
         ${optionRows.join("")}
       </select>
     </label>
@@ -3378,7 +3417,7 @@ function renderQuestRoleFlowCard(quest, questIndex, block, triggerIndex) {
         <div>
           ${!isDraft && stageTitles[currentRole] ? `<div class="quest-flow-stage-label">${escapeHtml(stageTitles[currentRole])}</div>` : ""}
           <p class="eyebrow">Trigger / NPC</p>
-          ${renderQuestFlowCardTriggerPicker(questIndex, trigger.id, { locked: !isDraft })}
+          ${renderQuestFlowCardTriggerPicker(questIndex, trigger.id, { currentRole })}
           <div class="muted">${escapeHtml(roleLabel ? `Роль блока: ${roleLabel}` : "Роль этого блока пока не выбрана.")}</div>
         </div>
         <div class="trigger-flow-meta">
@@ -3476,7 +3515,6 @@ function renderQuestTriggerFlowSection(quest, questIndex) {
             ${renderQuestFlowModeButton("selected", "Выбранный NPC", selectedTriggerId ? "1" : "0")}
             ${renderQuestFlowModeButton("all", "Все NPC", String(allTriggers.length))}
           </div>
-          ${renderQuestFlowTriggerPicker(selectedTriggerId)}
         </div>
       <div class="quest-flow-toolbar-note">
         ${selectedTriggerId
@@ -3726,6 +3764,7 @@ function normalizeData(raw) {
     normalized.version = 3;
   }
 
+  syncQuestIdsFromRoleBlocks(normalized);
   syncAllQuestTriggerActions(normalized);
   return normalized;
 }

@@ -32,11 +32,15 @@
             {
               "className": "Ammo_12gaPellets",
               "quantity": 100,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "LeatherSewingKit",
               "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -46,6 +50,8 @@
         {
           "className": "SteakKnife",
           "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ],
@@ -87,6 +93,8 @@
         {
           "className": "Ammo_12gaPellets",
           "quantity": 8,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ]
@@ -122,6 +130,8 @@
             {
               "className": "Ammo_12gaPellets",
               "quantity": 6,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -142,6 +152,8 @@
         {
           "className": "Ammo_12gaPellets",
           "quantity": 8,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ]
@@ -177,6 +189,8 @@
             {
               "className": "DisinfectantAlcohol",
               "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -205,6 +219,8 @@
         {
           "className": "DisinfectantAlcohol",
           "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ]
@@ -240,11 +256,15 @@
             {
               "className": "Ammo_12gaPellets",
               "quantity": 5,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "Whetstone",
               "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -254,6 +274,8 @@
         {
           "className": "SteakKnife",
           "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ],
@@ -271,6 +293,8 @@
         {
           "className": "Ammo_12gaPellets",
           "quantity": 10,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ]
@@ -308,6 +332,8 @@
             {
               "className": "BoletusMushroom",
               "quantity": 2,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -320,6 +346,8 @@
             {
               "className": "Ammo_12gaPellets",
               "quantity": 3,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -329,6 +357,8 @@
         {
           "className": "PotatoSeed",
           "quantity": 12,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ],
@@ -346,6 +376,8 @@
         {
           "className": "Ammo_12gaPellets",
           "quantity": 30,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
           "spawnOnGround": 0
         }
       ]
@@ -381,11 +413,15 @@
             {
               "className": "MoneyRuble5",
               "quantity": 80,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "LeatherSewingKit",
               "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -443,16 +479,22 @@
             {
               "className": "Ammo_12gaPellets",
               "quantity": 6,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "Whetstone",
               "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "SewingKit",
               "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -470,6 +512,56 @@
         }
       ],
       "rewards": []
+    },
+    {
+      "id": "quest_hunter_3",
+      "name": "Знакомство с нужными людьми.",
+      "description": "Игорь оружейник, который в баре на востоке от хутора Ольши, затеял стройку, надо к нему дойти.",
+      "repeatable": 0,
+      "cooldownSeconds": 0,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "hunter_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "Georgiy_Bar_Orugka"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "offer",
+          "dialogText": "Здорова еще раз! Вижу ты вообще отлично справляешься со всем. У меня дело к тебе, точнее даже не у меня. Игорь, Игорь Долбичь - оружейник. Если слыхал хорошо, а если не слыхал, то стоит уже познакомиться с ним лично. Он тут заведует оружием в округе. Так вот, парень он предприимчивый, затеял стройку нешуточную, ну и сейчас ищет инструменты, стройматериалы и так далее, его пацаны роют все в округе как могут, но не хватает людских ресурсов, да и от зверья всем достается, мало нас осталось, опасно так на рожон лесть, да каждый день, нагрузка, срывы, бережёт он короче люд свой как может. В общем то говорят он даже оружие может подкинуть, за хорошую работу, а ты сам знаешь, оно сегодня не дешёвое, а хороший ствол так вообще на вес золота, что такое хороший ствол, убойность и точность, а это уже и экономия. Короче, дойди до них, там у него сподручный есть Гога, Георгий значит, у него для таких как ты всегда дел полно, сложно конечно все там, но работа того стоит.\n\nLорога опасная, советую отстрелять как то заражённых, что бы в врасплох не застали, собаки там же есть. В общем как выйдешь с западных ворот, иди прямо там дорога, иди на восток по нет, не сверни только на право, там пойдешь и техника стоит, ты ее для отстрела используй, патроны не жалей, и пустым туда не вздумай. Давай удачи.\n\nО чуть не забыл, тут патроны у меня есть, остались от охоты, добавлю чуток, дело то общее, на, тебе они точно пригодятся, только в голову бей всегда, так экономней.",
+          "rewards": []
+        },
+        {
+          "triggerId": "Georgiy_Bar_Orugka",
+          "actionType": "reward",
+          "dialogText": "Ну привет, знакомы будем, меня Гогой кличут, дел у нас не в проворот, если свободен спрашивай. На те воды, а то смотрю запыхался, че с собаками по дороге поссорился!))) Ладно, за то целёхонький, и дорогу теперь знаешь)",
+          "rewards": [
+            {
+              "className": "WaterBottle",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [
+        {
+          "className": "Ammo_12gaPellets",
+          "quantity": 1,
+          "setItemQuantity": 1,
+          "itemQuantity": 6,
+          "spawnOnGround": 0
+        }
+      ],
+      "objectives": [],
+      "rewards": []
     }
   ],
   "triggers": [
@@ -484,6 +576,7 @@
       "focusHeight": 1.2000000476837158,
       "focusRadius": 1,
       "questIds": [
+        "quest_hunter_3",
         "quest_hunter_1",
         "quest_hunter_2"
       ],
@@ -642,7 +735,8 @@
       "focusHeight": 1.2,
       "focusRadius": 1,
       "questIds": [
-        "Georgiy_Bar_Orugka"
+        "Georgiy_Bar_Orugka",
+        "quest_hunter_3"
       ],
       "hintText": "Георгий (Гога)",
       "spawnNpc": 1,
