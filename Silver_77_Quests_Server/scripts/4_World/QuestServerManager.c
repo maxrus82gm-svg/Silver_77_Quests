@@ -1557,18 +1557,76 @@ class QuestServerManager
         return item;
     }
 
-    static string GetRewardItemQuantityError(EntityAI item, string className, float itemQuantity)
+    static bool ApplyRewardItemQuantitySafe(EntityAI item, string className, float requestedQuantity, out string errorText, out string quantityMode, out float actualQuantity)
     {
-        if (!item)
-            return "Created item is null for " + className;
+        errorText = "";
+        quantityMode = "";
+        actualQuantity = 0;
 
-        if (itemQuantity <= 0)
-            return "itemQuantity must be > 0 for " + className;
+        if (!item)
+        {
+            errorText = "Created item is null for " + className;
+            return false;
+        }
+
+        if (requestedQuantity <= 0)
+        {
+            errorText = "itemQuantity must be > 0 for " + className;
+            return false;
+        }
+
+        Magazine magazine = Magazine.Cast(item);
+        if (magazine)
+        {
+            quantityMode = "magazine";
+            int requestedAmmoCount = Math.Round(requestedQuantity);
+            float requestedAmmoAsFloat = requestedAmmoCount;
+            if (Math.AbsFloat(requestedQuantity - requestedAmmoAsFloat) > 0.01)
+            {
+                errorText = "Magazine itemQuantity must be a whole number for " + className + " requested=" + requestedQuantity.ToString();
+                return false;
+            }
+
+            if (requestedAmmoCount <= 0)
+            {
+                errorText = "Magazine itemQuantity must round to > 0 for " + className + " requested=" + requestedQuantity.ToString();
+                return false;
+            }
+
+            int ammoMax = magazine.GetAmmoMax();
+            if (ammoMax > 0 && requestedAmmoCount > ammoMax)
+            {
+                errorText = "Magazine itemQuantity exceeds ammo max for " + className + " requested=" + requestedAmmoCount.ToString() + " max=" + ammoMax.ToString();
+                return false;
+            }
+
+            magazine.ServerSetAmmoCount(requestedAmmoCount);
+            actualQuantity = magazine.GetAmmoCount();
+            if (actualQuantity != requestedAmmoAsFloat)
+            {
+                errorText = "Magazine itemQuantity mismatch for " + className + " requested=" + requestedAmmoCount.ToString() + " actual=" + actualQuantity.ToString();
+                return false;
+            }
+
+            return true;
+        }
 
         if (!item.HasQuantity())
-            return "Item does not support quantity for " + className;
+        {
+            errorText = "Item does not support quantity for " + className;
+            return false;
+        }
 
-        return "";
+        quantityMode = "quantity";
+        item.SetQuantity(requestedQuantity);
+        actualQuantity = item.GetQuantity();
+        if (Math.AbsFloat(actualQuantity - requestedQuantity) > 0.01)
+        {
+            errorText = "Item quantity mismatch for " + className + " requested=" + requestedQuantity.ToString() + " actual=" + actualQuantity.ToString();
+            return false;
+        }
+
+        return true;
     }
 
     static QuestPendingRewardProgress CreatePendingRewardBatch(PlayerQuestProgress progress, string rewardId, int attemptId, string stage, string triggerId, string actionType, array<ref Silver77_QuestItem> rewardItems)
@@ -1680,8 +1738,10 @@ class QuestServerManager
 
                 if (itemProgress.setItemQuantity)
                 {
-                    string itemQuantityError = GetRewardItemQuantityError(createdItem, itemProgress.className, itemProgress.itemQuantity);
-                    if (itemQuantityError != "")
+                    string itemQuantityError = "";
+                    string itemQuantityMode = "";
+                    float actualItemQuantity = 0;
+                    if (!ApplyRewardItemQuantitySafe(createdItem, itemProgress.className, itemProgress.itemQuantity, itemQuantityError, itemQuantityMode, actualItemQuantity))
                     {
                         createdItem.Delete();
                         itemProgress.lastError = itemQuantityError;
@@ -1697,7 +1757,7 @@ class QuestServerManager
                         return false;
                     }
 
-                    createdItem.SetQuantity(itemProgress.itemQuantity);
+                    Print("[Silver_77_Quests] Safe reward itemQuantity applied: questId=" + progress.questId + " rewardId=" + pendingReward.rewardId + " stage=" + pendingReward.stage + " item=" + itemProgress.className + " mode=" + itemQuantityMode + " requested=" + itemProgress.itemQuantity.ToString() + " actual=" + actualItemQuantity.ToString());
                 }
 
                 itemProgress.given++;
@@ -2761,15 +2821,17 @@ class QuestServerManager
 
             if (createdItem && questItem.setItemQuantity)
             {
-                string itemQuantityError = GetRewardItemQuantityError(createdItem, questItem.className, questItem.itemQuantity);
-                if (itemQuantityError != "")
+                string itemQuantityError = "";
+                string itemQuantityMode = "";
+                float actualItemQuantity = 0;
+                if (!ApplyRewardItemQuantitySafe(createdItem, questItem.className, questItem.itemQuantity, itemQuantityError, itemQuantityMode, actualItemQuantity))
                 {
                     createdItem.Delete();
                     Print("[Silver_77_Quests] Legacy quest itemQuantity failed: item=" + questItem.className + " error=" + itemQuantityError);
                     continue;
                 }
 
-                createdItem.SetQuantity(questItem.itemQuantity);
+                Print("[Silver_77_Quests] Legacy quest itemQuantity applied: item=" + questItem.className + " mode=" + itemQuantityMode + " requested=" + questItem.itemQuantity.ToString() + " actual=" + actualItemQuantity.ToString());
             }
         }
     }
