@@ -138,10 +138,19 @@
                 <input id="backupPathInput" type="text" placeholder="C:\...\Silver_77_Quests_BackUP.json">
                 <small>При запуске через start-editor.cmd исходный файл будет копироваться сюда.</small>
               </div>
+
+              <div class="field">
+                <div class="field-label-row">
+                  <label>Server Profile Path (папка профиля сервера)</label>
+                </div>
+                <input id="profileExportPathInput" type="text" placeholder="P:\...\profiles\ServerProfile">
+                <small>Сюда отдельной кнопкой пишется файл строго с именем Silver_77_Quests.json. Папка должна уже существовать.</small>
+              </div>
             </div>
 
             <div class="toolbar-actions">
               <button id="saveConfigButton" type="button" class="button ghost">Сохранить пути</button>
+              <button id="exportProfileButton" type="button" class="button primary">Обновить server profile JSON</button>
             </div>
           </section>
 

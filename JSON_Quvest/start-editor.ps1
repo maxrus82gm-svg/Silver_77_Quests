@@ -12,6 +12,7 @@ function Get-EmbeddedDefaultConfig {
   return [pscustomobject]@{
     savePath = "Silver_77_Quests.json"
     backupPath = "Silver_77_Quests_BackUP.json"
+    profileExportPath = ""
   }
 }
 
@@ -51,6 +52,21 @@ function Get-FirstConfiguredValue([object[]]$sources, [string]$name) {
   return ""
 }
 
+function Get-FirstConfiguredValueOrExplicitEmpty([object[]]$sources, [string]$name) {
+  foreach ($source in $sources) {
+    if ($null -eq $source) {
+      continue
+    }
+
+    $property = $source.PSObject.Properties[$name]
+    if ($null -ne $property) {
+      return ([string]$property.Value).Trim()
+    }
+  }
+
+  return ""
+}
+
 function New-EditorConfig([object[]]$sources) {
   $defaults = Get-EmbeddedDefaultConfig
   $allSources = @($sources) + @($defaults)
@@ -58,6 +74,7 @@ function New-EditorConfig([object[]]$sources) {
   return [pscustomobject]@{
     savePath = Get-FirstConfiguredValue $allSources "savePath"
     backupPath = Get-FirstConfiguredValue $allSources "backupPath"
+    profileExportPath = Get-FirstConfiguredValueOrExplicitEmpty $allSources "profileExportPath"
   }
 }
 

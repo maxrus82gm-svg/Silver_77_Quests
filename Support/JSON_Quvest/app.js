@@ -2,6 +2,7 @@ const STORAGE_KEY = "quest_json_workshop_draft_v1";
 const BASE_FILE_NAME = "Silver_77_Quests.json";
 const SAVE_API_URL = "/api/save";
 const CONFIG_API_URL = "/api/config";
+const PROFILE_EXPORT_API_URL = "/api/export-profile";
 const CURRENT_JSON_API_URL = "/api/current-json";
 const DRAFT_API_URL = "/api/draft";
 const STACK_RULES_API_URL = "/api/stack-rules";
@@ -28,7 +29,8 @@ const state = {
   lastImportedAt: "",
   config: {
     savePath: "",
-    backupPath: ""
+    backupPath: "",
+    profileExportPath: ""
   },
   stackRules: [],
   stackRulesDirty: false,
@@ -96,7 +98,9 @@ function cacheElements() {
   elements.questTriggerFilterHint = document.getElementById("questTriggerFilterHint");
   elements.savePathInput = document.getElementById("savePathInput");
   elements.backupPathInput = document.getElementById("backupPathInput");
+  elements.profileExportPathInput = document.getElementById("profileExportPathInput");
   elements.saveConfigButton = document.getElementById("saveConfigButton");
+  elements.exportProfileButton = document.getElementById("exportProfileButton");
   elements.configStatusLabel = document.getElementById("configStatusLabel");
   elements.stackRuleList = document.getElementById("stackRuleList");
   elements.addStackRuleButton = document.getElementById("addStackRuleButton");
@@ -129,6 +133,9 @@ function bindEvents() {
   elements.addStackRuleButton.addEventListener("click", addStackRule);
   elements.saveConfigButton.addEventListener("click", () => {
     void handleSaveConfig();
+  });
+  elements.exportProfileButton.addEventListener("click", () => {
+    void handleProfileExport();
   });
   elements.saveStackRulesButton.addEventListener("click", () => {
     void handleSaveStackRules();
@@ -434,7 +441,8 @@ async function loadConfig(autoLoadConfiguredFile = false) {
   if (!window.location.protocol.startsWith("http")) {
     state.config = {
       savePath: "",
-      backupPath: ""
+      backupPath: "",
+      profileExportPath: ""
     };
     renderConfig();
     return;
@@ -447,10 +455,7 @@ async function loadConfig(autoLoadConfiguredFile = false) {
     }
 
     const config = await response.json();
-    state.config = {
-      savePath: String(config.savePath || ""),
-      backupPath: String(config.backupPath || "")
-    };
+    state.config = normalizeEditorConfig(config);
     renderConfig();
     renderHeader();
     if (autoLoadConfiguredFile) {
@@ -459,7 +464,8 @@ async function loadConfig(autoLoadConfiguredFile = false) {
   } catch (error) {
     state.config = {
       savePath: "",
-      backupPath: ""
+      backupPath: "",
+      profileExportPath: ""
     };
     renderConfig("warning", "Пути не загружены");
   }
@@ -529,11 +535,62 @@ async function loadConfiguredSaveFile() {
   }
 }
 
-async function handleSaveConfig() {
-  const nextConfig = {
-    savePath: String(elements.savePathInput.value || "").trim(),
-    backupPath: String(elements.backupPathInput.value || "").trim()
+function normalizeEditorConfig(config = {}) {
+  return {
+    savePath: String(config.savePath || ""),
+    backupPath: String(config.backupPath || ""),
+    profileExportPath: String(config.profileExportPath || "")
   };
+}
+
+function readConfigFromInputs() {
+  return {
+    savePath: String(elements.savePathInput.value || "").trim(),
+    backupPath: String(elements.backupPathInput.value || "").trim(),
+    profileExportPath: String(elements.profileExportPathInput.value || "").trim()
+  };
+}
+
+function isSameEditorConfig(left, right) {
+  const normalizedLeft = normalizeEditorConfig(left);
+  const normalizedRight = normalizeEditorConfig(right);
+  return normalizedLeft.savePath === normalizedRight.savePath &&
+    normalizedLeft.backupPath === normalizedRight.backupPath &&
+    normalizedLeft.profileExportPath === normalizedRight.profileExportPath;
+}
+
+async function readResponseError(response) {
+  const text = await response.text().catch(() => "");
+  if (!text) {
+    return `HTTP ${response.status}`;
+  }
+
+  try {
+    const payload = JSON.parse(text);
+    return payload.error || `HTTP ${response.status}`;
+  } catch (error) {
+    return text;
+  }
+}
+
+async function saveEditorConfig(nextConfig) {
+  const response = await fetch(CONFIG_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(nextConfig)
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return normalizeEditorConfig(await response.json());
+}
+
+async function handleSaveConfig() {
+  const nextConfig = readConfigFromInputs();
 
   if (!nextConfig.savePath || !nextConfig.backupPath) {
     updateBanner({
@@ -553,23 +610,7 @@ async function handleSaveConfig() {
   }
 
   try {
-    const response = await fetch(CONFIG_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(nextConfig)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const config = await response.json();
-    state.config = {
-      savePath: String(config.savePath || ""),
-      backupPath: String(config.backupPath || "")
-    };
+    state.config = await saveEditorConfig(nextConfig);
     renderConfig("good", "Пути сохранены");
     renderHeader();
     updateBanner({
@@ -698,26 +739,119 @@ function handleExport() {
   });
 }
 
+async function handleProfileExport() {
+  syncQuestIdsFromRoleBlocks();
+  state.issues = validateData(state.data);
+  const blockingIssues = getBlockingIssues(state.issues);
+  if (blockingIssues.length) {
+    renderHeader();
+    renderValidation();
+    scrollValidationIntoView();
+    updateBanner({
+      kind: "error",
+      text: formatBlockingIssuesBannerText(blockingIssues, "Экспорт в server profile остановлен.")
+    });
+    return;
+  }
+
+  if (!window.location.protocol.startsWith("http")) {
+    updateBanner({
+      kind: "warning",
+      text: "Экспорт в server profile доступен только при запуске редактора через start-editor.cmd."
+    });
+    return;
+  }
+
+  const nextConfig = readConfigFromInputs();
+  if (!nextConfig.savePath || !nextConfig.backupPath) {
+    renderConfig("warning", "Нужно заполнить Save Path и Backup Path");
+    updateBanner({
+      kind: "error",
+      text: "Перед экспортом в server profile нужно заполнить Save Path и Backup Path."
+    });
+    return;
+  }
+
+  if (!nextConfig.profileExportPath) {
+    renderConfig("warning", "Нужно заполнить server profile path");
+    updateBanner({
+      kind: "error",
+      text: "Укажи папку server profile. Итоговый файл будет называться Silver_77_Quests.json."
+    });
+    return;
+  }
+
+  try {
+    if (!isSameEditorConfig(nextConfig, state.config)) {
+      state.config = await saveEditorConfig(nextConfig);
+      renderConfig("good", "Пути сохранены");
+    }
+
+    const content = JSON.stringify(state.data, null, 2);
+    await postJsonSave(content);
+    const result = await postProfileJsonExport(content);
+
+    state.dirty = false;
+    await clearDraftStorage();
+    renderHeader();
+    renderConfig("good", "Server profile JSON обновлён");
+
+    const backupText = result.backupTo ? ` Backup: ${result.backupTo}` : " Backup не требовался.";
+    updateBanner({
+      kind: "success",
+      text: `Server profile JSON сохранён: ${result.savedTo}.${backupText}`
+    });
+  } catch (error) {
+    renderConfig("bad", "Ошибка экспорта в server profile");
+    updateBanner({
+      kind: "error",
+      text: `Не удалось обновить server profile JSON: ${error.message || error}`
+    });
+  }
+}
+
+async function postJsonSave(content) {
+  const response = await fetch(SAVE_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify({
+      fileName: ensureJsonExtension(state.fileName || BASE_FILE_NAME),
+      json: content
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return response.json();
+}
+
+async function postProfileJsonExport(content) {
+  const response = await fetch(PROFILE_EXPORT_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify({
+      json: content
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return response.json();
+}
+
 async function handleDirectSave() {
   const content = JSON.stringify(state.data, null, 2);
 
   try {
-    const response = await fetch(SAVE_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify({
-        fileName: ensureJsonExtension(state.fileName || BASE_FILE_NAME),
-        json: content
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const result = await response.json();
+    const result = await postJsonSave(content);
 
     state.dirty = false;
     await clearDraftStorage();
@@ -727,12 +861,14 @@ async function handleDirectSave() {
       kind: "success",
       text: `Файл сохранен поверх ${result.savedTo || ensureJsonExtension(state.fileName || BASE_FILE_NAME)}. Резервная копия создается при запуске редактора.`
     });
+    return true;
   } catch (error) {
     fallbackDownloadExport(content);
     updateBanner({
       kind: "warning",
       text: "Прямое сохранение не сработало, поэтому редактор выгрузил обычный JSON-файл для ручного сохранения."
     });
+    return false;
   }
 }
 
@@ -1225,10 +1361,6 @@ function syncQuestTriggerActions(quest) {
     getQuestRoleTriggerIds(quest, actionType).forEach((triggerId) => {
       const existingAction = existingActions.find((entry) => entry.actionType === actionType && entry.triggerId === triggerId);
       const nextAction = existingAction || createQuestTriggerAction(actionType, triggerId);
-      if (actionType === "offer" && !toText(nextAction.dialogText).trim() && toText(quest.description).trim()) {
-        nextAction.dialogText = quest.description;
-      }
-
       nextActions.push(nextAction);
     });
   });
@@ -1368,6 +1500,7 @@ function setQuestVisibleInTrigger(questId, triggerId, visible) {
       quest.rewardTriggerIds = updateSingleTriggerRoleMembership(quest.rewardTriggerIds, normalizedTriggerId, false);
       syncQuestTriggerActions(quest);
     }
+    return false;
   }
 }
 
@@ -1691,6 +1824,7 @@ function renderBanner() {
 function renderConfig(status = "neutral", text = "") {
   elements.savePathInput.value = state.config.savePath || "";
   elements.backupPathInput.value = state.config.backupPath || "";
+  elements.profileExportPathInput.value = state.config.profileExportPath || "";
 
   const labelText = text || (state.config.savePath && state.config.backupPath ? "Пути заданы" : "Пути не заданы");
   elements.configStatusLabel.textContent = labelText;
@@ -2327,7 +2461,9 @@ function renderRewardItemFields(basePath, item) {
   return `
     <div class="field-grid">
       ${textField("Class Name (код предмета)", `${basePath}.className`, item.className, "Внутреннее имя предмета из игры. Например: SteakKnife.", "className")}
-      ${numberField("Quantity (количество)", `${basePath}.quantity`, item.quantity, "Сколько предметов выдать или наградить.", 1, "quantity")}
+      ${numberField("Quantity (количество)", `${basePath}.quantity`, item.quantity, "Сколько физических предметов / стаков создать.", 1, "quantity")}
+      ${toggleField("Set Item Quantity (задать внутреннее количество)", `${basePath}.setItemQuantity`, item.setItemQuantity, "Если включено, сервер после создания предмета выставит ему внутреннее quantity.", "setItemQuantity")}
+      ${numberField("Item Quantity (внутреннее количество)", `${basePath}.itemQuantity`, item.itemQuantity, "Какое внутреннее количество поставить каждому созданному физическому предмету.", 1, "itemQuantity")}
       ${toggleField("Spawn On Ground (положить на землю)", `${basePath}.spawnOnGround`, item.spawnOnGround, "Если включено, предмет появится рядом на земле, а не сразу у игрока.", "spawnOnGround")}
     </div>
   `;
@@ -2399,6 +2535,13 @@ function validateInventoryBlock(issues, questId, blockName, item, itemIndex) {
   if (!Number.isFinite(Number(item.quantity))) {
     issues.push(issue("error", `Не число в ${blockName}.quantity`, `Квест "${questId}" содержит некорректное количество в ${blockName} #${itemIndex + 1}.`));
   }
+
+  if (blockName !== "objectives" && Number(item.setItemQuantity)) {
+    const itemQuantity = Number(item.itemQuantity);
+    if (!Number.isFinite(itemQuantity) || itemQuantity <= 0) {
+      issues.push(issue("error", `Некорректное ${blockName}.itemQuantity`, `Квест "${questId}" содержит внутреннее количество <= 0 в ${blockName} #${itemIndex + 1} при включённом setItemQuantity.`));
+    }
+  }
 }
 
 function issue(level, title, message) {
@@ -2469,6 +2612,8 @@ function normalizeRewardItem(raw) {
   return {
     className: toText(item.className),
     quantity: parseNumber(item.quantity, 0),
+    setItemQuantity: toFlag(item.setItemQuantity, 0),
+    itemQuantity: parseNumber(item.itemQuantity, 0),
     spawnOnGround: toFlag(item.spawnOnGround, 0)
   };
 }
@@ -2591,6 +2736,8 @@ function createRewardItem() {
   return {
     className: "",
     quantity: 1,
+    setItemQuantity: 0,
+    itemQuantity: 0,
     spawnOnGround: 0
   };
 }
@@ -2776,6 +2923,7 @@ async function saveDraftToProjectFile(payload) {
     });
   } catch (error) {
     console.warn("Не удалось сохранить черновик в файл проекта", error);
+    return false;
   }
 }
 
@@ -2855,6 +3003,8 @@ function attemptKnownRepairs(text) {
     "cooldownSeconds",
     "hideUntilRequirementsComplete",
     "spawnOnGround",
+    "setItemQuantity",
+    "itemQuantity",
     "removeOnComplete",
     "useItemQuantity",
     "allowPartialTurnIn",
@@ -2990,8 +3140,8 @@ function getQuestActionSectionMeta(quest, actionType) {
       title: "Взятие квеста",
       description: "Отдельная стартовая реплика NPC, который выдаёт этот квест.",
       emptyText: "Пока нет ни одного trigger в роли offer.",
-      dialogLabel: "Offer Dialog Text (что скажет NPC при взятии)",
-      dialogHint: "Например: возьми предмет и отнеси его нужному человеку.",
+      dialogLabel: "Offer Dialog Text (triggerActions[].dialogText / что скажет NPC при взятии)",
+      dialogHint: "Это NPC-реплика из triggerActions[].dialogText, а не отдельное поле dialogue и не quest.description.",
       rewardHint: "Предметы при старте задаются ниже через Give Items."
     };
   }
@@ -3001,8 +3151,8 @@ function getQuestActionSectionMeta(quest, actionType) {
       title: "Сдача / передача",
       description: "Отдельные реплики и, при необходимости, локальная награда у NPC, который принимает предметы или завершает этап.",
       emptyText: "Пока нет ни одного trigger в роли completion.",
-      dialogLabel: "Completion Dialog Text (что скажет NPC при сдаче)",
-      dialogHint: "Например: спасибо, передай привет рыбаку. Если этот же NPC должен дать награду, включи ему роль Reward ниже.",
+      dialogLabel: "Completion Dialog Text (triggerActions[].dialogText / что скажет NPC при сдаче)",
+      dialogHint: "Это NPC-реплика из triggerActions[].dialogText. Если этот же NPC должен дать награду, включи ему роль Reward ниже.",
       rewardHint: "Необязательно: здесь можно выдать предметы за этот этап передачи. Финальное закрытие квеста всё равно делает Reward-блок."
     };
   }
@@ -3011,8 +3161,8 @@ function getQuestActionSectionMeta(quest, actionType) {
     title: "Выдача награды",
     description: "Эти блоки срабатывают после выполненной передачи или сдачи. Награду можно выдать у любого NPC, которому включена роль Reward.",
     emptyText: "Пока нет ни одного trigger в роли reward.",
-    dialogLabel: "Reward Dialog Text (что скажет NPC перед наградой)",
-    dialogHint: "Например: отличная работа, вот твоя награда.",
+    dialogLabel: "Reward Dialog Text (triggerActions[].dialogText / что скажет NPC перед наградой)",
+    dialogHint: "Это NPC-реплика из triggerActions[].dialogText, а не отдельное поле dialogue.",
     rewardHint: "Если локальный список наград пуст, сюда подставятся общие Rewards квеста."
   };
 }
@@ -3286,7 +3436,7 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
   const basePath = `quests.${questIndex}`;
   const actionCard = findQuestActionCard(quest, "offer", triggerId);
   const actionBasePath = actionCard ? `quests.${questIndex}.triggerActions.${actionCard.actionIndex}` : "";
-  const offerDialog = actionCard ? actionCard.action.dialogText : quest.description;
+  const offerDialog = actionCard ? actionCard.action.dialogText : "";
   const hasCompletionStages = normalizeQuestIdArray(quest.completionTriggerIds).length > 0;
   const nextStepText = hasCompletionStages
     ? "Следующий шаг задаётся блоком с галочкой Completion. Этот Offer-блок только выдаёт старт и задачу."
@@ -3305,7 +3455,8 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
         <div class="muted">Эти настройки срабатывают у NPC, где игрок берёт квест: стартовый диалог, предметы на выдачу и задача игроку.</div>
         ${actionBasePath
           ? textareaField("Offer Dialog Text (что скажет NPC при взятии)", `${actionBasePath}.dialogText`, offerDialog, "Например: возьми предмет и отнеси его нужному человеку.", "dialogText")
-          : textareaField("Offer Dialog Text (legacy fallback)", `${basePath}.description`, offerDialog, "Блок triggerActions ещё не создан. Переключи роль Offer заново, если такое увидишь.", "description")}
+          : `<div class="empty-note">Offer dialog живёт в <code>triggerActions[].dialogText</code>. Здесь нет отдельного поля <code>dialogue</code>, а <code>quest.description</code> редактируется выше как описание квеста для DescriptionPanel.</div>`}
+        <div class="muted">DescriptionPanel читает <code>quest.description</code> и сводку по целям/наградам. DialogPanel читает NPC-реплику из <code>triggerActions[].dialogText</code>.</div>
         <div class="trigger-summary-grid">
           <div class="trigger-summary-item">
             <strong>Что выдать при старте</strong>
@@ -3325,7 +3476,7 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
           ${objectArrayEditor(`${basePath}.giveItems`, quest.giveItems, "reward-item", renderRewardItemFields)}
         </div>
         <div class="stack">
-          <h4 class="inline-section-title">Objectives (что нужно передать / принести)</h4>
+          <h4 class="inline-section-title">Objectives (quests[].objectives[] / что нужно передать или принести, не отдельное requiredItems)</h4>
           ${objectArrayEditor(`${basePath}.objectives`, quest.objectives, "objective-item", renderObjectiveFields)}
         </div>
       </div>
@@ -3363,6 +3514,7 @@ function renderQuestTriggerActionDetail(quest, questIndex, actionType, triggerId
       </div>
       <div class="stack">
         ${textareaField(meta.dialogLabel, `${basePath}.dialogText`, action.dialogText, meta.dialogHint, "dialogText")}
+        <div class="muted">DialogPanel в моде показывает именно это поле: <code>triggerActions[].dialogText</code>.</div>
         ${showRewardEditor
           ? `
             <div class="stack">
@@ -3560,7 +3712,9 @@ function renderQuestEditor(quest, index) {
             <div class="field-grid single">
               ${textField("ID (идентификатор квеста)", `${base}.id`, quest.id, "Уникальный служебный код квеста. Не должен повторяться.", "id")}
               ${textField("Name (название для игрока)", `${base}.name`, quest.name, "Человеческое название, которое проще читать в редакторе и логике.", "name")}
+              ${textareaField("Quest Description (quest.description / текст для DescriptionPanel)", `${base}.description`, quest.description, "Это описание квеста для DescriptionPanel: что это за квест, что делать, что получит игрок. Это не NPC dialog.", "description")}
               <div class="muted">Стартовый диалог, предметы при взятии, цели и награды теперь редактируются ниже в <strong>NPC Flow</strong>. Какая настройка откроется, определяет галочка роли внутри блока NPC.</div>
+              <div class="muted">DescriptionPanel = <code>quest.description</code> + status/progress/objectives/rewards. DialogPanel = <code>triggerActions[].dialogText</code>. Отдельных JSON-полей <code>requiredItems</code> и <code>dialogue</code> в контракте нет.</div>
               <div class="muted">Список и порядок квестов у NPC задаются в <code>trigger.questIds</code>. Видимость в игре считается автоматически: offer до взятия, completion для активных промежуточных этапов, reward когда все Completion выполнены или Completion вообще нет.</div>
             </div>
           `
@@ -3591,6 +3745,16 @@ function renderQuestEditor(quest, index) {
       ${sectionCard(
         "NPC Flow (роли и настройки по trigger / NPC)",
         renderQuestTriggerFlowSection(quest, index)
+      )}
+
+      ${sectionCard(
+        "Root Rewards (общие fallback rewards)",
+        `
+          <div class="stack">
+            <div class="muted">Общий список <code>quests[].rewards[]</code>. Reward-блоки с пустым локальным списком могут использовать эти награды как fallback.</div>
+            ${objectArrayEditor(`${base}.rewards`, quest.rewards, "reward-item", renderRewardItemFields)}
+          </div>
+        `
       )}
     </div>
   `;

@@ -15,6 +15,7 @@ function Get-EmbeddedDefaultConfig {
   return [pscustomobject]@{
     savePath = "Silver_77_Quests.json"
     backupPath = "Silver_77_Quests_BackUP.json"
+    profileExportPath = ""
   }
 }
 
@@ -76,6 +77,21 @@ function Get-FirstConfiguredValue([object[]]$sources, [string]$name) {
   return ""
 }
 
+function Get-FirstConfiguredValueOrExplicitEmpty([object[]]$sources, [string]$name) {
+  foreach ($source in $sources) {
+    if ($null -eq $source) {
+      continue
+    }
+
+    $property = $source.PSObject.Properties[$name]
+    if ($null -ne $property) {
+      return ([string]$property.Value).Trim()
+    }
+  }
+
+  return ""
+}
+
 function New-EditorConfig([object[]]$sources) {
   $defaults = Get-EmbeddedDefaultConfig
   $allSources = @($sources) + @($defaults)
@@ -83,6 +99,7 @@ function New-EditorConfig([object[]]$sources) {
   return [pscustomobject]@{
     savePath = Get-FirstConfiguredValue $allSources "savePath"
     backupPath = Get-FirstConfiguredValue $allSources "backupPath"
+    profileExportPath = Get-FirstConfiguredValueOrExplicitEmpty $allSources "profileExportPath"
   }
 }
 
@@ -110,7 +127,8 @@ function Remove-LocalEditorConfig {
 
 function Test-SameConfig($left, $right) {
   return (Get-ConfigValue $left "savePath") -eq (Get-ConfigValue $right "savePath") -and
-    (Get-ConfigValue $left "backupPath") -eq (Get-ConfigValue $right "backupPath")
+    (Get-ConfigValue $left "backupPath") -eq (Get-ConfigValue $right "backupPath") -and
+    (Get-ConfigValue $left "profileExportPath") -eq (Get-ConfigValue $right "profileExportPath")
 }
 
 function Resolve-ConfigPath([string]$path, [string]$defaultFileName = "") {
@@ -140,6 +158,40 @@ function Resolve-ConfigPath([string]$path, [string]$defaultFileName = "") {
   }
 
   return $resolvedPath
+}
+
+function Resolve-ProfileExportTargetPath([string]$profileExportPath) {
+  $value = [string]$profileExportPath
+  if ([string]::IsNullOrWhiteSpace($value)) {
+    return ""
+  }
+
+  if ([System.IO.Path]::IsPathRooted($value)) {
+    $resolvedPath = $value
+  } else {
+    $resolvedPath = Join-Path $scriptDir $value
+  }
+
+  $resolvedPath = [System.IO.Path]::GetFullPath($resolvedPath)
+  $looksLikeDirectory = $resolvedPath.EndsWith([System.IO.Path]::DirectorySeparatorChar) -or
+    $resolvedPath.EndsWith([System.IO.Path]::AltDirectorySeparatorChar) -or
+    (Test-Path -LiteralPath $resolvedPath -PathType Container)
+
+  if ($looksLikeDirectory) {
+    return Join-Path $resolvedPath "Silver_77_Quests.json"
+  }
+
+  $fileName = [System.IO.Path]::GetFileName($resolvedPath)
+  if ([string]::Equals($fileName, "Silver_77_Quests.json", [System.StringComparison]::OrdinalIgnoreCase)) {
+    return $resolvedPath
+  }
+
+  $extension = [System.IO.Path]::GetExtension($resolvedPath)
+  if (-not [string]::IsNullOrWhiteSpace($extension)) {
+    throw "profileExportPath must be an existing folder or Silver_77_Quests.json"
+  }
+
+  return Join-Path $resolvedPath "Silver_77_Quests.json"
 }
 
 function Get-DefaultStackRules {
@@ -370,6 +422,62 @@ while ($listener.IsListening) {
         savedTo = $targetPath
       } | ConvertTo-Json -Depth 4
       Write-TextResponse $response 200 "application/json; charset=utf-8" $saveResult
+      continue
+    }
+
+    if ($request.HttpMethod -eq "POST" -and $path -eq "/api/export-profile") {
+      $reader = [System.IO.StreamReader]::new($request.InputStream, $request.ContentEncoding)
+      $rawBody = $reader.ReadToEnd()
+      $reader.Dispose()
+
+      $payload = $rawBody | ConvertFrom-Json
+      $jsonText = [string]$payload.json
+      if ([string]::IsNullOrWhiteSpace($jsonText)) {
+        Write-TextResponse $response 400 "application/json; charset=utf-8" '{"ok":false,"error":"json is required"}'
+        continue
+      }
+
+      try {
+        [void]($jsonText | ConvertFrom-Json)
+      } catch {
+        Write-TextResponse $response 400 "application/json; charset=utf-8" '{"ok":false,"error":"json is invalid"}'
+        continue
+      }
+
+      $config = Get-EditorConfig
+      $targetPath = Resolve-ProfileExportTargetPath ([string]$config.profileExportPath)
+      if ([string]::IsNullOrWhiteSpace($targetPath)) {
+        Write-TextResponse $response 400 "application/json; charset=utf-8" '{"ok":false,"error":"profileExportPath is not configured"}'
+        continue
+      }
+
+      $targetDirectory = Split-Path -Parent $targetPath
+      if ([string]::IsNullOrWhiteSpace($targetDirectory) -or -not (Test-Path -LiteralPath $targetDirectory -PathType Container)) {
+        Write-TextResponse $response 400 "application/json; charset=utf-8" '{"ok":false,"error":"profileExportPath folder does not exist"}'
+        continue
+      }
+
+      $targetFileName = [System.IO.Path]::GetFileName($targetPath)
+      if (-not [string]::Equals($targetFileName, "Silver_77_Quests.json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        Write-TextResponse $response 400 "application/json; charset=utf-8" '{"ok":false,"error":"profile export file must be Silver_77_Quests.json"}'
+        continue
+      }
+
+      $backupPath = ""
+      if (Test-Path -LiteralPath $targetPath -PathType Leaf) {
+        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        $backupPath = Join-Path $targetDirectory "Silver_77_Quests_Profile_BackUP_$timestamp.json"
+        Copy-Item -LiteralPath $targetPath -Destination $backupPath -Force
+      }
+
+      [System.IO.File]::WriteAllText($targetPath, $jsonText, [System.Text.UTF8Encoding]::new($false))
+
+      $exportResult = @{
+        ok = $true
+        savedTo = $targetPath
+        backupTo = $backupPath
+      } | ConvertTo-Json -Depth 4
+      Write-TextResponse $response 200 "application/json; charset=utf-8" $exportResult
       continue
     }
 

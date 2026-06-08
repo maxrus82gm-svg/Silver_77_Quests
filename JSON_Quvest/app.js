@@ -2,6 +2,7 @@ const STORAGE_KEY = "quest_json_workshop_draft_v1";
 const BASE_FILE_NAME = "Silver_77_Quests.json";
 const SAVE_API_URL = "/api/save";
 const CONFIG_API_URL = "/api/config";
+const PROFILE_EXPORT_API_URL = "/api/export-profile";
 const CURRENT_JSON_API_URL = "/api/current-json";
 const DRAFT_API_URL = "/api/draft";
 const STACK_RULES_API_URL = "/api/stack-rules";
@@ -28,7 +29,8 @@ const state = {
   lastImportedAt: "",
   config: {
     savePath: "",
-    backupPath: ""
+    backupPath: "",
+    profileExportPath: ""
   },
   stackRules: [],
   stackRulesDirty: false,
@@ -96,7 +98,9 @@ function cacheElements() {
   elements.questTriggerFilterHint = document.getElementById("questTriggerFilterHint");
   elements.savePathInput = document.getElementById("savePathInput");
   elements.backupPathInput = document.getElementById("backupPathInput");
+  elements.profileExportPathInput = document.getElementById("profileExportPathInput");
   elements.saveConfigButton = document.getElementById("saveConfigButton");
+  elements.exportProfileButton = document.getElementById("exportProfileButton");
   elements.configStatusLabel = document.getElementById("configStatusLabel");
   elements.stackRuleList = document.getElementById("stackRuleList");
   elements.addStackRuleButton = document.getElementById("addStackRuleButton");
@@ -129,6 +133,9 @@ function bindEvents() {
   elements.addStackRuleButton.addEventListener("click", addStackRule);
   elements.saveConfigButton.addEventListener("click", () => {
     void handleSaveConfig();
+  });
+  elements.exportProfileButton.addEventListener("click", () => {
+    void handleProfileExport();
   });
   elements.saveStackRulesButton.addEventListener("click", () => {
     void handleSaveStackRules();
@@ -434,7 +441,8 @@ async function loadConfig(autoLoadConfiguredFile = false) {
   if (!window.location.protocol.startsWith("http")) {
     state.config = {
       savePath: "",
-      backupPath: ""
+      backupPath: "",
+      profileExportPath: ""
     };
     renderConfig();
     return;
@@ -447,10 +455,7 @@ async function loadConfig(autoLoadConfiguredFile = false) {
     }
 
     const config = await response.json();
-    state.config = {
-      savePath: String(config.savePath || ""),
-      backupPath: String(config.backupPath || "")
-    };
+    state.config = normalizeEditorConfig(config);
     renderConfig();
     renderHeader();
     if (autoLoadConfiguredFile) {
@@ -459,7 +464,8 @@ async function loadConfig(autoLoadConfiguredFile = false) {
   } catch (error) {
     state.config = {
       savePath: "",
-      backupPath: ""
+      backupPath: "",
+      profileExportPath: ""
     };
     renderConfig("warning", "Пути не загружены");
   }
@@ -529,11 +535,62 @@ async function loadConfiguredSaveFile() {
   }
 }
 
-async function handleSaveConfig() {
-  const nextConfig = {
-    savePath: String(elements.savePathInput.value || "").trim(),
-    backupPath: String(elements.backupPathInput.value || "").trim()
+function normalizeEditorConfig(config = {}) {
+  return {
+    savePath: String(config.savePath || ""),
+    backupPath: String(config.backupPath || ""),
+    profileExportPath: String(config.profileExportPath || "")
   };
+}
+
+function readConfigFromInputs() {
+  return {
+    savePath: String(elements.savePathInput.value || "").trim(),
+    backupPath: String(elements.backupPathInput.value || "").trim(),
+    profileExportPath: String(elements.profileExportPathInput.value || "").trim()
+  };
+}
+
+function isSameEditorConfig(left, right) {
+  const normalizedLeft = normalizeEditorConfig(left);
+  const normalizedRight = normalizeEditorConfig(right);
+  return normalizedLeft.savePath === normalizedRight.savePath &&
+    normalizedLeft.backupPath === normalizedRight.backupPath &&
+    normalizedLeft.profileExportPath === normalizedRight.profileExportPath;
+}
+
+async function readResponseError(response) {
+  const text = await response.text().catch(() => "");
+  if (!text) {
+    return `HTTP ${response.status}`;
+  }
+
+  try {
+    const payload = JSON.parse(text);
+    return payload.error || `HTTP ${response.status}`;
+  } catch (error) {
+    return text;
+  }
+}
+
+async function saveEditorConfig(nextConfig) {
+  const response = await fetch(CONFIG_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(nextConfig)
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return normalizeEditorConfig(await response.json());
+}
+
+async function handleSaveConfig() {
+  const nextConfig = readConfigFromInputs();
 
   if (!nextConfig.savePath || !nextConfig.backupPath) {
     updateBanner({
@@ -553,23 +610,7 @@ async function handleSaveConfig() {
   }
 
   try {
-    const response = await fetch(CONFIG_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(nextConfig)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const config = await response.json();
-    state.config = {
-      savePath: String(config.savePath || ""),
-      backupPath: String(config.backupPath || "")
-    };
+    state.config = await saveEditorConfig(nextConfig);
     renderConfig("good", "Пути сохранены");
     renderHeader();
     updateBanner({
@@ -698,26 +739,119 @@ function handleExport() {
   });
 }
 
+async function handleProfileExport() {
+  syncQuestIdsFromRoleBlocks();
+  state.issues = validateData(state.data);
+  const blockingIssues = getBlockingIssues(state.issues);
+  if (blockingIssues.length) {
+    renderHeader();
+    renderValidation();
+    scrollValidationIntoView();
+    updateBanner({
+      kind: "error",
+      text: formatBlockingIssuesBannerText(blockingIssues, "Экспорт в server profile остановлен.")
+    });
+    return;
+  }
+
+  if (!window.location.protocol.startsWith("http")) {
+    updateBanner({
+      kind: "warning",
+      text: "Экспорт в server profile доступен только при запуске редактора через start-editor.cmd."
+    });
+    return;
+  }
+
+  const nextConfig = readConfigFromInputs();
+  if (!nextConfig.savePath || !nextConfig.backupPath) {
+    renderConfig("warning", "Нужно заполнить Save Path и Backup Path");
+    updateBanner({
+      kind: "error",
+      text: "Перед экспортом в server profile нужно заполнить Save Path и Backup Path."
+    });
+    return;
+  }
+
+  if (!nextConfig.profileExportPath) {
+    renderConfig("warning", "Нужно заполнить server profile path");
+    updateBanner({
+      kind: "error",
+      text: "Укажи папку server profile. Итоговый файл будет называться Silver_77_Quests.json."
+    });
+    return;
+  }
+
+  try {
+    if (!isSameEditorConfig(nextConfig, state.config)) {
+      state.config = await saveEditorConfig(nextConfig);
+      renderConfig("good", "Пути сохранены");
+    }
+
+    const content = JSON.stringify(state.data, null, 2);
+    await postJsonSave(content);
+    const result = await postProfileJsonExport(content);
+
+    state.dirty = false;
+    await clearDraftStorage();
+    renderHeader();
+    renderConfig("good", "Server profile JSON обновлён");
+
+    const backupText = result.backupTo ? ` Backup: ${result.backupTo}` : " Backup не требовался.";
+    updateBanner({
+      kind: "success",
+      text: `Server profile JSON сохранён: ${result.savedTo}.${backupText}`
+    });
+  } catch (error) {
+    renderConfig("bad", "Ошибка экспорта в server profile");
+    updateBanner({
+      kind: "error",
+      text: `Не удалось обновить server profile JSON: ${error.message || error}`
+    });
+  }
+}
+
+async function postJsonSave(content) {
+  const response = await fetch(SAVE_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify({
+      fileName: ensureJsonExtension(state.fileName || BASE_FILE_NAME),
+      json: content
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return response.json();
+}
+
+async function postProfileJsonExport(content) {
+  const response = await fetch(PROFILE_EXPORT_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify({
+      json: content
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return response.json();
+}
+
 async function handleDirectSave() {
   const content = JSON.stringify(state.data, null, 2);
 
   try {
-    const response = await fetch(SAVE_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify({
-        fileName: ensureJsonExtension(state.fileName || BASE_FILE_NAME),
-        json: content
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const result = await response.json();
+    const result = await postJsonSave(content);
 
     state.dirty = false;
     await clearDraftStorage();
@@ -727,12 +861,14 @@ async function handleDirectSave() {
       kind: "success",
       text: `Файл сохранен поверх ${result.savedTo || ensureJsonExtension(state.fileName || BASE_FILE_NAME)}. Резервная копия создается при запуске редактора.`
     });
+    return true;
   } catch (error) {
     fallbackDownloadExport(content);
     updateBanner({
       kind: "warning",
       text: "Прямое сохранение не сработало, поэтому редактор выгрузил обычный JSON-файл для ручного сохранения."
     });
+    return false;
   }
 }
 
@@ -1364,6 +1500,7 @@ function setQuestVisibleInTrigger(questId, triggerId, visible) {
       quest.rewardTriggerIds = updateSingleTriggerRoleMembership(quest.rewardTriggerIds, normalizedTriggerId, false);
       syncQuestTriggerActions(quest);
     }
+    return false;
   }
 }
 
@@ -1687,6 +1824,7 @@ function renderBanner() {
 function renderConfig(status = "neutral", text = "") {
   elements.savePathInput.value = state.config.savePath || "";
   elements.backupPathInput.value = state.config.backupPath || "";
+  elements.profileExportPathInput.value = state.config.profileExportPath || "";
 
   const labelText = text || (state.config.savePath && state.config.backupPath ? "Пути заданы" : "Пути не заданы");
   elements.configStatusLabel.textContent = labelText;
@@ -2785,6 +2923,7 @@ async function saveDraftToProjectFile(payload) {
     });
   } catch (error) {
     console.warn("Не удалось сохранить черновик в файл проекта", error);
+    return false;
   }
 }
 
