@@ -4,6 +4,10 @@
                   {
                       "className":  "LeatherSewingKit",
                       "descriptionRu":  "Набор для ремонта кожи"
+                  },
+                  {
+                      "className":  "",
+                      "descriptionRu":  ""
                   }
               ]
 }

@@ -516,7 +516,7 @@
     {
       "id": "quest_hunter_3",
       "name": "Знакомство с нужными людьми.",
-      "description": "Игорь оружейник, который в баре на востоке от хутора Ольши, затеял стройку, надо к нему дойти.",
+      "description": "Игорь оружейник, который в баре на востоке от хутора Ольши, затеял стройку, надо к нему пойти.",
       "repeatable": 0,
       "cooldownSeconds": 0,
       "requiresPrevious": "",
@@ -561,6 +561,64 @@
         }
       ],
       "objectives": [],
+      "rewards": []
+    },
+    {
+      "id": "Georgiy_Bar_Orugka_1",
+      "name": "Краски жизни",
+      "description": "Поставка зеленой краски 12 штук.",
+      "repeatable": 0,
+      "cooldownSeconds": 0,
+      "requiresPrevious": "Georgiy_Bar_Orugka",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "Georgiy_Bar_Orugka"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "Georgiy_Bar_Orugka"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "Georgiy_Bar_Orugka",
+          "actionType": "offer",
+          "dialogText": "Здорова! Спасибо за тушёнку! Просто обалденная была. Короче дело такое, нам краска нужна, много, как минимум 12 баллонов. Как принесешь, патронов отсыплем, и ремкомплект для кожи. Главное потом карманы шире держи, 12 пачек все таки Игорь одобрил, и один набор для ремонта кожи.",
+          "rewards": []
+        },
+        {
+          "triggerId": "Georgiy_Bar_Orugka",
+          "actionType": "reward",
+          "dialogText": "Ооо, отлично, теперь спецзаказ будет выполнен да еще и останется. Спасибо! На держи.",
+          "rewards": [
+            {
+              "className": "LeatherSewingKit",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 12,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [],
+      "objectives": [
+        {
+          "type": "item",
+          "className": "Spraycan_Green",
+          "quantity": 12,
+          "removeOnComplete": 1,
+          "useItemQuantity": 0,
+          "allowPartialTurnIn": 1
+        }
+      ],
       "rewards": []
     }
   ],
@@ -735,8 +793,9 @@
       "focusHeight": 1.2,
       "focusRadius": 1,
       "questIds": [
-        "Georgiy_Bar_Orugka",
-        "quest_hunter_3"
+        "Georgiy_Bar_Orugka_1",
+        "quest_hunter_3",
+        "Georgiy_Bar_Orugka"
       ],
       "hintText": "Георгий (Гога)",
       "spawnNpc": 1,
