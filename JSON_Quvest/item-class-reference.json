@@ -6,8 +6,24 @@
                       "descriptionRu":  "Набор для ремонта кожи"
                   },
                   {
-                      "className":  "",
-                      "descriptionRu":  ""
+                      "className":  "Battery9V",
+                      "descriptionRu":  "9 вольтовая батарейка"
+                  },
+                  {
+                      "className":  "KKCR_Closed_Bank_Stew",
+                      "descriptionRu":  "мясная консерва"
+                  },
+                  {
+                      "className":  "SewingKit",
+                      "descriptionRu":  "набор для шитья"
+                  },
+                  {
+                      "className":  "Whetstone",
+                      "descriptionRu":  "точильный камень"
+                  },
+                  {
+                      "className":  "Ammo_12gaPellets",
+                      "descriptionRu":  "12к патроны (красные)"
                   }
               ]
 }

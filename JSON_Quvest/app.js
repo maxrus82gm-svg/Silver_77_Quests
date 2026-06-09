@@ -52,7 +52,6 @@ const state = {
 const elements = {};
 let draftSaveTimer = null;
 let stackRulesSaveTimer = null;
-let itemReferenceSaveTimer = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   void init();
@@ -722,7 +721,6 @@ async function handleSaveStackRules() {
 }
 
 async function handleSaveItemReference() {
-  cancelScheduledItemReferenceSave();
   await saveItemReferenceNow(true);
 }
 
@@ -1989,7 +1987,6 @@ function touchStackRules() {
 function touchItemReference() {
   state.itemReferenceDirty = true;
   renderItemReferenceStatus("warn", "Есть изменения");
-  scheduleItemReferenceSave();
 }
 
 function renderAll() {
@@ -3150,19 +3147,6 @@ function scheduleStackRulesSave() {
 function cancelScheduledStackRulesSave() {
   window.clearTimeout(stackRulesSaveTimer);
   stackRulesSaveTimer = null;
-}
-
-function scheduleItemReferenceSave() {
-  cancelScheduledItemReferenceSave();
-  itemReferenceSaveTimer = window.setTimeout(() => {
-    itemReferenceSaveTimer = null;
-    void saveItemReferenceNow(false);
-  }, 320);
-}
-
-function cancelScheduledItemReferenceSave() {
-  window.clearTimeout(itemReferenceSaveTimer);
-  itemReferenceSaveTimer = null;
 }
 
 function saveDraftNow() {
