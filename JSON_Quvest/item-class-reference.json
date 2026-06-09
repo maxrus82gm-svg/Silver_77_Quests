@@ -1,0 +1,9 @@
+{
+    "version":  1,
+    "items":  [
+                  {
+                      "className":  "LeatherSewingKit",
+                      "descriptionRu":  "Набор для ремонта кожи"
+                  }
+              ]
+}

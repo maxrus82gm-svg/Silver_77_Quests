@@ -178,6 +178,43 @@
             </section>
           </div>
         </section>
+
+        <aside class="item-reference-panel">
+          <section class="inspector-card item-reference-card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Справочник</p>
+                <h2>Предметы</h2>
+              </div>
+              <span id="itemReferenceStatusLabel" class="badge neutral">Не загружено</span>
+            </div>
+
+            <div class="item-reference-tools">
+              <label class="search-wrap item-reference-search">
+                <span>Поиск</span>
+                <input id="itemReferenceSearchInput" type="search" placeholder="className или описание">
+              </label>
+
+              <div class="toolbar-actions item-reference-actions">
+                <button id="addItemReferenceButton" type="button" class="button small">+ Строка</button>
+                <button id="saveItemReferenceButton" type="button" class="button ghost small">Сохранить</button>
+              </div>
+            </div>
+
+            <div class="item-reference-table-wrap">
+              <table class="item-reference-table">
+                <thead>
+                  <tr>
+                    <th>className</th>
+                    <th>Описание на русском</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="itemReferenceTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </aside>
       </main>
     </div>
 

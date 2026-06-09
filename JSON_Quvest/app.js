@@ -6,7 +6,9 @@ const PROFILE_EXPORT_API_URL = "/api/export-profile";
 const CURRENT_JSON_API_URL = "/api/current-json";
 const DRAFT_API_URL = "/api/draft";
 const STACK_RULES_API_URL = "/api/stack-rules";
+const ITEM_CLASS_REFERENCE_API_URL = "/api/item-class-reference";
 const STACK_RULES_VERSION = 1;
+const ITEM_CLASS_REFERENCE_VERSION = 1;
 
 const DEFAULT_DATA = {
   version: 3,
@@ -37,12 +39,20 @@ const state = {
   stackRulesStatus: {
     kind: "neutral",
     text: "Не загружено"
+  },
+  itemReference: [],
+  itemReferenceDirty: false,
+  itemReferenceFilter: "",
+  itemReferenceStatus: {
+    kind: "neutral",
+    text: "Не загружено"
   }
 };
 
 const elements = {};
 let draftSaveTimer = null;
 let stackRulesSaveTimer = null;
+let itemReferenceSaveTimer = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   void init();
@@ -79,6 +89,7 @@ async function init() {
   renderAll();
   void loadConfig(!restored);
   void loadStackRules();
+  void loadItemReference();
 }
 
 function cacheElements() {
@@ -106,6 +117,11 @@ function cacheElements() {
   elements.addStackRuleButton = document.getElementById("addStackRuleButton");
   elements.saveStackRulesButton = document.getElementById("saveStackRulesButton");
   elements.stackRulesStatusLabel = document.getElementById("stackRulesStatusLabel");
+  elements.itemReferenceSearchInput = document.getElementById("itemReferenceSearchInput");
+  elements.itemReferenceTableBody = document.getElementById("itemReferenceTableBody");
+  elements.addItemReferenceButton = document.getElementById("addItemReferenceButton");
+  elements.saveItemReferenceButton = document.getElementById("saveItemReferenceButton");
+  elements.itemReferenceStatusLabel = document.getElementById("itemReferenceStatusLabel");
 }
 
 function bindEvents() {
@@ -131,6 +147,7 @@ function bindEvents() {
   document.getElementById("addQuestButton").addEventListener("click", addQuest);
   document.getElementById("addTriggerButton").addEventListener("click", addTrigger);
   elements.addStackRuleButton.addEventListener("click", addStackRule);
+  elements.addItemReferenceButton.addEventListener("click", addItemReferenceRow);
   elements.saveConfigButton.addEventListener("click", () => {
     void handleSaveConfig();
   });
@@ -140,11 +157,19 @@ function bindEvents() {
   elements.saveStackRulesButton.addEventListener("click", () => {
     void handleSaveStackRules();
   });
+  elements.saveItemReferenceButton.addEventListener("click", () => {
+    void handleSaveItemReference();
+  });
 
   elements.searchInput.addEventListener("input", (event) => {
     state.filter = String(event.target.value || "").trim().toLowerCase();
     renderSidebar();
     renderStackRules();
+  });
+
+  elements.itemReferenceSearchInput.addEventListener("input", (event) => {
+    state.itemReferenceFilter = String(event.target.value || "").trim().toLowerCase();
+    renderItemReference();
   });
 
   elements.questTriggerFilter.addEventListener("change", handleQuestTriggerFilterChange);
@@ -155,6 +180,8 @@ function bindEvents() {
   elements.triggerList.addEventListener("click", handleSidebarClick);
   elements.stackRuleList.addEventListener("input", handleStackRuleInput);
   elements.stackRuleList.addEventListener("click", handleStackRuleClick);
+  elements.itemReferenceTableBody.addEventListener("input", handleItemReferenceInput);
+  elements.itemReferenceTableBody.addEventListener("click", handleItemReferenceClick);
 
   elements.editorPane.addEventListener("input", handleEditorInput);
   elements.editorPane.addEventListener("change", handleEditorInput);
@@ -163,7 +190,7 @@ function bindEvents() {
 }
 
 function handleBeforeUnload() {
-  if (!state.dirty && !state.stackRulesDirty) {
+  if (!state.dirty && !state.stackRulesDirty && !state.itemReferenceDirty) {
     return;
   }
 
@@ -238,6 +265,36 @@ function handleStackRuleClick(event) {
 
   if (button.dataset.stackRuleAction === "remove") {
     removeStackRule(Number(button.dataset.stackRuleIndex));
+  }
+}
+
+function handleItemReferenceInput(event) {
+  const target = event.target;
+  if (!target.dataset.itemReferenceField) {
+    return;
+  }
+
+  const index = Number(target.dataset.itemReferenceIndex);
+  const item = state.itemReference[index];
+  if (!item) {
+    return;
+  }
+
+  item[target.dataset.itemReferenceField] = String(target.value || "");
+  touchItemReference();
+}
+
+function handleItemReferenceClick(event) {
+  const removeButton = event.target.closest("[data-item-reference-action='remove']");
+  if (removeButton) {
+    removeItemReferenceRow(Number(removeButton.dataset.itemReferenceIndex));
+    return;
+  }
+
+  const classNameButton = event.target.closest("[data-item-reference-class]");
+  if (classNameButton) {
+    const className = String(classNameButton.dataset.itemReferenceClass || "").trim();
+    void copyOrInsertItemReferenceClassName(className);
   }
 }
 
@@ -504,6 +561,39 @@ async function loadStackRules() {
   renderStackRules();
 }
 
+async function loadItemReference() {
+  if (!window.location.protocol.startsWith("http")) {
+    state.itemReference = [];
+    state.itemReferenceDirty = false;
+    renderItemReferenceStatus("warning", "Справочник только через сервер");
+    renderItemReference();
+    return;
+  }
+
+  renderItemReferenceStatus("neutral", "Загрузка...");
+
+  try {
+    const response = await fetch(ITEM_CLASS_REFERENCE_API_URL, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    state.itemReference = normalizeItemReference(payload.items);
+    state.itemReferenceDirty = false;
+    renderItemReferenceStatus(
+      state.itemReference.length ? "good" : "neutral",
+      state.itemReference.length ? `Строк: ${state.itemReference.length}` : "Справочник пуст"
+    );
+  } catch (error) {
+    state.itemReference = [];
+    state.itemReferenceDirty = false;
+    renderItemReferenceStatus("bad", "Ошибка загрузки");
+  }
+
+  renderItemReference();
+}
+
 async function loadConfiguredSaveFile() {
   try {
     const response = await fetch(CURRENT_JSON_API_URL, { cache: "no-store" });
@@ -631,6 +721,11 @@ async function handleSaveStackRules() {
   await saveStackRulesNow(true);
 }
 
+async function handleSaveItemReference() {
+  cancelScheduledItemReferenceSave();
+  await saveItemReferenceNow(true);
+}
+
 async function saveStackRulesNow(showBanner = false) {
   if (!window.location.protocol.startsWith("http")) {
     renderStackRulesStatus("warning", "Справочник только через сервер");
@@ -683,6 +778,60 @@ async function saveStackRulesNow(showBanner = false) {
   }
 }
 
+async function saveItemReferenceNow(showBanner = false) {
+  if (!window.location.protocol.startsWith("http")) {
+    renderItemReferenceStatus("warning", "Справочник только через сервер");
+    if (showBanner) {
+      updateBanner({
+        kind: "warning",
+        text: "Справочник предметов сохраняется только при запуске через start-editor.cmd."
+      });
+    }
+    return;
+  }
+
+  renderItemReferenceStatus("neutral", "Сохранение...");
+
+  try {
+    const response = await fetch(ITEM_CLASS_REFERENCE_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(buildItemReferencePayload())
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    state.itemReference = normalizeItemReference(payload.items);
+    state.itemReferenceDirty = false;
+    renderItemReference();
+    renderItemReferenceStatus(
+      state.itemReference.length ? "good" : "neutral",
+      state.itemReference.length ? `Сохранено: ${state.itemReference.length}` : "Справочник пуст"
+    );
+
+    if (showBanner) {
+      updateBanner({
+        kind: "success",
+        text: "Справочник предметов сохранен."
+      });
+    }
+  } catch (error) {
+    renderItemReferenceStatus("bad", "Ошибка сохранения");
+
+    if (showBanner) {
+      updateBanner({
+        kind: "error",
+        text: "Не удалось сохранить справочник предметов."
+      });
+    }
+  }
+}
+
 async function handleCopyJson() {
   syncQuestIdsFromRoleBlocks();
   const payload = JSON.stringify(state.data, null, 2);
@@ -696,6 +845,41 @@ async function handleCopyJson() {
     updateBanner({
       kind: "error",
       text: "Не удалось скопировать JSON. Возможно, браузер заблокировал доступ к буферу обмена."
+    });
+  }
+}
+
+async function copyOrInsertItemReferenceClassName(className) {
+  if (!className) {
+    return;
+  }
+
+  const activeElement = document.activeElement;
+  const canInsert = activeElement &&
+    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA") &&
+    String(activeElement.dataset.path || "").endsWith(".className");
+
+  if (canInsert) {
+    activeElement.value = className;
+    activeElement.dispatchEvent(new Event("input", { bubbles: true }));
+    activeElement.focus();
+    updateBanner({
+      kind: "success",
+      text: `className вставлен в активное поле: ${className}`
+    });
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(className);
+    updateBanner({
+      kind: "success",
+      text: `className скопирован: ${className}`
+    });
+  } catch (error) {
+    updateBanner({
+      kind: "warning",
+      text: `className: ${className}`
     });
   }
 }
@@ -935,6 +1119,12 @@ function addStackRule() {
   renderStackRules();
 }
 
+function addItemReferenceRow() {
+  state.itemReference.push(createItemReferenceRow());
+  touchItemReference();
+  renderItemReference();
+}
+
 function removeStackRule(index) {
   if (!state.stackRules[index]) {
     return;
@@ -943,6 +1133,16 @@ function removeStackRule(index) {
   state.stackRules.splice(index, 1);
   touchStackRules();
   renderStackRules();
+}
+
+function removeItemReferenceRow(index) {
+  if (!state.itemReference[index]) {
+    return;
+  }
+
+  state.itemReference.splice(index, 1);
+  touchItemReference();
+  renderItemReference();
 }
 
 function handleQuestTriggerToggleChange(questIndex, triggerRole, triggerId, checked) {
@@ -1786,6 +1986,12 @@ function touchStackRules() {
   scheduleStackRulesSave();
 }
 
+function touchItemReference() {
+  state.itemReferenceDirty = true;
+  renderItemReferenceStatus("warn", "Есть изменения");
+  scheduleItemReferenceSave();
+}
+
 function renderAll() {
   syncQuestIdsFromRoleBlocks();
   syncAllQuestTriggerActions();
@@ -1795,6 +2001,7 @@ function renderAll() {
   renderBanner();
   renderSidebar();
   renderStackRules();
+  renderItemReference();
   renderEditor();
   renderConfig();
   renderValidation();
@@ -2078,6 +2285,73 @@ function renderStackRulesStatus(kind = state.stackRulesStatus.kind, text = state
   state.stackRulesStatus = { kind, text };
   elements.stackRulesStatusLabel.textContent = text;
   elements.stackRulesStatusLabel.className =
+    kind === "good" ? "badge good" :
+    kind === "warn" || kind === "warning" ? "badge warn" :
+    kind === "bad" ? "badge bad" :
+    "badge neutral";
+}
+
+function renderItemReference() {
+  const query = state.itemReferenceFilter;
+  const items = state.itemReference.filter((item) => matchesFilter(query, [item.className, item.descriptionRu]));
+
+  elements.itemReferenceTableBody.innerHTML = items.length
+    ? items
+        .map((item) => {
+          const index = state.itemReference.indexOf(item);
+          const className = String(item.className || "").trim();
+          return `
+            <tr>
+              <td>
+                <button
+                  type="button"
+                  class="item-reference-class"
+                  title="Скопировать className"
+                  data-item-reference-class="${escapeAttribute(className)}">
+                  ${escapeHtml(className || "className")}
+                </button>
+                <input
+                  type="text"
+                  value="${escapeAttribute(item.className)}"
+                  placeholder="ClassName"
+                  data-item-reference-index="${index}"
+                  data-item-reference-field="className">
+              </td>
+              <td>
+                <input
+                  type="text"
+                  value="${escapeAttribute(item.descriptionRu)}"
+                  placeholder="Описание на русском"
+                  data-item-reference-index="${index}"
+                  data-item-reference-field="descriptionRu">
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="mini-button danger item-reference-remove"
+                  title="Удалить строку"
+                  data-item-reference-action="remove"
+                  data-item-reference-index="${index}">
+                  ×
+                </button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("")
+    : `
+      <tr>
+        <td colspan="3">
+          <div class="stack-rule-empty">${state.itemReference.length ? "Ничего не найдено по текущему поиску." : "Справочник пока пуст. Добавь первую строку."}</div>
+        </td>
+      </tr>
+    `;
+}
+
+function renderItemReferenceStatus(kind = state.itemReferenceStatus.kind, text = state.itemReferenceStatus.text) {
+  state.itemReferenceStatus = { kind, text };
+  elements.itemReferenceStatusLabel.textContent = text;
+  elements.itemReferenceStatusLabel.className =
     kind === "good" ? "badge good" :
     kind === "warn" || kind === "warning" ? "badge warn" :
     kind === "bad" ? "badge bad" :
@@ -2642,6 +2916,18 @@ function normalizeStackRule(raw) {
   };
 }
 
+function normalizeItemReference(rawItems) {
+  return normalizeArray(rawItems).map(normalizeItemReferenceRow);
+}
+
+function normalizeItemReferenceRow(raw) {
+  const item = raw && typeof raw === "object" ? raw : {};
+  return {
+    className: toText(item.className).trim(),
+    descriptionRu: toText(item.descriptionRu).trim()
+  };
+}
+
 function normalizeVector(input) {
   const array = normalizeArray(input);
   return [0, 1, 2].map((index) => parseNumber(array[index], 0));
@@ -2760,12 +3046,29 @@ function createStackRule() {
   };
 }
 
+function createItemReferenceRow() {
+  return {
+    className: "",
+    descriptionRu: ""
+  };
+}
+
 function buildStackRulesPayload() {
   return {
     version: STACK_RULES_VERSION,
     rules: state.stackRules.map((rule) => ({
       className: String(rule.className || "").trim(),
       stackSize: Math.max(1, parseNumber(rule.stackSize, 1))
+    }))
+  };
+}
+
+function buildItemReferencePayload() {
+  return {
+    version: ITEM_CLASS_REFERENCE_VERSION,
+    items: state.itemReference.map((item) => ({
+      className: String(item.className || "").trim(),
+      descriptionRu: String(item.descriptionRu || "").trim()
     }))
   };
 }
@@ -2847,6 +3150,19 @@ function scheduleStackRulesSave() {
 function cancelScheduledStackRulesSave() {
   window.clearTimeout(stackRulesSaveTimer);
   stackRulesSaveTimer = null;
+}
+
+function scheduleItemReferenceSave() {
+  cancelScheduledItemReferenceSave();
+  itemReferenceSaveTimer = window.setTimeout(() => {
+    itemReferenceSaveTimer = null;
+    void saveItemReferenceNow(false);
+  }, 320);
+}
+
+function cancelScheduledItemReferenceSave() {
+  window.clearTimeout(itemReferenceSaveTimer);
+  itemReferenceSaveTimer = null;
 }
 
 function saveDraftNow() {

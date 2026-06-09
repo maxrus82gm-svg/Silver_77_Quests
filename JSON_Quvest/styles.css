@@ -63,7 +63,7 @@ button {
 }
 
 .page-shell {
-  max-width: 1760px;
+  max-width: 1960px;
   margin: 0 auto;
   padding: 28px;
 }
@@ -288,7 +288,7 @@ button {
 
 .workspace {
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-columns: 340px minmax(0, 1fr) 430px;
   gap: 20px;
   align-items: start;
 }
@@ -387,6 +387,108 @@ button {
 .content {
   display: grid;
   gap: 20px;
+}
+
+.item-reference-panel {
+  min-width: 0;
+  position: sticky;
+  top: 18px;
+}
+
+.item-reference-card {
+  display: grid;
+  gap: 14px;
+}
+
+.item-reference-tools {
+  display: grid;
+  gap: 12px;
+}
+
+.item-reference-search {
+  min-width: 0;
+}
+
+.item-reference-actions {
+  justify-content: space-between;
+}
+
+.item-reference-table-wrap {
+  max-height: 980px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.76);
+}
+
+.item-reference-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.item-reference-table th,
+.item-reference-table td {
+  border-bottom: 1px solid rgba(99, 82, 61, 0.12);
+  padding: 8px;
+  vertical-align: top;
+}
+
+.item-reference-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(250, 241, 226, 0.98);
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.item-reference-table th:nth-child(1),
+.item-reference-table td:nth-child(1) {
+  width: 42%;
+}
+
+.item-reference-table th:nth-child(3),
+.item-reference-table td:nth-child(3) {
+  width: 46px;
+}
+
+.item-reference-table input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(99, 82, 61, 0.18);
+  border-radius: 10px;
+  padding: 8px 9px;
+  background: rgba(255, 252, 248, 0.94);
+  color: var(--text);
+  font-size: 0.88rem;
+}
+
+.item-reference-class {
+  width: 100%;
+  min-height: 28px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(159, 79, 42, 0.2);
+  border-radius: 10px;
+  padding: 6px 8px;
+  background: rgba(159, 79, 42, 0.08);
+  color: var(--accent);
+  text-align: left;
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.item-reference-class:hover {
+  border-color: rgba(159, 79, 42, 0.42);
+  background: rgba(159, 79, 42, 0.13);
+}
+
+.item-reference-remove {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  padding: 0;
 }
 
 .editor-pane {
@@ -946,6 +1048,10 @@ button {
 
   .inspector-grid {
     grid-template-columns: 1fr;
+  }
+
+  .item-reference-panel {
+    position: static;
   }
 }
 

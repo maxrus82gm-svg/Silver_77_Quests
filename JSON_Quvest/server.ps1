@@ -7,6 +7,7 @@ $defaultConfigPath = Join-Path $scriptDir "editor-config.json"
 $localConfigPath = Join-Path $scriptDir "editor-config.local.json"
 $draftPath = Join-Path $scriptDir "editor-draft.json"
 $stackRulesPath = Join-Path $rootEditorDir "item-stack-rules.json"
+$itemClassReferencePath = Join-Path $rootEditorDir "item-class-reference.json"
 $listener = [System.Net.HttpListener]::new()
 $listener.Prefixes.Add("http://127.0.0.1:4173/")
 $listener.Start()
@@ -25,7 +26,7 @@ function Read-JsonFile([string]$path) {
   }
 
   try {
-    return Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
+    return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
   } catch {
     return $null
   }
@@ -233,6 +234,45 @@ function Save-StackRules($payload) {
   [System.IO.File]::WriteAllText($stackRulesPath, $json, [System.Text.UTF8Encoding]::new($false))
 }
 
+function Get-DefaultItemClassReference {
+  return [pscustomobject]@{
+    version = 1
+    items = @()
+  }
+}
+
+function New-ItemClassReferenceDocument($source) {
+  $items = @()
+  $sourceItems = Get-ObjectPropertyValue $source "items" @()
+
+  foreach ($item in @($sourceItems)) {
+    $items += [pscustomobject]@{
+      className = [string](Get-ObjectPropertyValue $item "className" "")
+      descriptionRu = [string](Get-ObjectPropertyValue $item "descriptionRu" "")
+    }
+  }
+
+  return [pscustomobject]@{
+    version = 1
+    items = $items
+  }
+}
+
+function Get-ItemClassReference {
+  $raw = Read-JsonFile $itemClassReferencePath
+  if ($null -eq $raw) {
+    return Get-DefaultItemClassReference
+  }
+
+  return New-ItemClassReferenceDocument $raw
+}
+
+function Save-ItemClassReference($payload) {
+  $document = New-ItemClassReferenceDocument $payload
+  $json = $document | ConvertTo-Json -Depth 6
+  [System.IO.File]::WriteAllText($itemClassReferencePath, $json, [System.Text.UTF8Encoding]::new($false))
+}
+
 function Get-ContentType([string]$path) {
   switch ([System.IO.Path]::GetExtension($path).ToLowerInvariant()) {
     ".html" { return "text/html; charset=utf-8" }
@@ -349,6 +389,12 @@ while ($listener.IsListening) {
       continue
     }
 
+    if ($request.HttpMethod -eq "GET" -and $path -eq "/api/item-class-reference") {
+      $referenceJson = (Get-ItemClassReference) | ConvertTo-Json -Depth 6
+      Write-TextResponse $response 200 "application/json; charset=utf-8" $referenceJson
+      continue
+    }
+
     if ($request.HttpMethod -eq "POST" -and $path -eq "/api/config") {
       $reader = [System.IO.StreamReader]::new($request.InputStream, $request.ContentEncoding)
       $rawBody = $reader.ReadToEnd()
@@ -383,6 +429,19 @@ while ($listener.IsListening) {
 
       $stackRulesJson = (Get-StackRules) | ConvertTo-Json -Depth 6
       Write-TextResponse $response 200 "application/json; charset=utf-8" $stackRulesJson
+      continue
+    }
+
+    if ($request.HttpMethod -eq "POST" -and $path -eq "/api/item-class-reference") {
+      $reader = [System.IO.StreamReader]::new($request.InputStream, $request.ContentEncoding)
+      $rawBody = $reader.ReadToEnd()
+      $reader.Dispose()
+
+      $payload = $rawBody | ConvertFrom-Json
+      Save-ItemClassReference $payload
+
+      $referenceJson = (Get-ItemClassReference) | ConvertTo-Json -Depth 6
+      Write-TextResponse $response 200 "application/json; charset=utf-8" $referenceJson
       continue
     }
 
