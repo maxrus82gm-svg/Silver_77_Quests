@@ -301,3 +301,83 @@ CONCLUSION:
 - `DAYZ_LAYOUT_VIEWER_RULES.md`
 - `SERVER_PROFILE_RULES.md`
 - `TASK_HISTORY.md`
+
+## 12. Карта рабочих разработок и путей
+
+Эта карта помогает не путать рабочие исходники, dev-инструменты и готовые packed-моды.
+
+### Основной квестовый мод Silver_77_Quests
+
+Путь: `P:\Silver_77_Quests`
+
+Назначение: основной рабочий проект квестового мода DayZ.
+
+Важные подпроекты внутри:
+
+- `Silver_77_Quests_Client` — клиентская часть мода.
+- `Silver_77_Quests_Server` — серверная часть мода.
+- `Documentation` — документация, `AGENT_TASK_LOOP.md` и правила `SplitDoc`.
+- `JSON_Quvest` — редактор квестов и dev JSON.
+- `DayZ_layout` — viewer/инструмент для DayZ layout-файлов.
+- `Silver_77_fix_Builds_Cooking` — исходники отдельного cooking/build fix-мода.
+
+### Редактор квестов JSON_Quvest
+
+Путь: `P:\Silver_77_Quests\JSON_Quvest`
+
+Назначение: локальный веб-редактор для настройки квестов, наград, NPC, триггеров, JSON и вспомогательных данных.
+
+Ключевые файлы:
+
+- `app.js`
+- `index.html`
+- `styles.css`
+- `server.ps1`
+- `Silver_77_Quests.json`
+- `item-class-reference.json`
+- `item-stack-rules.json`
+
+Важно: `JSON_Quvest` является dev-инструментом и не является runtime-кодом DayZ мода.
+
+### DayZ layout viewer
+
+Путь: `P:\Silver_77_Quests\DayZ_layout`
+
+Назначение: вспомогательный viewer/инструмент для просмотра и работы с DayZ layout-файлами.
+
+Важно: используется отдельно от runtime-кода квестового мода.
+
+### Мод Silver_77_fix_Builds_Cooking
+
+Исходники: `P:\Silver_77_Quests\Silver_77_fix_Builds_Cooking`
+
+Назначение: отдельный небольшой DayZ-мод для исправления/добавления cooking/build-related vanilla items.
+
+Ключевые исходные файлы:
+
+- `config.cpp`
+- `$PBOPREFIX$`
+- `scripts\4_world\silver_77_fix_builds_cooking.c`
+- `scripts\5_mission\silver_77_fix_builds_cooking_diag.c`
+
+Сейчас в моде есть:
+
+- `Silver77_FixedPot`
+- `Silver77_FixedFryingPan`
+
+Готовый packed-мод: `P:\Mods_DONE\@Silver_77_fix_Builds_Cooking`
+
+Важно:
+
+- `P:\Mods_DONE\@Silver_77_fix_Builds_Cooking` — это готовый packed/build output для использования или публикации.
+- Не считать `P:\Mods_DONE\@...` исходниками.
+- Исходники `Silver_77_fix_Builds_Cooking` править внутри `P:\Silver_77_Quests`.
+- Packed-мод в `P:\Mods_DONE` не менять без отдельной build-задачи.
+
+### Готовые packed-моды
+
+Путь: `P:\Mods_DONE`
+
+Назначение: папка для готовых packed-модов, которые уже собраны и могут использоваться или отправляться дальше.
+
+Важно: `P:\Mods_DONE\@...` — это output/build result, не рабочие исходники.
