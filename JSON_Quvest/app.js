@@ -3016,27 +3016,138 @@ function stringArrayEditor(path, items, placeholder) {
   const list = Array.isArray(items) ? items : [];
 
   return `
-    <div class="stack">
-      ${list.length
-        ? list
-            .map(
-              (item, index) => `
-                <div class="inline-row">
-                  <input
-                    type="text"
-                    value="${escapeAttribute(item)}"
-                    placeholder="${escapeAttribute(placeholder)}"
-                    data-path="${escapeAttribute(`${path}.${index}`)}"
-                    data-type="text">
-                  <button type="button" class="mini-button danger" data-action="remove-array-item" data-path="${escapeAttribute(path)}" data-index="${index}">Удалить</button>
-                </div>
-              `
-            )
-            .join("")
-        : `<div class="empty-note">Список пуст. Нажми кнопку ниже, чтобы добавить новый элемент.</div>`}
+    <div class="quest-list-table-wrap">
+      <div class="quest-list-table quest-string-table">
+        ${questTableHeader(["ID", "Действия"])}
+        ${list.length
+          ? list
+              .map(
+                (item, index) => `
+                  <div class="quest-list-row quest-string-row">
+                    ${questTextCell(`${path}.${index}`, item, placeholder)}
+                    ${questRemoveCell(path, index)}
+                  </div>
+                `
+              )
+              .join("")
+          : `<div class="quest-list-empty">Список пуст. Добавь первый элемент кнопкой ниже.</div>`}
+      </div>
       <button type="button" class="mini-button" data-action="add-array-item" data-path="${escapeAttribute(path)}" data-item-type="string-item">+ Добавить</button>
     </div>
   `;
+}
+
+function renderQuestRewardItemTable(path, items, itemType = "reward-item") {
+  const list = Array.isArray(items) ? items : [];
+
+  return `
+    <div class="quest-list-table-wrap">
+      <div class="quest-list-table quest-reward-table">
+        ${questTableHeader(["Предмет", "Кол-во", "Вещ. кол-во", "Внутр. кол-во", "На землю", "Действия"])}
+        ${list.length
+          ? list
+              .map((item, index) => renderQuestRewardItemRow(`${path}.${index}`, item, path, index))
+              .join("")
+          : `<div class="quest-list-empty">Пока пусто. Добавь первый предмет кнопкой ниже.</div>`}
+      </div>
+      <button type="button" class="mini-button" data-action="add-array-item" data-path="${escapeAttribute(path)}" data-item-type="${escapeAttribute(itemType)}">+ Добавить предмет</button>
+    </div>
+  `;
+}
+
+function renderQuestRewardItemRow(basePath, item, removePath, index) {
+  const safeItem = item || createRewardItem();
+
+  return `
+    <div class="quest-list-row quest-reward-row">
+      ${questTextCell(`${basePath}.className`, safeItem.className, "Предмет", true)}
+      ${questNumberCell(`${basePath}.quantity`, safeItem.quantity, "Количество")}
+      ${questCheckboxCell(`${basePath}.setItemQuantity`, safeItem.setItemQuantity, "Вещ. кол-во")}
+      ${questNumberCell(`${basePath}.itemQuantity`, safeItem.itemQuantity, "Внутр. кол-во")}
+      ${questCheckboxCell(`${basePath}.spawnOnGround`, safeItem.spawnOnGround, "На землю")}
+      ${questRemoveCell(removePath, index)}
+    </div>
+  `;
+}
+
+function renderQuestObjectiveTable(path, items) {
+  const list = Array.isArray(items) ? items : [];
+
+  return `
+    <div class="quest-list-table-wrap">
+      <div class="quest-list-table quest-objective-table">
+        ${questTableHeader(["Тип", "Предмет", "Кол-во", "Внутр. кол-во", "Забрать", "Сдача частями", "Действия"])}
+        ${list.length
+          ? list
+              .map((item, index) => renderQuestObjectiveRow(`${path}.${index}`, item, path, index))
+              .join("")
+          : `<div class="quest-list-empty">Пока пусто. Добавь первую цель кнопкой ниже.</div>`}
+      </div>
+      <button type="button" class="mini-button" data-action="add-array-item" data-path="${escapeAttribute(path)}" data-item-type="objective-item">+ Добавить цель</button>
+    </div>
+  `;
+}
+
+function renderQuestObjectiveRow(basePath, item, removePath, index) {
+  const safeItem = item || createObjective();
+
+  return `
+    <div class="quest-list-row quest-objective-row">
+      ${questTextCell(`${basePath}.type`, safeItem.type, "Тип")}
+      ${questTextCell(`${basePath}.className`, safeItem.className, "Предмет", true)}
+      ${questNumberCell(`${basePath}.quantity`, safeItem.quantity, "Количество")}
+      ${questCheckboxCell(`${basePath}.useItemQuantity`, safeItem.useItemQuantity, "Внутр. кол-во")}
+      ${questCheckboxCell(`${basePath}.removeOnComplete`, safeItem.removeOnComplete, "Забрать")}
+      ${questCheckboxCell(`${basePath}.allowPartialTurnIn`, safeItem.allowPartialTurnIn, "Сдача частями")}
+      ${questRemoveCell(removePath, index)}
+    </div>
+  `;
+}
+
+function questTableHeader(labels) {
+  return labels
+    .map((label) => `<div class="quest-list-header">${escapeHtml(label)}</div>`)
+    .join("");
+}
+
+function questTextCell(path, value, label, withClassReference = false) {
+  return `
+    <input
+      class="quest-list-input"
+      type="text"
+      value="${escapeAttribute(value)}"
+      aria-label="${escapeAttribute(label)}"
+      title="${escapeAttribute(label)}"
+      data-path="${escapeAttribute(path)}"
+      data-type="text"
+      ${withClassReference ? `list="item-class-reference-options"` : ""}>
+  `;
+}
+
+function questNumberCell(path, value, label) {
+  return `
+    <input
+      class="quest-list-input quest-list-number"
+      type="number"
+      value="${escapeAttribute(value)}"
+      aria-label="${escapeAttribute(label)}"
+      title="${escapeAttribute(label)}"
+      data-path="${escapeAttribute(path)}"
+      data-type="number"
+      step="1">
+  `;
+}
+
+function questCheckboxCell(path, value, label) {
+  return `
+    <label class="quest-list-check" title="${escapeAttribute(label)}">
+      <input type="checkbox" ${value ? "checked" : ""} aria-label="${escapeAttribute(label)}" data-path="${escapeAttribute(path)}" data-type="flag">
+    </label>
+  `;
+}
+
+function questRemoveCell(path, index) {
+  return `<button type="button" class="mini-button danger quest-list-remove" data-action="remove-array-item" data-path="${escapeAttribute(path)}" data-index="${index}">Удалить</button>`;
 }
 
 function objectArrayEditor(path, items, itemType, renderer) {
@@ -4210,11 +4321,11 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
         </div>
         <div class="stack">
           <h4 class="inline-section-title">Give Items (предметы при взятии)</h4>
-          ${objectArrayEditor(`${basePath}.giveItems`, quest.giveItems, "reward-item", renderRewardItemFields)}
+          ${renderQuestRewardItemTable(`${basePath}.giveItems`, quest.giveItems)}
         </div>
         <div class="stack">
           <h4 class="inline-section-title">Objectives (quests[].objectives[] / что нужно передать или принести, не отдельное requiredItems)</h4>
-          ${objectArrayEditor(`${basePath}.objectives`, quest.objectives, "objective-item", renderObjectiveFields)}
+          ${renderQuestObjectiveTable(`${basePath}.objectives`, quest.objectives)}
         </div>
       </div>
     </div>
@@ -4256,7 +4367,7 @@ function renderQuestTriggerActionDetail(quest, questIndex, actionType, triggerId
           ? `
             <div class="stack">
               <div class="muted">${escapeHtml(meta.rewardHint)}</div>
-              ${objectArrayEditor(`${basePath}.rewards`, action.rewards, "reward-item", renderRewardItemFields)}
+              ${renderQuestRewardItemTable(`${basePath}.rewards`, action.rewards)}
             </div>
           `
           : `<div class="muted">${escapeHtml(meta.rewardHint)}</div>`}
@@ -4434,6 +4545,7 @@ function renderQuestEditor(quest, index) {
 
   return `
     <div class="editor-grid">
+      ${renderItemClassReferenceDatalist()}
       <section class="editor-card">
         <div class="panel-head">
           <div>
@@ -4489,6 +4601,13 @@ function renderQuestEditor(quest, index) {
         "NPC Flow (роли и настройки по trigger / NPC)",
         renderQuestTriggerFlowSection(quest, index)
       )}
+
+      ${normalizeArray(quest.rewards).length
+        ? sectionCard(
+            "Reward Items (legacy quests[].rewards[] / награды)",
+            renderQuestRewardItemTable(`${base}.rewards`, quest.rewards)
+          )
+        : ""}
     </div>
   `;
 }

@@ -908,6 +908,101 @@ button {
   background: rgba(255, 253, 249, 0.94);
 }
 
+.quest-list-table-wrap {
+  display: grid;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.quest-list-table {
+  display: grid;
+  gap: 6px;
+  min-width: 760px;
+}
+
+.quest-list-row {
+  display: grid;
+  gap: 8px;
+  align-items: center;
+}
+
+.quest-string-table {
+  min-width: 440px;
+}
+
+.quest-string-table > .quest-list-row {
+  grid-template-columns: minmax(260px, 1fr) 86px;
+}
+
+.quest-reward-table > .quest-list-row {
+  grid-template-columns: minmax(240px, 2fr) 72px 82px 92px 78px 86px;
+}
+
+.quest-objective-table {
+  min-width: 900px;
+}
+
+.quest-objective-table > .quest-list-row {
+  grid-template-columns: minmax(86px, 0.7fr) minmax(240px, 2fr) 72px 92px 78px 112px 86px;
+}
+
+.quest-list-header {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.quest-list-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 9px;
+  background: rgba(255, 252, 248, 0.94);
+  color: var(--text);
+  font: inherit;
+}
+
+.quest-list-number {
+  text-align: center;
+}
+
+.quest-list-input:focus {
+  border-color: rgba(159, 79, 42, 0.52);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(159, 79, 42, 0.1);
+}
+
+.quest-list-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+}
+
+.quest-list-check input {
+  width: 18px;
+  height: 18px;
+}
+
+.quest-list-remove {
+  width: 100%;
+  padding: 8px 9px;
+  border-radius: 8px;
+}
+
+.quest-list-empty {
+  grid-column: 1 / -1;
+  padding: 10px 12px;
+  border: 1px dashed rgba(99, 82, 61, 0.2);
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgba(255, 252, 248, 0.72);
+}
+
 .npc-equipment {
   display: grid;
   gap: 12px;
