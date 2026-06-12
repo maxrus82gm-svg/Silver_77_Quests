@@ -2670,6 +2670,9 @@ function renderNpcEquipmentEditor(basePath, trigger) {
   const equipment = trigger.npcEquipment || createNpcEquipment();
   const equipmentPath = `${basePath}.npcEquipment`;
   const handsConflict = hasNpcHandsConflict(equipment);
+  const clothingSlotOptions = ["Headgear", "Body", "Legs", "Feet", "Gloves", "Vest", "Back", "Mask", "Eyewear", "Armband", "Hips"];
+  const containerSlotOptions = ["Back", "Vest", "Body", "Legs", "Hips"];
+  const backItemSlotOptions = ["Shoulder", "Melee", "Back"];
 
   return `
     <div class="npc-equipment">
@@ -2681,18 +2684,24 @@ function renderNpcEquipmentEditor(basePath, trigger) {
         : ""}
       ${npcEquipmentDetails(
         "Одежда / clothing",
-        renderNpcItemTable(`${equipmentPath}.clothing`, equipment.clothing, "npc-item"),
+        renderNpcItemTable(`${equipmentPath}.clothing`, equipment.clothing, "npc-item", {
+          slotMode: "select",
+          slotOptions: clothingSlotOptions
+        }),
         true
       )}
       ${npcEquipmentDetails(
         "Контейнеры / containers",
-        renderNpcContainerTable(`${equipmentPath}.containers`, equipment.containers),
+        renderNpcContainerTable(`${equipmentPath}.containers`, equipment.containers, containerSlotOptions),
         true
       )}
       ${npcEquipmentDetails("Предмет в руках / hands", renderNpcHandsTable(`${equipmentPath}.hands`, equipment.hands || createNpcItem()), true)}
       ${npcEquipmentDetails(
         "Предметы за спиной / backItems",
-        renderNpcItemTable(`${equipmentPath}.backItems`, equipment.backItems, "npc-item"),
+        renderNpcItemTable(`${equipmentPath}.backItems`, equipment.backItems, "npc-item", {
+          slotMode: "select",
+          slotOptions: backItemSlotOptions
+        }),
         false
       )}
       ${npcEquipmentDetails(
@@ -2715,16 +2724,22 @@ function npcEquipmentDetails(title, content, open = false) {
   `;
 }
 
-function renderNpcItemTable(path, items, itemType) {
+function renderNpcItemTable(path, items, itemType, options = {}) {
   const list = Array.isArray(items) ? items : [];
+  const slotMode = options.slotMode || "text";
+  const showSlot = slotMode !== "hidden";
+  const tableClassName = showSlot ? "npc-item-table" : "npc-item-table npc-item-table-no-slot";
+  const columns = showSlot
+    ? ["Class", "Slot", "Qty", "SetQty", "ItemQty", "actions"]
+    : ["Class", "Qty", "SetQty", "ItemQty", "actions"];
 
   return `
     <div class="npc-equipment-table-wrap">
-      <div class="npc-equipment-table npc-item-table">
-        ${npcTableHeader(["Class", "Slot", "Qty", "SetQty", "ItemQty", "actions"])}
+      <div class="npc-equipment-table ${tableClassName}">
+        ${npcTableHeader(columns)}
         ${list.length
           ? list
-              .map((item, index) => renderNpcItemRow(`${path}.${index}`, item, path, index, true))
+              .map((item, index) => renderNpcItemRow(`${path}.${index}`, item, path, index, true, options))
               .join("")
           : `<div class="npc-equipment-empty">Пока пусто.</div>`}
       </div>
@@ -2736,20 +2751,21 @@ function renderNpcItemTable(path, items, itemType) {
 function renderNpcHandsTable(basePath, item) {
   return `
     <div class="npc-equipment-table-wrap">
-      <div class="npc-equipment-table npc-item-table npc-hands-table">
-        ${npcTableHeader(["Class", "Slot", "Qty", "SetQty", "ItemQty"])}
-        ${renderNpcItemRow(basePath, item, "", 0, false)}
+      <div class="npc-equipment-table npc-item-table npc-item-table-no-slot npc-hands-table">
+        ${npcTableHeader(["Class", "Qty", "SetQty", "ItemQty"])}
+        ${renderNpcItemRow(basePath, item, "", 0, false, { slotMode: "hidden" })}
       </div>
     </div>
   `;
 }
 
-function renderNpcItemRow(basePath, item, removePath, index, allowRemove) {
+function renderNpcItemRow(basePath, item, removePath, index, allowRemove, options = {}) {
   const safeItem = item || createNpcItem();
+  const slotMode = options.slotMode || "text";
   return `
     <div class="npc-equipment-row npc-item-row">
       ${npcTextCell(`${basePath}.className`, safeItem.className, "Class", true)}
-      ${npcTextCell(`${basePath}.slot`, safeItem.slot, "Slot")}
+      ${renderNpcSlotCell(`${basePath}.slot`, safeItem.slot, slotMode, options.slotOptions || [])}
       ${npcNumberCell(`${basePath}.quantity`, safeItem.quantity, "Qty")}
       ${npcCheckboxCell(`${basePath}.setItemQuantity`, safeItem.setItemQuantity, "SetQty")}
       ${npcNumberCell(`${basePath}.itemQuantity`, safeItem.itemQuantity, "ItemQty")}
@@ -2758,7 +2774,7 @@ function renderNpcItemRow(basePath, item, removePath, index, allowRemove) {
   `;
 }
 
-function renderNpcContainerTable(path, containers) {
+function renderNpcContainerTable(path, containers, slotOptions) {
   const list = Array.isArray(containers) ? containers : [];
 
   return `
@@ -2767,7 +2783,7 @@ function renderNpcContainerTable(path, containers) {
         ${npcTableHeader(["Class", "Slot", "actions"])}
         ${list.length
           ? list
-              .map((container, index) => renderNpcContainerRow(`${path}.${index}`, container, path, index))
+              .map((container, index) => renderNpcContainerRow(`${path}.${index}`, container, path, index, slotOptions))
               .join("")
           : `<div class="npc-equipment-empty">Пока пусто.</div>`}
       </div>
@@ -2776,18 +2792,18 @@ function renderNpcContainerTable(path, containers) {
   `;
 }
 
-function renderNpcContainerRow(basePath, container, removePath, index) {
+function renderNpcContainerRow(basePath, container, removePath, index, slotOptions) {
   const safeContainer = container || createNpcContainer();
 
   return `
     <div class="npc-equipment-row npc-container-row">
       ${npcTextCell(`${basePath}.className`, safeContainer.className, "Class", true)}
-      ${npcTextCell(`${basePath}.slot`, safeContainer.slot, "Slot")}
+      ${npcSelectCell(`${basePath}.slot`, safeContainer.slot, "Slot", buildSlotOptions(slotOptions, safeContainer.slot))}
       ${npcRemoveCell(removePath, index)}
     </div>
     <div class="npc-equipment-row-details">
       <p class="eyebrow">Items внутри контейнера</p>
-      ${renderNpcItemTable(`${basePath}.items`, safeContainer.items, "npc-item")}
+      ${renderNpcItemTable(`${basePath}.items`, safeContainer.items, "npc-item", { slotMode: "hidden" })}
     </div>
   `;
 }
@@ -2830,9 +2846,9 @@ function renderNpcWeaponRow(basePath, weapon, removePath, index) {
     </div>
     <div class="npc-equipment-row-details">
       <p class="eyebrow">Attachments / навесы</p>
-      ${renderNpcItemTable(`${basePath}.attachments`, safeWeapon.attachments, "npc-item")}
+      ${renderNpcItemTable(`${basePath}.attachments`, safeWeapon.attachments, "npc-item", { slotMode: "hidden" })}
       <p class="eyebrow">Ammo / патроны</p>
-      ${renderNpcItemTable(`${basePath}.ammo`, safeWeapon.ammo, "npc-item")}
+      ${renderNpcItemTable(`${basePath}.ammo`, safeWeapon.ammo, "npc-item", { slotMode: "hidden" })}
     </div>
   `;
 }
@@ -2893,6 +2909,31 @@ function npcSelectCell(path, value, label, options) {
         .join("")}
     </select>
   `;
+}
+
+function renderNpcSlotCell(path, value, slotMode, slotOptions) {
+  if (slotMode === "hidden") {
+    return "";
+  }
+
+  if (slotMode === "select") {
+    return npcSelectCell(path, value, "Slot", buildSlotOptions(slotOptions, value));
+  }
+
+  return npcTextCell(path, value, "Slot");
+}
+
+function buildSlotOptions(slotOptions, currentValue = "") {
+  const normalizedValue = String(currentValue || "");
+  const options = [{ value: "", label: "auto" }].concat(
+    normalizeArray(slotOptions).map((slot) => ({ value: slot, label: slot }))
+  );
+
+  if (normalizedValue && !options.some((option) => option.value === normalizedValue)) {
+    options.push({ value: normalizedValue, label: `${normalizedValue} (custom)` });
+  }
+
+  return options;
 }
 
 function npcRemoveCell(path, index) {
