@@ -1814,6 +1814,12 @@ function addArrayItem(path, itemType) {
     nextItem = createRewardItem();
   } else if (itemType === "objective-item") {
     nextItem = createObjective();
+  } else if (itemType === "npc-item") {
+    nextItem = createNpcItem();
+  } else if (itemType === "npc-container") {
+    nextItem = createNpcContainer();
+  } else if (itemType === "npc-weapon") {
+    nextItem = createNpcWeapon();
   }
 
   list.push(nextItem);
@@ -2447,6 +2453,7 @@ function renderTriggerEditor(trigger, index) {
 
   return `
     <div class="editor-grid">
+      ${renderItemClassReferenceDatalist()}
       <section class="editor-card">
         <div class="panel-head">
           <div>
@@ -2516,6 +2523,8 @@ function renderTriggerEditor(trigger, index) {
         )}
       </div>
 
+      ${sectionCard("NPC комплект / npcEquipment", renderNpcEquipmentEditor(base, trigger))}
+
       ${sectionCard(
         "NPC Loadout (одежда и экипировка NPC)",
         `
@@ -2559,6 +2568,19 @@ function textField(label, path, value, hint, jsonKey = "") {
         ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
       </div>
       <input type="text" value="${escapeAttribute(value)}" data-path="${escapeAttribute(path)}" data-type="text">
+      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+    </div>
+  `;
+}
+
+function itemClassNameField(label, path, value, hint, jsonKey = "className") {
+  return `
+    <div class="field">
+      <div class="field-label-row">
+        <label>${escapeHtml(label)}</label>
+        ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
+      </div>
+      <input type="text" value="${escapeAttribute(value)}" data-path="${escapeAttribute(path)}" data-type="text" list="item-class-reference-options">
       ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
     </div>
   `;
@@ -2608,6 +2630,159 @@ function toggleField(label, path, value, hint, jsonKey = "") {
       <input type="checkbox" ${value ? "checked" : ""} data-path="${escapeAttribute(path)}" data-type="flag">
     </div>
   `;
+}
+
+function selectField(label, path, value, hint, options, jsonKey = "") {
+  return `
+    <div class="field">
+      <div class="field-label-row">
+        <label>${escapeHtml(label)}</label>
+        ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
+      </div>
+      <select data-path="${escapeAttribute(path)}" data-type="text">
+        ${options
+          .map(
+            (option) => `
+              <option value="${escapeAttribute(option.value)}" ${String(value || "") === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>
+            `
+          )
+          .join("")}
+      </select>
+      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+    </div>
+  `;
+}
+
+function renderItemClassReferenceDatalist() {
+  const options = normalizeArray(state.itemReference)
+    .filter((item) => String(item.className || "").trim())
+    .map(
+      (item) => `
+        <option value="${escapeAttribute(item.className)}">${escapeHtml(item.descriptionRu || item.className)}</option>
+      `
+    )
+    .join("");
+
+  return `<datalist id="item-class-reference-options">${options}</datalist>`;
+}
+
+function renderNpcEquipmentEditor(basePath, trigger) {
+  const equipment = trigger.npcEquipment || createNpcEquipment();
+  const equipmentPath = `${basePath}.npcEquipment`;
+  const handsConflict = hasNpcHandsConflict(equipment);
+
+  return `
+    <div class="npc-equipment">
+      <div class="field-grid single">
+        ${textField("Loadout Preset (пресет комплекта)", `${basePath}.npcLoadoutPreset`, trigger.npcLoadoutPreset, "Служебное имя готового NPC-комплекта. Можно оставить пустым.", "npcLoadoutPreset")}
+      </div>
+      ${handsConflict
+        ? `<div class="empty-note npc-equipment-warning">Внимание: оружие уже ставится в target hands, поэтому npcEquipment.hands лучше оставить пустым.</div>`
+        : ""}
+      ${npcEquipmentDetails(
+        "Одежда / clothing",
+        objectArrayEditor(`${equipmentPath}.clothing`, equipment.clothing, "npc-item", renderNpcItemFields),
+        true
+      )}
+      ${npcEquipmentDetails(
+        "Контейнеры / containers",
+        objectArrayEditor(`${equipmentPath}.containers`, equipment.containers, "npc-container", renderNpcContainerFields),
+        true
+      )}
+      ${npcEquipmentDetails("Предмет в руках / hands", renderNpcItemFields(`${equipmentPath}.hands`, equipment.hands || createNpcItem()), true)}
+      ${npcEquipmentDetails(
+        "Предметы за спиной / backItems",
+        objectArrayEditor(`${equipmentPath}.backItems`, equipment.backItems, "npc-item", renderNpcItemFields),
+        false
+      )}
+      ${npcEquipmentDetails(
+        "Оружие / weapons",
+        objectArrayEditor(`${equipmentPath}.weapons`, equipment.weapons, "npc-weapon", renderNpcWeaponFields),
+        true
+      )}
+    </div>
+  `;
+}
+
+function npcEquipmentDetails(title, content, open = false) {
+  return `
+    <details class="npc-equipment-section" ${open ? "open" : ""}>
+      <summary>${escapeHtml(title)}</summary>
+      <div class="npc-equipment-section-body">
+        ${content}
+      </div>
+    </details>
+  `;
+}
+
+function renderNpcItemFields(basePath, item) {
+  const safeItem = item || createNpcItem();
+  return `
+    <div class="field-grid npc-equipment-grid">
+      ${itemClassNameField("Class Name (класс предмета)", `${basePath}.className`, safeItem.className, "Можно выбрать из справочника item-class-reference или вписать вручную.", "className")}
+      ${textField("Slot (слот)", `${basePath}.slot`, safeItem.slot, "Опциональный слот экипировки или вложения.", "slot")}
+      ${numberField("Quantity (количество)", `${basePath}.quantity`, safeItem.quantity, "Количество предметов / стеков.", 1, "quantity")}
+      ${toggleField("Set Item Quantity", `${basePath}.setItemQuantity`, safeItem.setItemQuantity, "Включить установку внутреннего quantity у предмета.", "setItemQuantity")}
+      ${numberField("Item Quantity", `${basePath}.itemQuantity`, safeItem.itemQuantity, "Внутреннее quantity: патроны, вода, ресурс, заряд и т.п.", 1, "itemQuantity")}
+    </div>
+  `;
+}
+
+function renderNpcContainerFields(basePath, container) {
+  const safeContainer = container || createNpcContainer();
+  return `
+    <div class="stack">
+      <div class="field-grid npc-equipment-grid">
+        ${itemClassNameField("Class Name (класс контейнера)", `${basePath}.className`, safeContainer.className, "Рюкзак, жилет, куртка, штаны или другой контейнер.", "className")}
+        ${textField("Slot (слот)", `${basePath}.slot`, safeContainer.slot, "Куда надеть контейнер. Например: Body, Vest, Hips, Back.", "slot")}
+      </div>
+      <div class="npc-equipment-nested">
+        <p class="eyebrow">Items внутри контейнера</p>
+        ${objectArrayEditor(`${basePath}.items`, safeContainer.items, "npc-item", renderNpcItemFields)}
+      </div>
+    </div>
+  `;
+}
+
+function renderNpcWeaponFields(basePath, weapon) {
+  const safeWeapon = weapon || createNpcWeapon();
+  const magazine = safeWeapon.magazine || createNpcMagazine();
+  const targetOptions = [
+    { value: "", label: "auto / пусто" },
+    { value: "hands", label: "hands" },
+    { value: "back", label: "back" },
+    { value: "shoulder", label: "shoulder" }
+  ];
+
+  return `
+    <div class="stack">
+      <div class="field-grid npc-equipment-grid">
+        ${itemClassNameField("Class Name (класс оружия)", `${basePath}.className`, safeWeapon.className, "Оружие NPC. Если target = hands, поле hands.className оставь пустым.", "className")}
+        ${selectField("Target (куда поставить)", `${basePath}.target`, safeWeapon.target, "hands занимает руки; остальные значения оставляют руки свободными.", targetOptions, "target")}
+      </div>
+      <div class="npc-equipment-nested">
+        <p class="eyebrow">Attachments / навесы</p>
+        ${objectArrayEditor(`${basePath}.attachments`, safeWeapon.attachments, "npc-item", renderNpcItemFields)}
+      </div>
+      <div class="npc-equipment-nested">
+        <p class="eyebrow">Magazine / магазин</p>
+        <div class="field-grid npc-equipment-grid">
+          ${itemClassNameField("Class Name (класс магазина)", `${basePath}.magazine.className`, magazine.className, "Магазин, который вставится в оружие.", "className")}
+          ${numberField("Ammo Count (патроны в магазине)", `${basePath}.magazine.ammoCount`, magazine.ammoCount, "Сколько патронов положить в магазин.", 1, "ammoCount")}
+        </div>
+      </div>
+      <div class="npc-equipment-nested">
+        <p class="eyebrow">Ammo / дополнительные патроны или предметы</p>
+        ${objectArrayEditor(`${basePath}.ammo`, safeWeapon.ammo, "npc-item", renderNpcItemFields)}
+      </div>
+    </div>
+  `;
+}
+
+function hasNpcHandsConflict(equipment) {
+  const handsClassName = String(equipment?.hands?.className || "").trim();
+  const weaponInHands = normalizeArray(equipment?.weapons).some((weapon) => String(weapon?.target || "").trim() === "hands");
+  return Boolean(handsClassName && weaponInHands);
 }
 
 function questTriggerVisibilityField(questIndex, questId) {
@@ -3086,6 +3261,31 @@ function createNpcItem() {
     quantity: 1,
     setItemQuantity: 0,
     itemQuantity: 0
+  };
+}
+
+function createNpcContainer() {
+  return {
+    className: "",
+    slot: "",
+    items: []
+  };
+}
+
+function createNpcWeapon() {
+  return {
+    className: "",
+    target: "",
+    attachments: [],
+    magazine: createNpcMagazine(),
+    ammo: []
+  };
+}
+
+function createNpcMagazine() {
+  return {
+    className: "",
+    ammoCount: 0
   };
 }
 
