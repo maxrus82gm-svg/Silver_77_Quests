@@ -921,6 +921,14 @@ button {
   min-width: 760px;
 }
 
+.quest-list-title,
+.npc-equipment-table-title {
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
 .quest-list-row {
   display: grid;
   gap: 8px;
@@ -953,6 +961,12 @@ button {
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+.quest-list-header-row,
+.npc-equipment-header-row {
+  align-items: end;
+  padding-bottom: 2px;
 }
 
 .quest-list-input {
@@ -1034,6 +1048,8 @@ button {
 }
 
 .npc-equipment-table-wrap {
+  display: grid;
+  gap: 6px;
   overflow-x: auto;
   padding-bottom: 2px;
 }

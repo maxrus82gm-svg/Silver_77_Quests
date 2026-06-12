@@ -2487,7 +2487,7 @@ function renderTriggerEditor(trigger, index) {
           "Quest IDs (связанные квесты)",
           `
             <div class="stack">
-              ${stringArrayEditor(`${base}.questIds`, trigger.questIds, "quest id (id квеста)")}
+              ${stringArrayEditor(`${base}.questIds`, trigger.questIds, "quest id (id квеста)", "Quest IDs / связанные квесты")}
             </div>
           `
         )}
@@ -2529,7 +2529,7 @@ function renderTriggerEditor(trigger, index) {
         "NPC Loadout (одежда и экипировка NPC)",
         `
           <div class="stack">
-            ${stringArrayEditor(`${base}.npcLoadout`, trigger.npcLoadout, "loadout item (элемент экипировки)")}
+            ${stringArrayEditor(`${base}.npcLoadout`, trigger.npcLoadout, "loadout item (элемент экипировки)", "Legacy NPC Loadout")}
           </div>
         `
       )}
@@ -2538,7 +2538,7 @@ function renderTriggerEditor(trigger, index) {
         "NPC Back Items (предметы за спиной NPC)",
         `
           <div class="stack">
-            ${stringArrayEditor(`${base}.npcBackItems`, trigger.npcBackItems, "back item (предмет за спиной)")}
+            ${stringArrayEditor(`${base}.npcBackItems`, trigger.npcBackItems, "back item (предмет за спиной)", "Legacy Back Items")}
           </div>
         `
       )}
@@ -2685,6 +2685,7 @@ function renderNpcEquipmentEditor(basePath, trigger) {
       ${npcEquipmentDetails(
         "Одежда / clothing",
         renderNpcItemTable(`${equipmentPath}.clothing`, equipment.clothing, "npc-item", {
+          title: "Clothing / одежда",
           slotMode: "select",
           slotOptions: clothingSlotOptions
         }),
@@ -2692,13 +2693,14 @@ function renderNpcEquipmentEditor(basePath, trigger) {
       )}
       ${npcEquipmentDetails(
         "Контейнеры / containers",
-        renderNpcContainerTable(`${equipmentPath}.containers`, equipment.containers, containerSlotOptions),
+        renderNpcContainerTable(`${equipmentPath}.containers`, equipment.containers, containerSlotOptions, "Containers / контейнеры"),
         true
       )}
       ${npcEquipmentDetails("Предмет в руках / hands", renderNpcHandsTable(`${equipmentPath}.hands`, equipment.hands || createNpcItem()), true)}
       ${npcEquipmentDetails(
         "Предметы за спиной / backItems",
         renderNpcItemTable(`${equipmentPath}.backItems`, equipment.backItems, "npc-item", {
+          title: "Back Items / предметы за спиной",
           slotMode: "select",
           slotOptions: backItemSlotOptions
         }),
@@ -2706,7 +2708,7 @@ function renderNpcEquipmentEditor(basePath, trigger) {
       )}
       ${npcEquipmentDetails(
         "Оружие / weapons",
-        renderNpcWeaponTable(`${equipmentPath}.weapons`, equipment.weapons),
+        renderNpcWeaponTable(`${equipmentPath}.weapons`, equipment.weapons, "Weapons / оружие"),
         true
       )}
     </div>
@@ -2729,12 +2731,14 @@ function renderNpcItemTable(path, items, itemType, options = {}) {
   const slotMode = options.slotMode || "text";
   const showSlot = slotMode !== "hidden";
   const tableClassName = showSlot ? "npc-item-table" : "npc-item-table npc-item-table-no-slot";
+  const title = options.title || "Items / предметы";
   const columns = showSlot
     ? ["Class", "Slot", "Qty", "SetQty", "ItemQty", "actions"]
     : ["Class", "Qty", "SetQty", "ItemQty", "actions"];
 
   return `
     <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table-title">${escapeHtml(title)}</div>
       <div class="npc-equipment-table ${tableClassName}">
         ${npcTableHeader(columns)}
         ${list.length
@@ -2751,6 +2755,7 @@ function renderNpcItemTable(path, items, itemType, options = {}) {
 function renderNpcHandsTable(basePath, item) {
   return `
     <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table-title">Hands / предмет в руках</div>
       <div class="npc-equipment-table npc-item-table npc-item-table-no-slot npc-hands-table">
         ${npcTableHeader(["Class", "Qty", "SetQty", "ItemQty"])}
         ${renderNpcItemRow(basePath, item, "", 0, false, { slotMode: "hidden" })}
@@ -2774,11 +2779,12 @@ function renderNpcItemRow(basePath, item, removePath, index, allowRemove, option
   `;
 }
 
-function renderNpcContainerTable(path, containers, slotOptions) {
+function renderNpcContainerTable(path, containers, slotOptions, title = "Containers / контейнеры") {
   const list = Array.isArray(containers) ? containers : [];
 
   return `
     <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table-title">${escapeHtml(title)}</div>
       <div class="npc-equipment-table npc-container-table">
         ${npcTableHeader(["Class", "Slot", "actions"])}
         ${list.length
@@ -2803,16 +2809,20 @@ function renderNpcContainerRow(basePath, container, removePath, index, slotOptio
     </div>
     <div class="npc-equipment-row-details">
       <p class="eyebrow">Items внутри контейнера</p>
-      ${renderNpcItemTable(`${basePath}.items`, safeContainer.items, "npc-item", { slotMode: "hidden" })}
+      ${renderNpcItemTable(`${basePath}.items`, safeContainer.items, "npc-item", {
+        title: "Container Items / предметы внутри контейнера",
+        slotMode: "hidden"
+      })}
     </div>
   `;
 }
 
-function renderNpcWeaponTable(path, weapons) {
+function renderNpcWeaponTable(path, weapons, title = "Weapons / оружие") {
   const list = Array.isArray(weapons) ? weapons : [];
 
   return `
     <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table-title">${escapeHtml(title)}</div>
       <div class="npc-equipment-table npc-weapon-table">
         ${npcTableHeader(["Class", "Target", "Magazine", "AmmoCount", "actions"])}
         ${list.length
@@ -2846,16 +2856,22 @@ function renderNpcWeaponRow(basePath, weapon, removePath, index) {
     </div>
     <div class="npc-equipment-row-details">
       <p class="eyebrow">Attachments / навесы</p>
-      ${renderNpcItemTable(`${basePath}.attachments`, safeWeapon.attachments, "npc-item", { slotMode: "hidden" })}
+      ${renderNpcItemTable(`${basePath}.attachments`, safeWeapon.attachments, "npc-item", {
+        title: "Attachments / навесы",
+        slotMode: "hidden"
+      })}
       <p class="eyebrow">Ammo / патроны</p>
-      ${renderNpcItemTable(`${basePath}.ammo`, safeWeapon.ammo, "npc-item", { slotMode: "hidden" })}
+      ${renderNpcItemTable(`${basePath}.ammo`, safeWeapon.ammo, "npc-item", {
+        title: "Ammo / патроны",
+        slotMode: "hidden"
+      })}
     </div>
   `;
 }
 
 function npcTableHeader(columns) {
   return `
-    <div class="npc-equipment-row npc-equipment-header" aria-hidden="true">
+    <div class="npc-equipment-row npc-equipment-header npc-equipment-header-row" aria-hidden="true">
       ${columns.map((column) => `<span>${escapeHtml(column)}</span>`).join("")}
     </div>
   `;
@@ -3012,11 +3028,12 @@ function vectorField(basePath, values) {
   `;
 }
 
-function stringArrayEditor(path, items, placeholder) {
+function stringArrayEditor(path, items, placeholder, title = "List / список") {
   const list = Array.isArray(items) ? items : [];
 
   return `
     <div class="quest-list-table-wrap">
+      <div class="quest-list-title">${escapeHtml(title)}</div>
       <div class="quest-list-table quest-string-table">
         ${questTableHeader(["ID", "Действия"])}
         ${list.length
@@ -3037,11 +3054,12 @@ function stringArrayEditor(path, items, placeholder) {
   `;
 }
 
-function renderQuestRewardItemTable(path, items, itemType = "reward-item") {
+function renderQuestRewardItemTable(path, items, title = "Rewards / награды", itemType = "reward-item") {
   const list = Array.isArray(items) ? items : [];
 
   return `
     <div class="quest-list-table-wrap">
+      <div class="quest-list-title">${escapeHtml(title)}</div>
       <div class="quest-list-table quest-reward-table">
         ${questTableHeader(["Предмет", "Кол-во", "Вещ. кол-во", "Внутр. кол-во", "На землю", "Действия"])}
         ${list.length
@@ -3070,11 +3088,12 @@ function renderQuestRewardItemRow(basePath, item, removePath, index) {
   `;
 }
 
-function renderQuestObjectiveTable(path, items) {
+function renderQuestObjectiveTable(path, items, title = "Objectives / что нужно сдать") {
   const list = Array.isArray(items) ? items : [];
 
   return `
     <div class="quest-list-table-wrap">
+      <div class="quest-list-title">${escapeHtml(title)}</div>
       <div class="quest-list-table quest-objective-table">
         ${questTableHeader(["Тип", "Предмет", "Кол-во", "Внутр. кол-во", "Забрать", "Сдача частями", "Действия"])}
         ${list.length
@@ -3105,9 +3124,11 @@ function renderQuestObjectiveRow(basePath, item, removePath, index) {
 }
 
 function questTableHeader(labels) {
-  return labels
-    .map((label) => `<div class="quest-list-header">${escapeHtml(label)}</div>`)
-    .join("");
+  return `
+    <div class="quest-list-row quest-list-header-row" aria-hidden="true">
+      ${labels.map((label) => `<div class="quest-list-header">${escapeHtml(label)}</div>`).join("")}
+    </div>
+  `;
 }
 
 function questTextCell(path, value, label, withClassReference = false) {
@@ -4321,11 +4342,11 @@ function renderQuestOfferSummary(quest, questIndex, triggerId) {
         </div>
         <div class="stack">
           <h4 class="inline-section-title">Give Items (предметы при взятии)</h4>
-          ${renderQuestRewardItemTable(`${basePath}.giveItems`, quest.giveItems)}
+          ${renderQuestRewardItemTable(`${basePath}.giveItems`, quest.giveItems, "Give Items / предметы при взятии")}
         </div>
         <div class="stack">
           <h4 class="inline-section-title">Objectives (quests[].objectives[] / что нужно передать или принести, не отдельное requiredItems)</h4>
-          ${renderQuestObjectiveTable(`${basePath}.objectives`, quest.objectives)}
+          ${renderQuestObjectiveTable(`${basePath}.objectives`, quest.objectives, "Objectives / что нужно сдать")}
         </div>
       </div>
     </div>
@@ -4367,7 +4388,7 @@ function renderQuestTriggerActionDetail(quest, questIndex, actionType, triggerId
           ? `
             <div class="stack">
               <div class="muted">${escapeHtml(meta.rewardHint)}</div>
-              ${renderQuestRewardItemTable(`${basePath}.rewards`, action.rewards)}
+              ${renderQuestRewardItemTable(`${basePath}.rewards`, action.rewards, "Rewards / награды")}
             </div>
           `
           : `<div class="muted">${escapeHtml(meta.rewardHint)}</div>`}
@@ -4592,7 +4613,7 @@ function renderQuestEditor(quest, index) {
         "Required Quest IDs (обязательные квесты)",
         `
           <div class="stack">
-            ${stringArrayEditor(`${base}.requiredQuestIds`, quest.requiredQuestIds, "quest id (id квеста)")}
+            ${stringArrayEditor(`${base}.requiredQuestIds`, quest.requiredQuestIds, "quest id (id квеста)", "Required Quest IDs / обязательные квесты")}
           </div>
         `
       )}
@@ -4605,7 +4626,7 @@ function renderQuestEditor(quest, index) {
       ${normalizeArray(quest.rewards).length
         ? sectionCard(
             "Reward Items (legacy quests[].rewards[] / награды)",
-            renderQuestRewardItemTable(`${base}.rewards`, quest.rewards)
+            renderQuestRewardItemTable(`${base}.rewards`, quest.rewards, "Legacy Rewards / quests[].rewards[]")
           )
         : ""}
     </div>
