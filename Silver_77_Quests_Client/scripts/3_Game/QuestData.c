@@ -101,6 +101,86 @@ class Silver77_Quest
     }
 }
 
+class Silver77_NpcItem
+{
+    string className;
+    string slot;
+    int quantity;
+    bool setItemQuantity;
+    float itemQuantity;
+
+    void Silver77_NpcItem()
+    {
+        className = "";
+        slot = "";
+        quantity = 1;
+        setItemQuantity = false;
+        itemQuantity = 0;
+    }
+}
+
+class Silver77_NpcMagazine
+{
+    string className;
+    int ammoCount;
+
+    void Silver77_NpcMagazine()
+    {
+        className = "";
+        ammoCount = 0;
+    }
+}
+
+class Silver77_NpcContainer
+{
+    string className;
+    string slot;
+    ref array<ref Silver77_NpcItem> items;
+
+    void Silver77_NpcContainer()
+    {
+        className = "";
+        slot = "";
+        items = new array<ref Silver77_NpcItem>;
+    }
+}
+
+class Silver77_NpcWeapon
+{
+    string className;
+    string target;
+    ref array<ref Silver77_NpcItem> attachments;
+    ref Silver77_NpcMagazine magazine;
+    ref array<ref Silver77_NpcItem> ammo;
+
+    void Silver77_NpcWeapon()
+    {
+        className = "";
+        target = "";
+        attachments = new array<ref Silver77_NpcItem>;
+        magazine = new Silver77_NpcMagazine();
+        ammo = new array<ref Silver77_NpcItem>;
+    }
+}
+
+class Silver77_NpcEquipment
+{
+    ref array<ref Silver77_NpcItem> clothing;
+    ref array<ref Silver77_NpcContainer> containers;
+    ref Silver77_NpcItem hands;
+    ref array<ref Silver77_NpcItem> backItems;
+    ref array<ref Silver77_NpcWeapon> weapons;
+
+    void Silver77_NpcEquipment()
+    {
+        clothing = new array<ref Silver77_NpcItem>;
+        containers = new array<ref Silver77_NpcContainer>;
+        hands = new Silver77_NpcItem();
+        backItems = new array<ref Silver77_NpcItem>;
+        weapons = new array<ref Silver77_NpcWeapon>;
+    }
+}
+
 class Silver77_QuestTriggerConfig
 {
     string id;
@@ -117,6 +197,8 @@ class Silver77_QuestTriggerConfig
     ref array<string> npcLoadout;
     string npcHandsItem;
     ref array<string> npcBackItems;
+    string npcLoadoutPreset;
+    ref Silver77_NpcEquipment npcEquipment;
     
     void Silver77_QuestTriggerConfig()
     {
@@ -134,6 +216,8 @@ class Silver77_QuestTriggerConfig
         npcLoadout = new array<string>;
         npcHandsItem = "";
         npcBackItems = new array<string>;
+        npcLoadoutPreset = "";
+        npcEquipment = new Silver77_NpcEquipment();
     }
 }
 

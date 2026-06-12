@@ -2874,7 +2874,59 @@ function normalizeTrigger(raw) {
     npcOrientation: normalizeVector(trigger.npcOrientation),
     npcLoadout: normalizeArray(trigger.npcLoadout).map(toText),
     npcHandsItem: toText(trigger.npcHandsItem),
-    npcBackItems: normalizeArray(trigger.npcBackItems).map(toText)
+    npcBackItems: normalizeArray(trigger.npcBackItems).map(toText),
+    npcLoadoutPreset: toText(trigger.npcLoadoutPreset),
+    npcEquipment: normalizeNpcEquipment(trigger.npcEquipment)
+  };
+}
+
+function normalizeNpcEquipment(raw) {
+  const equipment = raw && typeof raw === "object" ? raw : {};
+  return {
+    clothing: normalizeArray(equipment.clothing).map(normalizeNpcItem),
+    containers: normalizeArray(equipment.containers).map(normalizeNpcContainer),
+    hands: normalizeNpcItem(equipment.hands),
+    backItems: normalizeArray(equipment.backItems).map(normalizeNpcItem),
+    weapons: normalizeArray(equipment.weapons).map(normalizeNpcWeapon)
+  };
+}
+
+function normalizeNpcItem(raw) {
+  const item = raw && typeof raw === "object" ? raw : {};
+  return {
+    className: toText(item.className),
+    slot: toText(item.slot),
+    quantity: parseNumber(item.quantity, 1),
+    setItemQuantity: toFlag(item.setItemQuantity, 0),
+    itemQuantity: parseNumber(item.itemQuantity, 0)
+  };
+}
+
+function normalizeNpcContainer(raw) {
+  const container = raw && typeof raw === "object" ? raw : {};
+  return {
+    className: toText(container.className),
+    slot: toText(container.slot),
+    items: normalizeArray(container.items).map(normalizeNpcItem)
+  };
+}
+
+function normalizeNpcWeapon(raw) {
+  const weapon = raw && typeof raw === "object" ? raw : {};
+  return {
+    className: toText(weapon.className),
+    target: toText(weapon.target),
+    attachments: normalizeArray(weapon.attachments).map(normalizeNpcItem),
+    magazine: normalizeNpcMagazine(weapon.magazine),
+    ammo: normalizeArray(weapon.ammo).map(normalizeNpcItem)
+  };
+}
+
+function normalizeNpcMagazine(raw) {
+  const magazine = raw && typeof raw === "object" ? raw : {};
+  return {
+    className: toText(magazine.className),
+    ammoCount: parseNumber(magazine.ammoCount, 0)
   };
 }
 
@@ -3011,7 +3063,29 @@ function createTrigger() {
     npcOrientation: [0, 0, 0],
     npcLoadout: [],
     npcHandsItem: "",
-    npcBackItems: []
+    npcBackItems: [],
+    npcLoadoutPreset: "",
+    npcEquipment: createNpcEquipment()
+  };
+}
+
+function createNpcEquipment() {
+  return {
+    clothing: [],
+    containers: [],
+    hands: createNpcItem(),
+    backItems: [],
+    weapons: []
+  };
+}
+
+function createNpcItem() {
+  return {
+    className: "",
+    slot: "",
+    quantity: 1,
+    setItemQuantity: 0,
+    itemQuantity: 0
   };
 }
 
