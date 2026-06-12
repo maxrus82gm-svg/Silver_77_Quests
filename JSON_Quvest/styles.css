@@ -933,22 +933,111 @@ button {
   padding: 0 14px 14px;
 }
 
-.npc-equipment-grid {
-  align-items: start;
+.npc-equipment-warning {
+  border-color: rgba(160, 96, 24, 0.34);
+  background: rgba(160, 96, 24, 0.08);
 }
 
-.npc-equipment-nested {
+.npc-equipment-table-wrap {
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.npc-equipment-table {
+  display: grid;
+  gap: 6px;
+  min-width: 720px;
+}
+
+.npc-equipment-row {
+  display: grid;
+  gap: 8px;
+  align-items: center;
+}
+
+.npc-item-table .npc-equipment-row {
+  grid-template-columns: minmax(220px, 2fr) minmax(110px, 1fr) 72px 64px 82px 78px;
+}
+
+.npc-hands-table .npc-equipment-row {
+  grid-template-columns: minmax(220px, 2fr) minmax(110px, 1fr) 72px 64px 82px;
+}
+
+.npc-container-table .npc-equipment-row {
+  grid-template-columns: minmax(220px, 2fr) minmax(120px, 1fr) 78px;
+}
+
+.npc-weapon-table .npc-equipment-row {
+  grid-template-columns: minmax(220px, 2fr) minmax(120px, 1fr) minmax(180px, 1.4fr) 92px 78px;
+}
+
+.npc-equipment-header {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.npc-equipment-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 9px;
+  background: rgba(255, 252, 248, 0.94);
+  color: var(--text);
+  font: inherit;
+}
+
+.npc-equipment-number {
+  text-align: center;
+}
+
+.npc-equipment-input:focus {
+  border-color: rgba(159, 79, 42, 0.52);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(159, 79, 42, 0.1);
+}
+
+.npc-equipment-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+}
+
+.npc-equipment-check input {
+  width: 18px;
+  height: 18px;
+}
+
+.npc-equipment-remove {
+  width: 100%;
+  padding: 8px 9px;
+  border-radius: 8px;
+}
+
+.npc-equipment-row-details {
   display: grid;
   gap: 10px;
-  padding: 12px;
+  margin: 2px 0 10px;
+  padding: 10px 12px 12px;
   border: 1px dashed rgba(99, 82, 61, 0.22);
   border-radius: 8px;
   background: rgba(255, 252, 248, 0.72);
 }
 
-.npc-equipment-warning {
-  border-color: rgba(160, 96, 24, 0.34);
-  background: rgba(160, 96, 24, 0.08);
+.npc-equipment-row-details .npc-equipment-table {
+  min-width: 660px;
+}
+
+.npc-equipment-empty {
+  padding: 10px 12px;
+  border: 1px dashed rgba(99, 82, 61, 0.2);
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgba(255, 252, 248, 0.72);
 }
 
 .sub-card-title {

@@ -2681,23 +2681,23 @@ function renderNpcEquipmentEditor(basePath, trigger) {
         : ""}
       ${npcEquipmentDetails(
         "Одежда / clothing",
-        objectArrayEditor(`${equipmentPath}.clothing`, equipment.clothing, "npc-item", renderNpcItemFields),
+        renderNpcItemTable(`${equipmentPath}.clothing`, equipment.clothing, "npc-item"),
         true
       )}
       ${npcEquipmentDetails(
         "Контейнеры / containers",
-        objectArrayEditor(`${equipmentPath}.containers`, equipment.containers, "npc-container", renderNpcContainerFields),
+        renderNpcContainerTable(`${equipmentPath}.containers`, equipment.containers),
         true
       )}
-      ${npcEquipmentDetails("Предмет в руках / hands", renderNpcItemFields(`${equipmentPath}.hands`, equipment.hands || createNpcItem()), true)}
+      ${npcEquipmentDetails("Предмет в руках / hands", renderNpcHandsTable(`${equipmentPath}.hands`, equipment.hands || createNpcItem()), true)}
       ${npcEquipmentDetails(
         "Предметы за спиной / backItems",
-        objectArrayEditor(`${equipmentPath}.backItems`, equipment.backItems, "npc-item", renderNpcItemFields),
+        renderNpcItemTable(`${equipmentPath}.backItems`, equipment.backItems, "npc-item"),
         false
       )}
       ${npcEquipmentDetails(
         "Оружие / weapons",
-        objectArrayEditor(`${equipmentPath}.weapons`, equipment.weapons, "npc-weapon", renderNpcWeaponFields),
+        renderNpcWeaponTable(`${equipmentPath}.weapons`, equipment.weapons),
         true
       )}
     </div>
@@ -2715,36 +2715,102 @@ function npcEquipmentDetails(title, content, open = false) {
   `;
 }
 
-function renderNpcItemFields(basePath, item) {
+function renderNpcItemTable(path, items, itemType) {
+  const list = Array.isArray(items) ? items : [];
+
+  return `
+    <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table npc-item-table npc-hands-table">
+        ${npcTableHeader(["Class", "Slot", "Qty", "SetQty", "ItemQty", "actions"])}
+        ${list.length
+          ? list
+              .map((item, index) => renderNpcItemRow(`${path}.${index}`, item, path, index, true))
+              .join("")
+          : `<div class="npc-equipment-empty">Пока пусто.</div>`}
+      </div>
+    </div>
+    <button type="button" class="mini-button" data-action="add-array-item" data-path="${escapeAttribute(path)}" data-item-type="${escapeAttribute(itemType)}">+ Добавить</button>
+  `;
+}
+
+function renderNpcHandsTable(basePath, item) {
+  return `
+    <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table npc-item-table">
+        ${npcTableHeader(["Class", "Slot", "Qty", "SetQty", "ItemQty"])}
+        ${renderNpcItemRow(basePath, item, "", 0, false)}
+      </div>
+    </div>
+  `;
+}
+
+function renderNpcItemRow(basePath, item, removePath, index, allowRemove) {
   const safeItem = item || createNpcItem();
   return `
-    <div class="field-grid npc-equipment-grid">
-      ${itemClassNameField("Class Name (класс предмета)", `${basePath}.className`, safeItem.className, "Можно выбрать из справочника item-class-reference или вписать вручную.", "className")}
-      ${textField("Slot (слот)", `${basePath}.slot`, safeItem.slot, "Опциональный слот экипировки или вложения.", "slot")}
-      ${numberField("Quantity (количество)", `${basePath}.quantity`, safeItem.quantity, "Количество предметов / стеков.", 1, "quantity")}
-      ${toggleField("Set Item Quantity", `${basePath}.setItemQuantity`, safeItem.setItemQuantity, "Включить установку внутреннего quantity у предмета.", "setItemQuantity")}
-      ${numberField("Item Quantity", `${basePath}.itemQuantity`, safeItem.itemQuantity, "Внутреннее quantity: патроны, вода, ресурс, заряд и т.п.", 1, "itemQuantity")}
+    <div class="npc-equipment-row npc-item-row">
+      ${npcTextCell(`${basePath}.className`, safeItem.className, "Class", true)}
+      ${npcTextCell(`${basePath}.slot`, safeItem.slot, "Slot")}
+      ${npcNumberCell(`${basePath}.quantity`, safeItem.quantity, "Qty")}
+      ${npcCheckboxCell(`${basePath}.setItemQuantity`, safeItem.setItemQuantity, "SetQty")}
+      ${npcNumberCell(`${basePath}.itemQuantity`, safeItem.itemQuantity, "ItemQty")}
+      ${allowRemove ? npcRemoveCell(removePath, index) : ""}
     </div>
   `;
 }
 
-function renderNpcContainerFields(basePath, container) {
-  const safeContainer = container || createNpcContainer();
+function renderNpcContainerTable(path, containers) {
+  const list = Array.isArray(containers) ? containers : [];
+
   return `
-    <div class="stack">
-      <div class="field-grid npc-equipment-grid">
-        ${itemClassNameField("Class Name (класс контейнера)", `${basePath}.className`, safeContainer.className, "Рюкзак, жилет, куртка, штаны или другой контейнер.", "className")}
-        ${textField("Slot (слот)", `${basePath}.slot`, safeContainer.slot, "Куда надеть контейнер. Например: Body, Vest, Hips, Back.", "slot")}
+    <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table npc-container-table">
+        ${npcTableHeader(["Class", "Slot", "actions"])}
+        ${list.length
+          ? list
+              .map((container, index) => renderNpcContainerRow(`${path}.${index}`, container, path, index))
+              .join("")
+          : `<div class="npc-equipment-empty">Пока пусто.</div>`}
       </div>
-      <div class="npc-equipment-nested">
-        <p class="eyebrow">Items внутри контейнера</p>
-        ${objectArrayEditor(`${basePath}.items`, safeContainer.items, "npc-item", renderNpcItemFields)}
-      </div>
+    </div>
+    <button type="button" class="mini-button" data-action="add-array-item" data-path="${escapeAttribute(path)}" data-item-type="npc-container">+ Добавить</button>
+  `;
+}
+
+function renderNpcContainerRow(basePath, container, removePath, index) {
+  const safeContainer = container || createNpcContainer();
+
+  return `
+    <div class="npc-equipment-row npc-container-row">
+      ${npcTextCell(`${basePath}.className`, safeContainer.className, "Class", true)}
+      ${npcTextCell(`${basePath}.slot`, safeContainer.slot, "Slot")}
+      ${npcRemoveCell(removePath, index)}
+    </div>
+    <div class="npc-equipment-row-details">
+      <p class="eyebrow">Items внутри контейнера</p>
+      ${renderNpcItemTable(`${basePath}.items`, safeContainer.items, "npc-item")}
     </div>
   `;
 }
 
-function renderNpcWeaponFields(basePath, weapon) {
+function renderNpcWeaponTable(path, weapons) {
+  const list = Array.isArray(weapons) ? weapons : [];
+
+  return `
+    <div class="npc-equipment-table-wrap">
+      <div class="npc-equipment-table npc-weapon-table">
+        ${npcTableHeader(["Class", "Target", "Magazine", "AmmoCount", "actions"])}
+        ${list.length
+          ? list
+              .map((weapon, index) => renderNpcWeaponRow(`${path}.${index}`, weapon, path, index))
+              .join("")
+          : `<div class="npc-equipment-empty">Пока пусто.</div>`}
+      </div>
+    </div>
+    <button type="button" class="mini-button" data-action="add-array-item" data-path="${escapeAttribute(path)}" data-item-type="npc-weapon">+ Добавить</button>
+  `;
+}
+
+function renderNpcWeaponRow(basePath, weapon, removePath, index) {
   const safeWeapon = weapon || createNpcWeapon();
   const magazine = safeWeapon.magazine || createNpcMagazine();
   const targetOptions = [
@@ -2755,27 +2821,83 @@ function renderNpcWeaponFields(basePath, weapon) {
   ];
 
   return `
-    <div class="stack">
-      <div class="field-grid npc-equipment-grid">
-        ${itemClassNameField("Class Name (класс оружия)", `${basePath}.className`, safeWeapon.className, "Оружие NPC. Если target = hands, поле hands.className оставь пустым.", "className")}
-        ${selectField("Target (куда поставить)", `${basePath}.target`, safeWeapon.target, "hands занимает руки; остальные значения оставляют руки свободными.", targetOptions, "target")}
-      </div>
-      <div class="npc-equipment-nested">
-        <p class="eyebrow">Attachments / навесы</p>
-        ${objectArrayEditor(`${basePath}.attachments`, safeWeapon.attachments, "npc-item", renderNpcItemFields)}
-      </div>
-      <div class="npc-equipment-nested">
-        <p class="eyebrow">Magazine / магазин</p>
-        <div class="field-grid npc-equipment-grid">
-          ${itemClassNameField("Class Name (класс магазина)", `${basePath}.magazine.className`, magazine.className, "Магазин, который вставится в оружие.", "className")}
-          ${numberField("Ammo Count (патроны в магазине)", `${basePath}.magazine.ammoCount`, magazine.ammoCount, "Сколько патронов положить в магазин.", 1, "ammoCount")}
-        </div>
-      </div>
-      <div class="npc-equipment-nested">
-        <p class="eyebrow">Ammo / дополнительные патроны или предметы</p>
-        ${objectArrayEditor(`${basePath}.ammo`, safeWeapon.ammo, "npc-item", renderNpcItemFields)}
-      </div>
+    <div class="npc-equipment-row npc-weapon-row">
+      ${npcTextCell(`${basePath}.className`, safeWeapon.className, "Class", true)}
+      ${npcSelectCell(`${basePath}.target`, safeWeapon.target, "Target", targetOptions)}
+      ${npcTextCell(`${basePath}.magazine.className`, magazine.className, "Magazine", true)}
+      ${npcNumberCell(`${basePath}.magazine.ammoCount`, magazine.ammoCount, "AmmoCount")}
+      ${npcRemoveCell(removePath, index)}
     </div>
+    <div class="npc-equipment-row-details">
+      <p class="eyebrow">Attachments / навесы</p>
+      ${renderNpcItemTable(`${basePath}.attachments`, safeWeapon.attachments, "npc-item")}
+      <p class="eyebrow">Ammo / патроны</p>
+      ${renderNpcItemTable(`${basePath}.ammo`, safeWeapon.ammo, "npc-item")}
+    </div>
+  `;
+}
+
+function npcTableHeader(columns) {
+  return `
+    <div class="npc-equipment-row npc-equipment-header" aria-hidden="true">
+      ${columns.map((column) => `<span>${escapeHtml(column)}</span>`).join("")}
+    </div>
+  `;
+}
+
+function npcTextCell(path, value, label, withClassReference = false) {
+  return `
+    <input
+      class="npc-equipment-input"
+      type="text"
+      value="${escapeAttribute(value)}"
+      aria-label="${escapeAttribute(label)}"
+      title="${escapeAttribute(label)}"
+      data-path="${escapeAttribute(path)}"
+      data-type="text"
+      ${withClassReference ? `list="item-class-reference-options"` : ""}>
+  `;
+}
+
+function npcNumberCell(path, value, label) {
+  return `
+    <input
+      class="npc-equipment-input npc-equipment-number"
+      type="number"
+      value="${escapeAttribute(value)}"
+      aria-label="${escapeAttribute(label)}"
+      title="${escapeAttribute(label)}"
+      data-path="${escapeAttribute(path)}"
+      data-type="number"
+      step="1">
+  `;
+}
+
+function npcCheckboxCell(path, value, label) {
+  return `
+    <label class="npc-equipment-check" title="${escapeAttribute(label)}">
+      <input type="checkbox" ${value ? "checked" : ""} aria-label="${escapeAttribute(label)}" data-path="${escapeAttribute(path)}" data-type="flag">
+    </label>
+  `;
+}
+
+function npcSelectCell(path, value, label, options) {
+  return `
+    <select class="npc-equipment-input" aria-label="${escapeAttribute(label)}" title="${escapeAttribute(label)}" data-path="${escapeAttribute(path)}" data-type="text">
+      ${options
+        .map(
+          (option) => `
+            <option value="${escapeAttribute(option.value)}" ${String(value || "") === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>
+          `
+        )
+        .join("")}
+    </select>
+  `;
+}
+
+function npcRemoveCell(path, index) {
+  return `
+    <button type="button" class="mini-button danger npc-equipment-remove" data-action="remove-array-item" data-path="${escapeAttribute(path)}" data-index="${index}">Удалить</button>
   `;
 }
 

@@ -652,7 +652,113 @@
       "npcBackItems": [
         "HuntingBag",
         "Izh43Shotgun"
-      ]
+      ],
+      "npcLoadoutPreset": "test_npc_equipment_basic",
+      "npcEquipment": {
+        "clothing": [
+          {
+            "className": "FlatCap_BrownCheck",
+            "slot": "Headgear",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "HuntingJacket_Brown",
+            "slot": "Body",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "Jeans_Blue",
+            "slot": "Legs",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "WorkingGloves_Brown",
+            "slot": "Gloves",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "HikingBootsLow_Black",
+            "slot": "Feet",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          }
+        ],
+        "containers": [
+          {
+            "className": "HuntingBag",
+            "slot": "Back",
+            "items": [
+              {
+                "className": "BandageDressing",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 1,
+                "itemQuantity": 4
+              },
+              {
+                "className": "Ammo_762x39",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 1,
+                "itemQuantity": 20
+              }
+            ]
+          }
+        ],
+        "hands": {
+          "className": "",
+          "slot": "",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0
+        },
+        "backItems": [
+          {
+            "className": "Izh43Shotgun",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          }
+        ],
+        "weapons": [
+          {
+            "className": "CZ527",
+            "target": "hands",
+            "attachments": [
+              {
+                "className": "HuntingOptic",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              }
+            ],
+            "magazine": {
+              "className": "Mag_CZ527_5rnd",
+              "ammoCount": 5
+            },
+            "ammo": [
+              {
+                "className": "Ammo_762x39",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 1,
+                "itemQuantity": 10
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "fisherman_trigger",
