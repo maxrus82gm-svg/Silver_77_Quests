@@ -490,6 +490,97 @@ void SeedDefaultQuestRoles(Silver77_QuestConfig config)
     }
 }
 
+void Silver77_NormalizeNpcItem(Silver77_NpcItem item)
+{
+    if (!item)
+        return;
+
+    if (item.quantity <= 0)
+        item.quantity = 1;
+}
+
+void Silver77_NormalizeNpcContainer(Silver77_NpcContainer container)
+{
+    if (!container)
+        return;
+
+    if (!container.items)
+        container.items = new array<ref Silver77_NpcItem>;
+
+    foreach (Silver77_NpcItem item : container.items)
+    {
+        Silver77_NormalizeNpcItem(item);
+    }
+}
+
+void Silver77_NormalizeNpcWeapon(Silver77_NpcWeapon weapon)
+{
+    if (!weapon)
+        return;
+
+    if (!weapon.attachments)
+        weapon.attachments = new array<ref Silver77_NpcItem>;
+
+    if (!weapon.magazine)
+        weapon.magazine = new Silver77_NpcMagazine();
+
+    if (!weapon.ammo)
+        weapon.ammo = new array<ref Silver77_NpcItem>;
+
+    foreach (Silver77_NpcItem attachment : weapon.attachments)
+    {
+        Silver77_NormalizeNpcItem(attachment);
+    }
+
+    foreach (Silver77_NpcItem ammoItem : weapon.ammo)
+    {
+        Silver77_NormalizeNpcItem(ammoItem);
+    }
+}
+
+void Silver77_NormalizeNpcEquipment(Silver77_NpcEquipment equipment)
+{
+    if (!equipment)
+        return;
+
+    if (!equipment.clothing)
+        equipment.clothing = new array<ref Silver77_NpcItem>;
+
+    if (!equipment.containers)
+        equipment.containers = new array<ref Silver77_NpcContainer>;
+
+    if (!equipment.hands)
+        equipment.hands = new Silver77_NpcItem();
+
+    if (!equipment.backItems)
+        equipment.backItems = new array<ref Silver77_NpcItem>;
+
+    if (!equipment.weapons)
+        equipment.weapons = new array<ref Silver77_NpcWeapon>;
+
+    foreach (Silver77_NpcItem clothingItem : equipment.clothing)
+    {
+        Silver77_NormalizeNpcItem(clothingItem);
+    }
+
+    foreach (Silver77_NpcContainer container : equipment.containers)
+    {
+        Silver77_NormalizeNpcContainer(container);
+    }
+
+    Silver77_NormalizeNpcItem(equipment.hands);
+
+    foreach (Silver77_NpcItem backItem : equipment.backItems)
+    {
+        Silver77_NormalizeNpcItem(backItem);
+    }
+
+    foreach (Silver77_NpcWeapon weapon : equipment.weapons)
+    {
+        Silver77_NormalizeNpcWeapon(weapon);
+    }
+}
+
 void NormalizeQuestConfig(Silver77_QuestConfig config)
 {
     if (!config)
@@ -565,6 +656,11 @@ void NormalizeQuestConfig(Silver77_QuestConfig config)
 
         if (!trigger.npcBackItems)
             trigger.npcBackItems = new array<string>;
+
+        if (!trigger.npcEquipment)
+            trigger.npcEquipment = new Silver77_NpcEquipment();
+
+        Silver77_NormalizeNpcEquipment(trigger.npcEquipment);
 
         if (trigger.radius <= 0)
             trigger.radius = 2.0;
@@ -901,6 +997,21 @@ class QuestServerManager
         if (!npcPlayer || !trigger)
             return;
 
+        if (HasNpcEquipment(trigger.npcEquipment))
+        {
+            ApplyNpcEquipment(npcPlayer, trigger);
+            return;
+        }
+
+        Print("[Silver_77_Quests] NPC equipment is empty, using legacy NPC loadout for trigger: " + trigger.id);
+        ApplyLegacyNpcLoadout(npcPlayer, trigger);
+    }
+
+    static void ApplyLegacyNpcLoadout(PlayerBase npcPlayer, Silver77_QuestTriggerConfig trigger)
+    {
+        if (!npcPlayer || !trigger)
+            return;
+
         if (trigger.npcLoadout)
         {
             foreach (string loadoutItem : trigger.npcLoadout)
@@ -923,6 +1034,389 @@ class QuestServerManager
             if (!handsItem)
                 Print("[Silver_77_Quests] Failed to put NPC item in hands: " + trigger.npcHandsItem + " for trigger: " + trigger.id);
         }
+    }
+
+    static bool HasNpcItem(Silver77_NpcItem item)
+    {
+        if (!item)
+            return false;
+
+        return item.className != "";
+    }
+
+    static bool HasNpcItemArray(array<ref Silver77_NpcItem> items)
+    {
+        if (!items)
+            return false;
+
+        foreach (Silver77_NpcItem item : items)
+        {
+            if (HasNpcItem(item))
+                return true;
+        }
+
+        return false;
+    }
+
+    static bool HasNpcContainerArray(array<ref Silver77_NpcContainer> containers)
+    {
+        if (!containers)
+            return false;
+
+        foreach (Silver77_NpcContainer container : containers)
+        {
+            if (!container)
+                continue;
+
+            if (container.className != "" || HasNpcItemArray(container.items))
+                return true;
+        }
+
+        return false;
+    }
+
+    static bool HasNpcWeaponArray(array<ref Silver77_NpcWeapon> weapons)
+    {
+        if (!weapons)
+            return false;
+
+        foreach (Silver77_NpcWeapon weapon : weapons)
+        {
+            if (!weapon)
+                continue;
+
+            if (weapon.className != "")
+                return true;
+
+            if (HasNpcItemArray(weapon.attachments) || HasNpcItemArray(weapon.ammo))
+                return true;
+
+            if (weapon.magazine && weapon.magazine.className != "")
+                return true;
+        }
+
+        return false;
+    }
+
+    static bool HasNpcEquipment(Silver77_NpcEquipment equipment)
+    {
+        if (!equipment)
+            return false;
+
+        return HasNpcItemArray(equipment.clothing) || HasNpcContainerArray(equipment.containers) || HasNpcItem(equipment.hands) || HasNpcItemArray(equipment.backItems) || HasNpcWeaponArray(equipment.weapons);
+    }
+
+    static void ApplyNpcEquipment(PlayerBase npcPlayer, Silver77_QuestTriggerConfig trigger)
+    {
+        if (!npcPlayer || !trigger || !trigger.npcEquipment)
+            return;
+
+        Silver77_NpcEquipment equipment = trigger.npcEquipment;
+
+        if (equipment.clothing)
+        {
+            foreach (Silver77_NpcItem clothingItem : equipment.clothing)
+            {
+                CreateNpcAttachmentCopies(npcPlayer, clothingItem, trigger.id, "clothing");
+            }
+        }
+
+        if (equipment.containers)
+        {
+            foreach (Silver77_NpcContainer container : equipment.containers)
+            {
+                ApplyNpcContainer(npcPlayer, container, trigger.id);
+            }
+        }
+
+        if (HasNpcItem(equipment.hands))
+            CreateNpcHandsItem(npcPlayer, equipment.hands, trigger.id, "hands");
+
+        if (equipment.backItems)
+        {
+            foreach (Silver77_NpcItem backItem : equipment.backItems)
+            {
+                CreateNpcAttachmentCopies(npcPlayer, backItem, trigger.id, "backItems");
+            }
+        }
+
+        if (equipment.weapons)
+        {
+            foreach (Silver77_NpcWeapon weapon : equipment.weapons)
+            {
+                ApplyNpcWeapon(npcPlayer, weapon, trigger.id);
+            }
+        }
+
+        Print("[Silver_77_Quests] Applied npcEquipment for trigger: " + trigger.id);
+    }
+
+    static int GetNpcItemQuantity(Silver77_NpcItem item)
+    {
+        if (!item || item.quantity <= 0)
+            return 1;
+
+        return item.quantity;
+    }
+
+    static bool ApplyNpcItemQuantity(EntityAI createdItem, Silver77_NpcItem item, string triggerId, string context)
+    {
+        if (!createdItem || !item || !item.setItemQuantity)
+            return true;
+
+        string itemQuantityError = "";
+        string itemQuantityMode = "";
+        float actualItemQuantity = 0;
+        if (!ApplyRewardItemQuantitySafe(createdItem, item.className, item.itemQuantity, itemQuantityError, itemQuantityMode, actualItemQuantity))
+        {
+            createdItem.Delete();
+            Print("[Silver_77_Quests] NPC itemQuantity failed: trigger=" + triggerId + " context=" + context + " item=" + item.className + " error=" + itemQuantityError);
+            return false;
+        }
+
+        Print("[Silver_77_Quests] NPC itemQuantity applied: trigger=" + triggerId + " context=" + context + " item=" + item.className + " mode=" + itemQuantityMode + " requested=" + item.itemQuantity.ToString() + " actual=" + actualItemQuantity.ToString());
+        return true;
+    }
+
+    static EntityAI CreateNpcAttachment(EntityAI parent, string className, string slot, string triggerId, string context)
+    {
+        if (!parent || className == "")
+            return null;
+
+        EntityAI attachment = null;
+        if (slot != "")
+        {
+            int slotId = InventorySlots.GetSlotIdFromString(slot);
+            if (slotId >= 0)
+                attachment = parent.GetInventory().CreateAttachmentEx(className, slotId);
+
+            if (!attachment)
+                Print("[Silver_77_Quests] NPC attachment slot failed: trigger=" + triggerId + " context=" + context + " item=" + className + " slot=" + slot);
+        }
+
+        if (!attachment)
+            attachment = parent.GetInventory().CreateAttachment(className);
+
+        if (!attachment)
+            Print("[Silver_77_Quests] Failed to attach NPC item: trigger=" + triggerId + " context=" + context + " item=" + className + " slot=" + slot);
+
+        return attachment;
+    }
+
+    static void CreateNpcAttachmentCopies(EntityAI parent, Silver77_NpcItem item, string triggerId, string context)
+    {
+        if (!parent || !HasNpcItem(item))
+            return;
+
+        int quantity = GetNpcItemQuantity(item);
+        for (int i = 0; i < quantity; i++)
+        {
+            EntityAI attachment = CreateNpcAttachment(parent, item.className, item.slot, triggerId, context);
+            if (attachment)
+                ApplyNpcItemQuantity(attachment, item, triggerId, context);
+        }
+    }
+
+    static EntityAI CreateNpcInventoryItem(EntityAI owner, PlayerBase npcPlayer, Silver77_NpcItem item, string triggerId, string context, bool allowPlayerFallback = true)
+    {
+        if (!owner || !HasNpcItem(item))
+            return null;
+
+        EntityAI createdItem = owner.GetInventory().CreateInInventory(item.className);
+        if (!createdItem && allowPlayerFallback && npcPlayer)
+        {
+            createdItem = npcPlayer.GetInventory().CreateInInventory(item.className);
+            if (createdItem)
+                Print("[Silver_77_Quests] NPC item fallback to player inventory: trigger=" + triggerId + " context=" + context + " item=" + item.className);
+        }
+
+        if (!createdItem)
+        {
+            Print("[Silver_77_Quests] Failed to create NPC inventory item: trigger=" + triggerId + " context=" + context + " item=" + item.className);
+            return null;
+        }
+
+        if (!ApplyNpcItemQuantity(createdItem, item, triggerId, context))
+            return null;
+
+        return createdItem;
+    }
+
+    static void CreateNpcInventoryItemCopies(EntityAI owner, PlayerBase npcPlayer, Silver77_NpcItem item, string triggerId, string context, bool allowPlayerFallback = true)
+    {
+        if (!owner || !HasNpcItem(item))
+            return;
+
+        int quantity = GetNpcItemQuantity(item);
+        for (int i = 0; i < quantity; i++)
+        {
+            CreateNpcInventoryItem(owner, npcPlayer, item, triggerId, context, allowPlayerFallback);
+        }
+    }
+
+    static void ApplyNpcContainer(PlayerBase npcPlayer, Silver77_NpcContainer container, string triggerId)
+    {
+        if (!npcPlayer || !container)
+            return;
+
+        if (container.className == "")
+        {
+            Print("[Silver_77_Quests] NPC container class is empty for trigger: " + triggerId);
+            return;
+        }
+
+        EntityAI containerEntity = CreateNpcAttachment(npcPlayer, container.className, container.slot, triggerId, "container");
+        if (!containerEntity)
+            return;
+
+        if (container.items)
+        {
+            foreach (Silver77_NpcItem item : container.items)
+            {
+                CreateNpcInventoryItemCopies(containerEntity, npcPlayer, item, triggerId, "container.items", true);
+            }
+        }
+    }
+
+    static EntityAI CreateNpcHandsItem(PlayerBase npcPlayer, Silver77_NpcItem item, string triggerId, string context)
+    {
+        if (!npcPlayer || !HasNpcItem(item))
+            return null;
+
+        EntityAI itemInHands = npcPlayer.GetHumanInventory().GetEntityInHands();
+        if (itemInHands)
+        {
+            Print("[Silver_77_Quests] NPC hands already occupied: trigger=" + triggerId + " context=" + context + " item=" + item.className);
+            return null;
+        }
+
+        EntityAI handsItem = npcPlayer.GetHumanInventory().CreateInHands(item.className);
+        if (!handsItem)
+        {
+            Print("[Silver_77_Quests] Failed to put NPC item in hands: trigger=" + triggerId + " context=" + context + " item=" + item.className);
+            return null;
+        }
+
+        if (!ApplyNpcItemQuantity(handsItem, item, triggerId, context))
+            return null;
+
+        int quantity = GetNpcItemQuantity(item);
+        for (int i = 1; i < quantity; i++)
+        {
+            CreateNpcInventoryItem(npcPlayer, npcPlayer, item, triggerId, context + ".extra", false);
+        }
+
+        return handsItem;
+    }
+
+    static void ApplyNpcWeapon(PlayerBase npcPlayer, Silver77_NpcWeapon weapon, string triggerId)
+    {
+        if (!npcPlayer || !weapon)
+            return;
+
+        if (weapon.className == "")
+        {
+            Print("[Silver_77_Quests] NPC weapon class is empty for trigger: " + triggerId);
+            return;
+        }
+
+        EntityAI weaponEntity = CreateNpcWeaponEntity(npcPlayer, weapon, triggerId);
+        if (!weaponEntity)
+            return;
+
+        if (weapon.attachments)
+        {
+            foreach (Silver77_NpcItem attachment : weapon.attachments)
+            {
+                CreateNpcAttachmentCopies(weaponEntity, attachment, triggerId, "weapon.attachments");
+            }
+        }
+
+        if (weapon.magazine && weapon.magazine.className != "")
+            ApplyNpcWeaponMagazine(weaponEntity, weapon.magazine, triggerId);
+
+        if (weapon.ammo)
+        {
+            foreach (Silver77_NpcItem ammoItem : weapon.ammo)
+            {
+                CreateNpcInventoryItemCopies(npcPlayer, npcPlayer, ammoItem, triggerId, "weapon.ammo", false);
+            }
+        }
+    }
+
+    static EntityAI CreateNpcWeaponEntity(PlayerBase npcPlayer, Silver77_NpcWeapon weapon, string triggerId)
+    {
+        if (!npcPlayer || !weapon || weapon.className == "")
+            return null;
+
+        string target = weapon.target;
+        target.ToLower();
+
+        EntityAI weaponEntity = null;
+        if (target == "hands")
+        {
+            EntityAI itemInHands = npcPlayer.GetHumanInventory().GetEntityInHands();
+            if (itemInHands)
+            {
+                Print("[Silver_77_Quests] NPC hands already occupied for weapon: trigger=" + triggerId + " item=" + weapon.className);
+                return null;
+            }
+
+            weaponEntity = npcPlayer.GetHumanInventory().CreateInHands(weapon.className);
+            if (!weaponEntity)
+                Print("[Silver_77_Quests] Failed to put NPC weapon in hands: trigger=" + triggerId + " item=" + weapon.className);
+        }
+        else if (target == "back" || target == "shoulder")
+        {
+            weaponEntity = CreateNpcAttachment(npcPlayer, weapon.className, "", triggerId, "weapon." + target);
+        }
+        else
+        {
+            weaponEntity = CreateNpcAttachment(npcPlayer, weapon.className, "", triggerId, "weapon");
+            if (!weaponEntity)
+            {
+                Silver77_NpcItem weaponItem = new Silver77_NpcItem();
+                weaponItem.className = weapon.className;
+                weaponItem.quantity = 1;
+                weaponEntity = CreateNpcInventoryItem(npcPlayer, npcPlayer, weaponItem, triggerId, "weapon.inventory", false);
+            }
+        }
+
+        return weaponEntity;
+    }
+
+    static void ApplyNpcWeaponMagazine(EntityAI weaponEntity, Silver77_NpcMagazine magazineConfig, string triggerId)
+    {
+        if (!weaponEntity || !magazineConfig || magazineConfig.className == "")
+            return;
+
+        EntityAI magazineEntity = CreateNpcAttachment(weaponEntity, magazineConfig.className, "", triggerId, "weapon.magazine");
+        if (!magazineEntity)
+            return;
+
+        if (magazineConfig.ammoCount <= 0)
+            return;
+
+        Magazine magazine = Magazine.Cast(magazineEntity);
+        if (!magazine)
+        {
+            Print("[Silver_77_Quests] NPC magazine item is not Magazine: trigger=" + triggerId + " item=" + magazineConfig.className);
+            return;
+        }
+
+        int ammoMax = magazine.GetAmmoMax();
+        if (ammoMax > 0 && magazineConfig.ammoCount > ammoMax)
+        {
+            Print("[Silver_77_Quests] NPC magazine ammoCount exceeds max: trigger=" + triggerId + " item=" + magazineConfig.className + " requested=" + magazineConfig.ammoCount.ToString() + " max=" + ammoMax.ToString());
+            return;
+        }
+
+        magazine.ServerSetAmmoCount(magazineConfig.ammoCount);
+        int actualAmmoCount = magazine.GetAmmoCount();
+        if (actualAmmoCount != magazineConfig.ammoCount)
+            Print("[Silver_77_Quests] NPC magazine ammoCount mismatch: trigger=" + triggerId + " item=" + magazineConfig.className + " requested=" + magazineConfig.ammoCount.ToString() + " actual=" + actualAmmoCount.ToString());
+        else
+            Print("[Silver_77_Quests] NPC magazine ammoCount applied: trigger=" + triggerId + " item=" + magazineConfig.className + " ammoCount=" + actualAmmoCount.ToString());
     }
 
     static void AddNpcAttachment(PlayerBase npcPlayer, string className, string triggerId)
