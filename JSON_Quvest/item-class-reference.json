@@ -24,6 +24,14 @@
                   {
                       "className":  "Ammo_12gaPellets",
                       "descriptionRu":  "12к патроны (красные)"
+                  },
+                  {
+                      "className":  "PotatoSeed",
+                      "descriptionRu":  "картошка"
+                  },
+                  {
+                      "className":  "PleurotusMushroom",
+                      "descriptionRu":  "Гриб"
                   }
               ]
 }
