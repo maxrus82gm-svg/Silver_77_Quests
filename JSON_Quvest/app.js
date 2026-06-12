@@ -2720,7 +2720,7 @@ function renderNpcItemTable(path, items, itemType) {
 
   return `
     <div class="npc-equipment-table-wrap">
-      <div class="npc-equipment-table npc-item-table npc-hands-table">
+      <div class="npc-equipment-table npc-item-table">
         ${npcTableHeader(["Class", "Slot", "Qty", "SetQty", "ItemQty", "actions"])}
         ${list.length
           ? list
@@ -2736,7 +2736,7 @@ function renderNpcItemTable(path, items, itemType) {
 function renderNpcHandsTable(basePath, item) {
   return `
     <div class="npc-equipment-table-wrap">
-      <div class="npc-equipment-table npc-item-table">
+      <div class="npc-equipment-table npc-item-table npc-hands-table">
         ${npcTableHeader(["Class", "Slot", "Qty", "SetQty", "ItemQty"])}
         ${renderNpcItemRow(basePath, item, "", 0, false)}
       </div>

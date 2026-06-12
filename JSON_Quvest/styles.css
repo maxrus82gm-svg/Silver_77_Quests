@@ -955,19 +955,19 @@ button {
   align-items: center;
 }
 
-.npc-item-table .npc-equipment-row {
+.npc-item-table > .npc-equipment-row {
   grid-template-columns: minmax(220px, 2fr) minmax(110px, 1fr) 72px 64px 82px 78px;
 }
 
-.npc-hands-table .npc-equipment-row {
+.npc-hands-table > .npc-equipment-row {
   grid-template-columns: minmax(220px, 2fr) minmax(110px, 1fr) 72px 64px 82px;
 }
 
-.npc-container-table .npc-equipment-row {
+.npc-container-table > .npc-equipment-row {
   grid-template-columns: minmax(220px, 2fr) minmax(120px, 1fr) 78px;
 }
 
-.npc-weapon-table .npc-equipment-row {
+.npc-weapon-table > .npc-equipment-row {
   grid-template-columns: minmax(220px, 2fr) minmax(120px, 1fr) minmax(180px, 1.4fr) 92px 78px;
 }
 
