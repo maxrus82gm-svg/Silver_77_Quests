@@ -1294,3 +1294,21 @@ Execution order is no longer based on “many separate windows”. The user clar
    - true scrolling lower journal;
    - true gold focus inside journal text;
    - reduced action buttons / extra helper textbox on the right.
+
+## Update 2026-06-12 - quest editor reward flow cleanup
+
+1. The editor reward model was clarified around the strict `NPC Flow` contract:
+   - `Offer` uses `giveItems` for items issued when the quest starts;
+   - `Completion` blocks may use their own local `triggerActions[].rewards`;
+   - the final `Reward` block uses its own local `triggerActions[].rewards` and closes the quest.
+2. Because of that strict flow, the visible `Root Rewards (общие fallback rewards)` editor section was removed from `JSON_Quvest/app.js`.
+   - `quests[].rewards` still exists in the JSON/server contract as a legacy fallback;
+   - the editor no longer exposes it as a normal block, because it is not attached to a specific NPC/stage and confused the visual chain.
+3. The empty `Новый блок цепочки` card is now hidden once a final `Reward` block already exists.
+   - after the final reward, the editor no longer suggests that another chain stage can be added;
+   - the toolbar hint now explains that the final reward is already set.
+4. Verification:
+   - `node --check D:\Dayz\Silver_77_Quests\JSON_Quvest\app.js` passes;
+   - live editor reload at `http://127.0.0.1:4173/` showed `Root Rewards` absent, `NPC Flow` present, final `ЗАВЕРШАЮЩИЙ` present, and zero empty chain blocks after it.
+5. Data note:
+   - existing `JSON_Quvest/Silver_77_Quests.json` and `JSON_Quvest/Silver_77_Quests_BackUP.json` were already modified in the worktree and were not touched by this editor UI cleanup.

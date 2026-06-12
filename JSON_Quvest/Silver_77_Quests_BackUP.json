@@ -31,13 +31,20 @@
           "rewards": [
             {
               "className": "Ammo_12gaPellets",
-              "quantity": 100,
+              "quantity": 10,
               "setItemQuantity": 0,
               "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "LeatherSewingKit",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "Battery9V",
               "quantity": 1,
               "setItemQuantity": 0,
               "itemQuantity": 0,
@@ -89,15 +96,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "Ammo_12gaPellets",
-          "quantity": 8,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_fisherman_1",
@@ -148,15 +147,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "Ammo_12gaPellets",
-          "quantity": 8,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_Rasputin_1",
@@ -215,15 +206,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "DisinfectantAlcohol",
-          "quantity": 1,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_fisherman_2",
@@ -451,7 +434,7 @@
     {
       "id": "Georgiy_Bar_Orugka",
       "name": "Поставки тушёнки",
-      "description": "Просьба поставить тушенку, в количестве 10 штук. Обещает вознаградить набором для шиться, и дефицитным точильным камнем, ну патронами 12 калибра 60 штук.",
+      "description": "Просьба поставить тушенку, в количестве 10 штук. Обещает вознаградить набором для шиться, и дефицитным точильным камнем, ну патронами 12 калибра 60 штук. Набор для шитья, точильный камень и 2 батарейки 9v.",
       "repeatable": 1,
       "cooldownSeconds": 500000,
       "requiresPrevious": "",
@@ -468,7 +451,7 @@
         {
           "triggerId": "Georgiy_Bar_Orugka",
           "actionType": "offer",
-          "dialogText": "Здорова, у нас тут строительство, есть пробелы в обеспечении, критична провизия, если поставишь нам что то интересное, я дам тебе кое что интересно, знаю что тебя заинтересует. Патроны понятно, но у меня есть кое что поинтересней, инструменты по починке нынче в цене, оно и понятно, время такое что вещи начали опять ценить, ремонтировать стало не так зазорно как ранее. Принеси мне 6 банок добротной тушенки, а за нами не заржавеет.",
+          "dialogText": "Здорова, у нас тут строительство, есть пробелы в обеспечении, критична провизия, если поставишь нам что то интересное, я дам тебе кое что интересно, знаю что тебя заинтересует. Патроны понятно, но у меня есть кое что поинтересней, инструменты по починке нынче в цене, оно и понятно, время такое что вещи начали опять ценить, ремонтировать стало не так зазорно как ранее. Принеси мне 10 банок добротной тушенки, а за нами не заржавеет.",
           "rewards": []
         },
         {
@@ -496,6 +479,13 @@
               "setItemQuantity": 0,
               "itemQuantity": 0,
               "spawnOnGround": 0
+            },
+            {
+              "className": "Battery9V",
+              "quantity": 2,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
             }
           ]
         }
@@ -504,7 +494,7 @@
       "objectives": [
         {
           "type": "item",
-          "className": "KKCR_Opened_Bank_Stew",
+          "className": "KKCR_Closed_Bank_Stew",
           "quantity": 10,
           "removeOnComplete": 1,
           "useItemQuantity": 0,

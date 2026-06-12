@@ -3938,6 +3938,8 @@ function renderQuestTriggerFlowSection(quest, questIndex) {
   const activeBlocks = getQuestFlowActiveBlocks(quest);
   const flowBlocks = getQuestFlowVisibleTriggers(quest, questIndex);
   const sidebarTriggerId = normalizeSidebarQuestTriggerId();
+  const hasFinalRewardBlock = normalizeQuestIdArray(quest?.rewardTriggerIds).length > 0;
+  const showNewFlowBlock = mode === "active" && !hasFinalRewardBlock;
 
   let body = "";
 
@@ -3953,7 +3955,7 @@ function renderQuestTriggerFlowSection(quest, questIndex) {
     body = `
       <div class="trigger-flow-grid">
         ${flowBlocks.map((block, triggerIndex) => renderQuestRoleFlowCard(quest, questIndex, block, triggerIndex)).join("")}
-        ${mode === "active" ? renderQuestTriggerFlowEmptyCard(questIndex, flowBlocks.length) : ""}
+        ${showNewFlowBlock ? renderQuestTriggerFlowEmptyCard(questIndex, flowBlocks.length) : ""}
       </div>
     `;
   }
@@ -3970,8 +3972,12 @@ function renderQuestTriggerFlowSection(quest, questIndex) {
         </div>
       <div class="quest-flow-toolbar-note">
         ${selectedTriggerId
-            ? `Сейчас выбран NPC: <strong>${escapeHtml(selectedTriggerLabel)}</strong>. В активном режиме ниже остаются видны все текущие блоки и пустой блок для добавления следующего NPC в цепочку.`
-            : "В активном режиме снизу всегда есть пустой блок: выбери в нём NPC и включи нужные роли."}
+            ? hasFinalRewardBlock
+              ? `Сейчас выбран NPC: <strong>${escapeHtml(selectedTriggerLabel)}</strong>. Финальный Reward уже задан, поэтому блок добавления следующего этапа скрыт.`
+              : `Сейчас выбран NPC: <strong>${escapeHtml(selectedTriggerLabel)}</strong>. В активном режиме ниже остаются видны все текущие блоки и пустой блок для добавления следующего NPC в цепочку.`
+            : hasFinalRewardBlock
+              ? "Финальный Reward уже задан, поэтому ниже больше нет пустого блока для продолжения цепочки."
+              : "В активном режиме снизу есть пустой блок: выбери в нём NPC и включи нужные роли."}
       </div>
       </div>
       <div class="muted">
@@ -4045,16 +4051,6 @@ function renderQuestEditor(quest, index) {
       ${sectionCard(
         "NPC Flow (роли и настройки по trigger / NPC)",
         renderQuestTriggerFlowSection(quest, index)
-      )}
-
-      ${sectionCard(
-        "Root Rewards (общие fallback rewards)",
-        `
-          <div class="stack">
-            <div class="muted">Общий список <code>quests[].rewards[]</code>. Reward-блоки с пустым локальным списком могут использовать эти награды как fallback.</div>
-            ${objectArrayEditor(`${base}.rewards`, quest.rewards, "reward-item", renderRewardItemFields)}
-          </div>
-        `
       )}
     </div>
   `;

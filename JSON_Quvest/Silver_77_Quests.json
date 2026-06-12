@@ -31,13 +31,20 @@
           "rewards": [
             {
               "className": "Ammo_12gaPellets",
-              "quantity": 100,
+              "quantity": 10,
               "setItemQuantity": 0,
               "itemQuantity": 0,
               "spawnOnGround": 0
             },
             {
               "className": "LeatherSewingKit",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "Battery9V",
               "quantity": 1,
               "setItemQuantity": 0,
               "itemQuantity": 0,
@@ -89,15 +96,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "Ammo_12gaPellets",
-          "quantity": 8,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_fisherman_1",
@@ -148,15 +147,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "Ammo_12gaPellets",
-          "quantity": 8,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_Rasputin_1",
@@ -215,15 +206,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "DisinfectantAlcohol",
-          "quantity": 1,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_fisherman_2",
