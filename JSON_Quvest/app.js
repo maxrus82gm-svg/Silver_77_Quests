@@ -2493,7 +2493,7 @@ function renderTriggerEditor(trigger, index) {
         )}
       </div>
 
-      ${sectionCard("Trigger Position (позиция триггера)", vectorField(`${base}.position`, trigger.position))}
+      ${sectionCard("Trigger Position (позиция триггера)", vectorField(`${base}.position`, trigger.position, "Координаты точки trigger в мире DayZ. X/Z задают положение на карте, Y задает высоту."))}
 
       <div class="section-grid">
         ${sectionCard(
@@ -2512,11 +2512,11 @@ function renderTriggerEditor(trigger, index) {
             <div class="stack">
               <div>
                 <p class="eyebrow">NPC Position (позиция NPC)</p>
-                ${vectorField(`${base}.npcPosition`, trigger.npcPosition)}
+                ${vectorField(`${base}.npcPosition`, trigger.npcPosition, "Координаты NPC в мире DayZ. Если NPC создается вместе с trigger, это место его появления.")}
               </div>
               <div>
                 <p class="eyebrow">NPC Orientation (ориентация NPC)</p>
-                ${vectorField(`${base}.npcOrientation`, trigger.npcOrientation)}
+                ${vectorField(`${base}.npcOrientation`, trigger.npcOrientation, "Направление NPC после спавна. Обычно важен угол по горизонтали, чтобы NPC смотрел в нужную сторону.")}
               </div>
             </div>
           `
@@ -2529,7 +2529,7 @@ function renderTriggerEditor(trigger, index) {
         "NPC Loadout (одежда и экипировка NPC)",
         `
           <div class="stack">
-            ${stringArrayEditor(`${base}.npcLoadout`, trigger.npcLoadout, "loadout item (элемент экипировки)", "Legacy NPC Loadout")}
+            ${stringArrayEditor(`${base}.npcLoadout`, trigger.npcLoadout, "loadout item (элемент экипировки)", "Legacy NPC Loadout", "Предмет", "ClassName предмета legacy-экипировки NPC. Сохраняется для обратной совместимости.")}
           </div>
         `
       )}
@@ -2538,7 +2538,7 @@ function renderTriggerEditor(trigger, index) {
         "NPC Back Items (предметы за спиной NPC)",
         `
           <div class="stack">
-            ${stringArrayEditor(`${base}.npcBackItems`, trigger.npcBackItems, "back item (предмет за спиной)", "Legacy Back Items")}
+            ${stringArrayEditor(`${base}.npcBackItems`, trigger.npcBackItems, "back item (предмет за спиной)", "Legacy Back Items", "Предмет", "ClassName предмета, который legacy-система размещает за спиной NPC.")}
           </div>
         `
       )}
@@ -2560,15 +2560,23 @@ function sectionCard(title, content) {
   `;
 }
 
+function tooltipAttributes(text) {
+  const value = String(text || "").trim();
+  if (!value) {
+    return "";
+  }
+
+  return ` class="has-tooltip" data-tooltip="${escapeAttribute(value)}" title="${escapeAttribute(value)}"`;
+}
+
 function textField(label, path, value, hint, jsonKey = "") {
   return `
     <div class="field">
       <div class="field-label-row">
-        <label>${escapeHtml(label)}</label>
+        <label${tooltipAttributes(hint)}>${escapeHtml(label)}</label>
         ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
       </div>
-      <input type="text" value="${escapeAttribute(value)}" data-path="${escapeAttribute(path)}" data-type="text">
-      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+      <input type="text" value="${escapeAttribute(value)}" data-path="${escapeAttribute(path)}" data-type="text" ${hint ? `title="${escapeAttribute(hint)}"` : ""}>
     </div>
   `;
 }
@@ -2577,11 +2585,10 @@ function itemClassNameField(label, path, value, hint, jsonKey = "className") {
   return `
     <div class="field">
       <div class="field-label-row">
-        <label>${escapeHtml(label)}</label>
+        <label${tooltipAttributes(hint)}>${escapeHtml(label)}</label>
         ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
       </div>
-      <input type="text" value="${escapeAttribute(value)}" data-path="${escapeAttribute(path)}" data-type="text" list="item-class-reference-options">
-      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+      <input type="text" value="${escapeAttribute(value)}" data-path="${escapeAttribute(path)}" data-type="text" list="item-class-reference-options" ${hint ? `title="${escapeAttribute(hint)}"` : ""}>
     </div>
   `;
 }
@@ -2590,11 +2597,10 @@ function textareaField(label, path, value, hint, jsonKey = "") {
   return `
     <div class="field">
       <div class="field-label-row">
-        <label>${escapeHtml(label)}</label>
+        <label${tooltipAttributes(hint)}>${escapeHtml(label)}</label>
         ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
       </div>
-      <textarea data-path="${escapeAttribute(path)}" data-type="text">${escapeHtml(value)}</textarea>
-      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+      <textarea data-path="${escapeAttribute(path)}" data-type="text" ${hint ? `title="${escapeAttribute(hint)}"` : ""}>${escapeHtml(value)}</textarea>
     </div>
   `;
 }
@@ -2603,7 +2609,7 @@ function numberField(label, path, value, hint, step, jsonKey = "") {
   return `
     <div class="field">
       <div class="field-label-row">
-        <label>${escapeHtml(label)}</label>
+        <label${tooltipAttributes(hint)}>${escapeHtml(label)}</label>
         ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
       </div>
       <input
@@ -2611,8 +2617,8 @@ function numberField(label, path, value, hint, step, jsonKey = "") {
         value="${escapeAttribute(value)}"
         data-path="${escapeAttribute(path)}"
         data-type="number"
-        step="${escapeAttribute(step || 1)}">
-      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+        step="${escapeAttribute(step || 1)}"
+        ${hint ? `title="${escapeAttribute(hint)}"` : ""}>
     </div>
   `;
 }
@@ -2622,12 +2628,11 @@ function toggleField(label, path, value, hint, jsonKey = "") {
     <div class="toggle-field">
       <div>
         <div class="field-label-row">
-          <label>${escapeHtml(label)}</label>
+          <label${tooltipAttributes(hint)}>${escapeHtml(label)}</label>
           ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
         </div>
-        ${hint ? `<div class="muted">${escapeHtml(hint)}</div>` : ""}
       </div>
-      <input type="checkbox" ${value ? "checked" : ""} data-path="${escapeAttribute(path)}" data-type="flag">
+      <input type="checkbox" ${value ? "checked" : ""} data-path="${escapeAttribute(path)}" data-type="flag" ${hint ? `title="${escapeAttribute(hint)}"` : ""}>
     </div>
   `;
 }
@@ -2636,10 +2641,10 @@ function selectField(label, path, value, hint, options, jsonKey = "") {
   return `
     <div class="field">
       <div class="field-label-row">
-        <label>${escapeHtml(label)}</label>
+        <label${tooltipAttributes(hint)}>${escapeHtml(label)}</label>
         ${jsonKey ? `<span class="field-key">JSON: ${escapeHtml(jsonKey)}</span>` : ""}
       </div>
-      <select data-path="${escapeAttribute(path)}" data-type="text">
+      <select data-path="${escapeAttribute(path)}" data-type="text" ${hint ? `title="${escapeAttribute(hint)}"` : ""}>
         ${options
           .map(
             (option) => `
@@ -2648,7 +2653,6 @@ function selectField(label, path, value, hint, options, jsonKey = "") {
           )
           .join("")}
       </select>
-      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
     </div>
   `;
 }
@@ -2740,7 +2744,7 @@ function renderNpcItemTable(path, items, itemType, options = {}) {
     <div class="npc-equipment-table-wrap">
       <div class="npc-equipment-table-title">${escapeHtml(title)}</div>
       <div class="npc-equipment-table ${tableClassName}">
-        ${npcTableHeader(columns)}
+        ${npcTableHeader(columns, NPC_COLUMN_TOOLTIPS)}
         ${list.length
           ? list
               .map((item, index) => renderNpcItemRow(`${path}.${index}`, item, path, index, true, options))
@@ -2757,7 +2761,7 @@ function renderNpcHandsTable(basePath, item) {
     <div class="npc-equipment-table-wrap">
       <div class="npc-equipment-table-title">Hands / предмет в руках</div>
       <div class="npc-equipment-table npc-item-table npc-item-table-no-slot npc-hands-table">
-        ${npcTableHeader(["Class", "Qty", "SetQty", "ItemQty"])}
+        ${npcTableHeader(["Class", "Qty", "SetQty", "ItemQty"], NPC_COLUMN_TOOLTIPS)}
         ${renderNpcItemRow(basePath, item, "", 0, false, { slotMode: "hidden" })}
       </div>
     </div>
@@ -2786,7 +2790,7 @@ function renderNpcContainerTable(path, containers, slotOptions, title = "Contain
     <div class="npc-equipment-table-wrap">
       <div class="npc-equipment-table-title">${escapeHtml(title)}</div>
       <div class="npc-equipment-table npc-container-table">
-        ${npcTableHeader(["Class", "Slot", "actions"])}
+        ${npcTableHeader(["Class", "Slot", "actions"], NPC_COLUMN_TOOLTIPS)}
         ${list.length
           ? list
               .map((container, index) => renderNpcContainerRow(`${path}.${index}`, container, path, index, slotOptions))
@@ -2824,7 +2828,7 @@ function renderNpcWeaponTable(path, weapons, title = "Weapons / оружие") {
     <div class="npc-equipment-table-wrap">
       <div class="npc-equipment-table-title">${escapeHtml(title)}</div>
       <div class="npc-equipment-table npc-weapon-table">
-        ${npcTableHeader(["Class", "Target", "Magazine", "AmmoCount", "actions"])}
+        ${npcTableHeader(["Class", "Target", "Magazine", "AmmoCount", "actions"], NPC_COLUMN_TOOLTIPS)}
         ${list.length
           ? list
               .map((weapon, index) => renderNpcWeaponRow(`${path}.${index}`, weapon, path, index))
@@ -2869,22 +2873,35 @@ function renderNpcWeaponRow(basePath, weapon, removePath, index) {
   `;
 }
 
-function npcTableHeader(columns) {
+const NPC_COLUMN_TOOLTIPS = {
+  Class: "ClassName предмета из DayZ или мода.",
+  Slot: "Слот экипировки NPC. Если выбран auto или поле пустое, система попробует разместить предмет автоматически.",
+  Qty: "Количество физических предметов или стеков.",
+  SetQty: "Включает установку внутреннего количества у предмета.",
+  ItemQty: "Внутреннее количество: патроны, вода, ресурс, заряд и похожие значения.",
+  Target: "Куда поместить оружие: hands - в руки, back/shoulder - за спину, auto - автоматически.",
+  Magazine: "Магазин, который будет вставлен в оружие.",
+  AmmoCount: "Количество патронов, которое будет загружено в магазин.",
+  actions: "Действия со строкой: удалить элемент или добавить новый."
+};
+
+function npcTableHeader(columns, tooltips = {}) {
   return `
     <div class="npc-equipment-row npc-equipment-header npc-equipment-header-row" aria-hidden="true">
-      ${columns.map((column) => `<span>${escapeHtml(column)}</span>`).join("")}
+      ${columns.map((column) => `<span${tooltipAttributes(tooltips[column])}>${escapeHtml(column)}</span>`).join("")}
     </div>
   `;
 }
 
 function npcTextCell(path, value, label, withClassReference = false) {
+  const title = NPC_COLUMN_TOOLTIPS[label] || label;
   return `
     <input
       class="npc-equipment-input"
       type="text"
       value="${escapeAttribute(value)}"
       aria-label="${escapeAttribute(label)}"
-      title="${escapeAttribute(label)}"
+      title="${escapeAttribute(title)}"
       data-path="${escapeAttribute(path)}"
       data-type="text"
       ${withClassReference ? `list="item-class-reference-options"` : ""}>
@@ -2892,13 +2909,14 @@ function npcTextCell(path, value, label, withClassReference = false) {
 }
 
 function npcNumberCell(path, value, label) {
+  const title = NPC_COLUMN_TOOLTIPS[label] || label;
   return `
     <input
       class="npc-equipment-input npc-equipment-number"
       type="number"
       value="${escapeAttribute(value)}"
       aria-label="${escapeAttribute(label)}"
-      title="${escapeAttribute(label)}"
+      title="${escapeAttribute(title)}"
       data-path="${escapeAttribute(path)}"
       data-type="number"
       step="1">
@@ -2906,16 +2924,18 @@ function npcNumberCell(path, value, label) {
 }
 
 function npcCheckboxCell(path, value, label) {
+  const title = NPC_COLUMN_TOOLTIPS[label] || label;
   return `
-    <label class="npc-equipment-check" title="${escapeAttribute(label)}">
+    <label class="npc-equipment-check" title="${escapeAttribute(title)}">
       <input type="checkbox" ${value ? "checked" : ""} aria-label="${escapeAttribute(label)}" data-path="${escapeAttribute(path)}" data-type="flag">
     </label>
   `;
 }
 
 function npcSelectCell(path, value, label, options) {
+  const title = NPC_COLUMN_TOOLTIPS[label] || label;
   return `
-    <select class="npc-equipment-input" aria-label="${escapeAttribute(label)}" title="${escapeAttribute(label)}" data-path="${escapeAttribute(path)}" data-type="text">
+    <select class="npc-equipment-input" aria-label="${escapeAttribute(label)}" title="${escapeAttribute(title)}" data-path="${escapeAttribute(path)}" data-type="text">
       ${options
         .map(
           (option) => `
@@ -3017,31 +3037,35 @@ function questTriggerVisibilityField(questIndex, questId) {
   `;
 }
 
-function vectorField(basePath, values) {
+function vectorField(basePath, values, hint = "") {
   const vector = normalizeVector(values);
   return `
     <div class="field-grid triple">
-      ${numberField("X", `${basePath}.0`, vector[0], "", 0.01)}
-      ${numberField("Y", `${basePath}.1`, vector[1], "", 0.01)}
-      ${numberField("Z", `${basePath}.2`, vector[2], "", 0.01)}
+      ${numberField("X", `${basePath}.0`, vector[0], hint ? `${hint} Ось X.` : "", 0.01)}
+      ${numberField("Y", `${basePath}.1`, vector[1], hint ? `${hint} Ось Y.` : "", 0.01)}
+      ${numberField("Z", `${basePath}.2`, vector[2], hint ? `${hint} Ось Z.` : "", 0.01)}
     </div>
   `;
 }
 
-function stringArrayEditor(path, items, placeholder, title = "List / список") {
+function stringArrayEditor(path, items, placeholder, title = "List / список", columnLabel = "ID", columnTooltip = QUEST_STRING_COLUMN_TOOLTIPS.ID) {
   const list = Array.isArray(items) ? items : [];
+  const tooltips = {
+    [columnLabel]: columnTooltip,
+    "Действия": QUEST_STRING_COLUMN_TOOLTIPS["Действия"]
+  };
 
   return `
     <div class="quest-list-table-wrap">
       <div class="quest-list-title">${escapeHtml(title)}</div>
       <div class="quest-list-table quest-string-table">
-        ${questTableHeader(["ID", "Действия"])}
+        ${questTableHeader([columnLabel, "Действия"], tooltips)}
         ${list.length
           ? list
               .map(
                 (item, index) => `
                   <div class="quest-list-row quest-string-row">
-                    ${questTextCell(`${path}.${index}`, item, placeholder)}
+                    ${questTextCell(`${path}.${index}`, item, placeholder, false, columnTooltip)}
                     ${questRemoveCell(path, index)}
                   </div>
                 `
@@ -3061,7 +3085,7 @@ function renderQuestRewardItemTable(path, items, title = "Rewards / наград
     <div class="quest-list-table-wrap">
       <div class="quest-list-title">${escapeHtml(title)}</div>
       <div class="quest-list-table quest-reward-table">
-        ${questTableHeader(["Предмет", "Кол-во", "Вещ. кол-во", "Внутр. кол-во", "На землю", "Действия"])}
+        ${questTableHeader(["Предмет", "Кол-во", "Вещ. кол-во", "Внутр. кол-во", "На землю", "Действия"], QUEST_REWARD_COLUMN_TOOLTIPS)}
         ${list.length
           ? list
               .map((item, index) => renderQuestRewardItemRow(`${path}.${index}`, item, path, index))
@@ -3078,11 +3102,11 @@ function renderQuestRewardItemRow(basePath, item, removePath, index) {
 
   return `
     <div class="quest-list-row quest-reward-row">
-      ${questTextCell(`${basePath}.className`, safeItem.className, "Предмет", true)}
-      ${questNumberCell(`${basePath}.quantity`, safeItem.quantity, "Количество")}
-      ${questCheckboxCell(`${basePath}.setItemQuantity`, safeItem.setItemQuantity, "Вещ. кол-во")}
-      ${questNumberCell(`${basePath}.itemQuantity`, safeItem.itemQuantity, "Внутр. кол-во")}
-      ${questCheckboxCell(`${basePath}.spawnOnGround`, safeItem.spawnOnGround, "На землю")}
+      ${questTextCell(`${basePath}.className`, safeItem.className, "Предмет", true, QUEST_REWARD_COLUMN_TOOLTIPS["Предмет"])}
+      ${questNumberCell(`${basePath}.quantity`, safeItem.quantity, "Количество", QUEST_REWARD_COLUMN_TOOLTIPS["Кол-во"])}
+      ${questCheckboxCell(`${basePath}.setItemQuantity`, safeItem.setItemQuantity, "Вещ. кол-во", QUEST_REWARD_COLUMN_TOOLTIPS["Вещ. кол-во"])}
+      ${questNumberCell(`${basePath}.itemQuantity`, safeItem.itemQuantity, "Внутр. кол-во", QUEST_REWARD_COLUMN_TOOLTIPS["Внутр. кол-во"])}
+      ${questCheckboxCell(`${basePath}.spawnOnGround`, safeItem.spawnOnGround, "На землю", QUEST_REWARD_COLUMN_TOOLTIPS["На землю"])}
       ${questRemoveCell(removePath, index)}
     </div>
   `;
@@ -3095,7 +3119,7 @@ function renderQuestObjectiveTable(path, items, title = "Objectives / что н�
     <div class="quest-list-table-wrap">
       <div class="quest-list-title">${escapeHtml(title)}</div>
       <div class="quest-list-table quest-objective-table">
-        ${questTableHeader(["Тип", "Предмет", "Кол-во", "Внутр. кол-во", "Забрать", "Сдача частями", "Действия"])}
+        ${questTableHeader(["Тип", "Предмет", "Кол-во", "Внутр. кол-во", "Забрать", "Сдача частями", "Действия"], QUEST_OBJECTIVE_COLUMN_TOOLTIPS)}
         ${list.length
           ? list
               .map((item, index) => renderQuestObjectiveRow(`${path}.${index}`, item, path, index))
@@ -3112,56 +3136,83 @@ function renderQuestObjectiveRow(basePath, item, removePath, index) {
 
   return `
     <div class="quest-list-row quest-objective-row">
-      ${questTextCell(`${basePath}.type`, safeItem.type, "Тип")}
-      ${questTextCell(`${basePath}.className`, safeItem.className, "Предмет", true)}
-      ${questNumberCell(`${basePath}.quantity`, safeItem.quantity, "Количество")}
-      ${questCheckboxCell(`${basePath}.useItemQuantity`, safeItem.useItemQuantity, "Внутр. кол-во")}
-      ${questCheckboxCell(`${basePath}.removeOnComplete`, safeItem.removeOnComplete, "Забрать")}
-      ${questCheckboxCell(`${basePath}.allowPartialTurnIn`, safeItem.allowPartialTurnIn, "Сдача частями")}
+      ${questTextCell(`${basePath}.type`, safeItem.type, "Тип", false, QUEST_OBJECTIVE_COLUMN_TOOLTIPS["Тип"])}
+      ${questTextCell(`${basePath}.className`, safeItem.className, "Предмет", true, QUEST_OBJECTIVE_COLUMN_TOOLTIPS["Предмет"])}
+      ${questNumberCell(`${basePath}.quantity`, safeItem.quantity, "Количество", QUEST_OBJECTIVE_COLUMN_TOOLTIPS["Кол-во"])}
+      ${questCheckboxCell(`${basePath}.useItemQuantity`, safeItem.useItemQuantity, "Внутр. кол-во", QUEST_OBJECTIVE_COLUMN_TOOLTIPS["Внутр. кол-во"])}
+      ${questCheckboxCell(`${basePath}.removeOnComplete`, safeItem.removeOnComplete, "Забрать", QUEST_OBJECTIVE_COLUMN_TOOLTIPS["Забрать"])}
+      ${questCheckboxCell(`${basePath}.allowPartialTurnIn`, safeItem.allowPartialTurnIn, "Сдача частями", QUEST_OBJECTIVE_COLUMN_TOOLTIPS["Сдача частями"])}
       ${questRemoveCell(removePath, index)}
     </div>
   `;
 }
 
-function questTableHeader(labels) {
+const QUEST_STRING_COLUMN_TOOLTIPS = {
+  ID: "ID элемента списка. Для Quest IDs это служебный id квеста, связанного с trigger или требованием.",
+  "Действия": "Действия со строкой: удалить элемент или добавить новый."
+};
+
+const QUEST_REWARD_COLUMN_TOOLTIPS = {
+  "Предмет": "ClassName предмета, который будет выдан игроку.",
+  "Кол-во": "Сколько физических предметов или стеков создать.",
+  "Вещ. кол-во": "Включает установку внутреннего количества у созданного предмета. Полезно для патронов, воды, топлива, ресурсов и похожих предметов.",
+  "Внутр. кол-во": "Какое внутреннее количество поставить каждому созданному предмету или стеку.",
+  "На землю": "Если включено, предмет будет создан рядом на земле. Если выключено, предмет будет выдан игроку в инвентарь.",
+  "Действия": "Действия со строкой: удалить предмет или добавить новый."
+};
+
+const QUEST_OBJECTIVE_COLUMN_TOOLTIPS = {
+  "Тип": "Тип цели. Сейчас чаще всего используется item - принести или сдать предмет.",
+  "Предмет": "ClassName предмета, который нужен для выполнения цели.",
+  "Кол-во": "Сколько нужно сдать для выполнения цели. Для обычных предметов считается количество физических предметов или стеков.",
+  "Внутр. кол-во": "Если включено, считается внутреннее количество предмета: патроны в пачке, вода, топливо, ресурс, деньги в стаке и похожие значения.",
+  "Забрать": "Если включено, после сдачи предметы будут удалены у игрока. Если выключено, цель засчитывается, но предметы остаются у игрока.",
+  "Сдача частями": "Если включено, игрок может сдавать предметы постепенно, не все количество сразу. Прогресс будет накапливаться.",
+  "Действия": "Действия со строкой: удалить цель или добавить новую."
+};
+
+function questTableHeader(labels, tooltips = {}) {
   return `
     <div class="quest-list-row quest-list-header-row" aria-hidden="true">
-      ${labels.map((label) => `<div class="quest-list-header">${escapeHtml(label)}</div>`).join("")}
+      ${labels.map((label) => `<div class="quest-list-header"${tooltipAttributes(tooltips[label])}>${escapeHtml(label)}</div>`).join("")}
     </div>
   `;
 }
 
-function questTextCell(path, value, label, withClassReference = false) {
+function questTextCell(path, value, label, withClassReference = false, tooltip = "") {
+  const title = tooltip || label;
   return `
     <input
       class="quest-list-input"
       type="text"
       value="${escapeAttribute(value)}"
       aria-label="${escapeAttribute(label)}"
-      title="${escapeAttribute(label)}"
+      title="${escapeAttribute(title)}"
       data-path="${escapeAttribute(path)}"
       data-type="text"
       ${withClassReference ? `list="item-class-reference-options"` : ""}>
   `;
 }
 
-function questNumberCell(path, value, label) {
+function questNumberCell(path, value, label, tooltip = "") {
+  const title = tooltip || label;
   return `
     <input
       class="quest-list-input quest-list-number"
       type="number"
       value="${escapeAttribute(value)}"
       aria-label="${escapeAttribute(label)}"
-      title="${escapeAttribute(label)}"
+      title="${escapeAttribute(title)}"
       data-path="${escapeAttribute(path)}"
       data-type="number"
       step="1">
   `;
 }
 
-function questCheckboxCell(path, value, label) {
+function questCheckboxCell(path, value, label, tooltip = "") {
+  const title = tooltip || label;
   return `
-    <label class="quest-list-check" title="${escapeAttribute(label)}">
+    <label class="quest-list-check" title="${escapeAttribute(title)}">
       <input type="checkbox" ${value ? "checked" : ""} aria-label="${escapeAttribute(label)}" data-path="${escapeAttribute(path)}" data-type="flag">
     </label>
   `;

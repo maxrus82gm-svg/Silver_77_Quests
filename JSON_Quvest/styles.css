@@ -546,6 +546,45 @@ button {
   font-weight: 700;
 }
 
+.has-tooltip {
+  position: relative;
+  cursor: help;
+  text-decoration: underline dotted rgba(111, 85, 61, 0.44);
+  text-underline-offset: 3px;
+}
+
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 30;
+  width: max-content;
+  max-width: min(360px, 78vw);
+  padding: 9px 10px;
+  border: 1px solid rgba(99, 82, 61, 0.24);
+  border-radius: 8px;
+  background: rgba(42, 34, 26, 0.96);
+  color: #fffaf2;
+  box-shadow: 0 12px 30px rgba(42, 34, 26, 0.22);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.has-tooltip:hover::after,
+.has-tooltip:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .field-key {
   color: var(--muted);
   font-size: 0.78rem;
