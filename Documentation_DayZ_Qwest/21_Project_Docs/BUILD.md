@@ -51,7 +51,7 @@ build_split_mods.bat
 -serverMod=@Silver_77_Quests_Server
 ```
 
-В Steam Workshop публикуй только `@Silver_77_Quests_Client`. Серверный `@Silver_77_Quests_Server` держи только на сервере. Подробности и чеклист проверки: `Documentation/SPLIT_CLIENT_SERVER.md`.
+В Steam Workshop публикуй только `@Silver_77_Quests_Client`. Серверный `@Silver_77_Quests_Server` держи только на сервере. Подробности и чеклист проверки: `Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md`.
 
 Если собираешь вручную через Addon Builder:
 

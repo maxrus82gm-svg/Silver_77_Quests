@@ -150,7 +150,7 @@ Viewer должен позволять вручную выбирать хотя 
 
 Подробные общие правила кодировок см. в:
 
-- `Documentation/SplitDoc/ENCODING_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 
 ## 9. Реальные файлы для read-only проверки
 

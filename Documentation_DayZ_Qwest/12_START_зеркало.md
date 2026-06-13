@@ -139,7 +139,7 @@ Git контролирует только пользователь.
 
 - клиент: `Silver_77_Quests_Client/`
 - сервер: `Silver_77_Quests_Server/`
-- документация: `Documentation/`
+- документация и правила: `Documentation_DayZ_Qwest/`
 - редактор и dev JSON: `JSON_Quvest/`
 - layout viewer: `DayZ_layout/`
 
@@ -322,7 +322,7 @@ CONCLUSION:
 
 - `Silver_77_Quests_Client` — клиентская часть мода.
 - `Silver_77_Quests_Server` — серверная часть мода.
-- `Documentation` — документация, `AGENT_TASK_LOOP.md` и правила `SplitDoc`.
+- `Documentation_DayZ_Qwest` — активная документация, `AGENT_TASK_LOOP` и правила `SplitDoc`.
 - `JSON_Quvest` — редактор квестов и dev JSON.
 - `DayZ_layout` — viewer/инструмент для DayZ layout-файлов.
 - `Silver_77_fix_Builds_Cooking` — исходники отдельного cooking/build fix-мода.

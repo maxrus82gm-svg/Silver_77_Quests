@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "c58215fdeaeffdfa",
+        "id": "b8d84022f894c6b4",
         "type": "tabs",
         "children": [
           {
-            "id": "9c84bec2773b1885",
+            "id": "63968017e7d50e7b",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "icon": "lucide-file",
+              "title": "Новая вкладка"
             }
           }
         ]
@@ -176,11 +176,16 @@
       "bases:Создать новую базу": false
     }
   },
-  "active": "9c84bec2773b1885",
+  "active": "63968017e7d50e7b",
   "lastOpenFiles": [
+    "22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+    "22_Legacy_Check",
+    "06_Идеи.md",
+    "2026-06-13.md",
+    "11_AGENT_TASK_LOOP_зеркало.md",
+    "Без названия.canvas",
     "12_START_зеркало.md",
     "00_Главная.md",
-    "11_AGENT_TASK_LOOP_зеркало.md",
     "10_Правила_агента.md",
     "21_Project_Docs/00_INDEX.md",
     "20_SplitDoc/00_INDEX.md",
@@ -202,10 +207,6 @@
     "20_SplitDoc/ENCODING_RULES.md",
     "20_SplitDoc/DAYZ_RPC_SYNC_RULES.md",
     "20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md",
-    "20_SplitDoc",
-    "Без названия.canvas",
-    "04_Архитектура.md",
-    "02_Решения.md",
-    "01_Текущее_состояние.md"
+    "20_SplitDoc"
   ]
 }

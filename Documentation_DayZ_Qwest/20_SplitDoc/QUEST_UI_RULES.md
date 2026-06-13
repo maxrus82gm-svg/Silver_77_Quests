@@ -94,15 +94,15 @@
 
 Для структуры данных читать:
 
-- `Documentation/SplitDoc/QUEST_JSON_CONTRACT.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md`
 
 Для кириллицы и `.layout`:
 
-- `Documentation/SplitDoc/ENCODING_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 
 Для viewer-задач:
 
-- `Documentation/SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md`
 
 ## 10. Совместимость с DayZ_layout viewer
 

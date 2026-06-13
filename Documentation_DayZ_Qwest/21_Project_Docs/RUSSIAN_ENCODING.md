@@ -80,6 +80,8 @@ rg -n "Р’|Рќ|Рњ|Рџ|Рљ|РЎ|СЃ|С‚|С‹|вЂ" D:\Dayz\Silver_77_Q
    - `Documentation/STARTER_QUEST_CONFIG.json`;
    - `Documentation/CODEX_WORKLOG.md`;
    - `Documentation/CODEX_CONTROL_CONTEXT.md`;
+
+   Эти старые `Documentation/...` источники оставлены как legacy/исторический контекст. Для активных агентских правил использовать `Documentation_DayZ_Qwest`.
    - предыдущая рабочая копия.
 3. Заменить сломанные строки вручную на нормальный русский.
 4. Сохранить файл как UTF-8.

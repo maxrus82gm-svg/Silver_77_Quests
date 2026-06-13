@@ -4,7 +4,8 @@
 
 Если по проекту работает новый Codex-агент, первым делом нужно открыть:
 
-- `Documentation/CODEX_START_HERE.md`
+- `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`
+- `Documentation_DayZ_Qwest/12_START_зеркало.md`
 
 ## Файлы документации
 

@@ -42,7 +42,7 @@
 - `Silver_77_Quests_Client/gui/QuestMenu.layout`
 - `Silver_77_Quests_Client/gui/QuestJournal.layout`
 - `JSON_Quvest/*.json`
-- `Documentation/*.md`
+- `Documentation_DayZ_Qwest/**/*.md`
 
 Если текст выглядит как `�����` или `Р’С‹...`, это ещё не доказывает порчу файла:
 
@@ -112,8 +112,8 @@
 
 В проекте уже существует внешний документ:
 
-- `Documentation/RUSSIAN_ENCODING.md`
+- `Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md`
 
 Этот `SplitDoc` предназначен как короткий агентский набор рабочих правил.
 
-`Documentation/RUSSIAN_ENCODING.md` не меняется в этой миграции и остаётся отдельным расширенным справочным документом. Если между ними появится расхождение, это нужно считать риском нескольких источников правды и отдельно выносить в задачу на синхронизацию.
+`Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md` остаётся отдельным расширенным справочным документом. Если между ним и этим `SplitDoc` появится расхождение, это нужно считать риском нескольких источников правды и отдельно выносить в задачу на синхронизацию.

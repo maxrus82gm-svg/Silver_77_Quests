@@ -10,7 +10,7 @@
 
 Расширенный логический документ проекта:
 
-- `Documentation/QUEST_LOGIC_SPEC.md`
+- `Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md`
 
 Этот `SplitDoc` нужен как короткая operational-версия для агентов.
 
@@ -138,12 +138,12 @@ NPC-текст хранится в:
 
 Подробные UI-правила см. в:
 
-- `Documentation/SplitDoc/QUEST_UI_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md`
 
 ## 9. Риск дублей
 
 В проекте уже есть более широкий документ:
 
-- `Documentation/QUEST_LOGIC_SPEC.md`
+- `Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md`
 
 Если между ним и этим `SplitDoc` появится расхождение, это нужно считать риском двойного канона и выносить в отдельную синхронизационную задачу.

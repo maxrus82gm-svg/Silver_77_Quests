@@ -70,7 +70,6 @@
 Ожидается новая задача от пользователя.
 
 
-
 ================================================================================
 # 🟩 БЛОК 2 — ПОСЛЕДНИЙ ОТЧЁТ АГЕНТА
 ================================================================================
@@ -82,16 +81,13 @@
 AGENT REPORT
 
 DONE:
-- Канонические ссылки переключены на `Documentation_DayZ_Qwest`.
-- Активный loop закреплён как `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
-- Активный START закреплён как `Documentation_DayZ_Qwest/12_START_зеркало.md`.
-- Матрица чтения в Obsidian-loop переведена на `Documentation_DayZ_Qwest/20_SplitDoc` и `Documentation_DayZ_Qwest/21_Project_Docs`.
-- В Obsidian-loop добавлено правило очистки выполненной задачи из активного `БЛОКА 1`.
-- `Documentation_DayZ_Qwest/12_START_зеркало.md` обновлён под Obsidian-канон.
-- `Documentation_DayZ_Qwest/10_Правила_агента.md` переписан как статус основного центра правил.
-- Старые `Documentation/AGENT_TASK_LOOP.md` и `Documentation/SplitDoc/START.md` превращены в legacy bridge-документы.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 110`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена запись `TASK 110`.
+- Выполнена диагностика старых путей `Documentation` / `Documentation/...` по Markdown-документам проекта.
+- Активные хвосты внутри `Documentation_DayZ_Qwest` заменены на Obsidian-пути или явно классифицированы.
+- Старые bridge-файлы проверены и оставлены без удаления.
+- Создан отчёт-инвентаризация хвостов старой `Documentation`.
+- В `10_Правила_агента.md` добавлено правило не использовать `Documentation/...` как активный источник правды.
+- В `TASK_HISTORY.md` добавлена запись `TASK 111`.
+- В `05_Очередь_задач.md` добавлена выполненная TASK 111, старую будущую задачу про карту путей перенумеровал в TASK 112, чтобы не было конфликта номеров.
 - Активный `БЛОК 1` в Obsidian-loop очищен.
 
 RULES PATH:
@@ -99,39 +95,60 @@ RULES PATH:
 
 CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\00_Главная.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\01_Текущее_состояние.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\04_Архитектура.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\00_INDEX.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\DAYZ_LAYOUT_VIEWER_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\ENCODING_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_EDITOR_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_JSON_CONTRACT.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_UI_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\SERVER_PROFILE_RULES.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
-- `P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md`
-- `P:\Silver_77_Quests\Documentation\SplitDoc\START.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\00_INDEX.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\BUILD.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\README.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\RUSSIAN_ENCODING.md`
+
+CREATED FILES:
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\22_Legacy_Check\00_Проверка_хвостов_Documentation.md`
 
 DIFF:
-- Obsidian-loop теперь указывает на Obsidian-loop, Obsidian-START, `20_SplitDoc` и `21_Project_Docs`.
-- Obsidian-START теперь указывает на Obsidian-loop, Obsidian-START и Obsidian-копии Git/history/project docs.
-- `10_Правила_агента.md` фиксирует `Documentation_DayZ_Qwest` как основной центр правил и документации.
-- Старые `AGENT_TASK_LOOP.md` и `START.md` заменены короткими bridge-документами.
-- История и очередь получили запись `TASK 110`.
+- Активные индексы `20_SplitDoc` и `21_Project_Docs` больше не называют старую `Documentation` источником правды.
+- `START`, текущее состояние, архитектура и внутренние ссылки `SplitDoc` переведены на `Documentation_DayZ_Qwest`.
+- В проектных документах Obsidian обновлены активные входные ссылки агента и ссылка на split-checklist.
+- Добавлена навигационная ссылка на legacy-check в `00_Главная.md`.
 
 CHECKS:
-- Активный loop указывает на `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
-- START указывает на `Documentation_DayZ_Qwest/12_START_зеркало.md`.
-- Матрица чтения ведёт на `Documentation_DayZ_Qwest/20_SplitDoc`.
-- Проектные ссылки ведут на `Documentation_DayZ_Qwest/21_Project_Docs`.
-- Старый `Documentation/AGENT_TASK_LOOP.md` стал legacy bridge.
-- Старый `Documentation/SplitDoc/START.md` стал legacy bridge.
-- `TASK_HISTORY.md` в Obsidian содержит запись `TASK 110`.
-- Текущий `БЛОК 1` в Obsidian-loop очищен.
-- В активном `БЛОКЕ 1` не осталось текста `TASK 110`.
+- Старый `Documentation/AGENT_TASK_LOOP.md` указывает на `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
+- Старый `Documentation/SplitDoc/START.md` указывает на Obsidian START, Obsidian loop, `20_SplitDoc` и `21_Project_Docs`.
+- Обязательное чтение `Documentation_DayZ_Qwest/12_START_зеркало.md` сохранено.
+- В активном `БЛОКЕ 1` нет TASK 111 после очистки.
+- Отчёт `22_Legacy_Check/00_Проверка_хвостов_Documentation.md` создан.
+- `00_Главная.md` содержит ссылку на отчёт.
+- `TASK_HISTORY.md` содержит запись TASK 111.
 - Документация сохранена в UTF-8 без BOM.
 - Моды обновлять не нужно.
 
+FOUND LEGACY REFERENCES:
+- Старые bridge-файлы: `Documentation/AGENT_TASK_LOOP.md`, `Documentation/SplitDoc/START.md`.
+- Legacy-описание в `10_Правила_агента.md` оставлено намеренно.
+- `Documentation/` в деревьях сборки `BUILD.md` / `SPLIT_CLIENT_SERVER.md` оставлено как описание структуры старого/публикуемого мода, не как активный источник правил.
+
+LEFT AS HISTORY:
+- Старые пути в `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` оставлены как история TASK 104-110.
+- Старые отчёты, CODEX-документы, worklog/changelog и архивные заметки в `Documentation` не переписывались.
+- Ссылки на старые CODEX-документы в `21_Project_Docs/RUSSIAN_ENCODING.md` оставлены как legacy-источник для восстановления текста.
+
 PROBLEMS:
-- Нет.
+- Вне разрешённого scope остались старые ссылки в корневом `README.md`, `JSON_Quvest/README.md`, `Support/.../README.md` и старых CODEX-документах. Они записаны в отчёт-инвентаризацию как хвосты для отдельной задачи, если понадобится полная чистка.
 
 CONCLUSION:
-- TASK 110 выполнен: `Documentation_DayZ_Qwest` стал основным центром правил и документации, старые документы оставлены как legacy bridge, активный `БЛОК 1` очищается в Obsidian-loop.
-
+- TASK 111 выполнен: активные Obsidian-документы больше не используют старую `Documentation` как источник правды, bridge и история сохранены, текущий `БЛОК 1` очищен.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

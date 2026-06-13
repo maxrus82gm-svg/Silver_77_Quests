@@ -81,9 +81,9 @@
 
 Для задач по структуре данных читать:
 
-- `Documentation/SplitDoc/QUEST_JSON_CONTRACT.md`
-- `Documentation/QUEST_LOGIC_SPEC.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md`
+- `Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md`
 
 Для задач по dev/prod-путям читать:
 
-- `Documentation/SplitDoc/SERVER_PROFILE_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md`
