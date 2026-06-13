@@ -11,10 +11,10 @@
             "id": "9c84bec2773b1885",
             "type": "leaf",
             "state": {
-              "type": "empty",
+              "type": "graph",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "icon": "lucide-git-fork",
+              "title": "Граф"
             }
           }
         ]
@@ -178,9 +178,12 @@
   },
   "active": "9c84bec2773b1885",
   "lastOpenFiles": [
+    "00_Главная.md",
+    "12_START_зеркало.md",
+    "11_AGENT_TASK_LOOP_зеркало.md",
+    "10_Правила_агента.md",
     "04_Архитектура.md",
     "02_Решения.md",
-    "00_Главная.md",
     "01_Текущее_состояние.md",
     "05_Очередь_задач.md",
     "03_Открытые_вопросы.md",

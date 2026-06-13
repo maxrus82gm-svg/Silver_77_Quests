@@ -47,6 +47,7 @@
 - `TASK 104` — выполнена документационная правка. В `START.md` в базовый формат `AGENT REPORT` добавлен обязательный пункт `RULES PATH` с путём к основным правилам и `SplitDoc`: `P:\Silver_77_Quests\Documentation`.
 - `TASK 105` — выполнена документационная правка. Подтверждено, что `RULES PATH` с путём `P:\Silver_77_Quests\Documentation` остаётся в каноническом формате отчёта `START.md`; верх `AGENT_TASK_LOOP.md` сжат до ссылки на `START.md` и сохранённой матрицы чтения `SplitDoc`.
 - `TASK 106` — выполнена документационная правка. В `START.md` добавлено правило выборочного чтения: ChatGPT выбирает минимальный набор тематических `SplitDoc`, а агент не читает все `SplitDoc` подряд. Подробные Git/REVIEW правила вынесены в новый `Documentation/SplitDoc/GIT_REVIEW_RULES.md`; в `START.md` оставлена короткая ссылка и базовое правило, что Git контролирует пользователь.
+- `TASK 107` — выполнена подготовка Obsidian-перехода. База `Documentation_DayZ_Qwest` нормализована: старые упоминания `DayZ_Qwest` исправлены, создан раздел агентских правил и подготовлены зеркала `AGENT_TASK_LOOP` / `START`. Старые рабочие документы `Documentation/AGENT_TASK_LOOP.md` и `Documentation/SplitDoc/START.md` остались источником правды и физически не переносились.
 
 ## Примечание
 
