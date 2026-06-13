@@ -58,14 +58,18 @@
 AGENT REPORT
 
 DONE:
-- В Obsidian-базе `Documentation_DayZ_Qwest` исправлены старые упоминания `DayZ_Qwest` и старые пути на актуальное имя/путь.
-- В `Documentation_DayZ_Qwest/02_Решения.md` исправлена сломанная Markdown-строка пути.
-- В заметках `02`-`06` добавлены нормальные первые заголовки.
-- В `Documentation_DayZ_Qwest/00_Главная.md` добавлен раздел `Агентская система`.
-- Созданы компактные Obsidian-зеркала агентских правил.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена запись о подготовке Obsidian-перехода.
-- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена короткая запись по `TASK 107`.
-- Текущий `БЛОК 1` очищен по правилу из `START.md`.
+- Создана папка `Documentation_DayZ_Qwest/20_SplitDoc`.
+- В `20_SplitDoc` полными копиями перенесены нужные документы из `Documentation/SplitDoc`.
+- Создан индекс `Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md`.
+- Создана папка `Documentation_DayZ_Qwest/21_Project_Docs`.
+- В `21_Project_Docs` полными копиями перенесены нужные проектные документы из `Documentation`.
+- Создан индекс `Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md`.
+- В `Documentation_DayZ_Qwest/00_Главная.md` добавлен раздел `Перенесённые документы`.
+- В `Documentation_DayZ_Qwest/10_Правила_агента.md` добавлено уточнение про `20_SplitDoc`, `21_Project_Docs` и старые источники правды.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена запись о `TASK 109`.
+- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена короткая запись о `TASK 109`.
+- `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` обновлён как полное зеркало актуального оригинала.
+- Текущий `БЛОК 1` в старом `Documentation/AGENT_TASK_LOOP.md` оставлен очищенным.
 
 RULES PATH:
 - Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation`
@@ -74,33 +78,47 @@ CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md`
 - `P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\00_Главная.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\01_Текущее_состояние.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\02_Решения.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\03_Открытые_вопросы.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\04_Архитектура.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\06_Идеи.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 
 CREATED FILES:
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\00_INDEX.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\GIT_REVIEW_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_UI_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_JSON_CONTRACT.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\ENCODING_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_EDITOR_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\SERVER_PROFILE_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\DAYZ_LAYOUT_VIEWER_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\DAYZ_RPC_SYNC_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\00_INDEX.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\QUEST_LOGIC_SPEC.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\RUSSIAN_ENCODING.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\README_JSON_CONFIG.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\SPLIT_CLIENT_SERVER.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\BUILD.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\README_INSTALLATION.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\README.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\CHANGELOG.md`
 
 DIFF:
-- Старые упоминания Obsidian-базы `DayZ_Qwest` заменены на `Documentation_DayZ_Qwest`.
-- Актуальный путь базы указан как `P:\Silver_77_Quests\Documentation_DayZ_Qwest`.
-- `02_Решения.md` получил корректный путь ``Documentation_DayZ_Qwest``.
-- В `00_Главная.md` добавлены ссылки `[[10_Правила_агента]]`, `[[11_AGENT_TASK_LOOP_зеркало]]`, `[[12_START_зеркало]]`.
-- Новые зеркала описывают текущие рабочие оригиналы, но не заменяют их.
-- История пополнена записью о `TASK 107`.
-- `БЛОК 1` заменён на стандартную заглушку.
+- Добавлены полные Obsidian-зеркала нужных `SplitDoc` в `20_SplitDoc`.
+- Добавлены полные Obsidian-зеркала важных проектных документов в `21_Project_Docs`.
+- Созданы индексы `20_SplitDoc/00_INDEX.md` и `21_Project_Docs/00_INDEX.md`.
+- `00_Главная.md` получила ссылки на оба индекса.
+- `10_Правила_агента.md` уточняет, что старые `Documentation/SplitDoc` и `Documentation` остаются источниками правды.
+- В очереди задач добавлена запись `TASK 109`; старый черновик с номером 109 сдвинут на `TASK 110`, чтобы избежать дубля номера.
+- Старые оригиналы не удалялись, система на Obsidian-путь не переключалась.
 
 CHECKS:
-- Старые упоминания `DayZ_Qwest` в Obsidian-базе заменены на `Documentation_DayZ_Qwest`.
-- Путь указан точно: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`.
-- `02_Решения.md` больше не содержит сломанную Markdown-кавычку.
-- Новые Obsidian-файлы созданы и связаны из `00_Главная.md`.
-- Старые рабочие документы остались на своих местах.
+- Все указанные документы скопированы полностью, без пересказа.
+- Имена файлов сохранены.
+- Индексы `20_SplitDoc/00_INDEX.md` и `21_Project_Docs/00_INDEX.md` созданы.
+- `00_Главная.md` содержит ссылки на новые индексы.
+- Старые оригиналы остались на местах.
+- `TASK_HISTORY.md` содержит запись `TASK 109`.
 - `БЛОК 1` очищен корректно.
 - Документация сохранена в UTF-8 без BOM.
 - Моды обновлять не нужно.
@@ -109,7 +127,7 @@ PROBLEMS:
 - Нет.
 
 CONCLUSION:
-- TASK 107 выполнен как подготовительный Obsidian-переход: база `Documentation_DayZ_Qwest` нормализована, зеркала агентских документов созданы, старые рабочие документы не удалялись и физически не переносились.
+- TASK 109 выполнен как подготовительный перенос в Obsidian: нужные рабочие правила и проектные документы созданы как полные зеркала, старые оригиналы не удалялись и система на Obsidian-путь не переключалась.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
