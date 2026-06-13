@@ -44,6 +44,8 @@
 - `TASK 101` — принято после runtime-проверки пользователя. Commit baseline: `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800`. Для `QuestMenu` выбран компромиссный рабочий вариант: `Description/Dialog` увеличены по вертикали, `Scrollbar V` отключён, стек остаётся `ScrollWidget -> MultilineTextWidget`, `QuestUI.c` не менялся. `wrapper/mask/SizeToChild/RichText/EditBox` не используются. Известное ограничение: очень длинный текст может обрезаться; тема `scroll/clipping` отложена.
 - `TASK 102` — выполнена как документационная фиксация runtime-accepted baseline после `TASK 101`. В `AGENT_TASK_LOOP.md` и `TASK_HISTORY.md` записано, что commit `2fc3212f8a381efd7d33bdd60ff2491f5b5e3800` принят как текущий рабочий вариант `QuestMenu`.
 - `TASK 103` — выполнена документационная правка. `AGENT_RULES.md` переименован/заменён на `START.md`; `START.md` теперь главный стартовый документ правил. Добавлены правила Git review: после отчёта Codex REVIEW должен начинаться с `СТАТУС КОММИТА`, commit message указывается как есть, неподтверждённый message отмечается честно, ассистент не утверждает, что видит локальные изменения, а проверяет GitHub/push. В правило добавлен рабочий путь проекта `P:\Silver_77_Quests`.
+- `TASK 104` — выполнена документационная правка. В `START.md` в базовый формат `AGENT REPORT` добавлен обязательный пункт `RULES PATH` с путём к основным правилам и `SplitDoc`: `P:\Silver_77_Quests\Documentation`.
+- `TASK 105` — выполнена документационная правка. Подтверждено, что `RULES PATH` с путём `P:\Silver_77_Quests\Documentation` остаётся в каноническом формате отчёта `START.md`; верх `AGENT_TASK_LOOP.md` сжат до ссылки на `START.md` и сохранённой матрицы чтения `SplitDoc`.
 
 ## Примечание
 

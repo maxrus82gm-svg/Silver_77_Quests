@@ -9,17 +9,10 @@
 - последний `REVIEW / STATUS` в `БЛОКЕ 3`;
 - короткую карту чтения `SplitDoc`.
 
-Постоянные правила вынесены в:
+Правила:
 
-- `Documentation/SplitDoc/START.md`
-- `Documentation/SplitDoc/ENCODING_RULES.md`
-- `Documentation/SplitDoc/DAYZ_RPC_SYNC_RULES.md`
-- `Documentation/SplitDoc/QUEST_EDITOR_RULES.md`
-- `Documentation/SplitDoc/QUEST_JSON_CONTRACT.md`
-- `Documentation/SplitDoc/QUEST_UI_RULES.md`
-- `Documentation/SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md`
-- `Documentation/SplitDoc/SERVER_PROFILE_RULES.md`
-- `Documentation/SplitDoc/TASK_HISTORY.md`
+- Постоянные правила: `Documentation/SplitDoc/START.md`
+- Тематические правила: по матрице `SplitDoc` ниже
 
 ## Что читать всегда
 
@@ -39,74 +32,16 @@
 - `Server profile / dev JSON / перенос на сервер` -> `SERVER_PROFILE_RULES.md`
 - `History / status / прошлые решения` -> `TASK_HISTORY.md`
 
-Если задача явно разрешает правку документации, агент может сам обновлять:
-
-- `БЛОК 2 — AGENT REPORT`
-- `БЛОК 3 — REVIEW / STATUS`
-- `Documentation/SplitDoc/TASK_HISTORY.md`
-- новые подтверждённые правила в нужном `SplitDoc`
-
 ================================================================================
 # 🟦 БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА ДЛЯ АГЕНТА
 ================================================================================
 
 # БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-TASK 104 — Добавить путь к документации правил в отчёт агента
+Активной задачи нет.
+Предыдущая задача выполнена.
+Ожидается новая задача от пользователя.
 
-Цель:
-Добавить постоянное короткое правило, чтобы агент в каждом отчёте явно указывал путь, где находятся правила и SplitDoc:
-P:\Silver_77_Quests\Documentation
-
-Читать:
-
-* Documentation/AGENT_TASK_LOOP.md
-* Documentation/SplitDoc/START.md
-* Documentation/SplitDoc/TASK_HISTORY.md
-
-Сделать:
-
-1. В Documentation/SplitDoc/START.md найти раздел про формат отчёта агента.
-2. Добавить в формат отчёта короткий обязательный пункт:
-   RULES PATH:
-
-   * Основные правила и SplitDoc находятся здесь: P:\Silver_77_Quests\Documentation
-3. Не дублировать это правило в нескольких SplitDoc.
-4. Обновить AGENT REPORT в Documentation/AGENT_TASK_LOOP.md.
-5. Добавить короткую запись о TASK 104 в Documentation/SplitDoc/TASK_HISTORY.md.
-6. После успешного выполнения очистить текущий БЛОК 1 в Documentation/AGENT_TASK_LOOP.md по правилу из START.md.
-
-Разрешено менять:
-
-* Documentation/SplitDoc/START.md
-* Documentation/AGENT_TASK_LOOP.md
-* Documentation/SplitDoc/TASK_HISTORY.md
-
-Запрещено:
-
-* не менять код мода
-* не менять JSON квестов
-* не менять layout-файлы
-* не менять server profile/runtime-данные
-* не создавать новые документы
-* не переносить существующие правила между документами
-
-Проверить:
-
-* правило добавлено только в одно каноническое место
-* путь указан точно так: P:\Silver_77_Quests\Documentation
-* БЛОК 1 не содержит лишнего повторения постоянных правил
-* документация сохранена в UTF-8
-* моды обновлять не нужно
-
-Отчёт:
-
-* DONE
-* CHANGED FILES
-* DIFF
-* CHECKS
-* PROBLEMS
-* CONCLUSION
 
 
 ================================================================================
@@ -120,11 +55,14 @@ P:\Silver_77_Quests\Documentation
 AGENT REPORT
 
 DONE:
-- `Documentation/SplitDoc/AGENT_RULES.md` физически заменён на `Documentation/SplitDoc/START.md`.
-- Все старые правила из `AGENT_RULES.md` сохранены в `START.md`.
-- В `START.md` добавлен раздел `## Правила Git / репозитория`.
-- В Git-правило добавлен рабочий путь проекта: `P:\Silver_77_Quests`.
-- Обновлены актуальные ссылки обязательного чтения на `START.md`.
+- Проверено, что `Documentation/SplitDoc/START.md` уже содержит обязательный пункт `RULES PATH` в базовом формате `AGENT REPORT`.
+- Верх `Documentation/AGENT_TASK_LOOP.md` сжат до короткой ссылки на `START.md` и тематическую матрицу `SplitDoc`.
+- Матрица чтения `SplitDoc` в `Documentation/AGENT_TASK_LOOP.md` сохранена.
+- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена короткая запись по `TASK 105`.
+- Текущий `БЛОК 1` очищен по правилу из `START.md`.
+
+RULES PATH:
+- Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation`
 
 CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation\AGENT_TASK_LOOP.md`
@@ -132,27 +70,28 @@ CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md`
 
 DIFF:
-- `AGENT_RULES.md` переименован/заменён на `START.md`.
-- В `AGENT_TASK_LOOP.md` постоянная карта правил и обязательное чтение указывают на `START.md`.
-- В `START.md` добавлены правила проверки GitHub после отчёта Codex и обязательный формат начала REVIEW.
-- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена запись по `TASK 103`.
+- В верхней части `AGENT_TASK_LOOP.md` длинный список постоянных `SplitDoc` заменён на:
+  `Постоянные правила: Documentation/SplitDoc/START.md`
+  `Тематические правила: по матрице SplitDoc ниже`
+- Из верхней части `AGENT_TASK_LOOP.md` убран повтор правила о том, какие документационные блоки агент может обновлять.
+- `START.md` не дублировался: нужный `RULES PATH` уже находился в одном каноническом месте.
+- История пополнена записью о `TASK 105`.
+- `БЛОК 1` заменён на стандартную заглушку.
 
-GIT RULES CHECK:
-- `START.md` содержит формат `СТАТУС КОММИТА`.
-- Правило сохраняет commit message как есть, включая `+`, `01`, `02`.
-- Правило требует честно писать, если message не подтверждён.
-- Правило запрещает ассистенту утверждать, что он видит локальные изменения.
-- Зафиксировано, что Git контролирует пользователь.
-
-ENCODING CHECK:
-- Документные файлы сохранены как UTF-8 без BOM.
-- Кириллица в изменённых документах читается корректно.
+CHECKS:
+- Путь указан точно: `P:\Silver_77_Quests\Documentation`.
+- Правило `RULES PATH` находится в одном каноническом месте: `Documentation/SplitDoc/START.md`.
+- `AGENT_TASK_LOOP.md` больше не дублирует большой список постоянных правил.
+- Матрица чтения `SplitDoc` сохранена.
+- `БЛОК 1` очищен корректно.
+- Документация сохранена в UTF-8.
+- Моды обновлять не нужно.
 
 PROBLEMS:
 - Нет.
 
 CONCLUSION:
-- TASK 103 выполнен как документационная правка: стартовый документ правил теперь `START.md`, Git/review-правило добавлено, код/JSON/layout/server/PBO не менялись.
+- TASK 105 выполнен как документационная правка: путь к правилам подтверждён в формате отчёта, верх `AGENT_TASK_LOOP.md` стал короче, код/JSON/layout/server profile/runtime-данные не менялись.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА

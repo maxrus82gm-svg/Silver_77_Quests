@@ -298,6 +298,9 @@ ChatGPT при постановке задач должен явно указы�
 ```text
 AGENT REPORT
 
+RULES PATH:
+- Основные правила и SplitDoc находятся здесь: P:\Silver_77_Quests\Documentation
+
 DONE:
 - что сделано
 
