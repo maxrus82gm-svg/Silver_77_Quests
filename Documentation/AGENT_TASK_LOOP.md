@@ -28,6 +28,7 @@
 - `JSON contract / quest logic` -> `QUEST_JSON_CONTRACT.md` + `Documentation/QUEST_LOGIC_SPEC.md`
 - `DayZ layout viewer` -> `DAYZ_LAYOUT_VIEWER_RULES.md` + `ENCODING_RULES.md`
 - `RPC / client-server sync` -> `DAYZ_RPC_SYNC_RULES.md`
+- `Git / REVIEW / commit / push check / история Git` -> `GIT_REVIEW_RULES.md`
 - `Encoding / кириллица` -> `ENCODING_RULES.md`
 - `Server profile / dev JSON / перенос на сервер` -> `SERVER_PROFILE_RULES.md`
 - `History / status / прошлые решения` -> `TASK_HISTORY.md`
@@ -44,6 +45,7 @@
 
 
 
+
 ================================================================================
 # 🟩 БЛОК 2 — ПОСЛЕДНИЙ ОТЧЁТ АГЕНТА
 ================================================================================
@@ -55,10 +57,11 @@
 AGENT REPORT
 
 DONE:
-- Проверено, что `Documentation/SplitDoc/START.md` уже содержит обязательный пункт `RULES PATH` в базовом формате `AGENT REPORT`.
-- Верх `Documentation/AGENT_TASK_LOOP.md` сжат до короткой ссылки на `START.md` и тематическую матрицу `SplitDoc`.
-- Матрица чтения `SplitDoc` в `Documentation/AGENT_TASK_LOOP.md` сохранена.
-- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена короткая запись по `TASK 105`.
+- В `Documentation/SplitDoc/START.md` добавлено правило выборочного чтения `SplitDoc`.
+- Подробные Git/REVIEW правила вынесены из `START.md` в `Documentation/SplitDoc/GIT_REVIEW_RULES.md`.
+- В `START.md` оставлена короткая ссылка на `GIT_REVIEW_RULES.md` и базовое напоминание, что Git контролирует пользователь.
+- В матрицу чтения `Documentation/AGENT_TASK_LOOP.md` добавлена строка для Git / REVIEW.
+- В `Documentation/SplitDoc/TASK_HISTORY.md` добавлена короткая запись по `TASK 106`.
 - Текущий `БЛОК 1` очищен по правилу из `START.md`.
 
 RULES PATH:
@@ -69,29 +72,33 @@ CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation\SplitDoc\START.md`
 - `P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md`
 
+CREATED FILES:
+- `P:\Silver_77_Quests\Documentation\SplitDoc\GIT_REVIEW_RULES.md`
+
 DIFF:
-- В верхней части `AGENT_TASK_LOOP.md` длинный список постоянных `SplitDoc` заменён на:
-  `Постоянные правила: Documentation/SplitDoc/START.md`
-  `Тематические правила: по матрице SplitDoc ниже`
-- Из верхней части `AGENT_TASK_LOOP.md` убран повтор правила о том, какие документационные блоки агент может обновлять.
-- `START.md` не дублировался: нужный `RULES PATH` уже находился в одном каноническом месте.
-- История пополнена записью о `TASK 105`.
+- `START.md` стал короче в части Git/REVIEW: вместо подробных правил оставлен раздел `Git / REVIEW` со ссылкой на `GIT_REVIEW_RULES.md`.
+- В `START.md` добавлено правило, что ChatGPT выбирает минимальный набор тематических `SplitDoc`, а агент не читает все `SplitDoc` подряд.
+- `GIT_REVIEW_RULES.md` содержит подробные правила commit/push/reset/clean/checkout, GitHub-проверки, `СТАТУС КОММИТА`, commit message и статуса чтения GitHub-репозитория.
+- В `AGENT_TASK_LOOP.md` матрица чтения дополнена строкой `Git / REVIEW / commit / push check / история Git`.
+- История пополнена записью о `TASK 106`.
 - `БЛОК 1` заменён на стандартную заглушку.
 
 CHECKS:
-- Путь указан точно: `P:\Silver_77_Quests\Documentation`.
-- Правило `RULES PATH` находится в одном каноническом месте: `Documentation/SplitDoc/START.md`.
-- `AGENT_TASK_LOOP.md` больше не дублирует большой список постоянных правил.
-- Матрица чтения `SplitDoc` сохранена.
+- `START.md` стал короче в части Git/REVIEW правил.
+- `GIT_REVIEW_RULES.md` содержит подробные Git/REVIEW правила.
+- `START.md` содержит короткую ссылку на `GIT_REVIEW_RULES.md`.
+- Правило “ChatGPT является маршрутизатором чтения правил” добавлено.
+- Правило “агент не читает все SplitDoc подряд” добавлено.
+- `AGENT_TASK_LOOP.md` содержит строку матрицы для Git / REVIEW.
 - `БЛОК 1` очищен корректно.
-- Документация сохранена в UTF-8.
+- Документация сохранена в UTF-8 без BOM.
 - Моды обновлять не нужно.
 
 PROBLEMS:
 - Нет.
 
 CONCLUSION:
-- TASK 105 выполнен как документационная правка: путь к правилам подтверждён в формате отчёта, верх `AGENT_TASK_LOOP.md` стал короче, код/JSON/layout/server profile/runtime-данные не менялись.
+- TASK 106 выполнен как документационная правка: выборочное чтение закреплено, Git/REVIEW правила вынесены в отдельный `SplitDoc`, код/JSON/layout/server profile/runtime-данные не менялись.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
