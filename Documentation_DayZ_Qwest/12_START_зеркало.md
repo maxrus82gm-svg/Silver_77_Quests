@@ -6,10 +6,10 @@
 
 Перед любой задачей читать:
 
-- `Documentation/AGENT_TASK_LOOP.md`
-- `Documentation/SplitDoc/START.md`
+- `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`
+- `Documentation_DayZ_Qwest/12_START_зеркало.md`
 
-Дополнительные `SplitDoc` читать по матрице из `AGENT_TASK_LOOP.md`.
+Дополнительные `SplitDoc` читать по матрице из `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
 
 ## 1.1. Выборочное чтение SplitDoc
 
@@ -25,9 +25,10 @@ ChatGPT является маршрутизатором чтения прави�
 
 Агент читает только:
 
-- `Documentation/AGENT_TASK_LOOP.md`;
-- `Documentation/SplitDoc/START.md`;
-- тематические документы, прямо указанные в текущем `БЛОКЕ 1`.
+- `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`;
+- `Documentation_DayZ_Qwest/12_START_зеркало.md`;
+- тематические документы из `Documentation_DayZ_Qwest/20_SplitDoc`, прямо указанные в текущем `БЛОКЕ 1`;
+- проектные документы из `Documentation_DayZ_Qwest/21_Project_Docs`, прямо указанные в текущем `БЛОКЕ 1`.
 
 Агент не читает все `SplitDoc` подряд на всякий случай.
 
@@ -56,7 +57,11 @@ ChatGPT:
 
 ## 3. Базовые правила агента
 
-1. Активная задача находится только в `БЛОКЕ 1`.
+1. Активная задача находится только в `БЛОКЕ 1` файла `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
+
+После выполнения задачи агент очищает этот `БЛОК 1`.
+Выполненные задачи не должны оставаться в активном `БЛОКЕ 1`.
+
 2. Не выполнять задачи из истории, review или подсказок как активные, если они не перенесены в `БЛОК 1`.
 3. Если задача аналитическая, ничего не менять.
 4. Если задача требует правки, менять только явно разрешённые файлы.
@@ -101,9 +106,9 @@ ChatGPT:
 
 Если задача явно разрешает обновление документации, агент может:
 
-- обновить `AGENT REPORT` в `Documentation/AGENT_TASK_LOOP.md`;
-- обновить `REVIEW / STATUS` в `Documentation/AGENT_TASK_LOOP.md`;
-- обновить `Documentation/SplitDoc/TASK_HISTORY.md`;
+- обновить `AGENT REPORT` в `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`;
+- обновить `REVIEW / STATUS` в `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`;
+- обновить `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md`;
 - внести новые подтверждённые правила в нужный документ `SplitDoc`;
 - уточнить ссылки на обязательное чтение для текущей задачи.
 
@@ -124,7 +129,7 @@ ChatGPT:
 
 Git контролирует только пользователь.
 
-Подробные правила находятся в `Documentation/SplitDoc/GIT_REVIEW_RULES.md`.
+Подробные правила находятся в `Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md`.
 
 Читать этот документ при `REVIEW`, проверке push/commit, Git-рисках, истории репозитория или задачах, связанных с Git.
 
@@ -164,8 +169,8 @@ ChatGPT при постановке задач всегда даёт:
 
 При подготовке задачи для агента ChatGPT всегда должен давать два блока:
 
-1. Полный `БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА` для вставки в `Documentation/AGENT_TASK_LOOP.md`.
-2. Короткую задачу в чат агенту — малый блок, который пользователь отправляет агенту после обновления `Documentation/AGENT_TASK_LOOP.md`.
+1. Полный `БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА` для вставки в `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
+2. Короткую задачу в чат агенту — малый блок, который пользователь отправляет агенту после обновления `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
 
 Это должны быть два отдельных блока:
 
@@ -175,7 +180,7 @@ ChatGPT при постановке задач всегда даёт:
 Малый блок должен быть вынесен отдельно.
 Недостаточно разместить его только внутри общего большого блока.
 
-Полный блок для `Documentation/AGENT_TASK_LOOP.md` должен содержать только саму задачу.
+Полный блок для `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` должен содержать только саму задачу.
 В полный блок нельзя добавлять внешнюю пользовательскую обёртку:
 
 - `TASK N — ДВА БЛОКА ДЛЯ АГЕНТА`;
@@ -231,7 +236,7 @@ ChatGPT при постановке задач должен явно указы�
 7. не дублировать правило в нескольких местах без необходимости;
 8. перечислить все изменённые документы в отчёте.
 
-После успешного выполнения задачи агент должен очистить текущую задачу из `Documentation/AGENT_TASK_LOOP.md`.
+После успешного выполнения задачи агент должен очистить текущую задачу из `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
 
 Правило очистки:
 
@@ -258,7 +263,7 @@ ChatGPT при постановке задач должен явно указы�
 AGENT REPORT
 
 RULES PATH:
-- Основные правила и SplitDoc находятся здесь: P:\Silver_77_Quests\Documentation
+- Основные правила и SplitDoc находятся здесь: P:\Silver_77_Quests\Documentation_DayZ_Qwest
 
 DONE:
 - что сделано

@@ -178,8 +178,10 @@
   },
   "active": "9c84bec2773b1885",
   "lastOpenFiles": [
-    "10_Правила_агента.md",
+    "12_START_зеркало.md",
+    "00_Главная.md",
     "11_AGENT_TASK_LOOP_зеркало.md",
+    "10_Правила_агента.md",
     "21_Project_Docs/00_INDEX.md",
     "20_SplitDoc/00_INDEX.md",
     "21_Project_Docs/CHANGELOG.md",
@@ -201,9 +203,7 @@
     "20_SplitDoc/DAYZ_RPC_SYNC_RULES.md",
     "20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md",
     "20_SplitDoc",
-    "12_START_зеркало.md",
     "Без названия.canvas",
-    "00_Главная.md",
     "04_Архитектура.md",
     "02_Решения.md",
     "01_Текущее_состояние.md"

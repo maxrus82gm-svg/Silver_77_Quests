@@ -50,6 +50,8 @@
 - `TASK 107` — выполнена подготовка Obsidian-перехода. База `Documentation_DayZ_Qwest` нормализована: старые упоминания `DayZ_Qwest` исправлены, создан раздел агентских правил и подготовлены зеркала `AGENT_TASK_LOOP` / `START`. Старые рабочие документы `Documentation/AGENT_TASK_LOOP.md` и `Documentation/SplitDoc/START.md` остались источником правды и физически не переносились.
 - `TASK 109` — выполнен перенос нужных рабочих документов в Obsidian как полных зеркал. В `Documentation_DayZ_Qwest/20_SplitDoc` скопированы нужные правила из `Documentation/SplitDoc`, в `Documentation_DayZ_Qwest/21_Project_Docs` скопированы важные проектные документы из `Documentation`; старые оригиналы не удалялись и система на Obsidian-путь не переключалась.
 
+- `TASK 110` — выполнено переключение канонических ссылок на Obsidian. `Documentation_DayZ_Qwest` стал основным центром правил и документации; старые `Documentation/AGENT_TASK_LOOP.md` и `Documentation/SplitDoc/START.md` превращены в legacy bridge-документы. Закреплено правило: выполненная задача удаляется из активного `БЛОКА 1` в `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` после переноса результата в отчёт и историю.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
