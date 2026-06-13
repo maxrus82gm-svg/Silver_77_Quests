@@ -52,9 +52,62 @@
 
 # БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
 
-Активной задачи нет.
-Предыдущая задача выполнена.
-Ожидается новая задача от пользователя.
+TASK 104 — Добавить путь к документации правил в отчёт агента
+
+Цель:
+Добавить постоянное короткое правило, чтобы агент в каждом отчёте явно указывал путь, где находятся правила и SplitDoc:
+P:\Silver_77_Quests\Documentation
+
+Читать:
+
+* Documentation/AGENT_TASK_LOOP.md
+* Documentation/SplitDoc/START.md
+* Documentation/SplitDoc/TASK_HISTORY.md
+
+Сделать:
+
+1. В Documentation/SplitDoc/START.md найти раздел про формат отчёта агента.
+2. Добавить в формат отчёта короткий обязательный пункт:
+   RULES PATH:
+
+   * Основные правила и SplitDoc находятся здесь: P:\Silver_77_Quests\Documentation
+3. Не дублировать это правило в нескольких SplitDoc.
+4. Обновить AGENT REPORT в Documentation/AGENT_TASK_LOOP.md.
+5. Добавить короткую запись о TASK 104 в Documentation/SplitDoc/TASK_HISTORY.md.
+6. После успешного выполнения очистить текущий БЛОК 1 в Documentation/AGENT_TASK_LOOP.md по правилу из START.md.
+
+Разрешено менять:
+
+* Documentation/SplitDoc/START.md
+* Documentation/AGENT_TASK_LOOP.md
+* Documentation/SplitDoc/TASK_HISTORY.md
+
+Запрещено:
+
+* не менять код мода
+* не менять JSON квестов
+* не менять layout-файлы
+* не менять server profile/runtime-данные
+* не создавать новые документы
+* не переносить существующие правила между документами
+
+Проверить:
+
+* правило добавлено только в одно каноническое место
+* путь указан точно так: P:\Silver_77_Quests\Documentation
+* БЛОК 1 не содержит лишнего повторения постоянных правил
+* документация сохранена в UTF-8
+* моды обновлять не нужно
+
+Отчёт:
+
+* DONE
+* CHANGED FILES
+* DIFF
+* CHECKS
+* PROBLEMS
+* CONCLUSION
+
 
 ================================================================================
 # 🟩 БЛОК 2 — ПОСЛЕДНИЙ ОТЧЁТ АГЕНТА
