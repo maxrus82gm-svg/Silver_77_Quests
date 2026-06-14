@@ -1357,9 +1357,9 @@
         10371.9
       ],
       "npcOrientation": [
+        -90,
         0,
-        0,
-        -90
+        0
       ],
       "npcLoadout": [],
       "npcHandsItem": "",

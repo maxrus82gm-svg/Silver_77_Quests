@@ -11,17 +11,14 @@
             "id": "63968017e7d50e7b",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Без названия.canvas",
-                "viewState": {
-                  "x": 1582.63505176678,
-                  "y": 260.47423664232576,
-                  "zoom": -0.3333333333333333
-                }
+                "file": "12_START_зеркало.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "Без названия"
+              "icon": "lucide-file",
+              "title": "12_START_зеркало"
             }
           }
         ]
@@ -186,12 +183,12 @@
   "active": "63968017e7d50e7b",
   "lastOpenFiles": [
     "11_AGENT_TASK_LOOP_зеркало.md",
+    "Без названия.canvas",
     "20_SplitDoc/TRIGGER_RULES.md",
     "00_Главная.md",
     "01_Текущее_состояние.md",
     "22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
     "02_Решения.md",
-    "Без названия.canvas",
     "Добро пожаловать.md",
     "2026-06-13.md",
     "20_SplitDoc/TRADER_RULES.md",
@@ -211,7 +208,6 @@
     "90_Legacy_Archive/Documentation/REPORT_2026-04-18.md",
     "90_Legacy_Archive/Documentation/README_JSON_CONFIG.md",
     "90_Legacy_Archive/Documentation/README_INSTALLATION.md",
-    "90_Legacy_Archive/Documentation/README.md",
     "90_Legacy_Archive/Documentation_SplitDoc",
     "90_Legacy_Archive/Documentation",
     "90_Legacy_Archive",
