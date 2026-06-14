@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "12_START_зеркало.md",
+                "file": "11_AGENT_TASK_LOOP_зеркало.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "12_START_зеркало"
+              "title": "11_AGENT_TASK_LOOP_зеркало"
             }
           }
         ]
@@ -182,8 +182,10 @@
   },
   "active": "63968017e7d50e7b",
   "lastOpenFiles": [
+    "Квесты, идеи описания классов.canvas",
+    "06_Идеи.md",
     "11_AGENT_TASK_LOOP_зеркало.md",
-    "Без названия.canvas",
+    "12_START_зеркало.md",
     "20_SplitDoc/TRIGGER_RULES.md",
     "00_Главная.md",
     "01_Текущее_состояние.md",
@@ -206,8 +208,6 @@
     "90_Legacy_Archive/Documentation/SPLIT_CLIENT_SERVER.md",
     "90_Legacy_Archive/Documentation/RUSSIAN_ENCODING.md",
     "90_Legacy_Archive/Documentation/REPORT_2026-04-18.md",
-    "90_Legacy_Archive/Documentation/README_JSON_CONFIG.md",
-    "90_Legacy_Archive/Documentation/README_INSTALLATION.md",
     "90_Legacy_Archive/Documentation_SplitDoc",
     "90_Legacy_Archive/Documentation",
     "90_Legacy_Archive",
