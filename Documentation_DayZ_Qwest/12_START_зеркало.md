@@ -32,6 +32,18 @@ ChatGPT является маршрутизатором чтения прави�
 
 Агент не читает все `SplitDoc` подряд на всякий случай.
 
+## 1.2. Обязательный набор правил для квестов
+
+Если задача создаёт или меняет квесты, quest JSON, trigger-связи квеста, награды, objectives, NPC-роли Offer / Completion / Reward или порядок квестов у NPC, перед работой нужно читать весь quest-набор:
+
+- `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md`
+
+Если задача затрагивает только документацию по квестам, достаточно читать `QUEST_JSON_CONTRACT.md`, `TRIGGER_RULES.md` и сам документ, который меняется.
+
 ## 2. Роли и цикл работы
 
 Пользователь:
@@ -307,6 +319,7 @@ CONCLUSION:
 - `GIT_REVIEW_RULES.md`
 - `SERVER_PROFILE_RULES.md`
 - `TRADER_RULES.md` — правила и путь к инструкции по торговцам: `Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md`
+- `TRIGGER_RULES.md` — правила добавления trigger и последовательной нумерации ID: `Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md`
 - `TASK_HISTORY.md`
 
 ## 12. Карта рабочих разработок и путей
