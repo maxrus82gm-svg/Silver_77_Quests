@@ -545,6 +545,118 @@
       "rewards": []
     },
     {
+      "id": "quest_hunter_4",
+      "name": "Знакомство с нужными людьми 2.",
+      "description": "Ворон просит сходить к Васе по прозвищу Шприц и познакомиться лично. Дорога недалёкая, но лучше идти осторожно.",
+      "repeatable": 0,
+      "cooldownSeconds": 0,
+      "requiresPrevious": "quest_hunter_3",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "hunter_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "vasya_shprits_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "offer",
+          "dialogText": "Здорова. Раз уж с Гогой познакомился и дорогу понял, есть ещё один человек, с которым тебе стоит пересечься. Вася, его тут Шприцом зовут. Мужик своеобразный, но полезный, лишних людей к себе не подпускает. Сходи, поздоровайся от меня, пусть знает, что ты не случайный прохожий.",
+          "rewards": []
+        },
+        {
+          "triggerId": "vasya_shprits_trigger",
+          "actionType": "reward",
+          "dialogText": "А, от Ворона значит? Ну ладно, раз он прислал, значит толк с тебя какой-то будет. На те приветственные) Дел у нас тут хватает. Воробей мне как только сообщит что то, сразу инфа будет по работе.",
+          "rewards": [
+            {
+              "className": "WaterBottle",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "MoneyRuble1",
+              "quantity": 1,
+              "setItemQuantity": 1,
+              "itemQuantity": 50,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "BandageDressing",
+              "quantity": 2,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [],
+      "objectives": [],
+      "rewards": []
+    },
+    {
+      "id": "quest_hunter_5",
+      "name": "Знакомство с нужными людьми 3.",
+      "description": "Ворон просит сходить к Никите по прозвищу Береза и познакомиться лично. Он держится отдельно, но может быть полезен дальше.",
+      "repeatable": 0,
+      "cooldownSeconds": 0,
+      "requiresPrevious": "quest_hunter_4",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "hunter_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "nikita_bereza_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "hunter_trigger",
+          "actionType": "offer",
+          "dialogText": "Есть ещё один человек, с которым тебе стоит познакомиться. Никита, Береза его зовут. Он не самый разговорчивый, но если с ним нормально зайти, потом может пригодиться. Сходи к нему от меня, просто покажись и поздоровайся.",
+          "rewards": []
+        },
+        {
+          "triggerId": "nikita_bereza_trigger",
+          "actionType": "reward",
+          "dialogText": "От Ворона? Понял. Значит, тебя уже немного знают. Держи воды и мелочи на дорогу. Не теряйся, здесь лишние знакомые редко бывают лишними.",
+          "rewards": [
+            {
+              "className": "WaterBottle",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "MoneyRuble1",
+              "quantity": 1,
+              "setItemQuantity": 1,
+              "itemQuantity": 50,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "KKCR_Closed_Bank_Stew",
+              "quantity": 1,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
+              "spawnOnGround": 0
+            }
+          ]
+        }
+      ],
+      "giveItems": [],
+      "objectives": [],
+      "rewards": []
+    },
+    {
       "id": "Georgiy_Bar_Orugka_1",
       "name": "Краски жизни",
       "description": "Поставка зеленой краски 12 штук.",
@@ -616,6 +728,8 @@
       "focusRadius": 1,
       "questIds": [
         "quest_hunter_3",
+        "quest_hunter_4",
+        "quest_hunter_5",
         "quest_hunter_1",
         "quest_hunter_2"
       ],
@@ -1089,7 +1203,9 @@
       "radius": 2,
       "focusHeight": 1.2,
       "focusRadius": 1,
-      "questIds": [],
+      "questIds": [
+        "quest_hunter_4"
+      ],
       "hintText": "Вася (Шприц)",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Seth",
@@ -1229,7 +1345,9 @@
       "radius": 2,
       "focusHeight": 1.2,
       "focusRadius": 1,
-      "questIds": [],
+      "questIds": [
+        "quest_hunter_5"
+      ],
       "hintText": "Никита (Береза)",
       "spawnNpc": 1,
       "npcClassName": "SurvivorM_Boris",

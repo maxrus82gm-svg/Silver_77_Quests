@@ -60,6 +60,10 @@
                   {
                       "className":  "TortillaBag",
                       "descriptionRu":  "Рюкзаг_Тортила"
+                  },
+                  {
+                      "className":  "BandageDressing",
+                      "descriptionRu":  "Бинт"
                   }
               ]
 }

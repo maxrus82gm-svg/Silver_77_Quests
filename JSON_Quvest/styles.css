@@ -601,6 +601,16 @@ button {
   line-height: 1.45;
 }
 
+.quest-id-autogen-note {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border: 1px solid rgba(99, 82, 61, 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 252, 248, 0.7);
+}
+
 .toggle-field {
   display: flex;
   justify-content: space-between;

@@ -1078,7 +1078,8 @@ function addQuest() {
     return;
   }
 
-  const quest = createQuest(triggerId);
+  const questIdSuggestion = generateNextQuestIdForTrigger(triggerId);
+  const quest = createQuest(triggerId, questIdSuggestion.id);
   state.data.quests.push(quest);
   assignQuestToTrigger(quest.id, triggerId);
   syncQuestTriggerActions(quest);
@@ -1088,8 +1089,10 @@ function addQuest() {
   };
   touchState({
     banner: {
-      kind: "success",
-      text: `Добавлен квест ${quest.id} и привязан к trigger ${triggerId}.`
+      kind: questIdSuggestion.warning ? "warning" : "success",
+      text: questIdSuggestion.warning
+        ? `Добавлен квест ${quest.id} и привязан к trigger ${triggerId}. ${questIdSuggestion.warning}`
+        : `Добавлен квест ${quest.id} и привязан к trigger ${triggerId}. ID предложен автоматически по выбранному NPC.`
     }
   });
   renderAll();
@@ -1446,6 +1449,154 @@ function getAssignedTriggerIds(questId) {
 
 function getAssignedTriggerId(questId) {
   return getAssignedTriggerIds(questId)[0] || "";
+}
+
+function collectQuestTriggerIds(quest, questId = "") {
+  const triggerIds = new Set();
+
+  ["offerTriggerIds", "completionTriggerIds", "rewardTriggerIds"].forEach((fieldName) => {
+    normalizeQuestIdArray(quest?.[fieldName]).forEach((triggerId) => triggerIds.add(triggerId));
+  });
+
+  normalizeArray(quest?.triggerActions).forEach((action) => {
+    const triggerId = String(action?.triggerId || "").trim();
+    if (triggerId) {
+      triggerIds.add(triggerId);
+    }
+  });
+
+  const normalizedQuestId = String(questId || quest?.id || "").trim();
+  if (normalizedQuestId) {
+    state.data.triggers.forEach((trigger) => {
+      if (normalizeQuestIdArray(trigger.questIds).includes(normalizedQuestId)) {
+        triggerIds.add(trigger.id);
+      }
+    });
+  }
+
+  return Array.from(triggerIds).filter(Boolean);
+}
+
+function isQuestLinkedToTrigger(quest, triggerId) {
+  const normalizedTriggerId = String(triggerId || "").trim();
+  if (!quest || !normalizedTriggerId) {
+    return false;
+  }
+
+  return collectQuestTriggerIds(quest).includes(normalizedTriggerId);
+}
+
+function parseQuestIdSeries(questId) {
+  const normalizedQuestId = String(questId || "").trim();
+  const match = normalizedQuestId.match(/^(.*?)(\d+)$/);
+  if (!match) {
+    return null;
+  }
+
+  return {
+    prefix: match[1],
+    number: Number(match[2]),
+    width: match[2].length
+  };
+}
+
+function formatQuestIdFromSeries(prefix, number, width = 1) {
+  const normalizedPrefix = String(prefix || "quest_");
+  const normalizedNumber = Math.max(1, Number(number) || 1);
+  const normalizedWidth = Math.max(1, Number(width) || 1);
+  return `${normalizedPrefix}${String(normalizedNumber).padStart(normalizedWidth, "0")}`;
+}
+
+function makeFallbackQuestIdPrefixForTrigger(triggerId) {
+  const rawTriggerId = String(triggerId || "quest").trim();
+  const withoutTriggerSuffix = rawTriggerId.replace(/_trigger$/i, "");
+  const safe = withoutTriggerSuffix
+    .replace(/[^A-Za-z0-9_]+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  const base = safe || "quest";
+  const withQuestPrefix = base.startsWith("quest_") ? base : `quest_${base}`;
+  return withQuestPrefix.endsWith("_") ? withQuestPrefix : `${withQuestPrefix}_`;
+}
+
+function makeFreeQuestId(prefix, startNumber, width, usedQuestIds) {
+  let nextNumber = Math.max(1, Number(startNumber) || 1);
+  let candidate = formatQuestIdFromSeries(prefix, nextNumber, width);
+
+  while (usedQuestIds.has(candidate)) {
+    nextNumber += 1;
+    candidate = formatQuestIdFromSeries(prefix, nextNumber, width);
+  }
+
+  return {
+    id: candidate,
+    number: nextNumber
+  };
+}
+
+function generateNextQuestIdForTrigger(triggerId) {
+  const normalizedTriggerId = String(triggerId || "").trim();
+  const usedQuestIds = new Set(state.data.quests.map((quest) => String(quest.id || "").trim()).filter(Boolean));
+  const linkedQuests = state.data.quests.filter((quest) => isQuestLinkedToTrigger(quest, normalizedTriggerId));
+  const seriesByPrefix = new Map();
+
+  linkedQuests.forEach((quest) => {
+    const series = parseQuestIdSeries(quest.id);
+    if (!series) {
+      return;
+    }
+
+    const current = seriesByPrefix.get(series.prefix) || {
+      prefix: series.prefix,
+      count: 0,
+      maxNumber: 0,
+      width: series.width
+    };
+
+    current.count += 1;
+    current.maxNumber = Math.max(current.maxNumber, series.number);
+    current.width = Math.max(current.width, series.width);
+    seriesByPrefix.set(series.prefix, current);
+  });
+
+  const seriesList = Array.from(seriesByPrefix.values());
+  if (!seriesList.length) {
+    const prefix = makeFallbackQuestIdPrefixForTrigger(normalizedTriggerId);
+    const free = makeFreeQuestId(prefix, 1, 1, usedQuestIds);
+    return {
+      id: free.id,
+      source: "fallback",
+      triggerId: normalizedTriggerId,
+      prefix,
+      nextNumber: free.number,
+      width: 1,
+      warning: "Для этого trigger не найдена существующая числовая серия ID, использован безопасный fallback. ID можно изменить вручную."
+    };
+  }
+
+  seriesList.sort((left, right) =>
+    right.count - left.count ||
+    right.maxNumber - left.maxNumber ||
+    left.prefix.localeCompare(right.prefix)
+  );
+
+  const selectedSeries = seriesList[0];
+  const ambiguous = seriesList.length > 1 &&
+    seriesList[0].count === seriesList[1].count &&
+    seriesList[0].maxNumber === seriesList[1].maxNumber;
+  const free = makeFreeQuestId(selectedSeries.prefix, selectedSeries.maxNumber + 1, selectedSeries.width, usedQuestIds);
+
+  return {
+    id: free.id,
+    source: "series",
+    triggerId: normalizedTriggerId,
+    prefix: selectedSeries.prefix,
+    nextNumber: free.number,
+    width: selectedSeries.width,
+    warning: ambiguous
+      ? "У trigger найдено несколько равнозначных ID-серий; редактор выбрал одну автоматически. Проверь ID перед сохранением."
+      : ""
+  };
 }
 
 function updateStringArrayMembership(list, value, checked) {
@@ -3539,8 +3690,9 @@ function parseNumber(value, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function createQuest(defaultTriggerId = "") {
+function createQuest(defaultTriggerId = "", suggestedQuestId = "") {
   const normalizedTriggerId = String(defaultTriggerId || "").trim();
+  const normalizedSuggestedQuestId = String(suggestedQuestId || "").trim();
   const defaultOfferTriggerIds = normalizedTriggerId ? [normalizedTriggerId] : [];
   const defaultRewardTriggerIds = normalizedTriggerId ? [normalizedTriggerId] : [];
   const defaultTriggerActions = normalizedTriggerId
@@ -3551,7 +3703,7 @@ function createQuest(defaultTriggerId = "") {
     : [];
 
   return {
-    id: makeUniqueId(state.data.quests.map((quest) => quest.id), "quest_new"),
+    id: normalizedSuggestedQuestId || makeUniqueId(state.data.quests.map((quest) => quest.id), "quest_new"),
     name: "Новый квест",
     description: "",
     repeatable: 0,
@@ -4638,6 +4790,9 @@ function renderQuestEditor(quest, index) {
           `
             <div class="field-grid single">
               ${textField("ID (идентификатор квеста)", `${base}.id`, quest.id, "Уникальный служебный код квеста. Не должен повторяться.", "id")}
+              <div class="quest-id-autogen-note">
+                ID нового квеста предлагается автоматически по выбранному NPC / trigger. Можно изменить вручную; перед сохранением редактор проверит, что ID не пустой и не повторяется.
+              </div>
               ${textField("Name (название для игрока)", `${base}.name`, quest.name, "Человеческое название, которое проще читать в редакторе и логике.", "name")}
               ${textareaField("Quest Description (quest.description / текст для DescriptionPanel)", `${base}.description`, quest.description, "Это описание квеста для DescriptionPanel: что это за квест, что делать, что получит игрок. Это не NPC dialog.", "description")}
               <div class="muted">Стартовый диалог, предметы при взятии, цели и награды теперь редактируются ниже в <strong>NPC Flow</strong>. Какая настройка откроется, определяет галочка роли внутри блока NPC.</div>

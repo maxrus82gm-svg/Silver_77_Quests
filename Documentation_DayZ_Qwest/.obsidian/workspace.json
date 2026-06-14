@@ -11,10 +11,17 @@
             "id": "63968017e7d50e7b",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "type": "canvas",
+              "state": {
+                "file": "Без названия.canvas",
+                "viewState": {
+                  "x": 1582.63505176678,
+                  "y": 260.47423664232576,
+                  "zoom": -0.3333333333333333
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "Без названия"
             }
           }
         ]
@@ -178,6 +185,7 @@
   },
   "active": "63968017e7d50e7b",
   "lastOpenFiles": [
+    "11_AGENT_TASK_LOOP_зеркало.md",
     "20_SplitDoc/TRIGGER_RULES.md",
     "00_Главная.md",
     "01_Текущее_состояние.md",
@@ -187,7 +195,6 @@
     "Добро пожаловать.md",
     "2026-06-13.md",
     "20_SplitDoc/TRADER_RULES.md",
-    "11_AGENT_TASK_LOOP_зеркало.md",
     "90_Legacy_Archive/00_INDEX.md",
     "90_Legacy_Archive/Documentation_SplitDoc/TASK_HISTORY.md",
     "90_Legacy_Archive/Documentation_SplitDoc/START.md",

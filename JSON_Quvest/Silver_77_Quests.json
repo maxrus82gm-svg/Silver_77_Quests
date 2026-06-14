@@ -570,7 +570,7 @@
         {
           "triggerId": "vasya_shprits_trigger",
           "actionType": "reward",
-          "dialogText": "А, от Ворона значит? Ну ладно, раз он прислал, значит толк с тебя какой-то будет. Держи воды на дорогу и немного мелочи, пригодится. Осмотрись, если что потом поговорим по делу.",
+          "dialogText": "А, от Ворона значит? Ну ладно, раз он прислал, значит толк с тебя какой-то будет. На те приветственные) Дел у нас тут хватает. Воробей мне как только сообщит что то, сразу инфа будет по работе.",
           "rewards": [
             {
               "className": "WaterBottle",
@@ -583,7 +583,14 @@
               "className": "MoneyRuble1",
               "quantity": 1,
               "setItemQuantity": 1,
-              "itemQuantity": 20,
+              "itemQuantity": 50,
+              "spawnOnGround": 0
+            },
+            {
+              "className": "BandageDressing",
+              "quantity": 2,
+              "setItemQuantity": 0,
+              "itemQuantity": 0,
               "spawnOnGround": 0
             }
           ]
@@ -1352,7 +1359,7 @@
       "npcOrientation": [
         0,
         0,
-        0
+        -90
       ],
       "npcLoadout": [],
       "npcHandsItem": "",
