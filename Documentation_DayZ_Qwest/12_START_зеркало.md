@@ -306,6 +306,7 @@ CONCLUSION:
 - `DAYZ_LAYOUT_VIEWER_RULES.md`
 - `GIT_REVIEW_RULES.md`
 - `SERVER_PROFILE_RULES.md`
+- `TRADER_RULES.md` — правила и путь к инструкции по торговцам: `Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md`
 - `TASK_HISTORY.md`
 
 ## 12. Карта рабочих разработок и путей

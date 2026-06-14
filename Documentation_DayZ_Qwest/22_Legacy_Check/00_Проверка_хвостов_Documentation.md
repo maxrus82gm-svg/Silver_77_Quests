@@ -55,3 +55,36 @@
 ## Итог
 
 Активные хвосты внутри `Documentation_DayZ_Qwest` исправлены или явно классифицированы. Legacy bridge и исторические записи оставлены без удаления. Старые `Documentation`-документы не считаются текущим каноном для агентских задач.
+
+## TASK 112 — Финальная миграция хвостов
+
+Исправлены README и пользовательские точки входа:
+
+- `README.md`
+- `JSON_Quvest/README.md`
+- `Support/JSON_Quvest/README.md`
+- `Support/Arh_29042026/JSON_Quvest/README.md`
+
+Перенесены архивные документы:
+
+- старые top-level Markdown-документы из `Documentation` скопированы в `Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation`;
+- старые Markdown-документы из `Documentation/SplitDoc` скопированы в `Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc`;
+- перед удалением старых дублей выполнена SHA256-сверка архивных копий.
+
+Удалены старые `.md`-дубли после переноса:
+
+- из `Documentation` удалены все top-level `.md`, кроме `AGENT_TASK_LOOP.md` bridge;
+- из `Documentation/SplitDoc` удалены все `.md`, кроме `START.md` bridge.
+
+Оставлены допустимые legacy-упоминания:
+
+- `Documentation/AGENT_TASK_LOOP.md` — bridge;
+- `Documentation/SplitDoc/START.md` — bridge;
+- старые пути внутри `90_Legacy_Archive` — историческое содержимое архивных копий;
+- старые пути в `TASK_HISTORY` и отчётах — история миграции.
+
+Итог TASK 112:
+
+- активные README больше не ведут на старую `Documentation`;
+- старые Markdown-документы перенесены в Obsidian-архив;
+- `Documentation` больше не является рабочим каноном.

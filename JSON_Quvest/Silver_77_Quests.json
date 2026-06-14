@@ -183,6 +183,13 @@
               "setItemQuantity": 0,
               "itemQuantity": 0,
               "spawnOnGround": 0
+            },
+            {
+              "className": "Ammo_12gaPellets",
+              "quantity": 3,
+              "setItemQuantity": 0,
+              "itemQuantity": 10,
+              "spawnOnGround": 0
             }
           ]
         }
@@ -238,7 +245,7 @@
           "rewards": [
             {
               "className": "Ammo_12gaPellets",
-              "quantity": 5,
+              "quantity": 6,
               "setItemQuantity": 0,
               "itemQuantity": 0,
               "spawnOnGround": 0
@@ -272,15 +279,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "Ammo_12gaPellets",
-          "quantity": 10,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "quest_hunter_2",
@@ -355,15 +354,7 @@
           "allowPartialTurnIn": 1
         }
       ],
-      "rewards": [
-        {
-          "className": "Ammo_12gaPellets",
-          "quantity": 30,
-          "setItemQuantity": 0,
-          "itemQuantity": 0,
-          "spawnOnGround": 0
-        }
-      ]
+      "rewards": []
     },
     {
       "id": "fishman_CHO_01",
@@ -385,7 +376,7 @@
         {
           "triggerId": "fishman_CHO",
           "actionType": "offer",
-          "dialogText": "Мне для похода в Светлоярск надо 6 противогазов и 3 бинта. Я понимаю что это не просто найти все, но как есть. Смотри там в баре есть верстак, там бинты можно сделать. Главное тряпки, дезинфекция.",
+          "dialogText": "Мне для похода в Светлоярск надо 6 противогазов и 3 бинта. Я понимаю что это не просто найти все, но как есть. Смотри там в баре есть верстак, там бинты можно сделать. Главное тряпки, дезинфекция. С меня набор скорняка, без него часто не обойтись, ну и деньжат подкину рублей 80.",
           "rewards": []
         },
         {
@@ -394,7 +385,7 @@
           "dialogText": "Ну ты даешь! Все таки собрал!) Выручил ты нас, теперь команда обеспечена для вылазки с защитными средствами. Травиться никому не придется, а то время поджимает, думал не соберем.",
           "rewards": [
             {
-              "className": "MoneyRuble5",
+              "className": "MoneyRuble1",
               "quantity": 80,
               "setItemQuantity": 0,
               "itemQuantity": 0,
@@ -523,7 +514,7 @@
         {
           "triggerId": "hunter_trigger",
           "actionType": "offer",
-          "dialogText": "Здорова еще раз! Вижу ты вообще отлично справляешься со всем. У меня дело к тебе, точнее даже не у меня. Игорь, Игорь Долбичь - оружейник. Если слыхал хорошо, а если не слыхал, то стоит уже познакомиться с ним лично. Он тут заведует оружием в округе. Так вот, парень он предприимчивый, затеял стройку нешуточную, ну и сейчас ищет инструменты, стройматериалы и так далее, его пацаны роют все в округе как могут, но не хватает людских ресурсов, да и от зверья всем достается, мало нас осталось, опасно так на рожон лесть, да каждый день, нагрузка, срывы, бережёт он короче люд свой как может. В общем то говорят он даже оружие может подкинуть, за хорошую работу, а ты сам знаешь, оно сегодня не дешёвое, а хороший ствол так вообще на вес золота, что такое хороший ствол, убойность и точность, а это уже и экономия. Короче, дойди до них, там у него сподручный есть Гога, Георгий значит, у него для таких как ты всегда дел полно, сложно конечно все там, но работа того стоит.\n\nLорога опасная, советую отстрелять как то заражённых, что бы в врасплох не застали, собаки там же есть. В общем как выйдешь с западных ворот, иди прямо там дорога, иди на восток по нет, не сверни только на право, там пойдешь и техника стоит, ты ее для отстрела используй, патроны не жалей, и пустым туда не вздумай. Давай удачи.\n\nО чуть не забыл, тут патроны у меня есть, остались от охоты, добавлю чуток, дело то общее, на, тебе они точно пригодятся, только в голову бей всегда, так экономней.",
+          "dialogText": "Здорова еще раз! Вижу ты вообще отлично справляешься со всем. У меня дело к тебе, точнее даже не у меня. Игорь, Игорь Долбичь - оружейник. Если слыхал хорошо, а если не слыхал, то стоит уже познакомиться с ним лично. Он тут заведует оружием в округе. Так вот, парень он предприимчивый, затеял стройку нешуточную, ну и сейчас ищет инструменты, стройматериалы и так далее, его пацаны роют все в округе как могут, но не хватает людских ресурсов, да и от зверья всем достается, мало нас осталось, опасно так на рожон лесть, да каждый день, нагрузка, срывы, бережёт он короче люд свой как может. В общем то говорят он даже оружие может подкинуть, за хорошую работу, а ты сам знаешь, оно сегодня не дешёвое, а хороший ствол так вообще на вес золота, что такое хороший ствол, убойность и точность, а это уже и экономия. Короче, дойди до них, там у него сподручный есть Гога, Георгий значит, у него для таких как ты всегда дел полно, сложно конечно все там, но работа того стоит.\n\nДорога опасная, советую отстрелять как то заражённых, что бы в врасплох не застали, собаки там же есть. В общем как выйдешь с западных ворот, иди прямо там дорога, иди на восток по нет, не сверни только на право, там пойдешь и техника стоит, ты ее для отстрела используй, патроны не жалей, и пустым туда не вздумай. Давай удачи.\n\nО чуть не забыл, тут патроны у меня есть, остались от охоты, добавлю чуток, дело то общее, на, тебе они точно пригодятся, только в голову бей всегда, так экономней.",
           "rewards": []
         },
         {
@@ -708,7 +699,7 @@
                 "className": "Ammo_762x39",
                 "slot": "",
                 "quantity": 1,
-                "setItemQuantity": 1,
+                "setItemQuantity": 0,
                 "itemQuantity": 20
               }
             ]
@@ -798,7 +789,21 @@
       "npcBackItems": [
         "DryBag_Green",
         "Izh43Shotgun"
-      ]
+      ],
+      "npcLoadoutPreset": "",
+      "npcEquipment": {
+        "clothing": [],
+        "containers": [],
+        "hands": {
+          "className": "",
+          "slot": "",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0
+        },
+        "backItems": [],
+        "weapons": []
+      }
     },
     {
       "id": "Rasputin_1_trigger",
@@ -827,17 +832,100 @@
         0,
         0
       ],
-      "npcLoadout": [
-        "FS_ForestOldCap_ColorBase",
-        "FS_Forest_Jacket",
-        "FS_RusVKPO_pants",
-        "WorkingGloves_Beige",
-        "CombatBoots_Grey"
-      ],
-      "npcHandsItem": "VEPR12u",
+      "npcLoadout": [],
+      "npcHandsItem": "",
       "npcBackItems": [
         "FS_Eco_Orange_Bag"
-      ]
+      ],
+      "npcLoadoutPreset": "",
+      "npcEquipment": {
+        "clothing": [
+          {
+            "className": "FS_ForestOldCap_ColorBase",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "FS_Forest_Jacket",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "FS_RusVKPO_pants",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "WorkingGloves_Beige",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "CombatBoots_Grey",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          }
+        ],
+        "containers": [
+          {
+            "className": "FS_Eco_Orange_Bag",
+            "slot": "",
+            "items": []
+          }
+        ],
+        "hands": {
+          "className": "",
+          "slot": "",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0
+        },
+        "backItems": [],
+        "weapons": [
+          {
+            "className": "VEPR12u",
+            "target": "hands",
+            "attachments": [
+              {
+                "className": "VEPR12_Buttstock",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              },
+              {
+                "className": "KobraOptic",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              },
+              {
+                "className": "UniversalLight",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              }
+            ],
+            "magazine": {
+              "className": "Mag_VEPR_35Rnd",
+              "ammoCount": 0
+            },
+            "ammo": []
+          }
+        ]
+      }
     },
     {
       "id": "fishman_CHO",
@@ -876,7 +964,21 @@
       "npcHandsItem": "CZ527",
       "npcBackItems": [
         "Crossbow"
-      ]
+      ],
+      "npcLoadoutPreset": "",
+      "npcEquipment": {
+        "clothing": [],
+        "containers": [],
+        "hands": {
+          "className": "",
+          "slot": "",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0
+        },
+        "backItems": [],
+        "weapons": []
+      }
     },
     {
       "id": "Georgiy_Bar_Orugka",
@@ -906,19 +1008,216 @@
         0,
         0
       ],
-      "npcLoadout": [
-        "weldinggoggles_mung",
-        "FS_ForestOldCap_ColorBase",
-        "Raincoat_Yellow",
-        "HunterPants_Summer",
-        "WorkingGloves_Yellow",
-        "CombatBoots_Green",
-        ""
-      ],
+      "npcLoadout": [],
       "npcHandsItem": "",
-      "npcBackItems": [
-        "СЯ527_CAMO"
-      ]
+      "npcBackItems": [],
+      "npcLoadoutPreset": "",
+      "npcEquipment": {
+        "clothing": [
+          {
+            "className": "FS_ForestOldCap_ColorBase",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "Raincoat_Yellow",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "HunterPants_Summer",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "WorkingGloves_Yellow",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "CombatBoots_Green",
+            "slot": "",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          }
+        ],
+        "containers": [
+          {
+            "className": "TortillaBag",
+            "slot": "Back",
+            "items": []
+          }
+        ],
+        "hands": {
+          "className": "",
+          "slot": "",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0
+        },
+        "backItems": [],
+        "weapons": [
+          {
+            "className": "CZ527_Camo",
+            "target": "back",
+            "attachments": [],
+            "magazine": {
+              "className": "Mag_CZ527_5md",
+              "ammoCount": 0
+            },
+            "ammo": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "vasya_shprits_trigger",
+      "position": [
+        13916.5,
+        2.36747,
+        11786.1
+      ],
+      "radius": 2,
+      "focusHeight": 1.2,
+      "focusRadius": 1,
+      "questIds": [],
+      "hintText": "Вася (Шприц)",
+      "spawnNpc": 1,
+      "npcClassName": "SurvivorM_Seth",
+      "npcPosition": [
+        13916.5,
+        2.36747,
+        11786.1
+      ],
+      "npcOrientation": [
+        0,
+        0,
+        90
+      ],
+      "npcLoadout": [],
+      "npcHandsItem": "",
+      "npcBackItems": [],
+      "npcLoadoutPreset": "vasya_shprits_warm",
+      "npcEquipment": {
+        "clothing": [
+          {
+            "className": "BeanieHat_Green",
+            "slot": "Headgear",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "weldinggoggles_mung",
+            "slot": "Eyewear",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "HuntingJacket_Brown",
+            "slot": "Body",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "FS_RusVKPO_pants",
+            "slot": "Legs",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "WorkingGloves_Black",
+            "slot": "Gloves",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          },
+          {
+            "className": "CombatBoots_Grey",
+            "slot": "Feet",
+            "quantity": 1,
+            "setItemQuantity": 0,
+            "itemQuantity": 0
+          }
+        ],
+        "containers": [
+          {
+            "className": "HuntingBag",
+            "slot": "Back",
+            "items": [
+              {
+                "className": "Ammo_12gaPellets",
+                "slot": "",
+                "quantity": 2,
+                "setItemQuantity": 1,
+                "itemQuantity": 10
+              }
+            ]
+          }
+        ],
+        "hands": {
+          "className": "",
+          "slot": "",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0
+        },
+        "backItems": [],
+        "weapons": [
+          {
+            "className": "VEPR12u",
+            "target": "hands",
+            "attachments": [
+              {
+                "className": "VEPR12_Buttstock",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              },
+              {
+                "className": "KobraOptic",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              },
+              {
+                "className": "UniversalLight",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 0,
+                "itemQuantity": 0
+              }
+            ],
+            "magazine": {
+              "className": "Mag_VEPR_35Rnd",
+              "ammoCount": 10
+            },
+            "ammo": [
+              {
+                "className": "Ammo_12gaPellets",
+                "slot": "",
+                "quantity": 1,
+                "setItemQuantity": 1,
+                "itemQuantity": 10
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -32,6 +32,34 @@
                   {
                       "className":  "PleurotusMushroom",
                       "descriptionRu":  "Гриб"
+                  },
+                  {
+                      "className":  "VEPR12u",
+                      "descriptionRu":  "Гладкоствол_Вепрь"
+                  },
+                  {
+                      "className":  "KobraOptic",
+                      "descriptionRu":  "Коллиматор кобра"
+                  },
+                  {
+                      "className":  "UniversalLight",
+                      "descriptionRu":  "Фонарь на оружие"
+                  },
+                  {
+                      "className":  "Mag_VEPR_35Rnd",
+                      "descriptionRu":  "Большой магазин на Вепрь"
+                  },
+                  {
+                      "className":  "Mag_CZ527_5md",
+                      "descriptionRu":  "Магазин чешской винтовки"
+                  },
+                  {
+                      "className":  "CZ527_Camo",
+                      "descriptionRu":  "Чешская винтовка 527"
+                  },
+                  {
+                      "className":  "TortillaBag",
+                      "descriptionRu":  "Рюкзаг_Тортила"
                   }
               ]
 }

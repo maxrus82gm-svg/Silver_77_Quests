@@ -1,1 +1,10 @@
-{}
+{
+	"nodes":[
+		{"id":"a696442a7d56a259","type":"text","text":"Список навесов AK74","x":-757,"y":-120,"width":250,"height":60},
+		{"id":"7b46c202b1dba22a","type":"text","text":"AK-74 30Rnd Mag  \nAK-74 45Rnd Mag \nRPK-74 Mag","x":-757,"y":-20,"width":250,"height":140},
+		{"id":"07b0194cdd61672a","type":"text","text":"Kobra Sight  \nPSO-1 Scope  \nPSO-1-1 Scope  \nKashtan Scope  \n1PN51 Scope","x":-757,"y":180,"width":250,"height":140},
+		{"id":"f15051523bd1c48a","x":-756,"y":400,"width":250,"height":180,"type":"text","text":"**Глушитель / дульные:**\n\nAK Suppressor / восточный suppressor  \nImprovised Suppressor  \nAK Bayonet"},
+		{"id":"94405a299eda6455","x":-756,"y":660,"width":250,"height":135,"type":"text","text":"AK Wooden Handguard  \nAK Polymer Handguard  \nAK Rail Handguard"}
+	],
+	"edges":[]
+}

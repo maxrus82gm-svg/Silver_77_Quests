@@ -31,6 +31,7 @@
 - `Git / REVIEW / commit / push check / история Git` -> `Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md`
 - `Encoding / кириллица` -> `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `Server profile / dev JSON / перенос на сервер` -> `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md`
+- `Trader / TraderObjects / TraderConfig` -> `Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `History / status / прошлые решения` -> `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md`
 ## Канонические пути
 
@@ -81,74 +82,108 @@
 AGENT REPORT
 
 DONE:
-- Выполнена диагностика старых путей `Documentation` / `Documentation/...` по Markdown-документам проекта.
-- Активные хвосты внутри `Documentation_DayZ_Qwest` заменены на Obsidian-пути или явно классифицированы.
-- Старые bridge-файлы проверены и оставлены без удаления.
-- Создан отчёт-инвентаризация хвостов старой `Documentation`.
-- В `10_Правила_агента.md` добавлено правило не использовать `Documentation/...` как активный источник правды.
-- В `TASK_HISTORY.md` добавлена запись `TASK 111`.
-- В `05_Очередь_задач.md` добавлена выполненная TASK 111, старую будущую задачу про карту путей перенумеровал в TASK 112, чтобы не было конфликта номеров.
-- Активный `БЛОК 1` в Obsidian-loop очищен.
+- Выполнена финальная миграция хвостов старой `Documentation`.
+- Активные README и пользовательские точки входа переведены на `Documentation_DayZ_Qwest`.
+- Создан Obsidian-архив `Documentation_DayZ_Qwest/90_Legacy_Archive`.
+- Старые Markdown-документы из `Documentation` и `Documentation/SplitDoc` скопированы в архив полным содержимым.
+- Перед удалением старых `.md`-дублей выполнена SHA256-сверка архивных копий.
+- Старые `.md`-дубли удалены из `Documentation` и `Documentation/SplitDoc`, кроме bridge-файлов.
+- Старые bridge-файлы оставлены: `Documentation/AGENT_TASK_LOOP.md` и `Documentation/SplitDoc/START.md`.
+- В `00_Главная.md` добавлена ссылка на `90_Legacy_Archive`.
+- В `10_Правила_агента.md` закреплено, что старую `Documentation` нельзя использовать как рабочий канон.
+- В `22_Legacy_Check/00_Проверка_хвостов_Documentation.md` добавлен раздел TASK 112.
+- В `TASK_HISTORY.md` добавлена запись TASK 112.
+- В `05_Очередь_задач.md` добавлена выполненная TASK 112, будущая задача про карту путей перенумерована в TASK 113.
+- Активный `БЛОК 1` очищен.
 
 RULES PATH:
 - Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`
 
 CHANGED FILES:
+- `P:\Silver_77_Quests\README.md`
+- `P:\Silver_77_Quests\JSON_Quvest\README.md`
+- `P:\Silver_77_Quests\Support\JSON_Quvest\README.md`
+- `P:\Silver_77_Quests\Support\Arh_29042026\JSON_Quvest\README.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\00_Главная.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\01_Текущее_состояние.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\04_Архитектура.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\00_INDEX.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\DAYZ_LAYOUT_VIEWER_RULES.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\ENCODING_RULES.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_EDITOR_RULES.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_JSON_CONTRACT.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\QUEST_UI_RULES.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\SERVER_PROFILE_RULES.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\00_INDEX.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\BUILD.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\README.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs\RUSSIAN_ENCODING.md`
-
-CREATED FILES:
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\22_Legacy_Check\00_Проверка_хвостов_Documentation.md`
 
+CREATED FILES:
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\90_Legacy_Archive\00_INDEX.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\90_Legacy_Archive\Documentation\*.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\90_Legacy_Archive\Documentation_SplitDoc\*.md`
+
+DELETED FILES:
+- `P:\Silver_77_Quests\Documentation\BUILD.md`
+- `P:\Silver_77_Quests\Documentation\CHANGELOG.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_CONTEXT_2026-04-20.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_CONTROL_CONTEXT.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_EMERGENCY_CONTEXT.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_FAST_HANDOFF_2026-04-27.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_SESSION_HANDOFF_2026-04-25.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_SESSION_HANDOFF_2026-04-26.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_SESSION_HANDOFF_2026-04-29.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_START_HERE.md`
+- `P:\Silver_77_Quests\Documentation\CODEX_WORKLOG.md`
+- `P:\Silver_77_Quests\Documentation\QUEST_LOGIC_SPEC.md`
+- `P:\Silver_77_Quests\Documentation\README.md`
+- `P:\Silver_77_Quests\Documentation\README_INSTALLATION.md`
+- `P:\Silver_77_Quests\Documentation\README_JSON_CONFIG.md`
+- `P:\Silver_77_Quests\Documentation\REPORT_2026-04-18.md`
+- `P:\Silver_77_Quests\Documentation\RUSSIAN_ENCODING.md`
+- `P:\Silver_77_Quests\Documentation\SPLIT_CLIENT_SERVER.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\DAYZ_LAYOUT_VIEWER_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\DAYZ_RPC_SYNC_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\ENCODING_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\GIT_REVIEW_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_EDITOR_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_JSON_CONTRACT.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\QUEST_UI_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\SERVER_PROFILE_RULES.md`
+- `P:\Silver_77_Quests\Documentation\SplitDoc\TASK_HISTORY.md`
+
+MOVED TO OBSIDIAN ARCHIVE:
+- `Documentation/*.md` -> `Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/*.md`
+- `Documentation/SplitDoc/*.md` -> `Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/*.md`
+- Архивные копии проверены по SHA256 перед удалением старых дублей.
+
 DIFF:
-- Активные индексы `20_SplitDoc` и `21_Project_Docs` больше не называют старую `Documentation` источником правды.
-- `START`, текущее состояние, архитектура и внутренние ссылки `SplitDoc` переведены на `Documentation_DayZ_Qwest`.
-- В проектных документах Obsidian обновлены активные входные ссылки агента и ссылка на split-checklist.
-- Добавлена навигационная ссылка на legacy-check в `00_Главная.md`.
+- README-точки входа теперь указывают на Obsidian-loop и Obsidian-START.
+- В Obsidian добавлен архив старой `Documentation` с индексом.
+- Старые `.md`-дубли удалены после подтверждённого переноса.
+- Старые bridge-файлы оставлены, но не являются рабочим каноном.
 
 CHECKS:
-- Старый `Documentation/AGENT_TASK_LOOP.md` указывает на `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
-- Старый `Documentation/SplitDoc/START.md` указывает на Obsidian START, Obsidian loop, `20_SplitDoc` и `21_Project_Docs`.
-- Обязательное чтение `Documentation_DayZ_Qwest/12_START_зеркало.md` сохранено.
-- В активном `БЛОКЕ 1` нет TASK 111 после очистки.
-- Отчёт `22_Legacy_Check/00_Проверка_хвостов_Documentation.md` создан.
-- `00_Главная.md` содержит ссылку на отчёт.
-- `TASK_HISTORY.md` содержит запись TASK 111.
+- `README.md` больше не ведёт на старую `Documentation` как рабочий источник.
+- `JSON_Quvest/README.md` больше не ведёт на старую `Documentation` как рабочий источник.
+- `Support/**/README.md` больше не ведут на старую `Documentation` как рабочий источник.
+- В старой `Documentation` из Markdown остался только `AGENT_TASK_LOOP.md` bridge.
+- В старой `Documentation/SplitDoc` из Markdown остался только `START.md` bridge.
+- `90_Legacy_Archive/00_INDEX.md` создан.
+- `00_Главная.md` содержит ссылку на `90_Legacy_Archive`.
+- `10_Правила_агента.md` запрещает использовать старую `Documentation` как рабочий канон.
+- `TASK_HISTORY.md` содержит TASK 112.
+- Активный `БЛОК 1` очищен.
 - Документация сохранена в UTF-8 без BOM.
 - Моды обновлять не нужно.
 
-FOUND LEGACY REFERENCES:
-- Старые bridge-файлы: `Documentation/AGENT_TASK_LOOP.md`, `Documentation/SplitDoc/START.md`.
-- Legacy-описание в `10_Правила_агента.md` оставлено намеренно.
-- `Documentation/` в деревьях сборки `BUILD.md` / `SPLIT_CLIENT_SERVER.md` оставлено как описание структуры старого/публикуемого мода, не как активный источник правил.
-
-LEFT AS HISTORY:
-- Старые пути в `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` оставлены как история TASK 104-110.
-- Старые отчёты, CODEX-документы, worklog/changelog и архивные заметки в `Documentation` не переписывались.
-- Ссылки на старые CODEX-документы в `21_Project_Docs/RUSSIAN_ENCODING.md` оставлены как legacy-источник для восстановления текста.
+REMAINING LEGACY REFERENCES:
+- `Documentation/AGENT_TASK_LOOP.md` — оставленный bridge.
+- `Documentation/SplitDoc/START.md` — оставленный bridge.
+- Старые ссылки внутри `Documentation_DayZ_Qwest/90_Legacy_Archive` — историческое содержимое архивных копий.
+- Старые ссылки в `TASK_HISTORY`, legacy-check и отчётах — история миграции.
+- `Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md` — legacy-описание старого источника.
+- `Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md` и `SPLIT_CLIENT_SERVER.md` — `Documentation/` как часть старой/публикуемой структуры мода.
+- `Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md` — старые CODEX-ссылки как legacy-источник восстановления текста; архивные копии теперь лежат в `90_Legacy_Archive`.
 
 PROBLEMS:
-- Вне разрешённого scope остались старые ссылки в корневом `README.md`, `JSON_Quvest/README.md`, `Support/.../README.md` и старых CODEX-документах. Они записаны в отчёт-инвентаризацию как хвосты для отдельной задачи, если понадобится полная чистка.
+- `.obsidian/graph.json`, `.obsidian/workspace.json`, `Documentation_DayZ_Qwest/2026-06-13.md` и `Documentation_DayZ_Qwest/Без названия.canvas` уже отображаются в `git status` как внешние изменения/новые Obsidian-файлы; я их не редактировал и не удалял.
 
 CONCLUSION:
-- TASK 111 выполнен: активные Obsidian-документы больше не используют старую `Documentation` как источник правды, bridge и история сохранены, текущий `БЛОК 1` очищен.
+- TASK 112 выполнен: рабочий канон перенесён в `Documentation_DayZ_Qwest`, активные README больше не ведут в старую `Documentation`, старые Markdown-документы перенесены в Obsidian-архив, а старые `.md`-дубли удалены после проверки копий.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
