@@ -11,10 +11,17 @@
             "id": "63968017e7d50e7b",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "type": "canvas",
+              "state": {
+                "file": "Квесты, идеи описания классов.canvas",
+                "viewState": {
+                  "x": 969.4809115523464,
+                  "y": 504.2871841155235,
+                  "zoom": -0.5389683881094972
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "Квесты, идеи описания классов"
             }
           }
         ]
