@@ -78,47 +78,55 @@
 AGENT REPORT
 
 DONE:
-- Прочитан `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`.
-- Проверено, что `Documentation_DayZ_Qwest/12_START_зеркало.md` уже содержит обязательное правило чтения `ENCODING_RULES.md`; START не менялся.
-- В `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` восстановлен читаемый русский текст в активных рабочих блоках.
-- Активный `БЛОК 1` очищен и снова содержит состояние ожидания новой задачи.
-- Повреждённый отчёт со строками из знаков вопроса в `БЛОКЕ 2` заменён на читаемый отчёт TASK 114.
-- `БЛОК 3` проверен: повреждённого текста из знаков вопроса там не было, поэтому он не менялся.
-- В `TASK_HISTORY.md` добавлена запись TASK 114.
-- В `05_Очередь_задач.md` добавлена выполненная TASK 114.
+- Создан `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` с постоянным пресетом генерации сюжетных картинок по ЛОРу.
+- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлен раздел `1.3` с обязательным чтением `IMAGE_GENERATION_PRESET.md` перед подготовкой сюжетных изображений.
+- В `.gitignore` добавлено точечное правило для `Documentation_DayZ_Qwest/.obsidian/workspace.json`.
+- Выполнен `git rm --cached -- Documentation_DayZ_Qwest/.obsidian/workspace.json`; файл оставлен на диске и снят с Git-отслеживания.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 115`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 115`.
+- Активный `БЛОК 1` очищен после выполнения задачи.
 
 RULES PATH:
 - Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`
 - Правила кодировки: `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 
 CHANGED FILES:
+- `P:\Silver_77_Quests\.gitignore`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\IMAGE_GENERATION_PRESET.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 
 DIFF:
-- Активная задача TASK 114 удалена из `БЛОКА 1`.
-- Повреждённый отчёт TASK 113 в `БЛОКЕ 2` заменён на новый отчёт TASK 114.
-- История задач дополнена записью TASK 114.
-- Очередь задач дополнена выполненной TASK 114.
+- Добавлен новый постоянный `SplitDoc` для единого визуального пресета сюжетных картинок.
+- В `START` закреплено обязательное чтение пресета перед генерацией иллюстраций по ЛОРу.
+- `workspace.json` Obsidian исключён из Git адресно, без изменения содержимого файла.
+- История задач и очередь дополнены статусом `TASK 115`.
+- Активный `БЛОК 1` возвращён в состояние ожидания новой задачи.
 
 CHECKS:
-- `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` читается как UTF-8.
+- `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` создан и читается как UTF-8.
+- `Documentation_DayZ_Qwest/12_START_зеркало.md` содержит ссылку на `IMAGE_GENERATION_PRESET.md`.
+- `.gitignore` содержит правило для `Documentation_DayZ_Qwest/.obsidian/workspace.json`.
+- `workspace.json` больше не отслеживается Git и не удалён с диска.
+- `TASK_HISTORY.md` содержит `TASK 115`.
+- `05_Очередь_задач.md` содержит `TASK 115` со статусом `Готово`.
 - Активный `БЛОК 1` очищен.
-- В активных рабочих блоках не осталось повреждённых последовательностей из знаков вопроса.
+- Кириллица в изменённых документах читается корректно.
 - Моды, JSON квестов, редактор, server profile и PBO/build output не менялись.
 
 ENCODING CHECK:
-- В файле обнаружена кириллица.
+- В изменённых Markdown-файлах использована кириллица.
 - Кириллица отображается нормально при чтении как UTF-8.
-- Файл сохранён в UTF-8 без BOM.
+- Новые и обновлённые документы сохранены без повреждения текста.
 - Риск кодировки после правки не обнаружен.
 
 PROBLEMS:
-- Восстановить точный старый текст повреждённого отчёта TASK 113 было невозможно, потому что исходная кириллица уже была заменена символами `?`; вместо этого отчёт заменён на актуальный читаемый отчёт TASK 114.
+- Проблем при создании пресета, обновлении правил и снятии `workspace.json` с отслеживания Git не обнаружено.
 
 CONCLUSION:
-- TASK 114 выполнен: кириллица в активном Obsidian-loop восстановлена, активный `БЛОК 1` очищен, START не менялся, моды обновлять не нужно.
+- TASK 115 выполнен: пресет сюжетных картинок зафиксирован, `START` обновлён, `workspace.json` исключён из Git без удаления с диска, моды обновлять не нужно.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
