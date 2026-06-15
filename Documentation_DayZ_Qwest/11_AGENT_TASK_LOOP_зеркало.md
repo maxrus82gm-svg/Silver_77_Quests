@@ -61,13 +61,6 @@
 Ожидается новая задача от пользователя.
 
 ================================================================================
-# БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА
-
-Активной задачи нет.  
-Предыдущая задача выполнена.  
-Ожидается новая задача от пользователя.
-
-================================================================================
 # 🟩 БЛОК 2 — ПОСЛЕДНИЙ ОТЧЁТ АГЕНТА
 ================================================================================
 
@@ -78,40 +71,40 @@
 AGENT REPORT
 
 DONE:
-- Создан `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` с постоянным пресетом генерации сюжетных картинок по ЛОРу.
-- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлен раздел `1.3` с обязательным чтением `IMAGE_GENERATION_PRESET.md` перед подготовкой сюжетных изображений.
-- В `.gitignore` добавлено точечное правило для `Documentation_DayZ_Qwest/.obsidian/workspace.json`.
-- Выполнен `git rm --cached -- Documentation_DayZ_Qwest/.obsidian/workspace.json`; файл оставлен на диске и снят с Git-отслеживания.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 115`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 115`.
+- Создан `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md` с постоянными визуальными образами сюжетной серии.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` добавлено правило читать continuity-документ для сложных повторяющихся сцен.
+- В `Documentation_DayZ_Qwest/12_START_зеркало.md` закреплено обязательное чтение двух документов перед генерацией сюжетных картинок.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 116`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 116`.
 - Активный `БЛОК 1` очищен после выполнения задачи.
 
 RULES PATH:
 - Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`
 - Правила кодировки: `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
+- Пресет картинок: `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md`
+- Continuity картинок: `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md`
 
 CHANGED FILES:
-- `P:\Silver_77_Quests\.gitignore`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\IMAGE_GENERATION_PRESET.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\IMAGE_SCENE_CONTINUITY.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 
 DIFF:
-- Добавлен новый постоянный `SplitDoc` для единого визуального пресета сюжетных картинок.
-- В `START` закреплено обязательное чтение пресета перед генерацией иллюстраций по ЛОРу.
-- `workspace.json` Obsidian исключён из Git адресно, без изменения содержимого файла.
-- История задач и очередь дополнены статусом `TASK 115`.
+- Добавлен новый `SplitDoc` для continuity сюжетных сцен: корабль, портовая авария, кабина крана, рифы, больница Березово, фильтрационный лагерь и правительственный брифинг.
+- `IMAGE_GENERATION_PRESET.md` дополнен ссылкой на continuity-документ и списком сцен, где он обязателен.
+- `START` теперь требует читать и общий пресет, и continuity перед генерацией сюжетных картинок.
+- История задач и очередь дополнены статусом `TASK 116`.
 - Активный `БЛОК 1` возвращён в состояние ожидания новой задачи.
 
 CHECKS:
-- `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` создан и читается как UTF-8.
-- `Documentation_DayZ_Qwest/12_START_зеркало.md` содержит ссылку на `IMAGE_GENERATION_PRESET.md`.
-- `.gitignore` содержит правило для `Documentation_DayZ_Qwest/.obsidian/workspace.json`.
-- `workspace.json` больше не отслеживается Git и не удалён с диска.
-- `TASK_HISTORY.md` содержит `TASK 115`.
-- `05_Очередь_задач.md` содержит `TASK 115` со статусом `Готово`.
+- `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md` создан и читается как UTF-8.
+- `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` содержит ссылку на `IMAGE_SCENE_CONTINUITY.md`.
+- `Documentation_DayZ_Qwest/12_START_зеркало.md` содержит правило читать оба документа перед генерацией сюжетных картинок.
+- `TASK_HISTORY.md` содержит `TASK 116`.
+- `05_Очередь_задач.md` содержит `TASK 116` со статусом `Готово`.
 - Активный `БЛОК 1` очищен.
 - Кириллица в изменённых документах читается корректно.
 - Моды, JSON квестов, редактор, server profile и PBO/build output не менялись.
@@ -123,10 +116,10 @@ ENCODING CHECK:
 - Риск кодировки после правки не обнаружен.
 
 PROBLEMS:
-- Проблем при создании пресета, обновлении правил и снятии `workspace.json` с отслеживания Git не обнаружено.
+- Проблем при создании continuity-документа и обновлении правил не обнаружено.
 
 CONCLUSION:
-- TASK 115 выполнен: пресет сюжетных картинок зафиксирован, `START` обновлён, `workspace.json` исключён из Git без удаления с диска, моды обновлять не нужно.
+- TASK 116 выполнен: правила генерации сюжетных картинок расширены, continuity образов закреплён, моды обновлять не нужно.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
