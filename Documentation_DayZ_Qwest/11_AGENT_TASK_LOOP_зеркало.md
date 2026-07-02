@@ -30,7 +30,7 @@
 - `RPC / client-server sync` -> `Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md`
 - `Git / REVIEW / commit / push check / история Git` -> `Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md`
 - `Documentation / Markdown / создание документов / обновление правил` -> `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
-- `Encoding / кириллица` -> `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
+- `Encoding / кириллица / восстановление русского текста / кракозябры` -> `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `Server profile / dev JSON / перенос на сервер` -> `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md`
 - `Trader / TraderObjects / TraderConfig` -> `Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `History / status / прошлые решения` -> `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md`
@@ -72,49 +72,50 @@
 AGENT REPORT
 
 DONE:
-- Обновлён `Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md` под проект `Silver_77_Quests`.
-- Создан `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md` для правил создания и обновления Markdown-документов.
-- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлена краткая маршрутизация для Git / REVIEW и Documentation / Markdown задач.
-- В матрицу чтения `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` добавлена строка для документационных задач.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 118`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 118`.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md` добавлен аварийный протокол при повреждении кириллицы.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md` добавлена ссылка на аварийный протокол и расширены проверки Markdown-документов.
+- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлена короткая маршрутизация для задач восстановления русского текста и проблем кодировки.
+- В матрице чтения `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` уточнена строка `Encoding / кириллица`.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 119`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 119`.
 - Активный `БЛОК 1` очищен после выполнения задачи.
 
 CHANGED FILES:
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\GIT_REVIEW_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\ENCODING_RULES.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\DOCUMENTATION_RULES.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 
-CREATED FILES:
-- `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md`
-
 UPDATED RULES:
-- Git контролирует пользователь; агент не выполняет изменяющие Git-команды без прямой команды пользователя.
-- Read-only Git-команды выполняются только если текущая задача прямо разрешает Git-проверку или сама связана с Git / review.
-- После `AGENT REPORT` ChatGPT выполняет review через репозиторий или доступные файлы, если это возможно.
-- Итоговый `СТАТУС КОММИТА` пишет ChatGPT, а не агент.
-- Документы создаются и обновляются только по задаче пользователя или активной задаче в `БЛОКЕ 1`.
-- Для Markdown-документов закреплены UTF-8 без BOM, настоящие переносы строк, запрет дублей и запрет случайного переноса чужих путей.
+- Если кириллица выглядит повреждённой, агент сначала определяет причину: реальная порча файла, неверное чтение, терминал, PowerShell или инструмент записи.
+- Если кириллица восстанавливалась, в отчёте обязательны файл, участок, причина, способ восстановления, источник корректного текста и проверки после восстановления.
+- Фраза вида "кириллицу восстановил" без подробностей запрещена.
+- Если восстановление касалось `11_AGENT_TASK_LOOP_зеркало.md`, это указывается отдельно.
+- Для Markdown-документов с русским текстом закреплена проверка повторяющихся знаков вопроса, символов замены, mojibake-фрагментов, UTF-8 и BOM.
 
 CHECKS:
-- Аналог `DOCUMENTATION_RULES.md` в `Documentation_DayZ_Qwest/20_SplitDoc` не найден, поэтому создан новый документ.
-- `GIT_REVIEW_RULES.md` обновлён, а не продублирован.
-- `START` содержит только краткую маршрутизацию, подробности оставлены в SplitDoc.
-- `AGENT_TASK_LOOP` содержит новую строку матрицы для документационных задач.
-- `TASK_HISTORY.md` содержит `TASK 118`.
-- `05_Очередь_задач.md` содержит `TASK 118` со статусом `Готово`.
+- `ENCODING_RULES.md` содержит отдельный аварийный протокол.
+- `DOCUMENTATION_RULES.md` ссылается на аварийный протокол и требует отражать восстановление в `ENCODING CHECK` / `PROBLEMS`.
+- `START` содержит только короткую маршрутизацию, полный текст оставлен в SplitDoc.
+- `AGENT_TASK_LOOP` содержит уточнённую строку матрицы для encoding / кириллицы / восстановления русского текста.
+- `TASK_HISTORY.md` содержит `TASK 119`.
+- `05_Очередь_задач.md` содержит `TASK 119` со статусом `Готово`.
 - Активный `БЛОК 1` очищен.
 - JSON, UI, layout, моды, server profile и PBO/build output не менялись.
 
 ENCODING CHECK:
-- Изменённые Markdown-файлы читаются как UTF-8.
-- BOM не обнаружен.
-- Кириллица не повреждена.
-- Markdown не записан одной строкой.
-- Текстовая последовательность `\n` вместо переносов в новых правилах не используется.
+- UTF-8: изменённые Markdown-файлы читаются как UTF-8.
+- BOM: не обнаружен.
+- Кириллица: отображается нормально.
+- Повторяющиеся знаки вопроса: случайных повреждений не обнаружено; упоминания таких признаков остались только как описанные примеры в правилах кодировки.
+- Символы замены: случайных повреждений не обнаружено; упоминания таких признаков остались только как описанные примеры в правилах кодировки.
+- Mojibake-фрагменты: случайных повреждений не обнаружено; упоминания `Рџ`, `Рќ`, `Р’`, `СЃ`, `С‚` остались только как описанные примеры в правилах кодировки.
+- Markdown одной строкой: не обнаружено.
+- `\n` вместо переносов: не обнаружено.
+- Чужие пути: не обнаружены.
+- Кириллица не восстанавливалась, повреждений не обнаружено.
 
 GIT:
 - Git-команды не выполнялись.
@@ -123,10 +124,10 @@ GIT:
 - Git-история не изменялась агентом.
 
 PROBLEMS:
-- Прямых файлов с исходными именами пользовательских документов в рабочем дереве не найдено; использованы тексты из attachments и конкретные требования активного `БЛОКА 1`.
+- Нет.
 
 CONCLUSION:
-- TASK 118 выполнен. Правила Git-review и создания документов адаптированы под `Silver_77_Quests`, активный `БЛОК 1` очищен. Моды обновлять не нужно.
+- TASK 119 выполнен. Правила защиты кириллицы и отчётности при восстановлении текста усилены, активный `БЛОК 1` очищен. Моды обновлять не нужно.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
