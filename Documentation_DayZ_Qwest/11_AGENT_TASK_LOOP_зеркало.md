@@ -29,6 +29,7 @@
 - `DayZ layout viewer` -> `Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `RPC / client-server sync` -> `Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md`
 - `Git / REVIEW / commit / push check / история Git` -> `Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md`
+- `Documentation / Markdown / создание документов / обновление правил` -> `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `Encoding / кириллица` -> `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
 - `Server profile / dev JSON / перенос на сервер` -> `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md`
 - `Trader / TraderObjects / TraderConfig` -> `Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md` + `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
@@ -71,60 +72,65 @@
 AGENT REPORT
 
 DONE:
-- Исследован источник русских игровых названий предметов для будущего отображения в `QuestJournal` / `QuestUI`.
-- Найдено, что текущий UI формирует цели и награды через прямой вывод `className`.
-- Подтверждена схема связи: `className` -> config `displayName` -> `$STR_...` -> `languagecore/stringtable.csv` -> русский текст.
-- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлено правило `3.4` про короткие уточнения после постановки активной задачи.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 117`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 117`.
+- Обновлён `Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md` под проект `Silver_77_Quests`.
+- Создан `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md` для правил создания и обновления Markdown-документов.
+- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлена краткая маршрутизация для Git / REVIEW и Documentation / Markdown задач.
+- В матрицу чтения `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md` добавлена строка для документационных задач.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 118`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 118`.
 - Активный `БЛОК 1` очищен после выполнения задачи.
 
-RULES PATH:
-- Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`
-- Правила кодировки: `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
-- Quest JSON contract: `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md`
-- Quest UI rules: `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md`
-
 CHANGED FILES:
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\GIT_REVIEW_RULES.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\DOCUMENTATION_RULES.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 
-DIFF:
-- `START` дополнен правилом: если активная задача уже в `БЛОКЕ 1`, мелкие уточнения до отчёта передаются агенту коротким сообщением, а не переписыванием `БЛОКА 1`.
-- История задач и очередь дополнены статусом `TASK 117`.
-- Активный `БЛОК 1` возвращён в состояние ожидания новой задачи.
+CREATED FILES:
+- `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md`
+
+UPDATED RULES:
+- Git контролирует пользователь; агент не выполняет изменяющие Git-команды без прямой команды пользователя.
+- Read-only Git-команды выполняются только если текущая задача прямо разрешает Git-проверку или сама связана с Git / review.
+- После `AGENT REPORT` ChatGPT выполняет review через репозиторий или доступные файлы, если это возможно.
+- Итоговый `СТАТУС КОММИТА` пишет ChatGPT, а не агент.
+- Документы создаются и обновляются только по задаче пользователя или активной задаче в `БЛОКЕ 1`.
+- Для Markdown-документов закреплены UTF-8 без BOM, настоящие переносы строк, запрет дублей и запрет случайного переноса чужих путей.
 
 CHECKS:
-- `QuestUI.c`: цели выводятся в `UpdateQuestDetails()` как `obj.className`, награды как `reward.className`.
-- `QuestJournalUI.c`: цели и награды также выводятся через `obj.className` / `reward.className`.
-- В проекте нет готового helper для нашего Quest UI, но в `@Trader` есть пример `getItemDisplayName()`.
-- Vanilla configs найдены в `P:\DZ`; русские строки найдены в `P:\languagecore\stringtable.csv`.
-- `Potato`: `CfgVehicles`, `displayName="$STR_Potato0"`, русский текст `Очищенный картофель`.
-- `PotatoSeed`: `CfgVehicles`, `displayName="$STR_PotatoSeed0"`, русский текст `Картофель`.
-- `BandageDressing`: `CfgVehicles`, `displayName="$STR_CfgVehicles_BandageDressing0"`, русский текст `Бинт`.
-- `GP5GasMask`: `CfgVehicles`, `displayName="$STR_CfgVehicles_GP5GasMask0"`, русский текст `Противогаз`.
-- Текущие картофельные цели в JSON используют `PotatoSeed`; это соответствует игровому названию `Картофель`, а не `Potato`, который является очищенным картофелем.
-- `TASK_HISTORY.md` содержит `TASK 117`.
-- `05_Очередь_задач.md` содержит `TASK 117` со статусом `Готово`.
+- Аналог `DOCUMENTATION_RULES.md` в `Documentation_DayZ_Qwest/20_SplitDoc` не найден, поэтому создан новый документ.
+- `GIT_REVIEW_RULES.md` обновлён, а не продублирован.
+- `START` содержит только краткую маршрутизацию, подробности оставлены в SplitDoc.
+- `AGENT_TASK_LOOP` содержит новую строку матрицы для документационных задач.
+- `TASK_HISTORY.md` содержит `TASK 118`.
+- `05_Очередь_задач.md` содержит `TASK 118` со статусом `Готово`.
 - Активный `БЛОК 1` очищен.
-- JSON, `QuestUI.c`, `.layout`, моды, server profile и PBO/build output не менялись.
+- JSON, UI, layout, моды, server profile и PBO/build output не менялись.
 
 ENCODING CHECK:
-- В изменённых Markdown-файлах использована кириллица.
-- Кириллица отображается нормально при чтении как UTF-8.
-- Обновлённые документы сохранены без повреждения текста.
-- Риск кодировки после правки не обнаружен.
+- Изменённые Markdown-файлы читаются как UTF-8.
+- BOM не обнаружен.
+- Кириллица не повреждена.
+- Markdown не записан одной строкой.
+- Текстовая последовательность `\n` вместо переносов в новых правилах не используется.
+
+GIT:
+- Git-команды не выполнялись.
+- Commit не создавался агентом.
+- Push не выполнялся агентом.
+- Git-история не изменялась агентом.
 
 PROBLEMS:
-- Точное поведение `GetGame().ConfigGetText()` в клиентском runtime нужно подтвердить при реализации: если он вернёт уже локализованный текст, использовать его; если вернёт `$STR_...`, конвертировать `$` в `#` через `FormatRawConfigStringKeys` и затем вызвать `Widget.TranslateString`.
+- Прямых файлов с исходными именами пользовательских документов в рабочем дереве не найдено; использованы тексты из attachments и конкретные требования активного `БЛОКА 1`.
 
 CONCLUSION:
-- TASK 117 выполнен: связь класса с русским названием найдена. Основное решение для следующей задачи — runtime helper в клиентском UI: искать `displayName` по конфигам и локализовать `$STR_...`, ручной словарь оставить только fallback для кастомных предметов. Моды обновлять не нужно.
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+- TASK 118 выполнен. Правила Git-review и создания документов адаптированы под `Silver_77_Quests`, активный `БЛОК 1` очищен. Моды обновлять не нужно.
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 
 ================================================================================
 # 🟨 БЛОК 3 — REVIEW / STATUS

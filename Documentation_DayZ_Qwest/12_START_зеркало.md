@@ -253,6 +253,17 @@ Git контролирует только пользователь.
 
 Читать этот документ при `REVIEW`, проверке push/commit, Git-рисках, истории репозитория или задачах, связанных с Git.
 
+После `AGENT REPORT` ChatGPT выполняет review через репозиторий или доступные файлы, если это возможно. Итоговый блок `СТАТУС КОММИТА` пишет ChatGPT, а не агент.
+
+## 6.1. Documentation / Markdown
+
+Если задача создаёт или обновляет Markdown-документы, переносит правила, меняет структуру документации или добавляет постоянные правила, читать:
+
+- `Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md`
+- `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
+
+Подробные правила создания и обновления документов держать в `DOCUMENTATION_RULES.md`, не копировать их целиком в `START`.
+
 ## 7. Актуальная карта проекта
 
 Текущая рабочая структура проекта:
@@ -425,6 +436,7 @@ CONCLUSION:
 - `QUEST_UI_RULES.md`
 - `DAYZ_LAYOUT_VIEWER_RULES.md`
 - `GIT_REVIEW_RULES.md`
+- `DOCUMENTATION_RULES.md`
 - `SERVER_PROFILE_RULES.md`
 - `TRADER_RULES.md` — правила и путь к инструкции по торговцам: `Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md`
 - `TRIGGER_RULES.md` — правила добавления trigger и последовательной нумерации ID: `Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md`
