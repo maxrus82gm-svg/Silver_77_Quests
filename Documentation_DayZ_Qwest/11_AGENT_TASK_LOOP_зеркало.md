@@ -71,55 +71,57 @@
 AGENT REPORT
 
 DONE:
-- Создан `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md` с постоянными визуальными образами сюжетной серии.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` добавлено правило читать continuity-документ для сложных повторяющихся сцен.
-- В `Documentation_DayZ_Qwest/12_START_зеркало.md` закреплено обязательное чтение двух документов перед генерацией сюжетных картинок.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 116`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 116`.
+- Исследован источник русских игровых названий предметов для будущего отображения в `QuestJournal` / `QuestUI`.
+- Найдено, что текущий UI формирует цели и награды через прямой вывод `className`.
+- Подтверждена схема связи: `className` -> config `displayName` -> `$STR_...` -> `languagecore/stringtable.csv` -> русский текст.
+- В `Documentation_DayZ_Qwest/12_START_зеркало.md` добавлено правило `3.4` про короткие уточнения после постановки активной задачи.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 117`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 117`.
 - Активный `БЛОК 1` очищен после выполнения задачи.
 
 RULES PATH:
 - Основные правила и SplitDoc находятся здесь: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`
 - Правила кодировки: `Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md`
-- Пресет картинок: `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md`
-- Continuity картинок: `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md`
+- Quest JSON contract: `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md`
+- Quest UI rules: `Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md`
 
 CHANGED FILES:
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\IMAGE_GENERATION_PRESET.md`
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\IMAGE_SCENE_CONTINUITY.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 
 DIFF:
-- Добавлен новый `SplitDoc` для continuity сюжетных сцен: корабль, портовая авария, кабина крана, рифы, больница Березово, фильтрационный лагерь и правительственный брифинг.
-- `IMAGE_GENERATION_PRESET.md` дополнен ссылкой на continuity-документ и списком сцен, где он обязателен.
-- `START` теперь требует читать и общий пресет, и continuity перед генерацией сюжетных картинок.
-- История задач и очередь дополнены статусом `TASK 116`.
+- `START` дополнен правилом: если активная задача уже в `БЛОКЕ 1`, мелкие уточнения до отчёта передаются агенту коротким сообщением, а не переписыванием `БЛОКА 1`.
+- История задач и очередь дополнены статусом `TASK 117`.
 - Активный `БЛОК 1` возвращён в состояние ожидания новой задачи.
 
 CHECKS:
-- `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md` создан и читается как UTF-8.
-- `Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md` содержит ссылку на `IMAGE_SCENE_CONTINUITY.md`.
-- `Documentation_DayZ_Qwest/12_START_зеркало.md` содержит правило читать оба документа перед генерацией сюжетных картинок.
-- `TASK_HISTORY.md` содержит `TASK 116`.
-- `05_Очередь_задач.md` содержит `TASK 116` со статусом `Готово`.
+- `QuestUI.c`: цели выводятся в `UpdateQuestDetails()` как `obj.className`, награды как `reward.className`.
+- `QuestJournalUI.c`: цели и награды также выводятся через `obj.className` / `reward.className`.
+- В проекте нет готового helper для нашего Quest UI, но в `@Trader` есть пример `getItemDisplayName()`.
+- Vanilla configs найдены в `P:\DZ`; русские строки найдены в `P:\languagecore\stringtable.csv`.
+- `Potato`: `CfgVehicles`, `displayName="$STR_Potato0"`, русский текст `Очищенный картофель`.
+- `PotatoSeed`: `CfgVehicles`, `displayName="$STR_PotatoSeed0"`, русский текст `Картофель`.
+- `BandageDressing`: `CfgVehicles`, `displayName="$STR_CfgVehicles_BandageDressing0"`, русский текст `Бинт`.
+- `GP5GasMask`: `CfgVehicles`, `displayName="$STR_CfgVehicles_GP5GasMask0"`, русский текст `Противогаз`.
+- Текущие картофельные цели в JSON используют `PotatoSeed`; это соответствует игровому названию `Картофель`, а не `Potato`, который является очищенным картофелем.
+- `TASK_HISTORY.md` содержит `TASK 117`.
+- `05_Очередь_задач.md` содержит `TASK 117` со статусом `Готово`.
 - Активный `БЛОК 1` очищен.
-- Кириллица в изменённых документах читается корректно.
-- Моды, JSON квестов, редактор, server profile и PBO/build output не менялись.
+- JSON, `QuestUI.c`, `.layout`, моды, server profile и PBO/build output не менялись.
 
 ENCODING CHECK:
 - В изменённых Markdown-файлах использована кириллица.
 - Кириллица отображается нормально при чтении как UTF-8.
-- Новые и обновлённые документы сохранены без повреждения текста.
+- Обновлённые документы сохранены без повреждения текста.
 - Риск кодировки после правки не обнаружен.
 
 PROBLEMS:
-- Проблем при создании continuity-документа и обновлении правил не обнаружено.
+- Точное поведение `GetGame().ConfigGetText()` в клиентском runtime нужно подтвердить при реализации: если он вернёт уже локализованный текст, использовать его; если вернёт `$STR_...`, конвертировать `$` в `#` через `FormatRawConfigStringKeys` и затем вызвать `Widget.TranslateString`.
 
 CONCLUSION:
-- TASK 116 выполнен: правила генерации сюжетных картинок расширены, continuity образов закреплён, моды обновлять не нужно.
+- TASK 117 выполнен: связь класса с русским названием найдена. Основное решение для следующей задачи — runtime helper в клиентском UI: искать `displayName` по конфигам и локализовать `$STR_...`, ручной словарь оставить только fallback для кастомных предметов. Моды обновлять не нужно.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
