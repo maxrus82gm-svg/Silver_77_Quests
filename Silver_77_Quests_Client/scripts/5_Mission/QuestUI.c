@@ -4,6 +4,55 @@
 
 const int MENU_QUEST_UI = 77777;
 const int MENU_QUEST_JOURNAL_UI = 77778;
+
+string Silver77_GetQuestItemConfigDisplayName(string configRoot, string className)
+{
+    if (!GetGame() || configRoot == "" || className == "")
+        return "";
+
+    string path = configRoot + " " + className + " displayName";
+    string displayName = "";
+    if (!GetGame().ConfigGetTextRaw(path, displayName))
+        GetGame().ConfigGetText(path, displayName);
+
+    displayName.Replace("$UNT$", "");
+    displayName.Trim();
+    return displayName;
+}
+
+string Silver77_GetQuestItemDisplayName(string className)
+{
+    if (className == "")
+        return "";
+
+    string displayName = Silver77_GetQuestItemConfigDisplayName("CfgVehicles", className);
+    if (displayName == "")
+        displayName = Silver77_GetQuestItemConfigDisplayName("CfgWeapons", className);
+    if (displayName == "")
+        displayName = Silver77_GetQuestItemConfigDisplayName("CfgMagazines", className);
+    if (displayName == "")
+        displayName = Silver77_GetQuestItemConfigDisplayName("CfgAmmo", className);
+
+    if (displayName == "")
+        return className;
+
+    string localizedName = displayName;
+    if (GetGame())
+        GetGame().FormatRawConfigStringKeys(localizedName);
+
+    string translatedName = Widget.TranslateString(localizedName);
+    translatedName.Replace("$UNT$", "");
+    translatedName.Trim();
+
+    if (translatedName != "" && translatedName != localizedName)
+        return translatedName;
+
+    if (translatedName != "" && displayName.IndexOf("$STR_") == -1 && displayName.IndexOf("#STR_") == -1)
+        return translatedName;
+
+    return displayName;
+}
+
 class QuestUIMenu extends UIScriptedMenu
 {
     private TextWidget m_Title;
@@ -622,7 +671,7 @@ class QuestUIMenu extends UIScriptedMenu
             
             if (obj.type == "item")
             {
-                desc += "- Принести: " + obj.className + " x" + obj.quantity + "\n";
+                desc += "- Принести: " + Silver77_GetQuestItemDisplayName(obj.className) + " x" + obj.quantity + "\n";
                 if (obj.allowPartialTurnIn)
                 {
                     float deposited = QuestClientManager.GetQuestObjectiveDeposited(m_Player, quest.id, i, obj.className);
@@ -644,7 +693,7 @@ class QuestUIMenu extends UIScriptedMenu
                 if (!reward)
                     continue;
                 
-                desc += "- " + reward.className + " x" + reward.quantity + "\n";
+                desc += "- " + Silver77_GetQuestItemDisplayName(reward.className) + " x" + reward.quantity + "\n";
             }
         }
         if (m_WaitingForServer)
@@ -775,13 +824,13 @@ class QuestUIMenu extends UIScriptedMenu
         string contextText = "";
 
         if (canAccept)
-            contextText = "Этот NPC выдает квест.";
+            contextText = "Этот персонаж выдает квест.";
         else if (canClaimReward)
-            contextText = "У этого NPC можно забрать награду прямо сейчас.";
+            contextText = "У этого персонажа можно забрать награду прямо сейчас.";
         else if (canComplete)
-            contextText = "У этого NPC можно завершить текущий этап.";
+            contextText = "У этого персонажа можно завершить текущий этап.";
         else if (canDeposit)
-            contextText = "У этого NPC можно передать часть нужных предметов.";
+            contextText = "У этого персонажа можно передать часть нужных предметов.";
         else if ((status == "active" || status == "reward_pending") && nextTriggerText != "")
             contextText = "Квест уже в работе. Следующий шаг по цепочке: " + nextTriggerText + ".";
         else if (status == "active" || status == "reward_pending")
@@ -790,7 +839,7 @@ class QuestUIMenu extends UIScriptedMenu
         if (contextText == "")
             return "";
 
-        return "Контекст NPC:\n" + contextText + "\n\n";
+        return "Контекст персонажа:\n" + contextText + "\n\n";
     }
 
     array<ref Silver77_QuestItem> GetVisibleRewardItems(Silver77_Quest quest, string status, string currentTriggerId, bool canComplete, bool canClaimReward)

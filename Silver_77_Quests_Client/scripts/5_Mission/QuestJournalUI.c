@@ -248,7 +248,7 @@ class QuestJournalUIMenu extends UIScriptedMenu
                     remaining = 0;
                 
                 ready = remaining <= 0 || QuestClientManager.PlayerHasItemAmount(m_Player, obj.className, remaining, obj.useItemQuantity);
-                desc += "- Принести: " + obj.className + " x" + obj.quantity + "\n";
+                desc += "- Принести: " + Silver77_GetQuestItemDisplayName(obj.className) + " x" + obj.quantity + "\n";
                 desc += "  Сдано: " + deposited + " / " + obj.quantity + "\n";
                 if (ready)
                     desc += "  [готово]\n";
@@ -258,7 +258,7 @@ class QuestJournalUIMenu extends UIScriptedMenu
                 continue;
             }
             
-            desc += "- Принести: " + obj.className + " x" + obj.quantity;
+            desc += "- Принести: " + Silver77_GetQuestItemDisplayName(obj.className) + " x" + obj.quantity;
             if (ready)
                 desc += " [готово]\n";
             else
@@ -268,21 +268,47 @@ class QuestJournalUIMenu extends UIScriptedMenu
                 desc += "  Предмет останется у игрока\n";
         }
         
-        if (quest.rewards.Count() > 0)
+        array<ref Silver77_QuestItem> rewardItems = GetJournalRewardItems(quest);
+        if (rewardItems && rewardItems.Count() > 0)
         {
             desc += "\nНаграда:\n";
-            foreach (Silver77_QuestItem reward : quest.rewards)
+            foreach (Silver77_QuestItem reward : rewardItems)
             {
-                desc += "- " + reward.className + " x" + reward.quantity + "\n";
+                if (!reward)
+                    continue;
+
+                desc += "- " + Silver77_GetQuestItemDisplayName(reward.className) + " x" + reward.quantity + "\n";
             }
         }
         
         if (status == "reward_pending")
-            desc += "\nНаграда еще не получена. Подойди к нужному trigger / NPC из цепочки квеста.";
+            desc += "\nНаграда еще не получена. Подойди к нужному персонажу из цепочки квеста.";
         else
-            desc += "\nСдать квест можно у подходящего trigger / NPC по логике квеста.";
+            desc += "\nСдать квест можно у подходящего персонажа.";
         m_QuestDescription.SetText(desc);
         ResetScrollableText(m_QuestDescription);
+    }
+
+    array<ref Silver77_QuestItem> GetJournalRewardItems(Silver77_Quest quest)
+    {
+        if (!quest)
+            return null;
+
+        if (quest.rewards && quest.rewards.Count() > 0)
+            return quest.rewards;
+
+        array<string> rewardTriggerIds = QuestClientManager.GetQuestRewardTriggerIds(quest);
+        if (!rewardTriggerIds)
+            return null;
+
+        foreach (string rewardTriggerId : rewardTriggerIds)
+        {
+            array<ref Silver77_QuestItem> actionRewards = QuestClientManager.GetQuestActionRewards(quest, rewardTriggerId, "reward");
+            if (actionRewards && actionRewards.Count() > 0)
+                return actionRewards;
+        }
+
+        return null;
     }
     
     override bool OnClick(Widget w, int x, int y, int button)
