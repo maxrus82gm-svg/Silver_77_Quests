@@ -72,48 +72,45 @@
 AGENT REPORT
 
 DONE:
-- В `QuestUI.c` добавлен preview полной награды за квест в `DescriptionText`.
-- Старый вывод награды текущего этапа заменён на сбор наград по всему квесту.
-- Промежуточные `triggerActions[].rewards` для `completion` учитываются.
-- Финальные `triggerActions[].rewards` для `reward` учитываются.
-- `quest.rewards` используется только как fallback, если у финального reward action нет отдельного списка.
-- `giveItems[]`, objectives и стартовые предметы Offer не выводятся как награда.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 121`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 121`.
+- В `GIT_REVIEW_RULES.md` добавлен раздел `UNEXPECTED CHANGES и служебные файлы`.
+- В структуру review добавлен отдельный блок `UNEXPECTED CHANGES` после `GIT / REPOSITORY CHECK`.
+- Закреплено правило: служебные файлы вне scope задачи обязательно выносятся в `UNEXPECTED CHANGES`.
+- Отдельно перечислены подозрительные Obsidian-файлы: `.obsidian/*`, `Documentation_DayZ_Qwest/.obsidian/*`, `workspace.json`, `graph.json`.
+- В корневой `.gitignore` добавлено правило `.obsidian/`.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 122`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 122`.
 - Активный `БЛОК 1` очищен после выполнения задачи.
 
 CHANGED FILES:
-- `P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\GIT_REVIEW_RULES.md`
+- `P:\Silver_77_Quests\.gitignore`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 
 IMPLEMENTATION:
-- Добавлены helper-методы `BuildQuestRewardPreviewText`, `BuildQuestActionRewardLines` и `BuildQuestRewardItemLines`.
-- `BuildQuestRewardPreviewText` вызывается сразу после блока `Цели:` и прогресса сдачи предметов.
-- Completion rewards собираются по `QuestClientManager.GetQuestCompletionTriggerIds(quest)` и actionType `completion`.
-- Final rewards собираются по `QuestClientManager.GetQuestRewardTriggerIds(quest)` и actionType `reward`.
-- Для action rewards используется прямой `QuestClientManager.GetQuestTriggerAction`, чтобы fallback `quest.rewards` не дублировался.
-- `quest.rewards` добавляется один раз только если финальная reward action не дала отдельные rewards.
-- Для отображения названий используется уже существующий `Silver77_GetQuestItemDisplayName`.
+- В `GIT_REVIEW_RULES.md` добавлен новый раздел `## 11. UNEXPECTED CHANGES и служебные файлы`.
+- Разделы после него перенумерованы.
+- В review-шаблон добавлен блок `UNEXPECTED CHANGES`.
+- В `.gitignore` добавлена строка `.obsidian/` для корневой Obsidian-папки.
 
-UI RESULT:
-- В `DescriptionText` основного QuestUI после целей появляется `Награда за квест:`.
-- Если есть и промежуточная, и финальная награда, UI показывает отдельные заголовки `Промежуточная награда:` и `Финальная награда:`.
-- Награды не выводятся в `DialogText`, `RoutePanel`, список квестов или `QuestJournal`.
-- Названия предметов остаются игровыми, через helper из TASK 120.
+GIT RULES RESULT:
+- Служебные файлы вне scope больше нельзя молча принимать как часть задачи.
+- Если GitHub / Git / diff показывает изменение служебных файлов, review обязан перечислить их в `UNEXPECTED CHANGES`.
+- Если Git / GitHub / diff не проверялись, review не должен утверждать, что служебные файлы не менялись.
+- Если `UNEXPECTED CHANGES` содержит служебные файлы, ChatGPT должен отметить это в `REVIEW STATUS` или `PROBLEMS` и предложить отдельную cleanup-задачу.
+- `.gitignore` не удаляет уже tracked-файлы из индекса.
 
 CHECKS:
-- Проверен JSON-пример `quest_hunter_2`: `giveItems[]` содержит `PotatoSeed`, completion reward содержит `BoletusMushroom`, final reward содержит `Ammo_12gaPellets`.
-- По новой логике `PotatoSeed` из `giveItems[]` не попадает в preview награды, а completion/final rewards попадают.
-- Поиск подтвердил, что `QuestJournalUI.c` не менялся в этой задаче.
-- JSON, JSON-контракт, layout, server profile, редактор `JSON_Quvest` и PBO/build output не менялись.
-- Скобки в изменённых `.c` файлах сбалансированы простой статической проверкой.
-- Полноценная компиляция DayZ не запускалась: build/PBO запрещены текущей задачей, а DayZ Workbench/Diag CLI в окружении не найден.
+- `GIT_REVIEW_RULES.md` содержит раздел `UNEXPECTED CHANGES`.
+- Review-структура содержит отдельный пункт `UNEXPECTED CHANGES`.
+- `.obsidian/*`, `Documentation_DayZ_Qwest/.obsidian/*`, `workspace.json` и `graph.json` указаны как особенно подозрительные.
+- `.gitignore` содержит правило `.obsidian/`.
+- Кодовые файлы мода, JSON, layout, server profile и PBO/build output не менялись.
 - Активный `БЛОК 1` очищен.
 
 ENCODING CHECK:
-- UTF-8: изменённые `.c` и Markdown-файлы читаются как UTF-8.
+- UTF-8: изменённые Markdown-файлы и `.gitignore` читаются как UTF-8.
 - BOM: не обнаружен.
 - Кириллица: отображается нормально.
 - Повторяющиеся знаки вопроса и символы замены: не обнаружены.
@@ -124,13 +121,15 @@ GIT:
 - Commit не создавался агентом.
 - Push не выполнялся агентом.
 - Git-история не изменялась агентом.
+- Tracked-статус `.obsidian` не проверялся, потому что Git-команды запрещены текущей задачей.
 
 PROBLEMS:
-- Полноценная компиляция проекта не выполнялась из-за запрета build/PBO в активной задаче и отсутствия найденного DayZ Workbench/Diag CLI в окружении.
-- В текущем JSON-контракте нет отдельного флага, который помечает action reward как “предмет только для передачи”. Надёжно исключены `giveItems[]`, Offer-выдача и objectives; completion/reward action rewards считаются реальными наградами согласно контракту.
+- Если `.obsidian` уже tracked, `.gitignore` не уберёт эти файлы из индекса автоматически.
+- Для полного удаления tracked `.obsidian` из Git нужна отдельная Git-задача или ручное действие пользователя.
+- Tracked-статус `.obsidian` не подтверждён, потому что Git-команды не выполнялись.
 
 CONCLUSION:
-- TASK 121 выполнен. Изменены клиентские скрипты. Для проверки в игре потребуется обновить/пересобрать клиентскую часть мода по обычному процессу проекта.
+- TASK 122 выполнен. Правила `UNEXPECTED CHANGES` для служебных файлов закреплены, корневая `.obsidian/` добавлена в `.gitignore`. Моды обновлять не нужно.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

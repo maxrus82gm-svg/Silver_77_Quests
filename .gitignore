@@ -24,4 +24,5 @@ Desktop.ini
 *.log
 
 # Obsidian local workspace state
+.obsidian/
 Documentation_DayZ_Qwest/.obsidian/workspace.json

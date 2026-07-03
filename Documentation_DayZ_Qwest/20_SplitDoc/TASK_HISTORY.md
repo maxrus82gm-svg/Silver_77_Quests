@@ -74,6 +74,8 @@
 
 - `TASK 121` — в основном `QuestUI` добавлен preview полной награды за квест в `DescriptionText`: учитываются промежуточные `triggerActions[].rewards` для `completion`, финальные `triggerActions[].rewards` для `reward` и `quest.rewards` как fallback; `giveItems[]`, objectives и стартовая выдача Offer не выводятся как награда.
 
+- `TASK 122` — закреплены правила `UNEXPECTED CHANGES` для служебных файлов и Obsidian: `GIT_REVIEW_RULES.md` теперь требует выносить не входившие в scope изменения `.obsidian/*`, workspace/cache/session/IDE-файлов в отдельный блок review; в корневой `.gitignore` добавлено правило `.obsidian/`.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
