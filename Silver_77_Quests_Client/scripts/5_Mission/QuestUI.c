@@ -684,18 +684,8 @@ class QuestUIMenu extends UIScriptedMenu
             }
         }
         
-        array<ref Silver77_QuestItem> visibleRewards = GetVisibleRewardItems(quest, status, currentTriggerId, canComplete, canClaimReward);
-        if (visibleRewards && visibleRewards.Count() > 0)
-        {
-            desc += "\nНаграда:\n";
-            foreach (Silver77_QuestItem reward : visibleRewards)
-            {
-                if (!reward)
-                    continue;
-                
-                desc += "- " + Silver77_GetQuestItemDisplayName(reward.className) + " x" + reward.quantity + "\n";
-            }
-        }
+        desc += BuildQuestRewardPreviewText(quest);
+
         if (m_WaitingForServer)
             desc += "\nЗапрос отправлен. Ждем ответ сервера...";
         
@@ -842,26 +832,70 @@ class QuestUIMenu extends UIScriptedMenu
         return "Контекст персонажа:\n" + contextText + "\n\n";
     }
 
-    array<ref Silver77_QuestItem> GetVisibleRewardItems(Silver77_Quest quest, string status, string currentTriggerId, bool canComplete, bool canClaimReward)
+    string BuildQuestRewardItemLines(array<ref Silver77_QuestItem> rewards)
+    {
+        if (!rewards || rewards.Count() == 0)
+            return "";
+
+        string text = "";
+        foreach (Silver77_QuestItem reward : rewards)
+        {
+            if (!reward || reward.className == "")
+                continue;
+
+            text += "- " + Silver77_GetQuestItemDisplayName(reward.className) + " x" + reward.quantity + "\n";
+        }
+
+        return text;
+    }
+
+    string BuildQuestActionRewardLines(Silver77_Quest quest, array<string> triggerIds, string actionType)
+    {
+        if (!quest || !triggerIds || actionType == "")
+            return "";
+
+        string text = "";
+        foreach (string triggerId : triggerIds)
+        {
+            if (triggerId == "")
+                continue;
+
+            Silver77_QuestTriggerAction action = QuestClientManager.GetQuestTriggerAction(quest, triggerId, actionType);
+            if (action && action.rewards && action.rewards.Count() > 0)
+                text += BuildQuestRewardItemLines(action.rewards);
+        }
+
+        return text;
+    }
+
+    string BuildQuestRewardPreviewText(Silver77_Quest quest)
     {
         if (!quest)
-            return null;
-        
-        if (canClaimReward)
-            return QuestClientManager.GetQuestActionRewards(quest, currentTriggerId, "reward");
-        
-        if (status == "active")
+            return "";
+
+        string completionRewardLines = BuildQuestActionRewardLines(quest, QuestClientManager.GetQuestCompletionTriggerIds(quest), "completion");
+        string finalRewardLines = BuildQuestActionRewardLines(quest, QuestClientManager.GetQuestRewardTriggerIds(quest), "reward");
+        if (finalRewardLines == "" && quest.rewards && quest.rewards.Count() > 0)
+            finalRewardLines = BuildQuestRewardItemLines(quest.rewards);
+
+        if (completionRewardLines == "" && finalRewardLines == "")
+            return "";
+
+        string text = "\n";
+        if (completionRewardLines != "" && finalRewardLines != "")
         {
-            if (canClaimReward)
-                return QuestClientManager.GetQuestActionRewards(quest, currentTriggerId, "reward");
-            
-            if (canComplete)
-                return QuestClientManager.GetQuestActionRewards(quest, currentTriggerId, "completion");
-            
-            return null;
+            text += "Промежуточная награда:\n" + completionRewardLines;
+            text += "Финальная награда:\n" + finalRewardLines;
+            return text;
         }
-        
-        return quest.rewards;
+
+        text += "Награда за квест:\n";
+        if (completionRewardLines != "")
+            text += completionRewardLines;
+        else
+            text += finalRewardLines;
+
+        return text;
     }
     
     string BuildQuestDialogText(Silver77_Quest quest, string status, string currentTriggerId, bool canAccept, bool canComplete, bool canClaimReward)

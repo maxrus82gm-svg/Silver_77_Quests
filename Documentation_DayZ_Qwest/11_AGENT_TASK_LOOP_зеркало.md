@@ -72,44 +72,44 @@
 AGENT REPORT
 
 DONE:
-- Добавлен helper `Silver77_GetQuestItemDisplayName` для получения player-facing имени предмета по `className`.
-- `QuestUI.c` переведён на локализованные имена предметов в целях и наградах.
-- `QuestJournalUI.c` переведён на локализованные имена предметов в целях и наградах.
-- В `QuestJournal` добавлен вывод блока `Награда:` из `quest.rewards` или финального reward action.
-- Из player-facing текста журнала убрана фраза `trigger / NPC`; в `QuestUI` видимое `NPC` заменено на `персонаж`.
-- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 120`.
-- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 120`.
+- В `QuestUI.c` добавлен preview полной награды за квест в `DescriptionText`.
+- Старый вывод награды текущего этапа заменён на сбор наград по всему квесту.
+- Промежуточные `triggerActions[].rewards` для `completion` учитываются.
+- Финальные `triggerActions[].rewards` для `reward` учитываются.
+- `quest.rewards` используется только как fallback, если у финального reward action нет отдельного списка.
+- `giveItems[]`, objectives и стартовые предметы Offer не выводятся как награда.
+- В `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` добавлена запись `TASK 121`.
+- В `Documentation_DayZ_Qwest/05_Очередь_задач.md` добавлена выполненная `TASK 121`.
 - Активный `БЛОК 1` очищен после выполнения задачи.
 
 CHANGED FILES:
 - `P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestUI.c`
-- `P:\Silver_77_Quests\Silver_77_Quests_Client\scripts\5_Mission\QuestJournalUI.c`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_HISTORY.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\05_Очередь_задач.md`
 
 IMPLEMENTATION:
-- Helper создан в `QuestUI.c` как глобальные функции `Silver77_GetQuestItemConfigDisplayName` и `Silver77_GetQuestItemDisplayName`, чтобы его мог использовать и `QuestJournalUI.c`.
-- `displayName` ищется в порядке `CfgVehicles`, `CfgWeapons`, `CfgMagazines`, `CfgAmmo`.
-- Для строк из config используется `ConfigGetTextRaw`, затем `$STR_...` переводится в script-friendly формат через `GetGame().FormatRawConfigStringKeys`.
-- Локализация выполняется через `Widget.TranslateString`.
-- Fallback: если `displayName` найден, но не локализован, показывается `displayName`; если `displayName` не найден, показывается исходный `className`.
-- Ручной словарь не добавлялся; `PotatoSeed` не заменялся на `Potato`.
+- Добавлены helper-методы `BuildQuestRewardPreviewText`, `BuildQuestActionRewardLines` и `BuildQuestRewardItemLines`.
+- `BuildQuestRewardPreviewText` вызывается сразу после блока `Цели:` и прогресса сдачи предметов.
+- Completion rewards собираются по `QuestClientManager.GetQuestCompletionTriggerIds(quest)` и actionType `completion`.
+- Final rewards собираются по `QuestClientManager.GetQuestRewardTriggerIds(quest)` и actionType `reward`.
+- Для action rewards используется прямой `QuestClientManager.GetQuestTriggerAction`, чтобы fallback `quest.rewards` не дублировался.
+- `quest.rewards` добавляется один раз только если финальная reward action не дала отдельные rewards.
+- Для отображения названий используется уже существующий `Silver77_GetQuestItemDisplayName`.
 
 UI RESULT:
-- Цели теперь формируются как `Принести: <игровое имя> xN`, а не через прямой вывод `obj.className`.
-- Награды теперь формируются как `<игровое имя> xN`, а не через прямой вывод `reward.className`.
-- `QuestJournal` показывает блок `Награда:`, если награда есть в `quest.rewards` или в финальном `triggerActions[].rewards`.
-- Если награды в клиентских данных нет, блок `Награда:` не показывается и UI не ломается.
-- Техническая фраза `trigger / NPC` заменена на нормальный текст про подходящего персонажа.
+- В `DescriptionText` основного QuestUI после целей появляется `Награда за квест:`.
+- Если есть и промежуточная, и финальная награда, UI показывает отдельные заголовки `Промежуточная награда:` и `Финальная награда:`.
+- Награды не выводятся в `DialogText`, `RoutePanel`, список квестов или `QuestJournal`.
+- Названия предметов остаются игровыми, через helper из TASK 120.
 
 CHECKS:
-- Сигнатуры `ConfigGetTextRaw`, `FormatRawConfigStringKeys` и `Widget.TranslateString` сверены по `P:\scripts`.
-- Проверен поиск прямого player-facing вывода `obj.className` / `reward.className`; оставшиеся совпадения относятся к логике, а не к отображаемым строкам.
-- Проверено, что `QuestJournal` может брать награду из `triggerActions[].rewards` через существующий `QuestClientManager.GetQuestActionRewards`.
+- Проверен JSON-пример `quest_hunter_2`: `giveItems[]` содержит `PotatoSeed`, completion reward содержит `BoletusMushroom`, final reward содержит `Ammo_12gaPellets`.
+- По новой логике `PotatoSeed` из `giveItems[]` не попадает в preview награды, а completion/final rewards попадают.
+- Поиск подтвердил, что `QuestJournalUI.c` не менялся в этой задаче.
+- JSON, JSON-контракт, layout, server profile, редактор `JSON_Quvest` и PBO/build output не менялись.
 - Скобки в изменённых `.c` файлах сбалансированы простой статической проверкой.
 - Полноценная компиляция DayZ не запускалась: build/PBO запрещены текущей задачей, а DayZ Workbench/Diag CLI в окружении не найден.
-- JSON, JSON-контракт, layout, server profile, редактор `JSON_Quvest` и PBO/build output не менялись.
 - Активный `БЛОК 1` очищен.
 
 ENCODING CHECK:
@@ -119,10 +119,6 @@ ENCODING CHECK:
 - Повторяющиеся знаки вопроса и символы замены: не обнаружены.
 - Кириллица не восстанавливалась, повреждений не обнаружено.
 
-SYNC:
-- Отдельная переработка sync не потребовалась.
-- Награды доступны в клиентской config-модели через `quest.rewards` и `triggerActions[].rewards`; для журнала использован существующий `QuestClientManager.GetQuestActionRewards`.
-
 GIT:
 - Git-команды не выполнялись.
 - Commit не создавался агентом.
@@ -131,10 +127,10 @@ GIT:
 
 PROBLEMS:
 - Полноценная компиляция проекта не выполнялась из-за запрета build/PBO в активной задаче и отсутствия найденного DayZ Workbench/Diag CLI в окружении.
-- Фактические строки `PotatoSeed -> Картофель`, `BandageDressing -> Бинт`, `GP5GasMask -> Противогаз` нужно подтвердить в игре после обновления клиентской части мода; код использует именно DayZ config/localization цепочку, а не ручной словарь.
+- В текущем JSON-контракте нет отдельного флага, который помечает action reward как “предмет только для передачи”. Надёжно исключены `giveItems[]`, Offer-выдача и objectives; completion/reward action rewards считаются реальными наградами согласно контракту.
 
 CONCLUSION:
-- TASK 120 выполнен. Изменены клиентские скрипты. Для проверки в игре потребуется обновить/пересобрать клиентскую часть мода по обычному процессу проекта.
+- TASK 121 выполнен. Изменены клиентские скрипты. Для проверки в игре потребуется обновить/пересобрать клиентскую часть мода по обычному процессу проекта.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ## КОНЕЦ ОТЧЁТА
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

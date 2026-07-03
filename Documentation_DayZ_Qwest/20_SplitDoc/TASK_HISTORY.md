@@ -72,6 +72,8 @@
 
 - `TASK 120` — реализовано отображение локализованных игровых названий предметов в `QuestUI` и `QuestJournal`: добавлен helper поиска `displayName` через `CfgVehicles` / `CfgWeapons` / `CfgMagazines` / `CfgAmmo` с локализацией через `FormatRawConfigStringKeys` и `Widget.TranslateString`; цели и награды теперь показывают player-facing названия, а `QuestJournal` выводит блок `Награда:` из `quest.rewards` или финального `triggerActions[].rewards`.
 
+- `TASK 121` — в основном `QuestUI` добавлен preview полной награды за квест в `DescriptionText`: учитываются промежуточные `triggerActions[].rewards` для `completion`, финальные `triggerActions[].rewards` для `reward` и `quest.rewards` как fallback; `giveItems[]`, objectives и стартовая выдача Offer не выводятся как награда.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
