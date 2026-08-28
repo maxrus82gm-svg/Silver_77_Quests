@@ -33,10 +33,10 @@
 - `Documentation_DayZ_Qwest/21_Project_Docs/README.md` — первая точка входа для агента заменена на Obsidian-loop и Obsidian-START.
 - `Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md` — ссылка на чеклист split-сборки заменена на `Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md`.
 
-## Оставленные legacy bridge
+## Состояние legacy bridge
 
 - `Documentation/AGENT_TASK_LOOP.md` — оставлен как bridge и указывает на `Documentation_DayZ_Qwest/11_Задача_агенту.md`.
-- `Documentation/SplitDoc/START.md` — оставлен как bridge и указывает на `Documentation_DayZ_Qwest/12_START_зеркало.md`, `Documentation_DayZ_Qwest/20_SplitDoc` и `Documentation_DayZ_Qwest/21_Project_Docs`.
+- `Documentation/SplitDoc/START.md` — в текущей структуре отсутствует и не является действующим bridge; единственный действующий START находится в `Documentation_DayZ_Qwest/12_Старт_агента.md`.
 - Упоминания старых путей в `Documentation_DayZ_Qwest/10_Правила_агента.md` оставлены как описание legacy bridge.
 
 ## Оставленные исторические упоминания
