@@ -35,26 +35,27 @@
 
 ## Состояние legacy bridge
 
-- `Documentation/AGENT_TASK_LOOP.md` — оставлен как bridge и указывает на `Documentation_DayZ_Qwest/11_Задача_агенту.md`.
+- `Documentation/AGENT_TASK_LOOP.md` — удалён после окончательного переключения на `Documentation_DayZ_Qwest/11_Задача_агенту.md` и `Documentation_DayZ_Qwest/12_Старт_агента.md`.
 - `Documentation/SplitDoc/START.md` — в текущей структуре отсутствует и не является действующим bridge; единственный действующий START находится в `Documentation_DayZ_Qwest/12_Старт_агента.md`.
-- Упоминания старых путей в `Documentation_DayZ_Qwest/10_Правила_агента.md` оставлены как описание legacy bridge.
+- Старая корневая папка `Documentation` удалена и больше не используется.
+- `Documentation_DayZ_Qwest/10_Правила_агента.md` фиксирует финальное состояние без существующего bridge.
 
 ## Оставленные исторические упоминания
 
 - `Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md` — старые пути в TASK 104-110 оставлены как история миграции.
-- Старые документы в `Documentation/*.md` и `Documentation/SplitDoc/*.md` не переписывались: это legacy-слой, архивные отчёты и старые рабочие документы.
-- `Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md` — ссылки на старые CODEX-документы оставлены как legacy/исторический источник для восстановления текста.
+- Архивные копии старых документов в `Documentation_DayZ_Qwest/90_Legacy_Archive` не переписывались: это исторические отчёты и старые рабочие документы.
+- `Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md` — ссылки на старые CODEX-документы заменены реальными путями к их копиям в `90_Legacy_Archive`.
 - `Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md` и `Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md` — `Documentation/` в деревьях сборки оставлен как описание структуры старого/публикуемого мода, не как активный источник правил агента.
 
 ## Непонятные хвосты
 
-- `P:\Silver_77_Quests\README.md`, `P:\Silver_77_Quests\JSON_Quvest\README.md`, `P:\Silver_77_Quests\Support\...\README.md` содержат ссылки на старую `Documentation`, но не входили в разрешённый список правок этой задачи.
-- Старые CODEX-документы в `Documentation` содержат много ссылок на `Documentation/...`; они оставлены без правок как legacy/исторический контекст.
-- Если нужно полностью обновить пользовательские README и старые CODEX-документы под Obsidian-канон, нужна отдельная задача с расширенным scope.
+- Активных зависимостей от старой корневой папки `Documentation` не осталось.
+- Совпадения в `TASK_HISTORY`, разделах TASK 112/124 ниже и `90_Legacy_Archive` являются историческими записями.
+- `Documentation/` в деревьях `BUILD.md` и `SPLIT_CLIENT_SERVER.md` относится к структуре готовой сборки мода и не является ссылкой на удалённую рабочую папку.
 
 ## Итог
 
-Активные хвосты внутри `Documentation_DayZ_Qwest` исправлены или явно классифицированы. Legacy bridge и исторические записи оставлены без удаления. Старые `Documentation`-документы не считаются текущим каноном для агентских задач.
+Уникальный `STARTER_QUEST_CONFIG.json` перенесён в `Documentation_DayZ_Qwest/21_Project_Docs`, legacy bridge удалён, старая корневая папка `Documentation` удалена. Активных зависимостей от неё не осталось; исторические записи сохранены.
 
 ## TASK 112 — Финальная миграция хвостов
 
@@ -167,3 +168,13 @@ CONFLICT:
 `path:"Documentation_DayZ_Qwest/" -path:"Documentation_DayZ_Qwest/90_Legacy_Archive/" -path:"Documentation_DayZ_Qwest/22_Legacy_Check/" -path:"Documentation_DayZ_Qwest/.trash/"`
 
 Граф показывает рабочую базу `Documentation_DayZ_Qwest`, но скрывает архив, legacy-аудит, Obsidian trash и все документы модулей/подпроектов за пределами активной базы. Файлы при этом не удаляются.
+
+## Финальная миграция старой Documentation
+
+- `Documentation/STARTER_QUEST_CONFIG.json` перенесён в `Documentation_DayZ_Qwest/21_Project_Docs/STARTER_QUEST_CONFIG.json` без изменения содержимого.
+- SHA-256 до и после переноса совпал: `DFBC14A26D583D09D23205451165466E181BF38D5685B5C5D6331FB8EB779167`.
+- JSON остался валидным: версия `3`, четыре квеста и три триггера.
+- Legacy bridge `Documentation/AGENT_TASK_LOOP.md` удалён.
+- Пустые `Documentation/KnowledgeBase`, `Documentation/SplitDoc` и старая корневая папка `Documentation` удалены.
+- Активные ссылки переведены на актуальные или реальные архивные пути; зависимостей от старой корневой папки больше нет.
+- Исторические упоминания в `TASK_HISTORY`, `90_Legacy_Archive` и отчётах прошлых задач сохранены.

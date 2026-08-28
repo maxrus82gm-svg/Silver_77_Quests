@@ -77,12 +77,12 @@ rg -n "Р’|Рќ|Рњ|Рџ|Рљ|РЎ|СЃ|С‚|С‹|вЂ" D:\Dayz\Silver_77_Q
 1. Не сохранять файл повторно разными редакторами.
 2. Найти нормальный источник текста:
    - монолитный корневой файл;
-   - `Documentation/STARTER_QUEST_CONFIG.json`;
-   - `Documentation/CODEX_WORKLOG.md`;
-   - `Documentation/CODEX_CONTROL_CONTEXT.md`;
-
-   Эти старые `Documentation/...` источники оставлены как legacy/исторический контекст. Для активных агентских правил использовать `Documentation_DayZ_Qwest`.
+   - `Documentation_DayZ_Qwest/21_Project_Docs/STARTER_QUEST_CONFIG.json`;
+   - `Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_WORKLOG.md`;
+   - `Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTROL_CONTEXT.md`;
    - предыдущая рабочая копия.
+
+   Архивные `CODEX_*.md` использовать только как исторический источник для восстановления текста. Для активных агентских правил использовать `Documentation_DayZ_Qwest`.
 3. Заменить сломанные строки вручную на нормальный русский.
 4. Сохранить файл как UTF-8.
 5. Проверить через `Get-Content -Encoding UTF8`.
