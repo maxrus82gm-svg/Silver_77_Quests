@@ -1,5 +1,13 @@
 # PROJECT CONTEXT
 
+## Канонический editor root
+
+- Единственный рабочий root: `P:\Silver_77_Quests\JSON_Quvest`.
+- Канонический launcher: `P:\Silver_77_Quests\JSON_Quvest\start-editor.cmd`.
+- Активный `server.ps1` обслуживает только этот root и разрешает относительные пути от него.
+- Рабочий JSON, backup и draft находятся в этом root: `Silver_77_Quests.json`, `Silver_77_Quests_BackUP.json`, `editor-draft.json`.
+- Старый `Support/JSON_Quvest` не является рабочим редактором.
+
 ## Что это за проект
 
 Это локальный редактор JSON для квестов и триггеров, ориентированный на пользователей, которые не являются программистами.
@@ -37,6 +45,10 @@
 - показывать квесты и триггеры отдельными списками
 - редактировать квесты по блокам
 - редактировать триггеры по блокам
+- фильтровать список квестов по конкретному trigger / NPC
+- показывать `NPC Flow` как trigger-first блок внутри квеста
+- переключать `NPC Flow` между режимами `Активные блоки`, `Выбранный NPC` и `Все NPC`
+- открывать и добавлять NPC через встроенный picker
 - редактировать вложенные массивы:
   - `giveItems`
   - `objectives`
@@ -88,6 +100,25 @@
 
 Это было сделано, потому что для обычного пользователя логика "какой NPC выдает квест" намного понятнее, чем ручная работа с массивом `questIds`.
 
+### 2.1. Настройка NPC внутри квеста
+
+Текущая модель редактора использует `NPC Flow`:
+
+- каждая роль отображается отдельным NPC-блоком;
+- роли `Offer`, `Completion` и `Reward` настраиваются рядом с выбранным NPC;
+- по умолчанию видны активные блоки квеста;
+- для точечной настройки доступны режимы `Выбранный NPC` и `Все NPC`;
+- новый NPC открывается или добавляется через встроенный picker.
+
+### 2.2. Один блок — одна роль
+
+- `Offer` обязателен и может быть только один;
+- `Reward` обязателен и может быть только один;
+- `Completion` опционален, таких блоков может быть несколько;
+- один NPC / trigger может повторяться в цепочке только отдельным блоком с другой ролью;
+- `Offer` выдаёт квест, `Completion` обрабатывает промежуточный этап, `Reward` финально закрывает квест;
+- редактор синхронизирует `offerTriggerIds`, `completionTriggerIds`, `rewardTriggerIds`, `triggerActions` и `trigger.questIds`.
+
 ### 3. Экспорт теперь рассчитан на рабочий файл по пути
 
 Редактор больше не только скачивает JSON через браузер.
@@ -119,13 +150,13 @@
 
 ### Основные файлы
 
-- [index.html](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/index.html)
+- [index.html](P:/Silver_77_Quests/JSON_Quvest/index.html)
   Основная HTML-структура редактора.
 
-- [styles.css](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/styles.css)
+- [styles.css](P:/Silver_77_Quests/JSON_Quvest/styles.css)
   Визуальное оформление редактора.
 
-- [app.js](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/app.js)
+- [app.js](P:/Silver_77_Quests/JSON_Quvest/app.js)
   Основная логика:
   - импорт
   - редактирование
@@ -137,10 +168,10 @@
 
 ### Запуск и сервер
 
-- [start-editor.cmd](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/start-editor.cmd)
+- [start-editor.cmd](P:/Silver_77_Quests/JSON_Quvest/start-editor.cmd)
   Основной запускатель для Windows.
 
-- [start-editor.ps1](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/start-editor.ps1)
+- [start-editor.ps1](P:/Silver_77_Quests/JSON_Quvest/start-editor.ps1)
   PowerShell-скрипт запуска:
   - читает конфиг
   - делает backup
@@ -148,7 +179,7 @@
   - открывает редактор
   - старается вывести окно на передний план
 
-- [server.ps1](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/server.ps1)
+- [server.ps1](P:/Silver_77_Quests/JSON_Quvest/server.ps1)
   Локальный HTTP-сервер, который отдает редактор и обслуживает API:
   - `/api/health`
   - `/api/config`
@@ -158,22 +189,22 @@
 
 ### Данные и настройки
 
-- [Silver_77_Quests.json](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/Silver_77_Quests.json)
+- [Silver_77_Quests.json](P:/Silver_77_Quests/JSON_Quvest/Silver_77_Quests.json)
   Базовый рабочий JSON-файл.
 
-- [Silver_77_Quests_BackUP.json](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/Silver_77_Quests_BackUP.json)
+- [Silver_77_Quests_BackUP.json](P:/Silver_77_Quests/JSON_Quvest/Silver_77_Quests_BackUP.json)
   Резервная копия.
 
-- [editor-config.json](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/editor-config.json)
+- [editor-config.json](P:/Silver_77_Quests/JSON_Quvest/editor-config.json)
   Локальный конфиг путей:
   - `savePath`
   - `backupPath`
 
-- [editor-draft.json](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/editor-draft.json)
+- [editor-draft.json](P:/Silver_77_Quests/JSON_Quvest/editor-draft.json)
   Файловый черновик редактора.
   Этот файл может отсутствовать, если черновика еще нет или он был очищен после сохранения.
 
-- [README.md](C:/GitVerse/Neyro_01/Sborka_Json/JSON_Quvest/README.md)
+- [README.md](P:/Silver_77_Quests/JSON_Quvest/README.md)
   Краткая пользовательская инструкция.
 
 ---
@@ -521,9 +552,9 @@ Trigger мог быть выбран правильно, но ошибка от�
 
 ### Что теперь считается основной рабочей точкой
 
-- парсер / редактор живет в `M:\GITS_VERSE\Neyro_01\Sborka_Json\JSON_Quvest`
-- модовые исходники живут отдельно в `P:\Silver_77_Quests`
-- редактор используется как мастерская для структуры квестового JSON, без жесткой привязки к живому серверу
+- Эта запись относится к старому handoff; упомянутый ранее внешний путь больше не является рабочим.
+- Текущий канонический редактор находится только в `P:\Silver_77_Quests\JSON_Quvest`.
+- Редактор используется как мастерская для структуры квестового JSON, без жёсткой привязки к живому серверу.
 
 ### Какой JSON теперь считается базовым минимумом
 

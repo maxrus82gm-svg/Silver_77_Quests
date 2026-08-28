@@ -118,7 +118,7 @@
         {
           "triggerId": "fisherman_trigger",
           "actionType": "offer",
-          "dialogText": "Слух, родной, принеси мне карпиков, штук 12, я тут застрял, на какое то время, с черного, привык к рыбке, а тут хер ее найдешь, в общем неси, я не обижу. Где ловить!? Так на черном озеро есть!)",
+          "dialogText": "Слух, родной, принеси мне карпиков, штук 12, я тут застрял, на какое то время, с черного, привык к рыбке, а тут хер ее найдешь, в общем неси, я не обижу. Где ловить!? Так на черном озеро есть!)\n\nА и на тебе, противогаз и фильтр к нему. Это тебе пригодиться, я тебе как новичку перспективному, подсоблю.",
           "rewards": []
         },
         {
@@ -136,7 +136,22 @@
           ]
         }
       ],
-      "giveItems": [],
+      "giveItems": [
+        {
+          "className": "GasMask_filter",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
+          "spawnOnGround": 0
+        },
+        {
+          "className": "GP5GasMask",
+          "quantity": 1,
+          "setItemQuantity": 0,
+          "itemQuantity": 0,
+          "spawnOnGround": 0
+        }
+      ],
       "objectives": [
         {
           "type": "item",
@@ -713,6 +728,40 @@
         }
       ],
       "rewards": []
+    },
+    {
+      "id": "quest_hunter_6",
+      "name": "Новый квест",
+      "description": "",
+      "repeatable": 0,
+      "cooldownSeconds": 0,
+      "requiresPrevious": "",
+      "requiredQuestIds": [],
+      "hideUntilRequirementsComplete": 0,
+      "offerTriggerIds": [
+        "vasya_shprits_trigger"
+      ],
+      "completionTriggerIds": [],
+      "rewardTriggerIds": [
+        "vasya_shprits_trigger"
+      ],
+      "triggerActions": [
+        {
+          "triggerId": "vasya_shprits_trigger",
+          "actionType": "offer",
+          "dialogText": "",
+          "rewards": []
+        },
+        {
+          "triggerId": "vasya_shprits_trigger",
+          "actionType": "reward",
+          "dialogText": "",
+          "rewards": []
+        }
+      ],
+      "giveItems": [],
+      "objectives": [],
+      "rewards": []
     }
   ],
   "triggers": [
@@ -1204,7 +1253,8 @@
       "focusHeight": 1.2,
       "focusRadius": 1,
       "questIds": [
-        "quest_hunter_4"
+        "quest_hunter_4",
+        "quest_hunter_6"
       ],
       "hintText": "Вася (Шприц)",
       "spawnNpc": 1,
