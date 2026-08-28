@@ -6,12 +6,12 @@
 `Documentation_DayZ_Qwest/11_Задача_агенту.md`
 
 Актуальный START находится здесь:  
-`Documentation_DayZ_Qwest/12_START_зеркало.md`
+`Documentation_DayZ_Qwest/12_Старт_агента.md`
 
 Перед выполнением любой задачи агент должен читать:
 
 - `Documentation_DayZ_Qwest/11_Задача_агенту.md`
-- `Documentation_DayZ_Qwest/12_START_зеркало.md`
+- `Documentation_DayZ_Qwest/12_Старт_агента.md`
 
 Активный `БЛОК 1` находится только в Obsidian-loop.  
 После выполнения задачи агент очищает `БЛОК 1` в Obsidian-loop.

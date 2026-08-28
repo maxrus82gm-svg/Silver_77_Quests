@@ -47,7 +47,7 @@
 - `Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION.md` - подробная инструкция по установке
 - `Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG.md` - настройка квестов через JSON
 - `Documentation_DayZ_Qwest/11_Задача_агенту.md` - текущая задача и отчёт агента
-- `Documentation_DayZ_Qwest/12_START_зеркало.md` - стартовые правила агента
+- `Documentation_DayZ_Qwest/12_Старт_агента.md` - стартовые правила агента
 
 ## Поддержка
 

@@ -26,7 +26,7 @@
 
 - `Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md` — старый `Documentation/SplitDoc` больше не указан как источник правды; документ переименован по смыслу в активные правила.
 - `Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md` — старый `Documentation` больше не указан как источник правды; документ переименован по смыслу в активные проектные документы.
-- `Documentation_DayZ_Qwest/12_START_зеркало.md` — карта проекта переведена с `Documentation/` на `Documentation_DayZ_Qwest/`.
+- `Documentation_DayZ_Qwest/12_Старт_агента.md` — действующий стартовый документ агента.
 - `Documentation_DayZ_Qwest/01_Текущее_состояние.md` — активные правила, START и loop переведены на Obsidian-пути.
 - `Documentation_DayZ_Qwest/04_Архитектура.md` — раздел документации и правил переведён на Obsidian-пути.
 - `Documentation_DayZ_Qwest/20_SplitDoc/*.md` — внутренние ссылки на правила и проектные документы переведены на `Documentation_DayZ_Qwest/20_SplitDoc` и `Documentation_DayZ_Qwest/21_Project_Docs`.
@@ -88,3 +88,82 @@
 - активные README больше не ведут на старую `Documentation`;
 - старые Markdown-документы перенесены в Obsidian-архив;
 - `Documentation` больше не является рабочим каноном.
+
+## TASK 124 — Ревизия документации и рабочего графа Obsidian
+
+### Рабочий root
+
+- канонический логический путь: `P:\Silver_77_Quests`;
+- `P:` является `SUBST` для `D:\Dayz`;
+- физический Git root: `D:\Dayz\Silver_77_Quests`;
+- оба пути используют `D:\Dayz\Silver_77_Quests\.git` и один HEAD `d72dd0ece725e9962453880b04f96fe362e4e07b`.
+
+### Классификация
+
+ACTIVE:
+
+- 36 сохранённых рабочих `.md/.canvas` в `Documentation_DayZ_Qwest` вне `.trash`, `22_Legacy_Check` и `90_Legacy_Archive`;
+- центральная точка: `00_Главная.md`;
+- агентская система: `10_Правила_агента.md`, `11_Задача_агенту.md`, `12_Старт_агента.md`;
+- тематические правила: `20_SplitDoc`;
+- проектные документы: `21_Project_Docs`;
+- сюжетные материалы: `13_ЛОР.md` и `Квесты, идеи описания классов.canvas`.
+
+MODULE:
+
+- корневые `README.md` и `возможности_Silver_77_Quests.md`;
+- документация `JSON_Quvest`, `Support/JSON_Quvest`, Client, Server и `SplitMods`;
+- файлы сохранены на местах и скрыты только из рабочего графа документации.
+
+BRIDGE:
+
+- `Documentation/AGENT_TASK_LOOP.md` ведёт к действующим `11_Задача_агенту.md` и `12_Старт_агента.md`;
+- `Documentation/SplitDoc/START.md` на момент ревизии отсутствует и не считается вторым START.
+
+LEGACY / ARCHIVE:
+
+- 30 файлов в `90_Legacy_Archive` сохранены без удаления;
+- `Support/Arh_29042026/JSON_Quvest` сохранён как архив самостоятельного инструмента.
+
+EXACT DUPLICATE:
+
+- подтверждены совпадающие архивные копии `README_JSON_CONFIG.md`, `CHANGELOG.md`, `SPLIT_CLIENT_SERVER.md`, `README_INSTALLATION.md`, `QUEST_LOGIC_SPEC.md` и `DAYZ_RPC_SYNC_RULES.md`;
+- README Client/Server совпадают с README соответствующих деревьев в `SplitMods`;
+- `JSON_Quvest/PROJECT_CONTEXT.md` совпадает с архивной копией в `Support/Arh_29042026`;
+- эти копии сохранены как архивные снимки или документация самостоятельных деревьев модулей.
+
+FOREIGN:
+
+- `Support/Mashin/BP_Mashin.md` — уникальная инструкция UE5 Blueprint, не относящаяся к рабочей DayZ-документации; файл сохранён и исключён только фильтром графа.
+
+CONFLICT:
+
+- `JSON_Quvest` и `Support/JSON_Quvest` по-разному называют канонический editor root;
+- оба набора содержат уникальную информацию, поэтому автоматическое удаление или объединение не выполнялось.
+
+### Удалено
+
+Как `OBSIDIAN JUNK` удалены только файлы без уникальной информации и входящих ссылок:
+
+- `Documentation_DayZ_Qwest/Добро пожаловать.md` — стандартная приветственная заметка Obsidian;
+- `Documentation_DayZ_Qwest/001/Добро пожаловать.md` — вторая стандартная приветственная заметка;
+- `Documentation_DayZ_Qwest/Без названия.canvas` — пустой объект `{}`;
+- два пустых Markdown-файла и пустой canvas из `Documentation_DayZ_Qwest/.trash`.
+
+Все удалённые файлы были tracked и остаются восстановимыми из Git.
+
+### Переименовано и обновлено
+
+- единственный действующий `12_START_зеркало.md` переименован в `12_Старт_агента.md`;
+- заголовок изменён на `# СТАРТ АГЕНТА`;
+- активные ссылки, bridge, README, маршрутизация и жёлтая группа графа обновлены;
+- `00_Главная.md` связывает разделы, индексы и сюжетные материалы;
+- индексы `20_SplitDoc` и `21_Project_Docs` используют полные Obsidian-пути с alias; в индекс правил добавлены ранее пропущенные `DOCUMENTATION_RULES`, `IMAGE_GENERATION_PRESET` и `IMAGE_SCENE_CONTINUITY`.
+
+### Рабочий граф
+
+Фильтр:
+
+`path:"Documentation_DayZ_Qwest/" -path:"Documentation_DayZ_Qwest/90_Legacy_Archive/" -path:"Documentation_DayZ_Qwest/22_Legacy_Check/" -path:"Documentation_DayZ_Qwest/.trash/"`
+
+Граф показывает рабочую базу `Documentation_DayZ_Qwest`, но скрывает архив, legacy-аудит, Obsidian trash и все документы модулей/подпроектов за пределами активной базы. Файлы при этом не удаляются.
