@@ -1,6 +1,6 @@
 {
   "collapse-filter": true,
-  "search": "",
+  "search": "path:\"Documentation_DayZ_Qwest/\" -path:\"Documentation_DayZ_Qwest/90_Legacy_Archive/\" -path:\"Documentation_DayZ_Qwest/22_Legacy_Check/\" -path:\"Documentation_DayZ_Qwest/.trash/\"",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -15,7 +15,7 @@
       }
     },
     {
-      "query": "path:\"Documentation_DayZ_Qwest/10_Правила_агента.md\" OR path:\"Documentation_DayZ_Qwest/12_START_зеркало.md\" OR (path:\"Documentation_DayZ_Qwest/20_SplitDoc/\" -path:\"Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md\" -path:\"Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md\")",
+      "query": "path:\"Documentation_DayZ_Qwest/10_Правила_агента.md\" OR path:\"Documentation_DayZ_Qwest/12_Старт_агента.md\" OR (path:\"Documentation_DayZ_Qwest/20_SplitDoc/\" -path:\"Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md\" -path:\"Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md\")",
       "color": {
         "a": 1,
         "rgb": 16776960
