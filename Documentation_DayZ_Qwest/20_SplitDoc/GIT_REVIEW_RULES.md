@@ -30,7 +30,7 @@ main
 
 ```text
 Documentation_DayZ_Qwest
-Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md
+Documentation_DayZ_Qwest/11_Задача_агенту.md
 Documentation_DayZ_Qwest/20_SplitDoc
 ```
 

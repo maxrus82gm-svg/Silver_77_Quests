@@ -35,7 +35,7 @@
 
 ## Оставленные legacy bridge
 
-- `Documentation/AGENT_TASK_LOOP.md` — оставлен как bridge и указывает на `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`.
+- `Documentation/AGENT_TASK_LOOP.md` — оставлен как bridge и указывает на `Documentation_DayZ_Qwest/11_Задача_агенту.md`.
 - `Documentation/SplitDoc/START.md` — оставлен как bridge и указывает на `Documentation_DayZ_Qwest/12_START_зеркало.md`, `Documentation_DayZ_Qwest/20_SplitDoc` и `Documentation_DayZ_Qwest/21_Project_Docs`.
 - Упоминания старых путей в `Documentation_DayZ_Qwest/10_Правила_агента.md` оставлены как описание legacy bridge.
 

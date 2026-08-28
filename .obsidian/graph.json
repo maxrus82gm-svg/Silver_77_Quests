@@ -6,7 +6,22 @@
   "hideUnresolved": false,
   "showOrphans": true,
   "collapse-color-groups": false,
-  "colorGroups": [],
+  "colorGroups": [
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/11_Задача_агенту.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 65280
+      }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/10_Правила_агента.md\" OR path:\"Documentation_DayZ_Qwest/12_START_зеркало.md\" OR (path:\"Documentation_DayZ_Qwest/20_SplitDoc/\" -path:\"Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md\" -path:\"Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md\")",
+      "color": {
+        "a": 1,
+        "rgb": 16776960
+      }
+    }
+  ],
   "collapse-display": true,
   "showArrow": false,
   "textFadeMultiplier": 0,

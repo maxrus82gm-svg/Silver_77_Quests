@@ -35,7 +35,7 @@ Documentation_DayZ_Qwest
 Активная задача:
 
 ```text
-Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md
+Documentation_DayZ_Qwest/11_Задача_агенту.md
 ```
 
 Стартовые правила:
@@ -177,7 +177,7 @@ P:\Silver_77_Quests\Documentation_DayZ_Qwest
 Silver_77_Quests
 P:\Silver_77_Quests
 Documentation_DayZ_Qwest
-Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md
+Documentation_DayZ_Qwest/11_Задача_агенту.md
 Documentation_DayZ_Qwest/20_SplitDoc
 maxrus82gm-svg/Silver_77_Quests
 main
@@ -188,7 +188,7 @@ main
 Если новый документ становится постоянным правилом, добавить короткую ссылку только в нужное место:
 
 - `Documentation_DayZ_Qwest/12_START_зеркало.md`, если правило стартовое или маршрутизационное;
-- `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`, если нужна строка в матрице чтения;
+- `Documentation_DayZ_Qwest/11_Задача_агенту.md`, если нужна строка в матрице чтения;
 - профильный `SplitDoc`, если нужна тематическая ссылка.
 
 Не копировать полный текст правила в `START`, если есть профильный `SplitDoc`.

@@ -16,7 +16,7 @@
 
 Если к проекту подключается новый Codex-агент, сначала открыть:
 
-- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_AGENT_TASK_LOOP_зеркало.md`
+- `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_Задача_агенту.md`
 - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\12_START_зеркало.md`
 
 ## Что уже умеет

@@ -3,14 +3,14 @@
 Этот файл больше не является основным рабочим loop.
 
 Актуальный рабочий loop находится здесь:  
-`Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`
+`Documentation_DayZ_Qwest/11_Задача_агенту.md`
 
 Актуальный START находится здесь:  
 `Documentation_DayZ_Qwest/12_START_зеркало.md`
 
 Перед выполнением любой задачи агент должен читать:
 
-- `Documentation_DayZ_Qwest/11_AGENT_TASK_LOOP_зеркало.md`
+- `Documentation_DayZ_Qwest/11_Задача_агенту.md`
 - `Documentation_DayZ_Qwest/12_START_зеркало.md`
 
 Активный `БЛОК 1` находится только в Obsidian-loop.  
