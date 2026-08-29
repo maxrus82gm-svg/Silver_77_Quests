@@ -80,6 +80,8 @@
 
 - `TASK 125` — единственным каноническим Quest JSON Editor зафиксирован `P:\Silver_77_Quests\JSON_Quvest` с launcher `start-editor.cmd`. Уникальные актуальные сведения о `NPC Flow` и ролях `Offer / Completion / Reward` перенесены в канонические README, PROJECT_CONTEXT и `QUEST_EDITOR_RULES`; полный старый Support-root сохранён побайтовым snapshot в `Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot`, после чего активная папка `Support/JSON_Quvest` удалена. Двусмысленность двух рабочих редакторов устранена.
 
+- `TASK 127` — исследованы и разделены два vanilla-механизма: активация dynamic infected territory через Central Economy (`ZoneSpawnDist`, `zombie_territories.xml`) и обнаружение игрока уже созданным infected через native vision/noise/alert/target system. Подтверждено отсутствие одного постоянного радиуса обнаружения; результаты и связь с будущей миграцией зафиксированы в `14_Квест_Миграция.md`. Игровой код не менялся; следующим отдельным вопросом остаётся AI simulation script-created infected вдали от игроков.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
