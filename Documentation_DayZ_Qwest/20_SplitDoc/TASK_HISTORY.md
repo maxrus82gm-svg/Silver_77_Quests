@@ -92,6 +92,8 @@
 
 - `TASK 132` — общие задержка и погода вынесены в глобальный `MigrationEvent.json`, добавлен независимый `MIGRATION_TEST_002`, а manager запускает обе включённые группы одним событием после общего transition. Гроза без дождя нарастает за последние `60` секунд шагами по `10` секунд до density `0.8`; Scenario 001/002 используют собственные formation rotations, targets и scenario-логи. Старые weather/spawnDelay поля runtime Scenario 001 не удаляются и игнорируются, event schema сохраняет add-only обновление. Создан русский `config/README_RU.md`; PBO не собирался, runtime-проверка не выполнялась.
 
+- `TASK 133` — конфигурация `Silver_77_Migrate_server` объединена в один `$profile:Silver_77_Migrate/MigrationConfig.json`: общие event/weather/storm-поля находятся сверху, а `MIGRATION_TEST_001` и `MIGRATION_TEST_002` — в динамически перебираемом массиве `scenarios`. При отсутствии unified-файла loader безопасно переносит значения из валидных старых трёх runtime JSON, не удаляя их; существующий unified JSON не переписывается, malformed данные не заменяются defaults. Старые source JSON заменены одним `config/MigrationConfig.json`, README и документация обновлены. Погодное, storm и migration-поведение TASK 132 не менялось; PBO не собирался, runtime-проверка не выполнялась.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

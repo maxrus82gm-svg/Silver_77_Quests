@@ -47,7 +47,7 @@ class S77MigrateManager
     protected const float ARRIVAL_TOLERANCE = 4.0;
     protected const float MIGRATION_SPEED = 1.0;
 
-    protected ref S77MigrateEventConfig m_EventConfig;
+    protected ref S77MigrateConfig m_Config;
     protected ref array<ref S77MigrateScenarioConfig> m_Scenarios;
     protected ref array<ref S77MigrateUnitState> m_Units;
     protected ref PGFilter m_PathFilter;
@@ -107,28 +107,37 @@ class S77MigrateManager
 
         m_Initialized = true;
 
-        m_EventConfig = S77MigrateConfigLoader.LoadEvent();
-        if (!m_EventConfig)
+        m_Config = S77MigrateConfigLoader.Load();
+        if (!m_Config)
         {
-            Print(EVENT_LOG_PREFIX + " ERROR: global event config could not be loaded");
+            Print(EVENT_LOG_PREFIX + " ERROR: unified migration config could not be loaded");
             return;
         }
 
-        S77MigrateScenarioConfig scenario001 = S77MigrateConfigLoader.LoadScenario001();
-        if (scenario001 && scenario001.enabled == 1)
-            m_Scenarios.Insert(scenario001);
-        else if (scenario001)
-            Print(MIGRATION_LOG_PREFIX + " scenario=" + scenario001.scenarioId + " disabled");
-
-        S77MigrateScenarioConfig scenario002 = S77MigrateConfigLoader.LoadScenario002();
-        if (scenario002 && scenario002.enabled == 1)
-            m_Scenarios.Insert(scenario002);
-        else if (scenario002)
-            Print(MIGRATION_LOG_PREFIX + " scenario=" + scenario002.scenarioId + " disabled");
-
-        if (m_EventConfig.enabled != 1)
+        for (int scenarioIndex = 0; scenarioIndex < m_Config.scenarios.Count(); scenarioIndex++)
         {
-            Print(EVENT_LOG_PREFIX + " Event disabled. Set enabled=1 in " + S77_MIGRATE_EVENT_CONFIG + " and restart the server.");
+            S77MigrateScenarioConfig scenario = m_Config.scenarios.Get(scenarioIndex);
+            if (!scenario)
+            {
+                Print(EVENT_LOG_PREFIX + " ERROR: null scenario skipped at index=" + scenarioIndex.ToString());
+                continue;
+            }
+
+            if (!scenario.IsValid())
+            {
+                Print(EVENT_LOG_PREFIX + " ERROR: invalid scenario skipped at index=" + scenarioIndex.ToString() + " scenarioId=" + scenario.scenarioId);
+                continue;
+            }
+
+            if (scenario.enabled == 1)
+                m_Scenarios.Insert(scenario);
+            else
+                Print(MIGRATION_LOG_PREFIX + " scenario=" + scenario.scenarioId + " disabled");
+        }
+
+        if (m_Config.enabled != 1)
+        {
+            Print(EVENT_LOG_PREFIX + " Event disabled. Set enabled=1 in " + S77_MIGRATE_CONFIG + " and restart the server.");
             return;
         }
 
@@ -138,17 +147,17 @@ class S77MigrateManager
             return;
         }
 
-        int delayMs = Math.Round(m_EventConfig.eventDelaySeconds * 1000.0);
-        if (m_EventConfig.weatherEnabled == 1)
+        int delayMs = Math.Round(m_Config.eventDelaySeconds * 1000.0);
+        if (m_Config.weatherEnabled == 1)
         {
             m_WeatherStartScheduled = true;
-            Print(EVENT_LOG_PREFIX + " Global weather scheduled in " + m_EventConfig.eventDelaySeconds.ToString() + " seconds; transition=" + m_EventConfig.weatherTransitionSeconds.ToString() + " seconds; scenarios=" + m_Scenarios.Count().ToString());
+            Print(EVENT_LOG_PREFIX + " Global weather scheduled in " + m_Config.eventDelaySeconds.ToString() + " seconds; transition=" + m_Config.weatherTransitionSeconds.ToString() + " seconds; scenarios=" + m_Scenarios.Count().ToString());
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(BeginWeatherTransition, delayMs, false);
         }
         else
         {
             m_StartGroupsScheduled = true;
-            Print(EVENT_LOG_PREFIX + " Weather disabled; all enabled groups scheduled in " + m_EventConfig.eventDelaySeconds.ToString() + " seconds");
+            Print(EVENT_LOG_PREFIX + " Weather disabled; all enabled groups scheduled in " + m_Config.eventDelaySeconds.ToString() + " seconds");
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartAllScenarios, delayMs, false);
         }
     }
@@ -170,24 +179,24 @@ class S77MigrateManager
         weather.MissionWeather(true);
         m_WeatherControlActive = true;
 
-        float transitionSeconds = m_EventConfig.weatherTransitionSeconds;
-        float windSpeed = m_EventConfig.weatherWindMagnitude;
+        float transitionSeconds = m_Config.weatherTransitionSeconds;
+        float windSpeed = m_Config.weatherWindMagnitude;
         if (windSpeed < 0.1)
             windSpeed = 0.1;
 
-        weather.GetOvercast().Set(m_EventConfig.weatherOvercast, transitionSeconds, transitionSeconds);
-        weather.GetFog().Set(m_EventConfig.weatherFog, transitionSeconds, transitionSeconds);
-        weather.GetRain().Set(m_EventConfig.weatherRain, transitionSeconds, transitionSeconds);
+        weather.GetOvercast().Set(m_Config.weatherOvercast, transitionSeconds, transitionSeconds);
+        weather.GetFog().Set(m_Config.weatherFog, transitionSeconds, transitionSeconds);
+        weather.GetRain().Set(m_Config.weatherRain, transitionSeconds, transitionSeconds);
         weather.SetWindSpeed(windSpeed);
-        weather.SetStorm(0.0, m_EventConfig.weatherStormThreshold, m_EventConfig.weatherStormTimeoutSeconds);
+        weather.SetStorm(0.0, m_Config.weatherStormThreshold, m_Config.weatherStormTimeoutSeconds);
 
         string weatherLog = EVENT_LOG_PREFIX;
         weatherLog = weatherLog + " Weather transition started duration=" + transitionSeconds.ToString();
-        weatherLog = weatherLog + " overcast=" + m_EventConfig.weatherOvercast.ToString();
-        weatherLog = weatherLog + " fog=" + m_EventConfig.weatherFog.ToString();
+        weatherLog = weatherLog + " overcast=" + m_Config.weatherOvercast.ToString();
+        weatherLog = weatherLog + " fog=" + m_Config.weatherFog.ToString();
         weatherLog = weatherLog + " wind=" + windSpeed.ToString();
-        weatherLog = weatherLog + " rain=" + m_EventConfig.weatherRain.ToString();
-        weatherLog = weatherLog + " stormFinalDensity=" + m_EventConfig.weatherStormDensity.ToString();
+        weatherLog = weatherLog + " rain=" + m_Config.weatherRain.ToString();
+        weatherLog = weatherLog + " stormFinalDensity=" + m_Config.weatherStormDensity.ToString();
         Print(weatherLog);
 
         ScheduleStormRamp(transitionSeconds);
@@ -205,16 +214,16 @@ class S77MigrateManager
 
     protected void ScheduleStormRamp(float transitionSeconds)
     {
-        if (m_EventConfig.weatherStormEnabled != 1)
+        if (m_Config.weatherStormEnabled != 1)
             return;
 
-        m_EffectiveStormRampSeconds = m_EventConfig.weatherStormRampSeconds;
+        m_EffectiveStormRampSeconds = m_Config.weatherStormRampSeconds;
         if (m_EffectiveStormRampSeconds > transitionSeconds)
             m_EffectiveStormRampSeconds = transitionSeconds;
 
         if (transitionSeconds <= 0.0 || m_EffectiveStormRampSeconds <= 0.0)
         {
-            ApplyStormDensity(m_EventConfig.weatherStormDensity, 1.0);
+            ApplyStormDensity(m_Config.weatherStormDensity, 1.0);
             return;
         }
 
@@ -256,7 +265,7 @@ class S77MigrateManager
         if (progress > 1.0)
             progress = 1.0;
 
-        ApplyStormDensity(m_EventConfig.weatherStormDensity * progress, progress);
+        ApplyStormDensity(m_Config.weatherStormDensity * progress, progress);
         if (progress >= 1.0)
             StopStormRampCallbacks();
     }
@@ -267,7 +276,7 @@ class S77MigrateManager
         if (!weather)
             return;
 
-        weather.SetStorm(density, m_EventConfig.weatherStormThreshold, m_EventConfig.weatherStormTimeoutSeconds);
+        weather.SetStorm(density, m_Config.weatherStormThreshold, m_Config.weatherStormTimeoutSeconds);
         Print(EVENT_LOG_PREFIX + " Storm ramp progress=" + progress.ToString() + " density=" + density.ToString());
     }
 
@@ -286,8 +295,8 @@ class S77MigrateManager
             return;
 
         StopStormRampCallbacks();
-        if (m_EventConfig.weatherStormEnabled == 1)
-            ApplyStormDensity(m_EventConfig.weatherStormDensity, 1.0);
+        if (m_Config.weatherStormEnabled == 1)
+            ApplyStormDensity(m_Config.weatherStormDensity, 1.0);
         else
             ApplyStormDensity(0.0, 0.0);
 
