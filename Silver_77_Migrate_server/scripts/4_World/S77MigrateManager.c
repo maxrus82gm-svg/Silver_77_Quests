@@ -326,16 +326,16 @@ class S77MigrateManager
             vector position = state.m_Infected.GetPosition();
             float distanceToTarget = vector.Distance(position, state.m_MigrationTarget);
 
-            string logLine = LOG_PREFIX
-                + " scenario=" + state.m_ScenarioId
-                + " id=" + state.m_InfectedId
-                + " class=" + state.m_ClassName
-                + " position=" + position.ToString()
-                + " waypoint=" + waypointStatus
-                + " distance=" + distanceToTarget.ToString()
-                + " target=" + targetPresent
-                + " mind=" + MindStateToString(mindState)
-                + " mode=" + state.m_Mode;
+            string logLine = LOG_PREFIX;
+            logLine = logLine + " scenario=" + state.m_ScenarioId;
+            logLine = logLine + " id=" + state.m_InfectedId;
+            logLine = logLine + " class=" + state.m_ClassName;
+            logLine = logLine + " position=" + position.ToString();
+            logLine = logLine + " waypoint=" + waypointStatus;
+            logLine = logLine + " distance=" + distanceToTarget.ToString();
+            logLine = logLine + " target=" + targetPresent;
+            logLine = logLine + " mind=" + MindStateToString(mindState);
+            logLine = logLine + " mode=" + state.m_Mode;
 
             Print(logLine);
         }
