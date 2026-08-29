@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation_DayZ_Qwest/14_Квест_Миграция.md",
+                "file": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "14_Квест_Миграция"
+              "title": "11_Задача_агенту"
             }
           }
         ]
@@ -187,6 +187,7 @@
   },
   "active": "bdc3435b2ace8d59",
   "lastOpenFiles": [
+    "Documentation_DayZ_Qwest/14_Квест_Миграция.md",
     "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md",
     "Documentation_DayZ_Qwest/11_Задача_агенту.md",
     "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md",
@@ -200,7 +201,6 @@
     "Silver_77_Migrate_server/scripts/5_Mission/mission",
     "Silver_77_Migrate_server/scripts/5_Mission",
     "Silver_77_Migrate_server/scripts/4_World",
-    "Documentation_DayZ_Qwest/14_Квест_Миграция.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md",
     "Documentation_DayZ_Qwest/13_ЛОР.md",
