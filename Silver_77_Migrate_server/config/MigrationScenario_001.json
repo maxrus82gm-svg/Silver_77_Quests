@@ -1,7 +1,7 @@
 {
-    "enabled": 0,
+    "enabled": 1,
     "scenarioId": "MIGRATION_TEST_001",
-    "infectedCount": 5,
+    "infectedCount": 10,
     "infectedTypes": [
         "ZmbF_JournalistNormal_Blue",
         "ZmbM_CitizenASkinny_Brown",
@@ -10,19 +10,29 @@
         "ZmbM_HikerSkinny_Blue"
     ],
     "spawnPosition": [
-        13223.644531,
-        79.554642,
-        13369.614258
+        13223.64453125,
+        79.55464172363281,
+        13369.6142578125
     ],
     "targetPosition": [
-        13102.965820,
-        115.809814,
-        13094.113281
+        13102.9658203125,
+        115.809814453125,
+        13094.11328125
     ],
-    "spawnFormationSpacing": 2.5,
-    "spawnFormationJitter": 0.20,
-    "targetFormationSpacing": 2.5,
-    "targetFormationJitter": 0.20,
-    "spawnDelaySeconds": 10.0,
-    "logIntervalSeconds": 10.0
+    "spawnFormationSpacing": 4.5,
+    "spawnFormationJitter": 0.5,
+    "targetFormationSpacing": 4.5,
+    "targetFormationJitter": 0.5,
+    "spawnDelaySeconds": 30.0,
+    "logIntervalSeconds": 10.0,
+    "weatherEnabled": 1,
+    "weatherTransitionSeconds": 180.0,
+    "weatherOvercast": 1.0,
+    "weatherFog": 0.8,
+    "weatherWindMagnitude": 0.0,
+    "weatherRain": 0.0,
+    "weatherStormEnabled": 0,
+    "weatherStormDensity": 0.0,
+    "weatherStormThreshold": 0.8,
+    "weatherStormTimeoutSeconds": 30.0
 }

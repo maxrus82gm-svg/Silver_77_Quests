@@ -46,6 +46,12 @@ class S77MigrateManager
     protected bool m_ScenarioStarted;
     protected bool m_RouteUpdateScheduled;
     protected bool m_LogScheduled;
+    protected bool m_StartScenarioScheduled;
+    protected bool m_WeatherStartScheduled;
+    protected bool m_WeatherCompletionScheduled;
+    protected bool m_WeatherControlActive;
+    protected bool m_PreviousMissionWeather;
+    protected bool m_Stopped;
 
     void S77MigrateManager()
     {
@@ -79,6 +85,12 @@ class S77MigrateManager
 
     protected void InitializeScenario()
     {
+        if (m_ScenarioStarted || m_StartScenarioScheduled || m_WeatherStartScheduled || m_WeatherCompletionScheduled || m_WeatherControlActive)
+        {
+            Print(LOG_PREFIX + " Duplicate initialization ignored");
+            return;
+        }
+
         m_Config = S77MigrateConfigLoader.LoadScenario001();
 
         if (!m_Config)
@@ -94,12 +106,108 @@ class S77MigrateManager
         }
 
         int delayMs = Math.Round(m_Config.spawnDelaySeconds * 1000.0);
-        Print(LOG_PREFIX + " Scenario enabled; one-time spawn scheduled in " + m_Config.spawnDelaySeconds.ToString() + " seconds");
-        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartScenario, delayMs, false);
+
+        if (m_Config.weatherEnabled == 1)
+        {
+            m_WeatherStartScheduled = true;
+            Print(LOG_PREFIX + " Scenario enabled; weather precursor scheduled in " + m_Config.spawnDelaySeconds.ToString() + " seconds; transition=" + m_Config.weatherTransitionSeconds.ToString() + " seconds");
+            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(BeginWeatherTransition, delayMs, false);
+        }
+        else
+        {
+            m_StartScenarioScheduled = true;
+            Print(LOG_PREFIX + " Scenario enabled; weather disabled; one-time spawn scheduled in " + m_Config.spawnDelaySeconds.ToString() + " seconds");
+            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartScenario, delayMs, false);
+        }
+    }
+
+    protected void BeginWeatherTransition()
+    {
+        m_WeatherStartScheduled = false;
+
+        if (m_Stopped || m_ScenarioStarted)
+            return;
+
+        Weather weather = GetGame().GetWeather();
+        if (!weather)
+        {
+            Print(LOG_PREFIX + " ERROR: Weather API is unavailable; scenario start aborted");
+            return;
+        }
+
+        m_PreviousMissionWeather = weather.GetMissionWeather();
+        weather.MissionWeather(true);
+        m_WeatherControlActive = true;
+
+        float transitionSeconds = m_Config.weatherTransitionSeconds;
+        float windSpeed = m_Config.weatherWindMagnitude;
+        if (windSpeed < 0.1)
+            windSpeed = 0.1;
+
+        float stormDensity = 0.0;
+        if (m_Config.weatherStormEnabled == 1)
+            stormDensity = m_Config.weatherStormDensity;
+
+        weather.GetOvercast().Set(m_Config.weatherOvercast, transitionSeconds, transitionSeconds);
+        weather.GetFog().Set(m_Config.weatherFog, transitionSeconds, transitionSeconds);
+        weather.GetRain().Set(m_Config.weatherRain, transitionSeconds, transitionSeconds);
+        weather.SetWindSpeed(windSpeed);
+        weather.SetStorm(stormDensity, m_Config.weatherStormThreshold, m_Config.weatherStormTimeoutSeconds);
+
+        string weatherLog = LOG_PREFIX;
+        weatherLog = weatherLog + " Weather transition started duration=" + transitionSeconds.ToString();
+        weatherLog = weatherLog + " overcast=" + m_Config.weatherOvercast.ToString();
+        weatherLog = weatherLog + " fog=" + m_Config.weatherFog.ToString();
+        weatherLog = weatherLog + " wind=" + windSpeed.ToString();
+        weatherLog = weatherLog + " rain=" + m_Config.weatherRain.ToString();
+        weatherLog = weatherLog + " stormDensity=" + stormDensity.ToString();
+        Print(weatherLog);
+
+        if (transitionSeconds <= 0.0)
+        {
+            CompleteWeatherTransition();
+            return;
+        }
+
+        int transitionMs = Math.Round(transitionSeconds * 1000.0);
+        m_WeatherCompletionScheduled = true;
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(CompleteWeatherTransition, transitionMs, false);
+    }
+
+    protected void CompleteWeatherTransition()
+    {
+        m_WeatherCompletionScheduled = false;
+
+        if (m_Stopped)
+            return;
+
+        Print(LOG_PREFIX + " Weather transition completed; starting migration group");
+        StartScenario();
+        ReleaseWeatherControl();
+    }
+
+    protected void ReleaseWeatherControl()
+    {
+        if (!m_WeatherControlActive)
+            return;
+
+        Weather weather = GetGame().GetWeather();
+        if (weather)
+        {
+            weather.MissionWeather(m_PreviousMissionWeather);
+            Print(LOG_PREFIX + " Weather control released; previous MissionWeather state restored=" + m_PreviousMissionWeather.ToString());
+        }
+
+        m_WeatherControlActive = false;
     }
 
     protected void StartScenario()
     {
+        m_StartScenarioScheduled = false;
+
+        if (m_Stopped)
+            return;
+
         if (m_ScenarioStarted)
         {
             Print(LOG_PREFIX + " Duplicate start ignored");
@@ -359,7 +467,16 @@ class S77MigrateManager
 
     protected void Stop()
     {
+        m_Stopped = true;
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(StartScenario);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(BeginWeatherTransition);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(CompleteWeatherTransition);
+
+        m_StartScenarioScheduled = false;
+        m_WeatherStartScheduled = false;
+        m_WeatherCompletionScheduled = false;
+
+        ReleaseWeatherControl();
 
         if (m_RouteUpdateScheduled)
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(UpdateRoutes);
