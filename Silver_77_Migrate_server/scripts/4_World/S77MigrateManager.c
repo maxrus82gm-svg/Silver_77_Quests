@@ -326,7 +326,7 @@ class S77MigrateManager
             vector position = state.m_Infected.GetPosition();
             float distanceToTarget = vector.Distance(position, state.m_MigrationTarget);
 
-            Print(LOG_PREFIX
+            string logLine = LOG_PREFIX
                 + " scenario=" + state.m_ScenarioId
                 + " id=" + state.m_InfectedId
                 + " class=" + state.m_ClassName
@@ -335,7 +335,9 @@ class S77MigrateManager
                 + " distance=" + distanceToTarget.ToString()
                 + " target=" + targetPresent
                 + " mind=" + MindStateToString(mindState)
-                + " mode=" + state.m_Mode);
+                + " mode=" + state.m_Mode;
+
+            Print(logLine);
         }
     }
 
