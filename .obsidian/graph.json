@@ -20,6 +20,13 @@
         "a": 1,
         "rgb": 16776960
       }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/14_Квест_Миграция.md\" OR path:\"Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md\" OR path:\"Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 255
+      }
     }
   ],
   "collapse-display": true,

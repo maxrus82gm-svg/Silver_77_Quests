@@ -39,6 +39,8 @@ class S77MigrateManager
     protected const float WAYPOINT_TOLERANCE = 1.75;
     protected const float ARRIVAL_TOLERANCE = 4.0;
     protected const float MIGRATION_SPEED = 1.0;
+    protected const float FORMATION_SPACING = 1.25;
+    protected const float FORMATION_JITTER = 0.10;
 
     protected ref S77MigrateScenarioConfig m_Config;
     protected ref array<ref S77MigrateUnitState> m_Units;
@@ -114,7 +116,8 @@ class S77MigrateManager
         for (int i = 0; i < m_Config.infectedCount; i++)
         {
             string className = m_Config.infectedTypes.Get(i % m_Config.infectedTypes.Count());
-            SpawnMigrationInfected(i, className, spawnCenter + GetFormationOffset(i), targetCenter + GetFormationOffset(i));
+            vector formationOffset = GetFormationOffset(i, m_Config.infectedCount);
+            SpawnMigrationInfected(i, className, spawnCenter + formationOffset, targetCenter + formationOffset);
         }
 
         Print(LOG_PREFIX + " Scenario " + m_Config.scenarioId + " started; spawned=" + m_Units.Count().ToString() + "/" + m_Config.infectedCount.ToString());
@@ -368,21 +371,38 @@ class S77MigrateManager
         controller.OverrideHeading(false, 0.0);
     }
 
-    protected vector GetFormationOffset(int index)
+    protected vector GetFormationOffset(int index, int infectedCount)
     {
-        switch (index % 5)
+        if (infectedCount < 1)
+            return Vector(0.0, 0.0, 0.0);
+
+        int columns = Math.Ceil(Math.Sqrt(infectedCount));
+        int rows = Math.Ceil((infectedCount * 1.0) / columns);
+        int row = index / columns;
+        int column = index % columns;
+
+        float columnIndexSum = 0.0;
+        float rowIndexSum = 0.0;
+
+        for (int rowIndex = 0; rowIndex < rows; rowIndex++)
         {
-            case 0:
-                return Vector(-4.0, 0.0, -4.0);
-            case 1:
-                return Vector(0.0, 0.0, -4.0);
-            case 2:
-                return Vector(4.0, 0.0, -4.0);
-            case 3:
-                return Vector(-2.0, 0.0, 2.0);
+            int rowCount = infectedCount - rowIndex * columns;
+            if (rowCount > columns)
+                rowCount = columns;
+
+            columnIndexSum = columnIndexSum + rowCount * (rowCount - 1) * 0.5;
+            rowIndexSum = rowIndexSum + rowIndex * rowCount;
         }
 
-        return Vector(2.0, 0.0, 2.0);
+        float centerColumn = columnIndexSum / infectedCount;
+        float centerRow = rowIndexSum / infectedCount;
+        float offsetX = (column - centerColumn) * FORMATION_SPACING;
+        float offsetZ = (row - centerRow) * FORMATION_SPACING;
+
+        offsetX = offsetX + Math.RandomFloatInclusive(-FORMATION_JITTER, FORMATION_JITTER);
+        offsetZ = offsetZ + Math.RandomFloatInclusive(-FORMATION_JITTER, FORMATION_JITTER);
+
+        return Vector(offsetX, 0.0, offsetZ);
     }
 
     protected float HorizontalDistance(vector from, vector to)
