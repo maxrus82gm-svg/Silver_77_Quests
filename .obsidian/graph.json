@@ -22,10 +22,17 @@
       }
     },
     {
-      "query": "path:\"Documentation_DayZ_Qwest/14_Квест_Миграция.md\" OR path:\"Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md\" OR path:\"Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md\"",
+      "query": "path:\"Documentation_DayZ_Qwest/14_Квест_Миграция.md\" OR path:\"Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md\"",
       "color": {
         "a": 1,
         "rgb": 255
+      }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 16711680
       }
     }
   ],
@@ -39,6 +46,6 @@
   "repelStrength": 11.119273543516,
   "linkStrength": 0.787707317073171,
   "linkDistance": 165,
-  "scale": 0.9999999999999958,
+  "scale": 0.7132754626224387,
   "close": true
 }
