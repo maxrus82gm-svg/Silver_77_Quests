@@ -1,0 +1,12 @@
+name = "Silver 77 Migrate Server";
+picture = "";
+actionName = "";
+action = "";
+description = "Server-only prototype for physical infected migration tests.";
+logo = "";
+logoOver = "";
+tooltip = "Silver 77 Migrate Server";
+tooltipOwned = "Silver 77 Migrate Server";
+overview = "Standalone server-only prototype for MIGRATION_TEST_001.";
+author = "Silver77";
+authorID = "0";

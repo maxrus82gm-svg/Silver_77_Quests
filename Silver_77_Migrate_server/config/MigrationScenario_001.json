@@ -1,0 +1,24 @@
+{
+    "enabled": 0,
+    "scenarioId": "MIGRATION_TEST_001",
+    "infectedCount": 5,
+    "infectedTypes": [
+        "ZmbF_JournalistNormal_Blue",
+        "ZmbM_CitizenASkinny_Brown",
+        "ZmbM_FarmerFat_Brown",
+        "ZmbF_VillagerOld_Blue",
+        "ZmbM_HikerSkinny_Blue"
+    ],
+    "spawnPosition": [
+        13223.644531,
+        79.554642,
+        13369.614258
+    ],
+    "targetPosition": [
+        13102.965820,
+        115.809814,
+        13094.113281
+    ],
+    "spawnDelaySeconds": 10.0,
+    "logIntervalSeconds": 10.0
+}
