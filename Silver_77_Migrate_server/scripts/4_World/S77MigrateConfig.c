@@ -9,6 +9,10 @@ class S77MigrateScenarioConfig
     ref array<string> infectedTypes;
     ref array<float> spawnPosition;
     ref array<float> targetPosition;
+    float spawnFormationSpacing;
+    float spawnFormationJitter;
+    float targetFormationSpacing;
+    float targetFormationJitter;
     float spawnDelaySeconds;
     float logIntervalSeconds;
 
@@ -40,6 +44,10 @@ class S77MigrateScenarioConfig
         targetPosition.Insert(115.809814);
         targetPosition.Insert(13094.113281);
 
+        spawnFormationSpacing = 2.5;
+        spawnFormationJitter = 0.20;
+        targetFormationSpacing = 2.5;
+        targetFormationJitter = 0.20;
         spawnDelaySeconds = 10.0;
         logIntervalSeconds = 10.0;
     }
@@ -77,6 +85,18 @@ class S77MigrateScenarioConfig
             targetPosition.Insert(115.809814);
             targetPosition.Insert(13094.113281);
         }
+
+        if (spawnFormationSpacing < 0.0)
+            spawnFormationSpacing = 2.5;
+
+        if (spawnFormationJitter < 0.0)
+            spawnFormationJitter = 0.20;
+
+        if (targetFormationSpacing < 0.0)
+            targetFormationSpacing = 2.5;
+
+        if (targetFormationJitter < 0.0)
+            targetFormationJitter = 0.20;
 
         if (spawnDelaySeconds < 0.0)
             spawnDelaySeconds = 0.0;

@@ -39,8 +39,6 @@ class S77MigrateManager
     protected const float WAYPOINT_TOLERANCE = 1.75;
     protected const float ARRIVAL_TOLERANCE = 4.0;
     protected const float MIGRATION_SPEED = 1.0;
-    protected const float FORMATION_SPACING = 1.25;
-    protected const float FORMATION_JITTER = 0.10;
 
     protected ref S77MigrateScenarioConfig m_Config;
     protected ref array<ref S77MigrateUnitState> m_Units;
@@ -112,12 +110,24 @@ class S77MigrateManager
 
         vector spawnCenter = m_Config.GetSpawnPosition();
         vector targetCenter = m_Config.GetTargetPosition();
+        float spawnFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
+        float targetFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
+
+        string formationLog = LOG_PREFIX;
+        formationLog = formationLog + " Formation spawnSpacing=" + m_Config.spawnFormationSpacing.ToString();
+        formationLog = formationLog + " spawnJitter=" + m_Config.spawnFormationJitter.ToString();
+        formationLog = formationLog + " spawnRotation=" + spawnFormationRotation.ToString();
+        formationLog = formationLog + " targetSpacing=" + m_Config.targetFormationSpacing.ToString();
+        formationLog = formationLog + " targetJitter=" + m_Config.targetFormationJitter.ToString();
+        formationLog = formationLog + " targetRotation=" + targetFormationRotation.ToString();
+        Print(formationLog);
 
         for (int i = 0; i < m_Config.infectedCount; i++)
         {
             string className = m_Config.infectedTypes.Get(i % m_Config.infectedTypes.Count());
-            vector formationOffset = GetFormationOffset(i, m_Config.infectedCount);
-            SpawnMigrationInfected(i, className, spawnCenter + formationOffset, targetCenter + formationOffset);
+            vector spawnOffset = GetFormationOffset(i, m_Config.infectedCount, m_Config.spawnFormationSpacing, m_Config.spawnFormationJitter, spawnFormationRotation);
+            vector targetOffset = GetFormationOffset(i, m_Config.infectedCount, m_Config.targetFormationSpacing, m_Config.targetFormationJitter, targetFormationRotation);
+            SpawnMigrationInfected(i, className, spawnCenter + spawnOffset, targetCenter + targetOffset);
         }
 
         Print(LOG_PREFIX + " Scenario " + m_Config.scenarioId + " started; spawned=" + m_Units.Count().ToString() + "/" + m_Config.infectedCount.ToString());
@@ -374,7 +384,7 @@ class S77MigrateManager
         controller.OverrideHeading(false, 0.0);
     }
 
-    protected vector GetFormationOffset(int index, int infectedCount)
+    protected vector GetFormationOffset(int index, int infectedCount, float spacing, float jitter, float rotationDegrees)
     {
         if (infectedCount < 1)
             return Vector(0.0, 0.0, 0.0);
@@ -399,13 +409,16 @@ class S77MigrateManager
 
         float centerColumn = columnIndexSum / infectedCount;
         float centerRow = rowIndexSum / infectedCount;
-        float offsetX = (column - centerColumn) * FORMATION_SPACING;
-        float offsetZ = (row - centerRow) * FORMATION_SPACING;
+        float offsetX = (column - centerColumn) * spacing;
+        float offsetZ = (row - centerRow) * spacing;
+        float rotationRadians = rotationDegrees * Math.DEG2RAD;
+        float rotatedX = offsetX * Math.Cos(rotationRadians) - offsetZ * Math.Sin(rotationRadians);
+        float rotatedZ = offsetX * Math.Sin(rotationRadians) + offsetZ * Math.Cos(rotationRadians);
 
-        offsetX = offsetX + Math.RandomFloatInclusive(-FORMATION_JITTER, FORMATION_JITTER);
-        offsetZ = offsetZ + Math.RandomFloatInclusive(-FORMATION_JITTER, FORMATION_JITTER);
+        rotatedX = rotatedX + Math.RandomFloatInclusive(-jitter, jitter);
+        rotatedZ = rotatedZ + Math.RandomFloatInclusive(-jitter, jitter);
 
-        return Vector(offsetX, 0.0, offsetZ);
+        return Vector(rotatedX, 0.0, rotatedZ);
     }
 
     protected float HorizontalDistance(vector from, vector to)

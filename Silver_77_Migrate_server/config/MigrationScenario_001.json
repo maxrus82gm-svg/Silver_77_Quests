@@ -19,6 +19,10 @@
         115.809814,
         13094.113281
     ],
+    "spawnFormationSpacing": 2.5,
+    "spawnFormationJitter": 0.20,
+    "targetFormationSpacing": 2.5,
+    "targetFormationJitter": 0.20,
     "spawnDelaySeconds": 10.0,
     "logIntervalSeconds": 10.0
 }
