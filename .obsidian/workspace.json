@@ -187,6 +187,7 @@
   },
   "active": "bdc3435b2ace8d59",
   "lastOpenFiles": [
+    "Documentation_DayZ_Qwest/11_Задача_агенту.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/styles.css",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/start-editor.ps1",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/start-editor.cmd",
@@ -197,12 +198,10 @@
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/styles.css",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/start-editor.ps1",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/start-editor.cmd",
-    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/Silver_77_Quests_BackUP.json",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md",
     "Documentation_DayZ_Qwest/13_ЛОР.md",
     "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md",
-    "Documentation_DayZ_Qwest/12_Старт_агента.md",
-    "Documentation_DayZ_Qwest/11_Задача_агенту.md"
+    "Documentation_DayZ_Qwest/12_Старт_агента.md"
   ]
 }
