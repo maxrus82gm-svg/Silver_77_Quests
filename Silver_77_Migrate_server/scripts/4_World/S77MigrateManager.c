@@ -11,8 +11,10 @@ class S77MigrateUnitState
     bool m_VanillaBusy;
     int m_ResumeAfterTime;
     int m_NextPathRetryTime;
+    int m_LogIntervalMs;
+    int m_NextLogTime;
 
-    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, vector migrationTarget)
+    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, vector migrationTarget, int logIntervalMs)
     {
         m_Infected = infected;
         m_InfectedId = infectedId;
@@ -25,6 +27,8 @@ class S77MigrateUnitState
         m_VanillaBusy = false;
         m_ResumeAfterTime = 0;
         m_NextPathRetryTime = 0;
+        m_LogIntervalMs = logIntervalMs;
+        m_NextLogTime = 0;
     }
 }
 
@@ -32,29 +36,39 @@ class S77MigrateManager
 {
     protected static ref S77MigrateManager s_Instance;
 
-    protected const string LOG_PREFIX = "[S77Migrate][TEST001]";
+    protected const string EVENT_LOG_PREFIX = "[S77Migrate][EVENT]";
+    protected const string MIGRATION_LOG_PREFIX = "[S77Migrate]";
     protected const int UPDATE_INTERVAL_MS = 250;
+    protected const int LOG_CHECK_INTERVAL_MS = 1000;
+    protected const int STORM_RAMP_STEP_MS = 10000;
     protected const int AGGRO_COOLDOWN_MS = 5000;
     protected const int PATH_RETRY_INTERVAL_MS = 5000;
     protected const float WAYPOINT_TOLERANCE = 1.75;
     protected const float ARRIVAL_TOLERANCE = 4.0;
     protected const float MIGRATION_SPEED = 1.0;
 
-    protected ref S77MigrateScenarioConfig m_Config;
+    protected ref S77MigrateEventConfig m_EventConfig;
+    protected ref array<ref S77MigrateScenarioConfig> m_Scenarios;
     protected ref array<ref S77MigrateUnitState> m_Units;
     protected ref PGFilter m_PathFilter;
-    protected bool m_ScenarioStarted;
+    protected bool m_EventStarted;
     protected bool m_RouteUpdateScheduled;
     protected bool m_LogScheduled;
-    protected bool m_StartScenarioScheduled;
+    protected bool m_StartGroupsScheduled;
     protected bool m_WeatherStartScheduled;
     protected bool m_WeatherCompletionScheduled;
+    protected bool m_StormRampStartScheduled;
+    protected bool m_StormRampUpdateScheduled;
     protected bool m_WeatherControlActive;
     protected bool m_PreviousMissionWeather;
     protected bool m_Stopped;
+    protected bool m_Initialized;
+    protected int m_StormRampStartTime;
+    protected float m_EffectiveStormRampSeconds;
 
     void S77MigrateManager()
     {
+        m_Scenarios = new array<ref S77MigrateScenarioConfig>();
         m_Units = new array<ref S77MigrateUnitState>();
         m_PathFilter = new PGFilter();
         int includeFlags = PGPolyFlags.WALK | PGPolyFlags.DOOR | PGPolyFlags.INSIDE;
@@ -71,7 +85,7 @@ class S77MigrateManager
         if (!s_Instance)
             s_Instance = new S77MigrateManager();
 
-        s_Instance.InitializeScenario();
+        s_Instance.InitializeEvent();
     }
 
     static void Shutdown()
@@ -83,55 +97,72 @@ class S77MigrateManager
         s_Instance = null;
     }
 
-    protected void InitializeScenario()
+    protected void InitializeEvent()
     {
-        if (m_ScenarioStarted || m_StartScenarioScheduled || m_WeatherStartScheduled || m_WeatherCompletionScheduled || m_WeatherControlActive)
+        if (m_Initialized)
         {
-            Print(LOG_PREFIX + " Duplicate initialization ignored");
+            Print(EVENT_LOG_PREFIX + " Duplicate initialization ignored");
             return;
         }
 
-        m_Config = S77MigrateConfigLoader.LoadScenario001();
+        m_Initialized = true;
 
-        if (!m_Config)
+        m_EventConfig = S77MigrateConfigLoader.LoadEvent();
+        if (!m_EventConfig)
         {
-            Print(LOG_PREFIX + " ERROR: scenario config could not be loaded");
+            Print(EVENT_LOG_PREFIX + " ERROR: global event config could not be loaded");
             return;
         }
 
-        if (m_Config.enabled != 1)
+        S77MigrateScenarioConfig scenario001 = S77MigrateConfigLoader.LoadScenario001();
+        if (scenario001 && scenario001.enabled == 1)
+            m_Scenarios.Insert(scenario001);
+        else if (scenario001)
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + scenario001.scenarioId + " disabled");
+
+        S77MigrateScenarioConfig scenario002 = S77MigrateConfigLoader.LoadScenario002();
+        if (scenario002 && scenario002.enabled == 1)
+            m_Scenarios.Insert(scenario002);
+        else if (scenario002)
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + scenario002.scenarioId + " disabled");
+
+        if (m_EventConfig.enabled != 1)
         {
-            Print(LOG_PREFIX + " Scenario disabled. Set enabled=1 in " + S77_MIGRATE_SCENARIO_001_CONFIG + " and restart the server.");
+            Print(EVENT_LOG_PREFIX + " Event disabled. Set enabled=1 in " + S77_MIGRATE_EVENT_CONFIG + " and restart the server.");
             return;
         }
 
-        int delayMs = Math.Round(m_Config.spawnDelaySeconds * 1000.0);
+        if (m_Scenarios.Count() == 0)
+        {
+            Print(EVENT_LOG_PREFIX + " No enabled migration scenarios; event start aborted");
+            return;
+        }
 
-        if (m_Config.weatherEnabled == 1)
+        int delayMs = Math.Round(m_EventConfig.eventDelaySeconds * 1000.0);
+        if (m_EventConfig.weatherEnabled == 1)
         {
             m_WeatherStartScheduled = true;
-            Print(LOG_PREFIX + " Scenario enabled; weather precursor scheduled in " + m_Config.spawnDelaySeconds.ToString() + " seconds; transition=" + m_Config.weatherTransitionSeconds.ToString() + " seconds");
+            Print(EVENT_LOG_PREFIX + " Global weather scheduled in " + m_EventConfig.eventDelaySeconds.ToString() + " seconds; transition=" + m_EventConfig.weatherTransitionSeconds.ToString() + " seconds; scenarios=" + m_Scenarios.Count().ToString());
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(BeginWeatherTransition, delayMs, false);
         }
         else
         {
-            m_StartScenarioScheduled = true;
-            Print(LOG_PREFIX + " Scenario enabled; weather disabled; one-time spawn scheduled in " + m_Config.spawnDelaySeconds.ToString() + " seconds");
-            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartScenario, delayMs, false);
+            m_StartGroupsScheduled = true;
+            Print(EVENT_LOG_PREFIX + " Weather disabled; all enabled groups scheduled in " + m_EventConfig.eventDelaySeconds.ToString() + " seconds");
+            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartAllScenarios, delayMs, false);
         }
     }
 
     protected void BeginWeatherTransition()
     {
         m_WeatherStartScheduled = false;
-
-        if (m_Stopped || m_ScenarioStarted)
+        if (m_Stopped || m_EventStarted)
             return;
 
         Weather weather = GetGame().GetWeather();
         if (!weather)
         {
-            Print(LOG_PREFIX + " ERROR: Weather API is unavailable; scenario start aborted");
+            Print(EVENT_LOG_PREFIX + " ERROR: Weather API is unavailable; event start aborted");
             return;
         }
 
@@ -139,29 +170,27 @@ class S77MigrateManager
         weather.MissionWeather(true);
         m_WeatherControlActive = true;
 
-        float transitionSeconds = m_Config.weatherTransitionSeconds;
-        float windSpeed = m_Config.weatherWindMagnitude;
+        float transitionSeconds = m_EventConfig.weatherTransitionSeconds;
+        float windSpeed = m_EventConfig.weatherWindMagnitude;
         if (windSpeed < 0.1)
             windSpeed = 0.1;
 
-        float stormDensity = 0.0;
-        if (m_Config.weatherStormEnabled == 1)
-            stormDensity = m_Config.weatherStormDensity;
-
-        weather.GetOvercast().Set(m_Config.weatherOvercast, transitionSeconds, transitionSeconds);
-        weather.GetFog().Set(m_Config.weatherFog, transitionSeconds, transitionSeconds);
-        weather.GetRain().Set(m_Config.weatherRain, transitionSeconds, transitionSeconds);
+        weather.GetOvercast().Set(m_EventConfig.weatherOvercast, transitionSeconds, transitionSeconds);
+        weather.GetFog().Set(m_EventConfig.weatherFog, transitionSeconds, transitionSeconds);
+        weather.GetRain().Set(m_EventConfig.weatherRain, transitionSeconds, transitionSeconds);
         weather.SetWindSpeed(windSpeed);
-        weather.SetStorm(stormDensity, m_Config.weatherStormThreshold, m_Config.weatherStormTimeoutSeconds);
+        weather.SetStorm(0.0, m_EventConfig.weatherStormThreshold, m_EventConfig.weatherStormTimeoutSeconds);
 
-        string weatherLog = LOG_PREFIX;
+        string weatherLog = EVENT_LOG_PREFIX;
         weatherLog = weatherLog + " Weather transition started duration=" + transitionSeconds.ToString();
-        weatherLog = weatherLog + " overcast=" + m_Config.weatherOvercast.ToString();
-        weatherLog = weatherLog + " fog=" + m_Config.weatherFog.ToString();
+        weatherLog = weatherLog + " overcast=" + m_EventConfig.weatherOvercast.ToString();
+        weatherLog = weatherLog + " fog=" + m_EventConfig.weatherFog.ToString();
         weatherLog = weatherLog + " wind=" + windSpeed.ToString();
-        weatherLog = weatherLog + " rain=" + m_Config.weatherRain.ToString();
-        weatherLog = weatherLog + " stormDensity=" + stormDensity.ToString();
+        weatherLog = weatherLog + " rain=" + m_EventConfig.weatherRain.ToString();
+        weatherLog = weatherLog + " stormFinalDensity=" + m_EventConfig.weatherStormDensity.ToString();
         Print(weatherLog);
+
+        ScheduleStormRamp(transitionSeconds);
 
         if (transitionSeconds <= 0.0)
         {
@@ -174,15 +203,96 @@ class S77MigrateManager
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(CompleteWeatherTransition, transitionMs, false);
     }
 
+    protected void ScheduleStormRamp(float transitionSeconds)
+    {
+        if (m_EventConfig.weatherStormEnabled != 1)
+            return;
+
+        m_EffectiveStormRampSeconds = m_EventConfig.weatherStormRampSeconds;
+        if (m_EffectiveStormRampSeconds > transitionSeconds)
+            m_EffectiveStormRampSeconds = transitionSeconds;
+
+        if (transitionSeconds <= 0.0 || m_EffectiveStormRampSeconds <= 0.0)
+        {
+            ApplyStormDensity(m_EventConfig.weatherStormDensity, 1.0);
+            return;
+        }
+
+        float rampDelaySeconds = transitionSeconds - m_EffectiveStormRampSeconds;
+        if (rampDelaySeconds <= 0.0)
+        {
+            BeginStormRamp();
+            return;
+        }
+
+        m_StormRampStartScheduled = true;
+        int rampDelayMs = Math.Round(rampDelaySeconds * 1000.0);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(BeginStormRamp, rampDelayMs, false);
+        Print(EVENT_LOG_PREFIX + " Storm ramp scheduled after=" + rampDelaySeconds.ToString() + " seconds duration=" + m_EffectiveStormRampSeconds.ToString() + " step=" + (STORM_RAMP_STEP_MS / 1000).ToString() + " seconds");
+    }
+
+    protected void BeginStormRamp()
+    {
+        m_StormRampStartScheduled = false;
+        if (m_Stopped || !m_WeatherControlActive || m_EventStarted)
+            return;
+
+        m_StormRampStartTime = GetGame().GetTime();
+        ApplyStormDensity(0.0, 0.0);
+        m_StormRampUpdateScheduled = true;
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(UpdateStormRamp, STORM_RAMP_STEP_MS, true);
+    }
+
+    protected void UpdateStormRamp()
+    {
+        if (m_Stopped || !m_WeatherControlActive || m_EventStarted || m_EffectiveStormRampSeconds <= 0.0)
+        {
+            StopStormRampCallbacks();
+            return;
+        }
+
+        float elapsedSeconds = (GetGame().GetTime() - m_StormRampStartTime) / 1000.0;
+        float progress = elapsedSeconds / m_EffectiveStormRampSeconds;
+        if (progress > 1.0)
+            progress = 1.0;
+
+        ApplyStormDensity(m_EventConfig.weatherStormDensity * progress, progress);
+        if (progress >= 1.0)
+            StopStormRampCallbacks();
+    }
+
+    protected void ApplyStormDensity(float density, float progress)
+    {
+        Weather weather = GetGame().GetWeather();
+        if (!weather)
+            return;
+
+        weather.SetStorm(density, m_EventConfig.weatherStormThreshold, m_EventConfig.weatherStormTimeoutSeconds);
+        Print(EVENT_LOG_PREFIX + " Storm ramp progress=" + progress.ToString() + " density=" + density.ToString());
+    }
+
+    protected void StopStormRampCallbacks()
+    {
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(BeginStormRamp);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(UpdateStormRamp);
+        m_StormRampStartScheduled = false;
+        m_StormRampUpdateScheduled = false;
+    }
+
     protected void CompleteWeatherTransition()
     {
         m_WeatherCompletionScheduled = false;
-
         if (m_Stopped)
             return;
 
-        Print(LOG_PREFIX + " Weather transition completed; starting migration group");
-        StartScenario();
+        StopStormRampCallbacks();
+        if (m_EventConfig.weatherStormEnabled == 1)
+            ApplyStormDensity(m_EventConfig.weatherStormDensity, 1.0);
+        else
+            ApplyStormDensity(0.0, 0.0);
+
+        Print(EVENT_LOG_PREFIX + " Weather transition completed; starting all enabled migration groups");
+        StartAllScenarios();
         ReleaseWeatherControl();
     }
 
@@ -195,68 +305,76 @@ class S77MigrateManager
         if (weather)
         {
             weather.MissionWeather(m_PreviousMissionWeather);
-            Print(LOG_PREFIX + " Weather control released; previous MissionWeather state restored=" + m_PreviousMissionWeather.ToString());
+            Print(EVENT_LOG_PREFIX + " Weather control released; previous MissionWeather state restored=" + m_PreviousMissionWeather.ToString());
         }
 
         m_WeatherControlActive = false;
     }
 
-    protected void StartScenario()
+    protected void StartAllScenarios()
     {
-        m_StartScenarioScheduled = false;
-
+        m_StartGroupsScheduled = false;
         if (m_Stopped)
             return;
 
-        if (m_ScenarioStarted)
+        if (m_EventStarted)
         {
-            Print(LOG_PREFIX + " Duplicate start ignored");
+            Print(EVENT_LOG_PREFIX + " Duplicate group start ignored");
             return;
         }
 
-        m_ScenarioStarted = true;
+        m_EventStarted = true;
+        for (int scenarioIndex = 0; scenarioIndex < m_Scenarios.Count(); scenarioIndex++)
+            StartScenario(m_Scenarios.Get(scenarioIndex));
 
-        vector spawnCenter = m_Config.GetSpawnPosition();
-        vector targetCenter = m_Config.GetTargetPosition();
-        float spawnFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
-        float targetFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
-
-        string formationLog = LOG_PREFIX;
-        formationLog = formationLog + " Formation spawnSpacing=" + m_Config.spawnFormationSpacing.ToString();
-        formationLog = formationLog + " spawnJitter=" + m_Config.spawnFormationJitter.ToString();
-        formationLog = formationLog + " spawnRotation=" + spawnFormationRotation.ToString();
-        formationLog = formationLog + " targetSpacing=" + m_Config.targetFormationSpacing.ToString();
-        formationLog = formationLog + " targetJitter=" + m_Config.targetFormationJitter.ToString();
-        formationLog = formationLog + " targetRotation=" + targetFormationRotation.ToString();
-        Print(formationLog);
-
-        for (int i = 0; i < m_Config.infectedCount; i++)
-        {
-            string className = m_Config.infectedTypes.Get(i % m_Config.infectedTypes.Count());
-            vector spawnOffset = GetFormationOffset(i, m_Config.infectedCount, m_Config.spawnFormationSpacing, m_Config.spawnFormationJitter, spawnFormationRotation);
-            vector targetOffset = GetFormationOffset(i, m_Config.infectedCount, m_Config.targetFormationSpacing, m_Config.targetFormationJitter, targetFormationRotation);
-            SpawnMigrationInfected(i, className, spawnCenter + spawnOffset, targetCenter + targetOffset);
-        }
-
-        Print(LOG_PREFIX + " Scenario " + m_Config.scenarioId + " started; spawned=" + m_Units.Count().ToString() + "/" + m_Config.infectedCount.ToString());
-
+        Print(EVENT_LOG_PREFIX + " All enabled scenarios started; scenarios=" + m_Scenarios.Count().ToString() + " totalSpawned=" + m_Units.Count().ToString());
         if (m_Units.Count() == 0)
             return;
 
         m_RouteUpdateScheduled = true;
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(UpdateRoutes, UPDATE_INTERVAL_MS, true);
 
-        int logIntervalMs = Math.Round(m_Config.logIntervalSeconds * 1000.0);
         m_LogScheduled = true;
-        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(LogUnitStates, logIntervalMs, true);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(LogUnitStates, LOG_CHECK_INTERVAL_MS, true);
         LogUnitStates();
     }
 
-    protected void SpawnMigrationInfected(int index, string className, vector spawnPosition, vector migrationTarget)
+    protected void StartScenario(S77MigrateScenarioConfig config)
     {
+        vector spawnCenter = config.GetSpawnPosition();
+        vector targetCenter = config.GetTargetPosition();
+        float spawnFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
+        float targetFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
+        string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId;
+
+        string formationLog = scenarioPrefix;
+        formationLog = formationLog + " Formation spawnSpacing=" + config.spawnFormationSpacing.ToString();
+        formationLog = formationLog + " spawnJitter=" + config.spawnFormationJitter.ToString();
+        formationLog = formationLog + " spawnRotation=" + spawnFormationRotation.ToString();
+        formationLog = formationLog + " targetSpacing=" + config.targetFormationSpacing.ToString();
+        formationLog = formationLog + " targetJitter=" + config.targetFormationJitter.ToString();
+        formationLog = formationLog + " targetRotation=" + targetFormationRotation.ToString();
+        Print(formationLog);
+
+        int beforeCount = m_Units.Count();
+        for (int i = 0; i < config.infectedCount; i++)
+        {
+            string className = config.infectedTypes.Get(i % config.infectedTypes.Count());
+            vector spawnOffset = GetFormationOffset(i, config.infectedCount, config.spawnFormationSpacing, config.spawnFormationJitter, spawnFormationRotation);
+            vector targetOffset = GetFormationOffset(i, config.infectedCount, config.targetFormationSpacing, config.targetFormationJitter, targetFormationRotation);
+            SpawnMigrationInfected(config, i, className, spawnCenter + spawnOffset, targetCenter + targetOffset);
+        }
+
+        int spawnedCount = m_Units.Count() - beforeCount;
+        Print(scenarioPrefix + " started; spawned=" + spawnedCount.ToString() + "/" + config.infectedCount.ToString());
+    }
+
+    protected void SpawnMigrationInfected(S77MigrateScenarioConfig config, int index, string className, vector spawnPosition, vector migrationTarget)
+    {
+        string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId;
         if (!GetGame().ConfigIsExisting("CfgVehicles " + className) || !GetGame().IsKindOf(className, "DayZInfected"))
         {
-            Print(LOG_PREFIX + " ERROR: invalid infected class: " + className);
+            Print(scenarioPrefix + " ERROR: invalid infected class: " + className);
             return;
         }
 
@@ -265,18 +383,19 @@ class S77MigrateManager
 
         if (!infected)
         {
-            Print(LOG_PREFIX + " ERROR: CreateObjectEx failed for class=" + className + " position=" + spawnPosition.ToString());
+            Print(scenarioPrefix + " ERROR: CreateObjectEx failed for class=" + className + " position=" + spawnPosition.ToString());
             return;
         }
 
         infected.SetOrientation(Vector(27.359158, 0.0, 0.0));
 
         string infectedId = "INF_" + (index + 1).ToString();
-        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, m_Config.scenarioId, migrationTarget);
+        int logIntervalMs = Math.Round(config.logIntervalSeconds * 1000.0);
+        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, migrationTarget, logIntervalMs);
         m_Units.Insert(state);
 
         BuildPath(state);
-        Print(LOG_PREFIX + " Spawned id=" + infectedId + " class=" + className + " position=" + infected.GetPosition().ToString() + " target=" + migrationTarget.ToString());
+        Print(scenarioPrefix + " Spawned id=" + infectedId + " class=" + className + " position=" + infected.GetPosition().ToString() + " target=" + migrationTarget.ToString());
     }
 
     protected bool BuildPath(S77MigrateUnitState state)
@@ -291,7 +410,7 @@ class S77MigrateManager
         AIWorld aiWorld = GetGame().GetWorld().GetAIWorld();
         if (!aiWorld)
         {
-            Print(LOG_PREFIX + " ERROR: AIWorld is unavailable for id=" + state.m_InfectedId);
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " ERROR: AIWorld is unavailable for id=" + state.m_InfectedId);
             return false;
         }
 
@@ -301,27 +420,27 @@ class S77MigrateManager
 
         if (!aiWorld.SampleNavmeshPosition(currentPosition, 8.0, m_PathFilter, sampledStart))
         {
-            Print(LOG_PREFIX + " PATH ERROR: no navmesh near current position for id=" + state.m_InfectedId + " position=" + currentPosition.ToString());
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " PATH ERROR: no navmesh near current position for id=" + state.m_InfectedId + " position=" + currentPosition.ToString());
             return false;
         }
 
         if (!aiWorld.SampleNavmeshPosition(state.m_MigrationTarget, 15.0, m_PathFilter, sampledTarget))
         {
-            Print(LOG_PREFIX + " PATH ERROR: no navmesh near target for id=" + state.m_InfectedId + " target=" + state.m_MigrationTarget.ToString());
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " PATH ERROR: no navmesh near target for id=" + state.m_InfectedId + " target=" + state.m_MigrationTarget.ToString());
             return false;
         }
 
         TVectorArray newWaypoints = new TVectorArray();
         if (!aiWorld.FindPath(sampledStart, sampledTarget, m_PathFilter, newWaypoints) || newWaypoints.Count() < 2)
         {
-            Print(LOG_PREFIX + " PATH ERROR: FindPath failed for id=" + state.m_InfectedId + " from=" + sampledStart.ToString() + " to=" + sampledTarget.ToString());
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " PATH ERROR: FindPath failed for id=" + state.m_InfectedId + " from=" + sampledStart.ToString() + " to=" + sampledTarget.ToString());
             return false;
         }
 
         state.m_Waypoints = newWaypoints;
         state.m_WaypointIndex = 1;
         state.m_NextPathRetryTime = 0;
-        Print(LOG_PREFIX + " Path built for id=" + state.m_InfectedId + " waypoints=" + newWaypoints.Count().ToString());
+        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " Path built for id=" + state.m_InfectedId + " waypoints=" + newWaypoints.Count().ToString());
         return true;
     }
 
@@ -398,7 +517,7 @@ class S77MigrateManager
         {
             ReleaseRouteControl(controller);
             state.m_Mode = "ARRIVED";
-            Print(LOG_PREFIX + " ARRIVED id=" + state.m_InfectedId + " class=" + state.m_ClassName + " position=" + position.ToString());
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " ARRIVED id=" + state.m_InfectedId + " class=" + state.m_ClassName + " position=" + position.ToString());
             return;
         }
 
@@ -417,17 +536,23 @@ class S77MigrateManager
 
     protected void LogUnitStates()
     {
+        int now = GetGame().GetTime();
         for (int i = 0; i < m_Units.Count(); i++)
         {
             S77MigrateUnitState state = m_Units.Get(i);
             if (!state || !state.m_Infected)
             {
-                Print(LOG_PREFIX + " scenario=" + m_Config.scenarioId + " id=UNKNOWN entity=missing");
+                Print(EVENT_LOG_PREFIX + " ERROR: unit state or infected entity is missing");
                 continue;
             }
 
             if (!state.m_Infected.IsAlive())
                 continue;
+
+            if (state.m_NextLogTime > now)
+                continue;
+
+            state.m_NextLogTime = now + state.m_LogIntervalMs;
 
             DayZInfectedInputController controller = state.m_Infected.GetInputController();
             EntityAI target;
@@ -450,7 +575,7 @@ class S77MigrateManager
             vector position = state.m_Infected.GetPosition();
             float distanceToTarget = vector.Distance(position, state.m_MigrationTarget);
 
-            string logLine = LOG_PREFIX;
+            string logLine = MIGRATION_LOG_PREFIX;
             logLine = logLine + " scenario=" + state.m_ScenarioId;
             logLine = logLine + " id=" + state.m_InfectedId;
             logLine = logLine + " class=" + state.m_ClassName;
@@ -468,11 +593,12 @@ class S77MigrateManager
     protected void Stop()
     {
         m_Stopped = true;
-        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(StartScenario);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(StartAllScenarios);
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(BeginWeatherTransition);
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(CompleteWeatherTransition);
+        StopStormRampCallbacks();
 
-        m_StartScenarioScheduled = false;
+        m_StartGroupsScheduled = false;
         m_WeatherStartScheduled = false;
         m_WeatherCompletionScheduled = false;
 

@@ -187,6 +187,9 @@
   },
   "active": "bdc3435b2ace8d59",
   "lastOpenFiles": [
+    "Silver_77_Migrate_server/config/README_RU.md",
+    "Silver_77_Migrate_server/config/MigrationScenario_002.json",
+    "Silver_77_Migrate_server/config/MigrationEvent.json",
     "Documentation_DayZ_Qwest/14_Квест_Миграция.md",
     "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md",
     "Documentation_DayZ_Qwest/11_Задача_агенту.md",
@@ -199,8 +202,6 @@
     "Silver_77_Migrate_server/config.cpp",
     "Silver_77_Migrate_server/$PBOPREFIX$",
     "Silver_77_Migrate_server/scripts/5_Mission/mission",
-    "Silver_77_Migrate_server/scripts/5_Mission",
-    "Silver_77_Migrate_server/scripts/4_World",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md",
     "Documentation_DayZ_Qwest/13_ЛОР.md",

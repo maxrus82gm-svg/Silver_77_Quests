@@ -1,0 +1,15 @@
+{
+    "enabled": 1,
+    "eventDelaySeconds": 30.0,
+    "weatherEnabled": 1,
+    "weatherTransitionSeconds": 180.0,
+    "weatherOvercast": 1.0,
+    "weatherFog": 0.8,
+    "weatherWindMagnitude": 0.0,
+    "weatherRain": 0.0,
+    "weatherStormEnabled": 1,
+    "weatherStormDensity": 0.8,
+    "weatherStormThreshold": 0.8,
+    "weatherStormTimeoutSeconds": 30.0,
+    "weatherStormRampSeconds": 60.0
+}
