@@ -308,6 +308,9 @@ class S77MigrateManager
                 continue;
             }
 
+            if (!state.m_Infected.IsAlive())
+                continue;
+
             DayZInfectedInputController controller = state.m_Infected.GetInputController();
             EntityAI target;
             int mindState = -1;
@@ -357,7 +360,7 @@ class S77MigrateManager
         for (int i = 0; i < m_Units.Count(); i++)
         {
             S77MigrateUnitState state = m_Units.Get(i);
-            if (state && state.m_Infected)
+            if (state && state.m_Infected && state.m_Infected.IsAlive())
                 ReleaseRouteControl(state.m_Infected.GetInputController());
         }
     }
