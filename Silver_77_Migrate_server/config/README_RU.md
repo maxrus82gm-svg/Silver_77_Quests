@@ -45,13 +45,20 @@
 - `targetPosition` — центр конечной точки маршрута как `[X, Y, Z]`.
 - `routePoints` — произвольный массив промежуточных мировых точек `[X, Y, Z]`. Допустимо любое количество, включая пустой массив. Default: `[]`.
 - `routePointReachRadius` — горизонтальный радиус X/Z, в котором индивидуальная промежуточная точка считается достигнутой. Default: `6.0` метра.
+- `routeActivationEnabled` — включает group-level AI stimulus на промежуточных точках. Default: `1`.
+- `routeActivationTriggerPercent` — процент текущих живых active members конкретной runtime-группы, необходимый для импульса. Default: `30.0`.
+- `routeActivationRadius` — общий горизонтальный радиус X/Z зоны подсчёта возле raw route point. Default: `12.0` метров.
+- `routeActivationRadii` — optional-массив индивидуальных радиусов с теми же индексами, что у `routePoints`. Отсутствующее, лишнее или неположительное значение использует `routeActivationRadius`.
+- `routeStimulusLifetimeSeconds` — время существования AI-only stimulus промежуточной точки. Default: `1.0` секунда.
+- `routeStimulusStrengthMultiplier` — множитель силы stimulus промежуточной точки. Default: `1.0`.
 - `spawnFormationSpacing` — базовый интервал сетки возле spawn, в метрах. Default: `4.5`.
 - `spawnFormationJitter` — случайное отклонение spawn-позиции по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `targetFormationSpacing` — базовый интервал сетки индивидуальных целей возле target, в метрах. Default: `4.5`.
 - `targetFormationJitter` — случайное отклонение индивидуальной цели по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `logIntervalSeconds` — интервал диагностического лога infected, в секундах. Default: `10.0`.
-- `finalActivationEnabled` — включает индивидуальную финальную AI-активацию: `1` — включена, `0` — после обычного достижения цели сразу выполнить release. Default: `1`.
-- `finalActivationDistance` — горизонтальная дистанция X/Z от infected до центра `targetPosition`, на которой разрешён финальный stimulus после прохождения всех `routePoints`. Default: `50.0` метров.
+- `finalActivationEnabled` — включает group-level AI stimulus в финальной зоне. При `0` infected просто доходит до цели и получает `RELEASED`. Default: `1`.
+- `finalActivationTriggerPercent` — процент текущих живых active members runtime-группы, необходимый для финального импульса. Default: `30.0`.
+- `finalActivationDistance` — горизонтальный радиус X/Z финальной зоны подсчёта вокруг raw `targetPosition`. Default: `12.0` метров.
 - `finalStimulusLifetimeSeconds` — время существования AI-only stimulus. Default: `1.0` секунда.
 - `finalStimulusStrengthMultiplier` — множитель силы AI stimulus. Default: `1.0`; фактический радиус и реакцию нужно подтвердить runtime-тестом.
 
@@ -76,13 +83,43 @@
     ],
     "routePointReachRadius": 6.0
 
-## Финальная AI-активация и RELEASED
+## Волновая активация route points
 
-После прохождения всех промежуточных точек каждый infected отдельно проверяет горизонтальное расстояние до центра `targetPosition`. При включённой финальной активации и входе в `finalActivationDistance` manager снимает migration overrides, создаёт кратковременный world AI stimulus точно в `targetPosition`, а затем навсегда переводит этот infected в `RELEASED`.
+Каждый фактический `StartScenario()` создаёт собственную runtime-группу с уникальным ID и списком только успешно созданных этим запуском infected. Поэтому будущие повторные запуски одинакового `scenarioId` не смешивают members. Runtime group ID пока не сохраняется между рестартами.
 
-Для stimulus используется `NoiseSystem::AddNoiseTarget()` с параметрами `NoiseParams.LoadFromPath("CfgVehicles SurvivorBase NoiseShout")`. Это AI-only noise target: код не создаёт `SoundSet`, `SoundObject` или иной слышимый игроку fake sound и не устанавливает native mind state вручную. Ближайшие infected могут естественно воспринять тот же мировой stimulus по vanilla AI-правилам. Конкретная сила реакции, радиус и вероятность перехода к активному поведению требуют проверки на сервере.
+Denominator — текущее количество живых, ещё не `RELEASED` members именно этой runtime-группы. Убитые сразу перестают учитываться. Vanilla infected, infected других модов и members другой runtime-группы в процент не входят. Требуемое количество рассчитывается так:
 
-`RELEASED` — терминальное состояние migration manager для конкретного infected. Entity не удаляется, lifetime flags не меняются, route retries и возврат к migration control прекращаются; дальше заражённый остаётся под vanilla AI. Если preset или `NoiseSystem` недоступны, manager пишет предупреждение, продолжает обычный путь до конечной точки и затем выполняет release без stimulus.
+`required = ceil(aliveActiveMembers * triggerPercent / 100)`
+
+При наличии живых members минимум всегда равен `1`. Например, при `alive=7` и `30%` требуется `3` infected.
+
+`routePointReachRadius` и activation radius выполняют разные задачи:
+
+- `routePointReachRadius = 6.0` — когда конкретный infected завершает navigation segment;
+- `routeActivationRadius = 12.0` — зона подсчёта группы возле raw route point;
+- `routeActivationRadii[index]` — optional override counting radius конкретной точки.
+
+Counting zone центрируется по raw `routePoints[index]`, без individual formation offset, и использует только X/Z. При достижении threshold ARMED-точка создаёт один world AI stimulus и становится TRIGGERED. Пока occupancy остаётся не ниже текущего threshold, повторного импульса нет. Когда occupancy падает ниже threshold, точка снова ARMED; следующий рост до threshold создаёт новый импульс. Обязательного времени ожидания или cooldown для этого нет — проверка использует существующий update cycle.
+
+Stimulus создаётся через `NoiseSystem::AddNoiseTarget()` с `NoiseParams.LoadFromPath("CfgVehicles SurvivorBase NoiseShout")`. Это AI-only perception target: мод не создаёт `SoundSet`, `SoundObject` или слышимый игроку fake sound и не устанавливает native mind state. Поэтому посторонние nearby infected не учитываются в percentage, но могут естественно воспринять мировой stimulus. Migration infected при vanilla busy-состоянии отдают управление native AI, а после `CALM` и существующего cooldown продолжают текущий маршрут.
+
+Короткий пример:
+
+    "routePointReachRadius": 6.0,
+    "routeActivationEnabled": 1,
+    "routeActivationTriggerPercent": 30.0,
+    "routeActivationRadius": 12.0,
+    "routeActivationRadii": [8.0, 15.0, 12.0],
+    "routeStimulusLifetimeSeconds": 1.0,
+    "routeStimulusStrengthMultiplier": 1.0
+
+## Финальная accumulation zone и RELEASED
+
+Final target использует ту же percentage-механику. Внутри `finalActivationDistance` считаются только фактически находящиеся там живые active members данной runtime-группы, независимо от их логического индекса маршрута; уже `RELEASED` infected исключены. При достижении `finalActivationTriggerPercent` создаётся один stimulus точно в raw `targetPosition`. Финальная зона тоже имеет ARMED/TRIGGERED/rearm и может дать несколько импульсов после падения и нового роста occupancy.
+
+Final stimulus не переводит всю группу и отдельных infected в `RELEASED`. Он только даёт vanilla AI perception stimulus. Индивидуальный infected получает `RELEASED` исключительно при фактическом arrival по существующей логике конечного navmesh path. После этого entity не удаляется, lifetime flags не меняются, route retries и возврат к migration control прекращаются, а infected остаётся vanilla AI.
+
+Если preset или `NoiseSystem` недоступны, manager пишет ограниченное предупреждение; group counting, migration route, vanilla handoff и arrival -> `RELEASED` продолжают работать без слышимого fallback-звука.
 
 Пример структуры третьего объекта, который добавляется внутрь массива после существующего объекта через запятую:
 
@@ -95,13 +132,20 @@
         "targetPosition": [1200.0, 100.0, 1200.0],
         "routePoints": [],
         "routePointReachRadius": 6.0,
+        "routeActivationEnabled": 1,
+        "routeActivationTriggerPercent": 30.0,
+        "routeActivationRadius": 12.0,
+        "routeActivationRadii": [],
+        "routeStimulusLifetimeSeconds": 1.0,
+        "routeStimulusStrengthMultiplier": 1.0,
         "spawnFormationSpacing": 4.5,
         "spawnFormationJitter": 0.5,
         "targetFormationSpacing": 4.5,
         "targetFormationJitter": 0.5,
         "logIntervalSeconds": 10.0,
         "finalActivationEnabled": 1,
-        "finalActivationDistance": 50.0,
+        "finalActivationTriggerPercent": 30.0,
+        "finalActivationDistance": 12.0,
         "finalStimulusLifetimeSeconds": 1.0,
         "finalStimulusStrengthMultiplier": 1.0
     }
@@ -128,6 +172,6 @@
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
 
-То же правило относится к `routePoints`, `routePointReachRadius` и полям финальной активации: существующий runtime JSON автоматически не переписывается ради новых nested fields. Чтобы задать пользовательский маршрут или изменить финальную активацию, поля нужно вручную добавить в нужный объект `scenarios`.
+То же правило относится к `routePoints`, route-activation и final-activation полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing TASK 135 fields получают constructor defaults только в памяти. Чтобы задать пользовательский маршрут или изменить активацию, поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.

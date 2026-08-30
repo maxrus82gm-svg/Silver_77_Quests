@@ -25,24 +25,45 @@
                 "ZmbM_HikerSkinny_Blue"
             ],
             "spawnPosition": [
-                13223.64453125,
-                79.55464172363281,
-                13369.6142578125
+                13203.203125,
+                82.482025,
+                13336.852539
             ],
             "targetPosition": [
-                13102.9658203125,
-                115.809814453125,
-                13094.11328125
+                13101.915039,
+                116.453857,
+                13085.597656
             ],
-            "routePoints": [],
+            "routePoints": [
+                [
+                    13162.564453,
+                    104.073151,
+                    13181.419922
+                ],
+                [
+                    13109.365234,
+                    113.158279,
+                    13134.160156
+                ]
+            ],
             "routePointReachRadius": 6.0,
+            "routeActivationEnabled": 1,
+            "routeActivationTriggerPercent": 30.0,
+            "routeActivationRadius": 12.0,
+            "routeActivationRadii": [
+                12.0,
+                12.0
+            ],
+            "routeStimulusLifetimeSeconds": 1.0,
+            "routeStimulusStrengthMultiplier": 1.0,
             "spawnFormationSpacing": 4.5,
             "spawnFormationJitter": 0.5,
             "targetFormationSpacing": 4.5,
             "targetFormationJitter": 0.5,
             "logIntervalSeconds": 10.0,
             "finalActivationEnabled": 1,
-            "finalActivationDistance": 50.0,
+            "finalActivationTriggerPercent": 30.0,
+            "finalActivationDistance": 12.0,
             "finalStimulusLifetimeSeconds": 1.0,
             "finalStimulusStrengthMultiplier": 1.0
         },
@@ -58,24 +79,57 @@
                 "ZmbM_HikerSkinny_Blue"
             ],
             "spawnPosition": [
-                12874.942383,
-                130.418289,
-                13074.552734
+                12841.188477,
+                133.146896,
+                13063.173828
             ],
             "targetPosition": [
-                13091.167969,
-                121.727158,
-                13051.032227
+                13099.694336,
+                116.208076,
+                13092.741211
             ],
-            "routePoints": [],
+            "routePoints": [
+                [
+                    12975.204102,
+                    126.648422,
+                    13069.739258
+                ],
+                [
+                    12998.249023,
+                    124.016357,
+                    13076.784180
+                ],
+                [
+                    13069.861328,
+                    126.232880,
+                    13047.046875
+                ],
+                [
+                    13092.981445,
+                    121.014259,
+                    13051.743164
+                ]
+            ],
             "routePointReachRadius": 6.0,
+            "routeActivationEnabled": 1,
+            "routeActivationTriggerPercent": 30.0,
+            "routeActivationRadius": 12.0,
+            "routeActivationRadii": [
+                12.0,
+                12.0,
+                12.0,
+                12.0
+            ],
+            "routeStimulusLifetimeSeconds": 1.0,
+            "routeStimulusStrengthMultiplier": 1.0,
             "spawnFormationSpacing": 4.5,
             "spawnFormationJitter": 0.5,
             "targetFormationSpacing": 4.5,
             "targetFormationJitter": 0.5,
             "logIntervalSeconds": 10.0,
             "finalActivationEnabled": 1,
-            "finalActivationDistance": 50.0,
+            "finalActivationTriggerPercent": 30.0,
+            "finalActivationDistance": 12.0,
             "finalStimulusLifetimeSeconds": 1.0,
             "finalStimulusStrengthMultiplier": 1.0
         }

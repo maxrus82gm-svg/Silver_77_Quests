@@ -3,6 +3,7 @@ class S77MigrateUnitState
     DayZInfected m_Infected;
     string m_InfectedId;
     string m_ScenarioId;
+    string m_RuntimeGroupId;
     string m_ClassName;
     vector m_MigrationTarget;
     vector m_FinalTargetCenter;
@@ -15,22 +16,17 @@ class S77MigrateUnitState
     string m_Mode;
     bool m_VanillaBusy;
     bool m_Released;
-    bool m_FinalStimulusTriggered;
-    bool m_FinalStimulusFailureLogged;
-    int m_FinalActivationEnabled;
-    float m_FinalActivationDistance;
-    float m_FinalStimulusLifetimeSeconds;
-    float m_FinalStimulusStrengthMultiplier;
     int m_ResumeAfterTime;
     int m_NextPathRetryTime;
     int m_LogIntervalMs;
     int m_NextLogTime;
 
-    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, int finalActivationEnabled, float finalActivationDistance, float finalStimulusLifetimeSeconds, float finalStimulusStrengthMultiplier, int logIntervalMs)
+    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, string runtimeGroupId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, int logIntervalMs)
     {
         m_Infected = infected;
         m_InfectedId = infectedId;
         m_ScenarioId = scenarioId;
+        m_RuntimeGroupId = runtimeGroupId;
         m_ClassName = infected.GetType();
         m_MigrationTarget = migrationTarget;
         m_FinalTargetCenter = finalTargetCenter;
@@ -43,16 +39,61 @@ class S77MigrateUnitState
         m_Mode = "MIGRATION";
         m_VanillaBusy = false;
         m_Released = false;
-        m_FinalStimulusTriggered = false;
-        m_FinalStimulusFailureLogged = false;
-        m_FinalActivationEnabled = finalActivationEnabled;
-        m_FinalActivationDistance = finalActivationDistance;
-        m_FinalStimulusLifetimeSeconds = finalStimulusLifetimeSeconds;
-        m_FinalStimulusStrengthMultiplier = finalStimulusStrengthMultiplier;
         m_ResumeAfterTime = 0;
         m_NextPathRetryTime = 0;
         m_LogIntervalMs = logIntervalMs;
         m_NextLogTime = 0;
+    }
+}
+
+class S77MigrateGroupState
+{
+    string m_RuntimeGroupId;
+    string m_ScenarioId;
+    ref array<ref S77MigrateUnitState> m_Members;
+    ref TVectorArray m_RoutePoints;
+    ref array<float> m_RouteActivationRadii;
+    ref array<bool> m_RouteActivationArmed;
+    int m_RouteActivationEnabled;
+    float m_RouteActivationTriggerPercent;
+    float m_RouteStimulusLifetimeSeconds;
+    float m_RouteStimulusStrengthMultiplier;
+    vector m_FinalTargetCenter;
+    int m_FinalActivationEnabled;
+    float m_FinalActivationTriggerPercent;
+    float m_FinalActivationDistance;
+    float m_FinalStimulusLifetimeSeconds;
+    float m_FinalStimulusStrengthMultiplier;
+    bool m_FinalActivationArmed;
+    bool m_StimulusFailureLogged;
+
+    void S77MigrateGroupState(string runtimeGroupId, S77MigrateScenarioConfig config, TVectorArray routePoints)
+    {
+        m_RuntimeGroupId = runtimeGroupId;
+        m_ScenarioId = config.scenarioId;
+        m_Members = new array<ref S77MigrateUnitState>();
+        m_RoutePoints = routePoints;
+        m_RouteActivationRadii = new array<float>();
+        m_RouteActivationArmed = new array<bool>();
+
+        for (int i = 0; i < routePoints.Count(); i++)
+        {
+            m_RouteActivationRadii.Insert(config.GetRouteActivationRadius(i));
+            m_RouteActivationArmed.Insert(true);
+        }
+
+        m_RouteActivationEnabled = config.routeActivationEnabled;
+        m_RouteActivationTriggerPercent = config.routeActivationTriggerPercent;
+        m_RouteStimulusLifetimeSeconds = config.routeStimulusLifetimeSeconds;
+        m_RouteStimulusStrengthMultiplier = config.routeStimulusStrengthMultiplier;
+        m_FinalTargetCenter = config.GetTargetPosition();
+        m_FinalActivationEnabled = config.finalActivationEnabled;
+        m_FinalActivationTriggerPercent = config.finalActivationTriggerPercent;
+        m_FinalActivationDistance = config.finalActivationDistance;
+        m_FinalStimulusLifetimeSeconds = config.finalStimulusLifetimeSeconds;
+        m_FinalStimulusStrengthMultiplier = config.finalStimulusStrengthMultiplier;
+        m_FinalActivationArmed = true;
+        m_StimulusFailureLogged = false;
     }
 }
 
@@ -62,7 +103,7 @@ class S77MigrateManager
 
     protected const string EVENT_LOG_PREFIX = "[S77Migrate][EVENT]";
     protected const string MIGRATION_LOG_PREFIX = "[S77Migrate]";
-    protected const string FINAL_STIMULUS_NOISE_PATH = "CfgVehicles SurvivorBase NoiseShout";
+    protected const string AI_STIMULUS_NOISE_PATH = "CfgVehicles SurvivorBase NoiseShout";
     protected const int UPDATE_INTERVAL_MS = 250;
     protected const int LOG_CHECK_INTERVAL_MS = 1000;
     protected const int STORM_RAMP_STEP_MS = 10000;
@@ -74,11 +115,12 @@ class S77MigrateManager
 
     protected ref S77MigrateConfig m_Config;
     protected ref array<ref S77MigrateScenarioConfig> m_Scenarios;
+    protected ref array<ref S77MigrateGroupState> m_Groups;
     protected ref array<ref S77MigrateUnitState> m_Units;
     protected ref PGFilter m_PathFilter;
-    protected ref NoiseParams m_FinalStimulusParams;
+    protected ref NoiseParams m_StimulusParams;
     protected NoiseSystem m_NoiseSystem;
-    protected bool m_FinalStimulusReady;
+    protected bool m_StimulusReady;
     protected bool m_EventStarted;
     protected bool m_RouteUpdateScheduled;
     protected bool m_LogScheduled;
@@ -92,11 +134,13 @@ class S77MigrateManager
     protected bool m_Stopped;
     protected bool m_Initialized;
     protected int m_StormRampStartTime;
+    protected int m_NextRuntimeGroupSerial;
     protected float m_EffectiveStormRampSeconds;
 
     void S77MigrateManager()
     {
         m_Scenarios = new array<ref S77MigrateScenarioConfig>();
+        m_Groups = new array<ref S77MigrateGroupState>();
         m_Units = new array<ref S77MigrateUnitState>();
         m_PathFilter = new PGFilter();
         int includeFlags = PGPolyFlags.WALK | PGPolyFlags.DOOR | PGPolyFlags.INSIDE;
@@ -175,8 +219,8 @@ class S77MigrateManager
             return;
         }
 
-        if (NeedsFinalStimulus())
-            PrepareFinalStimulus();
+        if (NeedsAIStimulus())
+            PrepareAIStimulus();
 
         int delayMs = Math.Round(m_Config.eventDelaySeconds * 1000.0);
         if (m_Config.weatherEnabled == 1)
@@ -351,25 +395,25 @@ class S77MigrateManager
         m_WeatherControlActive = false;
     }
 
-    protected bool NeedsFinalStimulus()
+    protected bool NeedsAIStimulus()
     {
         for (int i = 0; i < m_Scenarios.Count(); i++)
         {
             S77MigrateScenarioConfig scenario = m_Scenarios.Get(i);
-            if (scenario && scenario.finalActivationEnabled == 1)
+            if (scenario && (scenario.finalActivationEnabled == 1 || (scenario.routeActivationEnabled == 1 && scenario.routePoints.Count() > 0)))
                 return true;
         }
 
         return false;
     }
 
-    protected void PrepareFinalStimulus()
+    protected void PrepareAIStimulus()
     {
-        m_FinalStimulusReady = false;
+        m_StimulusReady = false;
 
-        if (!GetGame().ConfigIsExisting(FINAL_STIMULUS_NOISE_PATH))
+        if (!GetGame().ConfigIsExisting(AI_STIMULUS_NOISE_PATH))
         {
-            Print(EVENT_LOG_PREFIX + " ERROR: final AI stimulus preset is unavailable: " + FINAL_STIMULUS_NOISE_PATH + "; infected will continue to arrival before RELEASED");
+            Print(EVENT_LOG_PREFIX + " ERROR: AI stimulus preset is unavailable: " + AI_STIMULUS_NOISE_PATH + "; migration and arrival release remain active");
             return;
         }
 
@@ -380,10 +424,10 @@ class S77MigrateManager
             return;
         }
 
-        m_FinalStimulusParams = new NoiseParams();
-        m_FinalStimulusParams.LoadFromPath(FINAL_STIMULUS_NOISE_PATH);
-        m_FinalStimulusReady = true;
-        Print(EVENT_LOG_PREFIX + " Final AI stimulus ready preset=" + FINAL_STIMULUS_NOISE_PATH);
+        m_StimulusParams = new NoiseParams();
+        m_StimulusParams.LoadFromPath(AI_STIMULUS_NOISE_PATH);
+        m_StimulusReady = true;
+        Print(EVENT_LOG_PREFIX + " AI stimulus ready preset=" + AI_STIMULUS_NOISE_PATH);
     }
 
     protected void StartAllScenarios()
@@ -419,9 +463,13 @@ class S77MigrateManager
         vector spawnCenter = config.GetSpawnPosition();
         vector targetCenter = config.GetTargetPosition();
         TVectorArray routePoints = config.GetRoutePoints();
+        m_NextRuntimeGroupSerial++;
+        string runtimeGroupId = config.scenarioId + "_RUN_" + m_NextRuntimeGroupSerial.ToString();
+        S77MigrateGroupState groupState = new S77MigrateGroupState(runtimeGroupId, config, routePoints);
+        m_Groups.Insert(groupState);
         float spawnFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
         float targetFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
-        string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId;
+        string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId + " group=" + runtimeGroupId;
 
         string formationLog = scenarioPrefix;
         formationLog = formationLog + " Formation spawnSpacing=" + config.spawnFormationSpacing.ToString();
@@ -439,16 +487,16 @@ class S77MigrateManager
             string className = config.infectedTypes.Get(i % config.infectedTypes.Count());
             vector spawnOffset = GetFormationOffset(i, config.infectedCount, config.spawnFormationSpacing, config.spawnFormationJitter, spawnFormationRotation);
             vector routeOffset = GetFormationOffset(i, config.infectedCount, config.targetFormationSpacing, config.targetFormationJitter, targetFormationRotation);
-            SpawnMigrationInfected(config, i, className, spawnCenter + spawnOffset, targetCenter, routeOffset, routePoints);
+            SpawnMigrationInfected(config, groupState, i, className, spawnCenter + spawnOffset, targetCenter, routeOffset, routePoints);
         }
 
         int spawnedCount = m_Units.Count() - beforeCount;
         Print(scenarioPrefix + " started; spawned=" + spawnedCount.ToString() + "/" + config.infectedCount.ToString());
     }
 
-    protected void SpawnMigrationInfected(S77MigrateScenarioConfig config, int index, string className, vector spawnPosition, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints)
+    protected void SpawnMigrationInfected(S77MigrateScenarioConfig config, S77MigrateGroupState groupState, int index, string className, vector spawnPosition, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints)
     {
-        string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId;
+        string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId + " group=" + groupState.m_RuntimeGroupId;
         if (!GetGame().ConfigIsExisting("CfgVehicles " + className) || !GetGame().IsKindOf(className, "DayZInfected"))
         {
             Print(scenarioPrefix + " ERROR: invalid infected class: " + className);
@@ -464,13 +512,12 @@ class S77MigrateManager
             return;
         }
 
-        infected.SetOrientation(Vector(27.359158, 0.0, 0.0));
-
         string infectedId = "INF_" + (index + 1).ToString();
         int logIntervalMs = Math.Round(config.logIntervalSeconds * 1000.0);
         vector migrationTarget = finalTargetCenter + routeOffset;
-        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, config.finalActivationEnabled, config.finalActivationDistance, config.finalStimulusLifetimeSeconds, config.finalStimulusStrengthMultiplier, logIntervalMs);
+        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, groupState.m_RuntimeGroupId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, logIntervalMs);
         m_Units.Insert(state);
+        groupState.m_Members.Insert(state);
 
         BuildPath(state);
         Print(scenarioPrefix + " Spawned id=" + infectedId + " class=" + className + " position=" + infected.GetPosition().ToString() + " target=" + migrationTarget.ToString() + " routePoints=" + routePoints.Count().ToString());
@@ -539,6 +586,7 @@ class S77MigrateManager
     protected void UpdateRoutes()
     {
         int now = GetGame().GetTime();
+        UpdateGroupActivations();
 
         for (int i = 0; i < m_Units.Count(); i++)
         {
@@ -552,13 +600,6 @@ class S77MigrateManager
             DayZInfectedInputController controller = state.m_Infected.GetInputController();
             if (!controller)
                 continue;
-
-            if (ManualRouteComplete(state) && state.m_FinalActivationEnabled == 1 && !state.m_FinalStimulusTriggered)
-            {
-                float finalDistance = HorizontalDistance(state.m_Infected.GetPosition(), state.m_FinalTargetCenter);
-                if (finalDistance <= state.m_FinalActivationDistance && TryFinalActivation(state, controller, finalDistance))
-                    continue;
-            }
 
             EntityAI vanillaTarget = controller.GetTargetEntity();
             int mindState = controller.GetMindState();
@@ -605,28 +646,187 @@ class S77MigrateManager
         }
     }
 
-    protected bool TryFinalActivation(S77MigrateUnitState state, DayZInfectedInputController controller, float distanceToTarget)
+    protected void UpdateGroupActivations()
     {
-        if (!state || state.m_Released || state.m_FinalStimulusTriggered || !state.m_Infected || !state.m_Infected.IsAlive())
-            return false;
-
-        if (!m_FinalStimulusReady || !m_NoiseSystem || !m_FinalStimulusParams)
+        for (int groupIndex = 0; groupIndex < m_Groups.Count(); groupIndex++)
         {
-            if (!state.m_FinalStimulusFailureLogged)
+            S77MigrateGroupState groupState = m_Groups.Get(groupIndex);
+            if (!groupState)
+                continue;
+
+            int aliveCount = CountActiveGroupMembers(groupState);
+            if (aliveCount <= 0)
+                continue;
+
+            if (groupState.m_RouteActivationEnabled == 1)
             {
-                Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " WARNING: final AI stimulus unavailable; continuing migration to arrival");
-                state.m_FinalStimulusFailureLogged = true;
+                for (int pointIndex = 0; pointIndex < groupState.m_RoutePoints.Count(); pointIndex++)
+                    UpdateRoutePointActivation(groupState, pointIndex, aliveCount);
+            }
+
+            if (groupState.m_FinalActivationEnabled == 1)
+                UpdateFinalActivation(groupState, aliveCount);
+        }
+    }
+
+    protected void UpdateRoutePointActivation(S77MigrateGroupState groupState, int pointIndex, int aliveCount)
+    {
+        vector pointCenter = groupState.m_RoutePoints.Get(pointIndex);
+        float radius = groupState.m_RouteActivationRadii.Get(pointIndex);
+        int insideCount = CountRouteMembersInside(groupState, pointCenter, radius);
+        int requiredCount = CalculateRequiredCount(aliveCount, groupState.m_RouteActivationTriggerPercent);
+        bool armed = groupState.m_RouteActivationArmed.Get(pointIndex);
+        int pointNumber = pointIndex + 1;
+
+        if (insideCount >= requiredCount)
+        {
+            if (!armed)
+                return;
+
+            string activationLog = MIGRATION_LOG_PREFIX + " ROUTE_ACTIVATION scenario=" + groupState.m_ScenarioId;
+            activationLog = activationLog + " group=" + groupState.m_RuntimeGroupId;
+            activationLog = activationLog + " point=" + pointNumber.ToString();
+            activationLog = activationLog + " alive=" + aliveCount.ToString();
+            activationLog = activationLog + " inside=" + insideCount.ToString();
+            activationLog = activationLog + " required=" + requiredCount.ToString();
+            activationLog = activationLog + " percent=" + groupState.m_RouteActivationTriggerPercent.ToString();
+            activationLog = activationLog + " radius=" + radius.ToString();
+            Print(activationLog);
+
+            EmitAIStimulus(groupState, pointCenter, groupState.m_RouteStimulusLifetimeSeconds, groupState.m_RouteStimulusStrengthMultiplier, "point=" + pointNumber.ToString());
+            groupState.m_RouteActivationArmed.Set(pointIndex, false);
+            return;
+        }
+
+        if (!armed)
+        {
+            groupState.m_RouteActivationArmed.Set(pointIndex, true);
+            Print(MIGRATION_LOG_PREFIX + " ROUTE_ACTIVATION_REARMED scenario=" + groupState.m_ScenarioId + " group=" + groupState.m_RuntimeGroupId + " point=" + pointNumber.ToString() + " inside=" + insideCount.ToString() + " required=" + requiredCount.ToString());
+        }
+    }
+
+    protected void UpdateFinalActivation(S77MigrateGroupState groupState, int aliveCount)
+    {
+        int insideCount = CountFinalMembersInside(groupState);
+        int requiredCount = CalculateRequiredCount(aliveCount, groupState.m_FinalActivationTriggerPercent);
+
+        if (insideCount >= requiredCount)
+        {
+            if (!groupState.m_FinalActivationArmed)
+                return;
+
+            string activationLog = MIGRATION_LOG_PREFIX + " FINAL_ACTIVATION scenario=" + groupState.m_ScenarioId;
+            activationLog = activationLog + " group=" + groupState.m_RuntimeGroupId;
+            activationLog = activationLog + " alive=" + aliveCount.ToString();
+            activationLog = activationLog + " inside=" + insideCount.ToString();
+            activationLog = activationLog + " required=" + requiredCount.ToString();
+            activationLog = activationLog + " percent=" + groupState.m_FinalActivationTriggerPercent.ToString();
+            activationLog = activationLog + " radius=" + groupState.m_FinalActivationDistance.ToString();
+            Print(activationLog);
+
+            EmitAIStimulus(groupState, groupState.m_FinalTargetCenter, groupState.m_FinalStimulusLifetimeSeconds, groupState.m_FinalStimulusStrengthMultiplier, "FINAL");
+            groupState.m_FinalActivationArmed = false;
+            return;
+        }
+
+        if (!groupState.m_FinalActivationArmed)
+        {
+            groupState.m_FinalActivationArmed = true;
+            Print(MIGRATION_LOG_PREFIX + " FINAL_REARMED scenario=" + groupState.m_ScenarioId + " group=" + groupState.m_RuntimeGroupId + " inside=" + insideCount.ToString() + " required=" + requiredCount.ToString());
+        }
+    }
+
+    protected bool EmitAIStimulus(S77MigrateGroupState groupState, vector position, float lifetime, float strengthMultiplier, string pointLabel)
+    {
+        if (!m_StimulusReady || !m_NoiseSystem || !m_StimulusParams)
+        {
+            if (!groupState.m_StimulusFailureLogged)
+            {
+                Print(MIGRATION_LOG_PREFIX + " WARNING: AI stimulus unavailable scenario=" + groupState.m_ScenarioId + " group=" + groupState.m_RuntimeGroupId + "; migration route remains active");
+                groupState.m_StimulusFailureLogged = true;
             }
             return false;
         }
 
-        ReleaseRouteControl(controller);
-        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " FINAL_ACTIVATION distance=" + distanceToTarget.ToString() + " target=" + state.m_FinalTargetCenter.ToString());
-        m_NoiseSystem.AddNoiseTarget(state.m_FinalTargetCenter, state.m_FinalStimulusLifetimeSeconds, m_FinalStimulusParams, state.m_FinalStimulusStrengthMultiplier);
-        state.m_FinalStimulusTriggered = true;
-        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " AI_STIMULUS lifetime=" + state.m_FinalStimulusLifetimeSeconds.ToString() + " strength=" + state.m_FinalStimulusStrengthMultiplier.ToString() + " preset=" + FINAL_STIMULUS_NOISE_PATH);
-        ReleaseUnit(state, controller, "FINAL_STIMULUS");
+        m_NoiseSystem.AddNoiseTarget(position, lifetime, m_StimulusParams, strengthMultiplier);
+
+        string stimulusType = "AI_STIMULUS";
+        if (pointLabel == "FINAL")
+            stimulusType = "FINAL_STIMULUS";
+
+        string stimulusLog = MIGRATION_LOG_PREFIX + " " + stimulusType + " scenario=" + groupState.m_ScenarioId;
+        stimulusLog = stimulusLog + " group=" + groupState.m_RuntimeGroupId;
+        stimulusLog = stimulusLog + " " + pointLabel;
+        stimulusLog = stimulusLog + " position=" + position.ToString();
+        stimulusLog = stimulusLog + " lifetime=" + lifetime.ToString();
+        stimulusLog = stimulusLog + " strength=" + strengthMultiplier.ToString();
+        stimulusLog = stimulusLog + " preset=" + AI_STIMULUS_NOISE_PATH;
+        Print(stimulusLog);
         return true;
+    }
+
+    protected int CountActiveGroupMembers(S77MigrateGroupState groupState)
+    {
+        int count = 0;
+        for (int i = 0; i < groupState.m_Members.Count(); i++)
+        {
+            if (IsActiveGroupMember(groupState, groupState.m_Members.Get(i)))
+                count++;
+        }
+
+        return count;
+    }
+
+    protected int CountRouteMembersInside(S77MigrateGroupState groupState, vector pointCenter, float radius)
+    {
+        int count = 0;
+        for (int i = 0; i < groupState.m_Members.Count(); i++)
+        {
+            S77MigrateUnitState state = groupState.m_Members.Get(i);
+            if (!IsActiveGroupMember(groupState, state))
+                continue;
+
+            if (HorizontalDistance(state.m_Infected.GetPosition(), pointCenter) <= radius)
+                count++;
+        }
+
+        return count;
+    }
+
+    protected int CountFinalMembersInside(S77MigrateGroupState groupState)
+    {
+        int count = 0;
+        for (int i = 0; i < groupState.m_Members.Count(); i++)
+        {
+            S77MigrateUnitState state = groupState.m_Members.Get(i);
+            if (!IsActiveGroupMember(groupState, state))
+                continue;
+
+            if (HorizontalDistance(state.m_Infected.GetPosition(), groupState.m_FinalTargetCenter) <= groupState.m_FinalActivationDistance)
+                count++;
+        }
+
+        return count;
+    }
+
+    protected bool IsActiveGroupMember(S77MigrateGroupState groupState, S77MigrateUnitState state)
+    {
+        return state && state.m_RuntimeGroupId == groupState.m_RuntimeGroupId && !state.m_Released && state.m_Infected && state.m_Infected.IsAlive();
+    }
+
+    protected int CalculateRequiredCount(int aliveCount, float triggerPercent)
+    {
+        if (aliveCount <= 0)
+            return 0;
+
+        int requiredCount = Math.Ceil(aliveCount * triggerPercent / 100.0);
+        if (requiredCount < 1)
+            requiredCount = 1;
+
+        if (requiredCount > aliveCount)
+            requiredCount = aliveCount;
+
+        return requiredCount;
     }
 
     protected void FollowPath(S77MigrateUnitState state, DayZInfectedInputController controller)
@@ -640,7 +840,7 @@ class S77MigrateManager
             {
                 state.m_RoutePointIndex++;
                 ReleaseRouteControl(controller);
-                Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " ROUTE_POINT reached=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString());
+                Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " ROUTE_POINT reached=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString());
                 BuildPath(state);
                 return;
             }
@@ -698,7 +898,7 @@ class S77MigrateManager
         if (state.m_Waypoints)
             state.m_Waypoints.Clear();
         state.m_WaypointIndex = 0;
-        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " RELEASED reason=" + reason + " position=" + state.m_Infected.GetPosition().ToString());
+        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " RELEASED reason=" + reason + " position=" + state.m_Infected.GetPosition().ToString());
     }
 
     protected void LogUnitStates()
@@ -748,6 +948,7 @@ class S77MigrateManager
 
             string logLine = MIGRATION_LOG_PREFIX;
             logLine = logLine + " scenario=" + state.m_ScenarioId;
+            logLine = logLine + " group=" + state.m_RuntimeGroupId;
             logLine = logLine + " id=" + state.m_InfectedId;
             logLine = logLine + " class=" + state.m_ClassName;
             logLine = logLine + " position=" + position.ToString();

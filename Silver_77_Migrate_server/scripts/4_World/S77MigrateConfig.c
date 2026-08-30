@@ -15,12 +15,19 @@ class S77MigrateScenarioConfig
     ref array<float> targetPosition;
     ref array<ref array<float>> routePoints;
     float routePointReachRadius;
+    int routeActivationEnabled;
+    float routeActivationTriggerPercent;
+    float routeActivationRadius;
+    ref array<float> routeActivationRadii;
+    float routeStimulusLifetimeSeconds;
+    float routeStimulusStrengthMultiplier;
     float spawnFormationSpacing;
     float spawnFormationJitter;
     float targetFormationSpacing;
     float targetFormationJitter;
     float logIntervalSeconds;
     int finalActivationEnabled;
+    float finalActivationTriggerPercent;
     float finalActivationDistance;
     float finalStimulusLifetimeSeconds;
     float finalStimulusStrengthMultiplier;
@@ -40,13 +47,20 @@ class S77MigrateScenarioConfig
         targetPosition = new array<float>();
         routePoints = new array<ref array<float>>();
         routePointReachRadius = 6.0;
+        routeActivationEnabled = 1;
+        routeActivationTriggerPercent = 30.0;
+        routeActivationRadius = 12.0;
+        routeActivationRadii = new array<float>();
+        routeStimulusLifetimeSeconds = 1.0;
+        routeStimulusStrengthMultiplier = 1.0;
         spawnFormationSpacing = 4.5;
         spawnFormationJitter = 0.5;
         targetFormationSpacing = 4.5;
         targetFormationJitter = 0.5;
         logIntervalSeconds = 10.0;
         finalActivationEnabled = 1;
-        finalActivationDistance = 50.0;
+        finalActivationTriggerPercent = 30.0;
+        finalActivationDistance = 12.0;
         finalStimulusLifetimeSeconds = 1.0;
         finalStimulusStrengthMultiplier = 1.0;
     }
@@ -55,16 +69,22 @@ class S77MigrateScenarioConfig
     {
         SetBaseDefaults();
         scenarioId = "MIGRATION_TEST_001";
-        SetPosition(spawnPosition, 13223.64453125, 79.55464172363281, 13369.6142578125);
-        SetPosition(targetPosition, 13102.9658203125, 115.809814453125, 13094.11328125);
+        SetPosition(spawnPosition, 13203.203125, 82.482025, 13336.852539);
+        AddRoutePoint(13162.564453, 104.073151, 13181.419922, 12.0);
+        AddRoutePoint(13109.365234, 113.158279, 13134.160156, 12.0);
+        SetPosition(targetPosition, 13101.915039, 116.453857, 13085.597656);
     }
 
     void SetDefaultsScenario002()
     {
         SetBaseDefaults();
         scenarioId = "MIGRATION_TEST_002";
-        SetPosition(spawnPosition, 12874.942383, 130.418289, 13074.552734);
-        SetPosition(targetPosition, 13091.167969, 121.727158, 13051.032227);
+        SetPosition(spawnPosition, 12841.188477, 133.146896, 13063.173828);
+        AddRoutePoint(12975.204102, 126.648422, 13069.739258, 12.0);
+        AddRoutePoint(12998.249023, 124.016357, 13076.784180, 12.0);
+        AddRoutePoint(13069.861328, 126.232880, 13047.046875, 12.0);
+        AddRoutePoint(13092.981445, 121.014259, 13051.743164, 12.0);
+        SetPosition(targetPosition, 13099.694336, 116.208076, 13092.741211);
     }
 
     void Normalize()
@@ -84,6 +104,24 @@ class S77MigrateScenarioConfig
         if (routePointReachRadius <= 0.0)
             routePointReachRadius = 6.0;
 
+        if (routeActivationEnabled != 1)
+            routeActivationEnabled = 0;
+
+        if (routeActivationTriggerPercent <= 0.0 || routeActivationTriggerPercent > 100.0)
+            routeActivationTriggerPercent = 30.0;
+
+        if (routeActivationRadius <= 0.0)
+            routeActivationRadius = 12.0;
+
+        if (!routeActivationRadii)
+            routeActivationRadii = new array<float>();
+
+        if (routeStimulusLifetimeSeconds <= 0.0)
+            routeStimulusLifetimeSeconds = 1.0;
+
+        if (routeStimulusStrengthMultiplier < 0.0)
+            routeStimulusStrengthMultiplier = 1.0;
+
         if (spawnFormationSpacing < 0.0)
             spawnFormationSpacing = 4.5;
 
@@ -102,8 +140,11 @@ class S77MigrateScenarioConfig
         if (finalActivationEnabled != 1)
             finalActivationEnabled = 0;
 
-        if (finalActivationDistance < 0.0)
-            finalActivationDistance = 50.0;
+        if (finalActivationTriggerPercent <= 0.0 || finalActivationTriggerPercent > 100.0)
+            finalActivationTriggerPercent = 30.0;
+
+        if (finalActivationDistance <= 0.0)
+            finalActivationDistance = 12.0;
 
         if (finalStimulusLifetimeSeconds <= 0.0)
             finalStimulusLifetimeSeconds = 1.0;
@@ -169,6 +210,18 @@ class S77MigrateScenarioConfig
         return points;
     }
 
+    float GetRouteActivationRadius(int index)
+    {
+        if (routeActivationRadii && index >= 0 && index < routeActivationRadii.Count())
+        {
+            float pointRadius = routeActivationRadii.Get(index);
+            if (pointRadius > 0.0)
+                return pointRadius;
+        }
+
+        return routeActivationRadius;
+    }
+
     protected void SetDefaultInfectedTypes()
     {
         infectedTypes = new array<string>();
@@ -185,6 +238,16 @@ class S77MigrateScenarioConfig
         values.Insert(x);
         values.Insert(y);
         values.Insert(z);
+    }
+
+    protected void AddRoutePoint(float x, float y, float z, float activationRadius)
+    {
+        array<float> point = new array<float>();
+        point.Insert(x);
+        point.Insert(y);
+        point.Insert(z);
+        routePoints.Insert(point);
+        routeActivationRadii.Insert(activationRadius);
     }
 }
 
@@ -467,6 +530,7 @@ class S77MigrateConfigLoader
 
         S77MigrateLegacyScenarioConfig legacyScenario001 = new S77MigrateLegacyScenarioConfig();
         legacyScenario001.SetDefaultsScenario001();
+        S77MigrateScenarioConfig migratedScenario001;
         if (FileExist(S77_MIGRATE_LEGACY_SCENARIO_001_CONFIG))
         {
             string scenario001Error;
@@ -479,13 +543,20 @@ class S77MigrateConfigLoader
             legacyFound = true;
             if (!legacyEventLoaded)
                 CopyLegacyScenarioWeather(legacyScenario001, config);
+
+            migratedScenario001 = CopyLegacyScenario(legacyScenario001);
+            migratedScenario001.NormalizeLegacy("MIGRATION_TEST_001", Vector(13223.64453125, 79.55464172363281, 13369.6142578125), Vector(13102.9658203125, 115.809814453125, 13094.11328125));
         }
-        S77MigrateScenarioConfig migratedScenario001 = CopyLegacyScenario(legacyScenario001);
-        migratedScenario001.NormalizeLegacy("MIGRATION_TEST_001", Vector(13223.64453125, 79.55464172363281, 13369.6142578125), Vector(13102.9658203125, 115.809814453125, 13094.11328125));
+        else
+        {
+            migratedScenario001 = new S77MigrateScenarioConfig();
+            migratedScenario001.SetDefaultsScenario001();
+        }
         migratedScenarios.Insert(migratedScenario001);
 
         S77MigrateLegacyScenarioConfig legacyScenario002 = new S77MigrateLegacyScenarioConfig();
         legacyScenario002.SetDefaultsScenario002();
+        S77MigrateScenarioConfig migratedScenario002;
         if (FileExist(S77_MIGRATE_LEGACY_SCENARIO_002_CONFIG))
         {
             string scenario002Error;
@@ -496,9 +567,15 @@ class S77MigrateConfigLoader
             }
 
             legacyFound = true;
+
+            migratedScenario002 = CopyLegacyScenario(legacyScenario002);
+            migratedScenario002.NormalizeLegacy("MIGRATION_TEST_002", Vector(12874.942383, 130.418289, 13074.552734), Vector(13091.167969, 121.727158, 13051.032227));
         }
-        S77MigrateScenarioConfig migratedScenario002 = CopyLegacyScenario(legacyScenario002);
-        migratedScenario002.NormalizeLegacy("MIGRATION_TEST_002", Vector(12874.942383, 130.418289, 13074.552734), Vector(13091.167969, 121.727158, 13051.032227));
+        else
+        {
+            migratedScenario002 = new S77MigrateScenarioConfig();
+            migratedScenario002.SetDefaultsScenario002();
+        }
         migratedScenarios.Insert(migratedScenario002);
 
         config.scenarios = migratedScenarios;
