@@ -43,11 +43,46 @@
 - `infectedTypes` — список vanilla class names infected. Если infected больше элементов списка, классы повторяются по кругу.
 - `spawnPosition` — центр появления группы как `[X, Y, Z]` в метрах мира.
 - `targetPosition` — центр конечной точки маршрута как `[X, Y, Z]`.
+- `routePoints` — произвольный массив промежуточных мировых точек `[X, Y, Z]`. Допустимо любое количество, включая пустой массив. Default: `[]`.
+- `routePointReachRadius` — горизонтальный радиус X/Z, в котором индивидуальная промежуточная точка считается достигнутой. Default: `6.0` метра.
 - `spawnFormationSpacing` — базовый интервал сетки возле spawn, в метрах. Default: `4.5`.
 - `spawnFormationJitter` — случайное отклонение spawn-позиции по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `targetFormationSpacing` — базовый интервал сетки индивидуальных целей возле target, в метрах. Default: `4.5`.
 - `targetFormationJitter` — случайное отклонение индивидуальной цели по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `logIntervalSeconds` — интервал диагностического лога infected, в секундах. Default: `10.0`.
+- `finalActivationEnabled` — включает индивидуальную финальную AI-активацию: `1` — включена, `0` — после обычного достижения цели сразу выполнить release. Default: `1`.
+- `finalActivationDistance` — горизонтальная дистанция X/Z от infected до центра `targetPosition`, на которой разрешён финальный stimulus после прохождения всех `routePoints`. Default: `50.0` метров.
+- `finalStimulusLifetimeSeconds` — время существования AI-only stimulus. Default: `1.0` секунда.
+- `finalStimulusStrengthMultiplier` — множитель силы AI stimulus. Default: `1.0`; фактический радиус и реакцию нужно подтвердить runtime-тестом.
+
+## Многоточечный маршрут
+
+Каждый infected проходит маршрут последовательно:
+
+`spawnPosition -> routePoints[0] -> routePoints[1] -> ... -> targetPosition`
+
+Для каждого отрезка manager отдельно вызывает vanilla `AIWorld::FindPath()`. Число промежуточных точек не зафиксировано в коде. Пустой `routePoints` сохраняет прямой маршрут от spawn к target.
+
+Один индивидуальный formation offset рассчитывается для infected один раз и без нового jitter применяется ко всем `routePoints` и к его конечной цели. Поэтому группа сохраняет разлёт вдоль маршрута и не пытается собраться всеми entity в одной координате. Переход к следующему отрезку выполняется независимо для каждого infected после входа в `routePointReachRadius` текущей точки.
+
+Для узких ворот и проходов пользователь может уменьшить `targetFormationSpacing` и `targetFormationJitter`: именно эти два параметра формируют стабильный offset вдоль ручного маршрута. Подходящее расстояние нужно подобрать runtime-тестом с учётом размера группы и navmesh.
+
+Пример массива из трёх промежуточных точек:
+
+    "routePoints": [
+        [13180.0, 85.0, 13310.0],
+        [13150.0, 95.0, 13240.0],
+        [13125.0, 108.0, 13160.0]
+    ],
+    "routePointReachRadius": 6.0
+
+## Финальная AI-активация и RELEASED
+
+После прохождения всех промежуточных точек каждый infected отдельно проверяет горизонтальное расстояние до центра `targetPosition`. При включённой финальной активации и входе в `finalActivationDistance` manager снимает migration overrides, создаёт кратковременный world AI stimulus точно в `targetPosition`, а затем навсегда переводит этот infected в `RELEASED`.
+
+Для stimulus используется `NoiseSystem::AddNoiseTarget()` с параметрами `NoiseParams.LoadFromPath("CfgVehicles SurvivorBase NoiseShout")`. Это AI-only noise target: код не создаёт `SoundSet`, `SoundObject` или иной слышимый игроку fake sound и не устанавливает native mind state вручную. Ближайшие infected могут естественно воспринять тот же мировой stimulus по vanilla AI-правилам. Конкретная сила реакции, радиус и вероятность перехода к активному поведению требуют проверки на сервере.
+
+`RELEASED` — терминальное состояние migration manager для конкретного infected. Entity не удаляется, lifetime flags не меняются, route retries и возврат к migration control прекращаются; дальше заражённый остаётся под vanilla AI. Если preset или `NoiseSystem` недоступны, manager пишет предупреждение, продолжает обычный путь до конечной точки и затем выполняет release без stimulus.
 
 Пример структуры третьего объекта, который добавляется внутрь массива после существующего объекта через запятую:
 
@@ -58,11 +93,17 @@
         "infectedTypes": ["ZmbM_HikerSkinny_Blue"],
         "spawnPosition": [1000.0, 100.0, 1000.0],
         "targetPosition": [1200.0, 100.0, 1200.0],
+        "routePoints": [],
+        "routePointReachRadius": 6.0,
         "spawnFormationSpacing": 4.5,
         "spawnFormationJitter": 0.5,
         "targetFormationSpacing": 4.5,
         "targetFormationJitter": 0.5,
-        "logIntervalSeconds": 10.0
+        "logIntervalSeconds": 10.0,
+        "finalActivationEnabled": 1,
+        "finalActivationDistance": 50.0,
+        "finalStimulusLifetimeSeconds": 1.0,
+        "finalStimulusStrengthMultiplier": 1.0
     }
 
 Координаты примера условные и не являются принятым маршрутом.
@@ -86,5 +127,7 @@
 Существующий `MigrationConfig.json` loader не переписывает, не пересобирает и не пересортировывает. Существующие глобальные значения, порядок объектов `scenarios` и их пользовательские значения сохраняются. Malformed unified JSON остаётся нетронутым и останавливает запуск события.
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
+
+То же правило относится к `routePoints`, `routePointReachRadius` и полям финальной активации: существующий runtime JSON автоматически не переписывается ради новых nested fields. Чтобы задать пользовательский маршрут или изменить финальную активацию, поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.

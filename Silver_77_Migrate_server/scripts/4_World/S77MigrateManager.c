@@ -5,26 +5,50 @@ class S77MigrateUnitState
     string m_ScenarioId;
     string m_ClassName;
     vector m_MigrationTarget;
+    vector m_FinalTargetCenter;
+    vector m_RouteOffset;
+    ref TVectorArray m_RoutePoints;
+    int m_RoutePointIndex;
+    float m_RoutePointReachRadius;
     ref TVectorArray m_Waypoints;
     int m_WaypointIndex;
     string m_Mode;
     bool m_VanillaBusy;
+    bool m_Released;
+    bool m_FinalStimulusTriggered;
+    bool m_FinalStimulusFailureLogged;
+    int m_FinalActivationEnabled;
+    float m_FinalActivationDistance;
+    float m_FinalStimulusLifetimeSeconds;
+    float m_FinalStimulusStrengthMultiplier;
     int m_ResumeAfterTime;
     int m_NextPathRetryTime;
     int m_LogIntervalMs;
     int m_NextLogTime;
 
-    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, vector migrationTarget, int logIntervalMs)
+    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, int finalActivationEnabled, float finalActivationDistance, float finalStimulusLifetimeSeconds, float finalStimulusStrengthMultiplier, int logIntervalMs)
     {
         m_Infected = infected;
         m_InfectedId = infectedId;
         m_ScenarioId = scenarioId;
         m_ClassName = infected.GetType();
         m_MigrationTarget = migrationTarget;
+        m_FinalTargetCenter = finalTargetCenter;
+        m_RouteOffset = routeOffset;
+        m_RoutePoints = routePoints;
+        m_RoutePointIndex = 0;
+        m_RoutePointReachRadius = routePointReachRadius;
         m_Waypoints = new TVectorArray();
         m_WaypointIndex = 0;
         m_Mode = "MIGRATION";
         m_VanillaBusy = false;
+        m_Released = false;
+        m_FinalStimulusTriggered = false;
+        m_FinalStimulusFailureLogged = false;
+        m_FinalActivationEnabled = finalActivationEnabled;
+        m_FinalActivationDistance = finalActivationDistance;
+        m_FinalStimulusLifetimeSeconds = finalStimulusLifetimeSeconds;
+        m_FinalStimulusStrengthMultiplier = finalStimulusStrengthMultiplier;
         m_ResumeAfterTime = 0;
         m_NextPathRetryTime = 0;
         m_LogIntervalMs = logIntervalMs;
@@ -38,6 +62,7 @@ class S77MigrateManager
 
     protected const string EVENT_LOG_PREFIX = "[S77Migrate][EVENT]";
     protected const string MIGRATION_LOG_PREFIX = "[S77Migrate]";
+    protected const string FINAL_STIMULUS_NOISE_PATH = "CfgVehicles SurvivorBase NoiseShout";
     protected const int UPDATE_INTERVAL_MS = 250;
     protected const int LOG_CHECK_INTERVAL_MS = 1000;
     protected const int STORM_RAMP_STEP_MS = 10000;
@@ -51,6 +76,9 @@ class S77MigrateManager
     protected ref array<ref S77MigrateScenarioConfig> m_Scenarios;
     protected ref array<ref S77MigrateUnitState> m_Units;
     protected ref PGFilter m_PathFilter;
+    protected ref NoiseParams m_FinalStimulusParams;
+    protected NoiseSystem m_NoiseSystem;
+    protected bool m_FinalStimulusReady;
     protected bool m_EventStarted;
     protected bool m_RouteUpdateScheduled;
     protected bool m_LogScheduled;
@@ -146,6 +174,9 @@ class S77MigrateManager
             Print(EVENT_LOG_PREFIX + " No enabled migration scenarios; event start aborted");
             return;
         }
+
+        if (NeedsFinalStimulus())
+            PrepareFinalStimulus();
 
         int delayMs = Math.Round(m_Config.eventDelaySeconds * 1000.0);
         if (m_Config.weatherEnabled == 1)
@@ -320,6 +351,41 @@ class S77MigrateManager
         m_WeatherControlActive = false;
     }
 
+    protected bool NeedsFinalStimulus()
+    {
+        for (int i = 0; i < m_Scenarios.Count(); i++)
+        {
+            S77MigrateScenarioConfig scenario = m_Scenarios.Get(i);
+            if (scenario && scenario.finalActivationEnabled == 1)
+                return true;
+        }
+
+        return false;
+    }
+
+    protected void PrepareFinalStimulus()
+    {
+        m_FinalStimulusReady = false;
+
+        if (!GetGame().ConfigIsExisting(FINAL_STIMULUS_NOISE_PATH))
+        {
+            Print(EVENT_LOG_PREFIX + " ERROR: final AI stimulus preset is unavailable: " + FINAL_STIMULUS_NOISE_PATH + "; infected will continue to arrival before RELEASED");
+            return;
+        }
+
+        m_NoiseSystem = GetGame().GetNoiseSystem();
+        if (!m_NoiseSystem)
+        {
+            Print(EVENT_LOG_PREFIX + " ERROR: NoiseSystem is unavailable; infected will continue to arrival before RELEASED");
+            return;
+        }
+
+        m_FinalStimulusParams = new NoiseParams();
+        m_FinalStimulusParams.LoadFromPath(FINAL_STIMULUS_NOISE_PATH);
+        m_FinalStimulusReady = true;
+        Print(EVENT_LOG_PREFIX + " Final AI stimulus ready preset=" + FINAL_STIMULUS_NOISE_PATH);
+    }
+
     protected void StartAllScenarios()
     {
         m_StartGroupsScheduled = false;
@@ -352,6 +418,7 @@ class S77MigrateManager
     {
         vector spawnCenter = config.GetSpawnPosition();
         vector targetCenter = config.GetTargetPosition();
+        TVectorArray routePoints = config.GetRoutePoints();
         float spawnFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
         float targetFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
         string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId;
@@ -363,6 +430,7 @@ class S77MigrateManager
         formationLog = formationLog + " targetSpacing=" + config.targetFormationSpacing.ToString();
         formationLog = formationLog + " targetJitter=" + config.targetFormationJitter.ToString();
         formationLog = formationLog + " targetRotation=" + targetFormationRotation.ToString();
+        formationLog = formationLog + " routePoints=" + routePoints.Count().ToString();
         Print(formationLog);
 
         int beforeCount = m_Units.Count();
@@ -370,15 +438,15 @@ class S77MigrateManager
         {
             string className = config.infectedTypes.Get(i % config.infectedTypes.Count());
             vector spawnOffset = GetFormationOffset(i, config.infectedCount, config.spawnFormationSpacing, config.spawnFormationJitter, spawnFormationRotation);
-            vector targetOffset = GetFormationOffset(i, config.infectedCount, config.targetFormationSpacing, config.targetFormationJitter, targetFormationRotation);
-            SpawnMigrationInfected(config, i, className, spawnCenter + spawnOffset, targetCenter + targetOffset);
+            vector routeOffset = GetFormationOffset(i, config.infectedCount, config.targetFormationSpacing, config.targetFormationJitter, targetFormationRotation);
+            SpawnMigrationInfected(config, i, className, spawnCenter + spawnOffset, targetCenter, routeOffset, routePoints);
         }
 
         int spawnedCount = m_Units.Count() - beforeCount;
         Print(scenarioPrefix + " started; spawned=" + spawnedCount.ToString() + "/" + config.infectedCount.ToString());
     }
 
-    protected void SpawnMigrationInfected(S77MigrateScenarioConfig config, int index, string className, vector spawnPosition, vector migrationTarget)
+    protected void SpawnMigrationInfected(S77MigrateScenarioConfig config, int index, string className, vector spawnPosition, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints)
     {
         string scenarioPrefix = MIGRATION_LOG_PREFIX + " scenario=" + config.scenarioId;
         if (!GetGame().ConfigIsExisting("CfgVehicles " + className) || !GetGame().IsKindOf(className, "DayZInfected"))
@@ -400,16 +468,17 @@ class S77MigrateManager
 
         string infectedId = "INF_" + (index + 1).ToString();
         int logIntervalMs = Math.Round(config.logIntervalSeconds * 1000.0);
-        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, migrationTarget, logIntervalMs);
+        vector migrationTarget = finalTargetCenter + routeOffset;
+        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, config.finalActivationEnabled, config.finalActivationDistance, config.finalStimulusLifetimeSeconds, config.finalStimulusStrengthMultiplier, logIntervalMs);
         m_Units.Insert(state);
 
         BuildPath(state);
-        Print(scenarioPrefix + " Spawned id=" + infectedId + " class=" + className + " position=" + infected.GetPosition().ToString() + " target=" + migrationTarget.ToString());
+        Print(scenarioPrefix + " Spawned id=" + infectedId + " class=" + className + " position=" + infected.GetPosition().ToString() + " target=" + migrationTarget.ToString() + " routePoints=" + routePoints.Count().ToString());
     }
 
     protected bool BuildPath(S77MigrateUnitState state)
     {
-        if (!state || !state.m_Infected || !state.m_Infected.IsAlive())
+        if (!state || state.m_Released || !state.m_Infected || !state.m_Infected.IsAlive())
             return false;
 
         state.m_Waypoints = new TVectorArray();
@@ -426,6 +495,7 @@ class S77MigrateManager
         vector sampledStart;
         vector sampledTarget;
         vector currentPosition = state.m_Infected.GetPosition();
+        vector currentRouteTarget = GetCurrentRouteTarget(state);
 
         if (!aiWorld.SampleNavmeshPosition(currentPosition, 8.0, m_PathFilter, sampledStart))
         {
@@ -433,9 +503,9 @@ class S77MigrateManager
             return false;
         }
 
-        if (!aiWorld.SampleNavmeshPosition(state.m_MigrationTarget, 15.0, m_PathFilter, sampledTarget))
+        if (!aiWorld.SampleNavmeshPosition(currentRouteTarget, 15.0, m_PathFilter, sampledTarget))
         {
-            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " PATH ERROR: no navmesh near target for id=" + state.m_InfectedId + " target=" + state.m_MigrationTarget.ToString());
+            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " PATH ERROR: no navmesh near target for id=" + state.m_InfectedId + " target=" + currentRouteTarget.ToString());
             return false;
         }
 
@@ -449,8 +519,21 @@ class S77MigrateManager
         state.m_Waypoints = newWaypoints;
         state.m_WaypointIndex = 1;
         state.m_NextPathRetryTime = 0;
-        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " Path built for id=" + state.m_InfectedId + " waypoints=" + newWaypoints.Count().ToString());
+        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " Path built for id=" + state.m_InfectedId + " routePoint=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString() + " waypoints=" + newWaypoints.Count().ToString() + " target=" + currentRouteTarget.ToString());
         return true;
+    }
+
+    protected vector GetCurrentRouteTarget(S77MigrateUnitState state)
+    {
+        if (state.m_RoutePoints && state.m_RoutePointIndex < state.m_RoutePoints.Count())
+            return state.m_RoutePoints.Get(state.m_RoutePointIndex) + state.m_RouteOffset;
+
+        return state.m_MigrationTarget;
+    }
+
+    protected bool ManualRouteComplete(S77MigrateUnitState state)
+    {
+        return !state.m_RoutePoints || state.m_RoutePointIndex >= state.m_RoutePoints.Count();
     }
 
     protected void UpdateRoutes()
@@ -463,12 +546,19 @@ class S77MigrateManager
             if (!state || !state.m_Infected || !state.m_Infected.IsAlive())
                 continue;
 
-            if (state.m_Mode == "ARRIVED")
+            if (state.m_Released)
                 continue;
 
             DayZInfectedInputController controller = state.m_Infected.GetInputController();
             if (!controller)
                 continue;
+
+            if (ManualRouteComplete(state) && state.m_FinalActivationEnabled == 1 && !state.m_FinalStimulusTriggered)
+            {
+                float finalDistance = HorizontalDistance(state.m_Infected.GetPosition(), state.m_FinalTargetCenter);
+                if (finalDistance <= state.m_FinalActivationDistance && TryFinalActivation(state, controller, finalDistance))
+                    continue;
+            }
 
             EntityAI vanillaTarget = controller.GetTargetEntity();
             int mindState = controller.GetMindState();
@@ -515,18 +605,69 @@ class S77MigrateManager
         }
     }
 
+    protected bool TryFinalActivation(S77MigrateUnitState state, DayZInfectedInputController controller, float distanceToTarget)
+    {
+        if (!state || state.m_Released || state.m_FinalStimulusTriggered || !state.m_Infected || !state.m_Infected.IsAlive())
+            return false;
+
+        if (!m_FinalStimulusReady || !m_NoiseSystem || !m_FinalStimulusParams)
+        {
+            if (!state.m_FinalStimulusFailureLogged)
+            {
+                Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " WARNING: final AI stimulus unavailable; continuing migration to arrival");
+                state.m_FinalStimulusFailureLogged = true;
+            }
+            return false;
+        }
+
+        ReleaseRouteControl(controller);
+        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " FINAL_ACTIVATION distance=" + distanceToTarget.ToString() + " target=" + state.m_FinalTargetCenter.ToString());
+        m_NoiseSystem.AddNoiseTarget(state.m_FinalTargetCenter, state.m_FinalStimulusLifetimeSeconds, m_FinalStimulusParams, state.m_FinalStimulusStrengthMultiplier);
+        state.m_FinalStimulusTriggered = true;
+        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " AI_STIMULUS lifetime=" + state.m_FinalStimulusLifetimeSeconds.ToString() + " strength=" + state.m_FinalStimulusStrengthMultiplier.ToString() + " preset=" + FINAL_STIMULUS_NOISE_PATH);
+        ReleaseUnit(state, controller, "FINAL_STIMULUS");
+        return true;
+    }
+
     protected void FollowPath(S77MigrateUnitState state, DayZInfectedInputController controller)
     {
         vector position = state.m_Infected.GetPosition();
 
+        if (!ManualRouteComplete(state))
+        {
+            vector routePointTarget = GetCurrentRouteTarget(state);
+            if (HorizontalDistance(position, routePointTarget) <= state.m_RoutePointReachRadius)
+            {
+                state.m_RoutePointIndex++;
+                ReleaseRouteControl(controller);
+                Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " ROUTE_POINT reached=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString());
+                BuildPath(state);
+                return;
+            }
+        }
+
         while (state.m_WaypointIndex < state.m_Waypoints.Count() && HorizontalDistance(position, state.m_Waypoints.Get(state.m_WaypointIndex)) <= WAYPOINT_TOLERANCE)
             state.m_WaypointIndex++;
 
-        if (state.m_WaypointIndex >= state.m_Waypoints.Count() || HorizontalDistance(position, state.m_MigrationTarget) <= ARRIVAL_TOLERANCE)
+        if (state.m_WaypointIndex >= state.m_Waypoints.Count())
         {
             ReleaseRouteControl(controller);
-            state.m_Mode = "ARRIVED";
-            Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " ARRIVED id=" + state.m_InfectedId + " class=" + state.m_ClassName + " position=" + position.ToString());
+
+            if (!ManualRouteComplete(state))
+            {
+                state.m_Waypoints.Clear();
+                state.m_WaypointIndex = 0;
+                state.m_NextPathRetryTime = GetGame().GetTime() + PATH_RETRY_INTERVAL_MS;
+                return;
+            }
+
+            ReleaseUnit(state, controller, "ARRIVAL");
+            return;
+        }
+
+        if (ManualRouteComplete(state) && HorizontalDistance(position, state.m_MigrationTarget) <= ARRIVAL_TOLERANCE)
+        {
+            ReleaseUnit(state, controller, "ARRIVAL");
             return;
         }
 
@@ -541,6 +682,23 @@ class S77MigrateManager
         controller.OverrideHeading(true, headingRadians);
         controller.OverrideMovementSpeed(true, MIGRATION_SPEED);
         state.m_Mode = "MIGRATION";
+    }
+
+    protected void ReleaseUnit(S77MigrateUnitState state, DayZInfectedInputController controller, string reason)
+    {
+        if (!state || state.m_Released)
+            return;
+
+        ReleaseRouteControl(controller);
+        state.m_Released = true;
+        state.m_Mode = "RELEASED";
+        state.m_VanillaBusy = false;
+        state.m_ResumeAfterTime = 0;
+        state.m_NextPathRetryTime = 0;
+        if (state.m_Waypoints)
+            state.m_Waypoints.Clear();
+        state.m_WaypointIndex = 0;
+        Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " id=" + state.m_InfectedId + " RELEASED reason=" + reason + " position=" + state.m_Infected.GetPosition().ToString());
     }
 
     protected void LogUnitStates()
@@ -581,14 +739,19 @@ class S77MigrateManager
             if (state.m_Waypoints)
                 waypointStatus = state.m_WaypointIndex.ToString() + "/" + state.m_Waypoints.Count().ToString();
 
+            string routePointStatus = state.m_RoutePointIndex.ToString() + "/0";
+            if (state.m_RoutePoints)
+                routePointStatus = state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString();
+
             vector position = state.m_Infected.GetPosition();
-            float distanceToTarget = vector.Distance(position, state.m_MigrationTarget);
+            float distanceToTarget = HorizontalDistance(position, state.m_FinalTargetCenter);
 
             string logLine = MIGRATION_LOG_PREFIX;
             logLine = logLine + " scenario=" + state.m_ScenarioId;
             logLine = logLine + " id=" + state.m_InfectedId;
             logLine = logLine + " class=" + state.m_ClassName;
             logLine = logLine + " position=" + position.ToString();
+            logLine = logLine + " routePoint=" + routePointStatus;
             logLine = logLine + " waypoint=" + waypointStatus;
             logLine = logLine + " distance=" + distanceToTarget.ToString();
             logLine = logLine + " target=" + targetPresent;
@@ -622,7 +785,7 @@ class S77MigrateManager
         for (int i = 0; i < m_Units.Count(); i++)
         {
             S77MigrateUnitState state = m_Units.Get(i);
-            if (state && state.m_Infected && state.m_Infected.IsAlive())
+            if (state && !state.m_Released && state.m_Infected && state.m_Infected.IsAlive())
                 ReleaseRouteControl(state.m_Infected.GetInputController());
         }
     }

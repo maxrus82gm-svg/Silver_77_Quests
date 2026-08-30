@@ -34,11 +34,17 @@
                 115.809814453125,
                 13094.11328125
             ],
+            "routePoints": [],
+            "routePointReachRadius": 6.0,
             "spawnFormationSpacing": 4.5,
             "spawnFormationJitter": 0.5,
             "targetFormationSpacing": 4.5,
             "targetFormationJitter": 0.5,
-            "logIntervalSeconds": 10.0
+            "logIntervalSeconds": 10.0,
+            "finalActivationEnabled": 1,
+            "finalActivationDistance": 50.0,
+            "finalStimulusLifetimeSeconds": 1.0,
+            "finalStimulusStrengthMultiplier": 1.0
         },
         {
             "enabled": 1,
@@ -61,11 +67,17 @@
                 121.727158,
                 13051.032227
             ],
+            "routePoints": [],
+            "routePointReachRadius": 6.0,
             "spawnFormationSpacing": 4.5,
             "spawnFormationJitter": 0.5,
             "targetFormationSpacing": 4.5,
             "targetFormationJitter": 0.5,
-            "logIntervalSeconds": 10.0
+            "logIntervalSeconds": 10.0,
+            "finalActivationEnabled": 1,
+            "finalActivationDistance": 50.0,
+            "finalStimulusLifetimeSeconds": 1.0,
+            "finalStimulusStrengthMultiplier": 1.0
         }
     ]
 }

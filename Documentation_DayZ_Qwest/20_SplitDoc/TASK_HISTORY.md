@@ -94,6 +94,8 @@
 
 - `TASK 133` — конфигурация `Silver_77_Migrate_server` объединена в один `$profile:Silver_77_Migrate/MigrationConfig.json`: общие event/weather/storm-поля находятся сверху, а `MIGRATION_TEST_001` и `MIGRATION_TEST_002` — в динамически перебираемом массиве `scenarios`. При отсутствии unified-файла loader безопасно переносит значения из валидных старых трёх runtime JSON, не удаляя их; существующий unified JSON не переписывается, malformed данные не заменяются defaults. Старые source JSON заменены одним `config/MigrationConfig.json`, README и документация обновлены. Погодное, storm и migration-поведение TASK 132 не менялось; PBO не собирался, runtime-проверка не выполнялась.
 
+- `TASK 134` — сценарии `Silver_77_Migrate_server` получили произвольный массив `routePoints`: каждый infected последовательно строит отдельный navmesh path к ручным точкам и `targetPosition`, сохраняя один стабильный individual formation offset. После прохождения ручных точек infected индивидуально создаёт кратковременный AI-only stimulus через `NoiseSystem::AddNoiseTarget()` в центре target и переходит в терминальное состояние `RELEASED` под vanilla AI; при недоступности stimulus выполняется обычный arrival -> release. Unified runtime JSON destructively не переписывается, новые отсутствующие поля получают только constructor defaults в памяти. Scheduler, слышимый fake sound и forced mind state не добавлялись; PBO не собирался, runtime-проверка не выполнялась.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

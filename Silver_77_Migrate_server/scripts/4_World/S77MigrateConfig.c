@@ -13,11 +13,17 @@ class S77MigrateScenarioConfig
     ref array<string> infectedTypes;
     ref array<float> spawnPosition;
     ref array<float> targetPosition;
+    ref array<ref array<float>> routePoints;
+    float routePointReachRadius;
     float spawnFormationSpacing;
     float spawnFormationJitter;
     float targetFormationSpacing;
     float targetFormationJitter;
     float logIntervalSeconds;
+    int finalActivationEnabled;
+    float finalActivationDistance;
+    float finalStimulusLifetimeSeconds;
+    float finalStimulusStrengthMultiplier;
 
     void S77MigrateScenarioConfig()
     {
@@ -32,11 +38,17 @@ class S77MigrateScenarioConfig
         SetDefaultInfectedTypes();
         spawnPosition = new array<float>();
         targetPosition = new array<float>();
+        routePoints = new array<ref array<float>>();
+        routePointReachRadius = 6.0;
         spawnFormationSpacing = 4.5;
         spawnFormationJitter = 0.5;
         targetFormationSpacing = 4.5;
         targetFormationJitter = 0.5;
         logIntervalSeconds = 10.0;
+        finalActivationEnabled = 1;
+        finalActivationDistance = 50.0;
+        finalStimulusLifetimeSeconds = 1.0;
+        finalStimulusStrengthMultiplier = 1.0;
     }
 
     void SetDefaultsScenario001()
@@ -66,6 +78,12 @@ class S77MigrateScenarioConfig
         if (!infectedTypes || infectedTypes.Count() == 0)
             SetDefaultInfectedTypes();
 
+        if (!routePoints)
+            routePoints = new array<ref array<float>>();
+
+        if (routePointReachRadius <= 0.0)
+            routePointReachRadius = 6.0;
+
         if (spawnFormationSpacing < 0.0)
             spawnFormationSpacing = 4.5;
 
@@ -80,6 +98,18 @@ class S77MigrateScenarioConfig
 
         if (logIntervalSeconds < 1.0)
             logIntervalSeconds = 10.0;
+
+        if (finalActivationEnabled != 1)
+            finalActivationEnabled = 0;
+
+        if (finalActivationDistance < 0.0)
+            finalActivationDistance = 50.0;
+
+        if (finalStimulusLifetimeSeconds <= 0.0)
+            finalStimulusLifetimeSeconds = 1.0;
+
+        if (finalStimulusStrengthMultiplier < 0.0)
+            finalStimulusStrengthMultiplier = 1.0;
     }
 
     void NormalizeLegacy(string fallbackScenarioId, vector fallbackSpawn, vector fallbackTarget)
@@ -104,7 +134,17 @@ class S77MigrateScenarioConfig
 
     bool IsValid()
     {
-        return scenarioId != "" && infectedTypes && infectedTypes.Count() > 0 && spawnPosition && spawnPosition.Count() >= 3 && targetPosition && targetPosition.Count() >= 3;
+        if (scenarioId == "" || !infectedTypes || infectedTypes.Count() == 0 || !spawnPosition || spawnPosition.Count() < 3 || !targetPosition || targetPosition.Count() < 3 || !routePoints)
+            return false;
+
+        for (int i = 0; i < routePoints.Count(); i++)
+        {
+            array<float> point = routePoints.Get(i);
+            if (!point || point.Count() != 3)
+                return false;
+        }
+
+        return true;
     }
 
     vector GetSpawnPosition()
@@ -115,6 +155,18 @@ class S77MigrateScenarioConfig
     vector GetTargetPosition()
     {
         return Vector(targetPosition.Get(0), targetPosition.Get(1), targetPosition.Get(2));
+    }
+
+    TVectorArray GetRoutePoints()
+    {
+        TVectorArray points = new TVectorArray();
+        for (int i = 0; i < routePoints.Count(); i++)
+        {
+            array<float> point = routePoints.Get(i);
+            points.Insert(Vector(point.Get(0), point.Get(1), point.Get(2)));
+        }
+
+        return points;
     }
 
     protected void SetDefaultInfectedTypes()
