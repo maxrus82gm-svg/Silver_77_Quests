@@ -31,6 +31,20 @@ class S77MigrateScenarioConfig
     float finalActivationDistance;
     float finalStimulusLifetimeSeconds;
     float finalStimulusStrengthMultiplier;
+    int stuckRecoveryEnabled;
+    float stuckDetectionSeconds;
+    float stuckMinMovementMeters;
+    float stuckRecoveryFreeSeconds;
+    float stuckRecoveryStatusCheckSeconds;
+    float stuckStimulusForwardDistance;
+    float stuckStimulusShareRadius;
+    float stuckStimulusRetrySeconds;
+    float stuckStimulusLifetimeSeconds;
+    float stuckStimulusStrengthMultiplier;
+    int finalHoldEnabled;
+    float finalHoldRadius;
+    float finalHoldReturnRadius;
+    float finalHoldCheckSeconds;
 
     void S77MigrateScenarioConfig()
     {
@@ -63,6 +77,20 @@ class S77MigrateScenarioConfig
         finalActivationDistance = 12.0;
         finalStimulusLifetimeSeconds = 1.0;
         finalStimulusStrengthMultiplier = 1.0;
+        stuckRecoveryEnabled = 1;
+        stuckDetectionSeconds = 4.0;
+        stuckMinMovementMeters = 1.0;
+        stuckRecoveryFreeSeconds = 30.0;
+        stuckRecoveryStatusCheckSeconds = 3.0;
+        stuckStimulusForwardDistance = 10.0;
+        stuckStimulusShareRadius = 20.0;
+        stuckStimulusRetrySeconds = 5.0;
+        stuckStimulusLifetimeSeconds = 1.0;
+        stuckStimulusStrengthMultiplier = 1.0;
+        finalHoldEnabled = 1;
+        finalHoldRadius = 200.0;
+        finalHoldReturnRadius = 30.0;
+        finalHoldCheckSeconds = 5.0;
     }
 
     void SetDefaultsScenario001()
@@ -151,6 +179,48 @@ class S77MigrateScenarioConfig
 
         if (finalStimulusStrengthMultiplier < 0.0)
             finalStimulusStrengthMultiplier = 1.0;
+
+        if (stuckRecoveryEnabled != 1)
+            stuckRecoveryEnabled = 0;
+
+        if (stuckDetectionSeconds <= 0.0)
+            stuckDetectionSeconds = 4.0;
+
+        if (stuckMinMovementMeters <= 0.0)
+            stuckMinMovementMeters = 1.0;
+
+        if (stuckRecoveryFreeSeconds <= 0.0)
+            stuckRecoveryFreeSeconds = 30.0;
+
+        if (stuckRecoveryStatusCheckSeconds <= 0.0)
+            stuckRecoveryStatusCheckSeconds = 3.0;
+
+        if (stuckStimulusForwardDistance <= 0.0)
+            stuckStimulusForwardDistance = 10.0;
+
+        if (stuckStimulusShareRadius <= 0.0)
+            stuckStimulusShareRadius = 20.0;
+
+        if (stuckStimulusRetrySeconds <= 0.0)
+            stuckStimulusRetrySeconds = 5.0;
+
+        if (stuckStimulusLifetimeSeconds <= 0.0)
+            stuckStimulusLifetimeSeconds = 1.0;
+
+        if (stuckStimulusStrengthMultiplier < 0.0)
+            stuckStimulusStrengthMultiplier = 1.0;
+
+        if (finalHoldEnabled != 1)
+            finalHoldEnabled = 0;
+
+        if (finalHoldRadius <= 0.0)
+            finalHoldRadius = 200.0;
+
+        if (finalHoldReturnRadius <= 0.0)
+            finalHoldReturnRadius = 30.0;
+
+        if (finalHoldCheckSeconds <= 0.0)
+            finalHoldCheckSeconds = 5.0;
     }
 
     void NormalizeLegacy(string fallbackScenarioId, vector fallbackSpawn, vector fallbackTarget)

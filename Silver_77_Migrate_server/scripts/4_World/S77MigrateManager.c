@@ -20,8 +20,32 @@ class S77MigrateUnitState
     int m_NextPathRetryTime;
     int m_LogIntervalMs;
     int m_NextLogTime;
+    int m_StuckRecoveryEnabled;
+    float m_StuckDetectionSeconds;
+    float m_StuckMinMovementMeters;
+    float m_StuckRecoveryFreeSeconds;
+    float m_StuckRecoveryStatusCheckSeconds;
+    float m_StuckStimulusForwardDistance;
+    float m_StuckStimulusShareRadius;
+    float m_StuckStimulusRetrySeconds;
+    float m_StuckStimulusLifetimeSeconds;
+    float m_StuckStimulusStrengthMultiplier;
+    int m_FinalHoldEnabled;
+    float m_FinalHoldRadius;
+    float m_FinalHoldReturnRadius;
+    float m_FinalHoldCheckSeconds;
+    bool m_StuckSampleValid;
+    vector m_StuckSamplePosition;
+    float m_StuckSampleDistance;
+    int m_StuckSampleTime;
+    string m_RecoveryResumeMode;
+    int m_RecoveryFreeUntilTime;
+    int m_NextRecoveryStatusCheckTime;
+    int m_RecoveryCalmAfterTime;
+    int m_NextHoldCheckTime;
+    int m_HoldCalmAfterTime;
 
-    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, string runtimeGroupId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, int logIntervalMs)
+    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, string runtimeGroupId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, S77MigrateScenarioConfig config, int logIntervalMs)
     {
         m_Infected = infected;
         m_InfectedId = infectedId;
@@ -43,6 +67,44 @@ class S77MigrateUnitState
         m_NextPathRetryTime = 0;
         m_LogIntervalMs = logIntervalMs;
         m_NextLogTime = 0;
+        m_StuckRecoveryEnabled = config.stuckRecoveryEnabled;
+        m_StuckDetectionSeconds = config.stuckDetectionSeconds;
+        m_StuckMinMovementMeters = config.stuckMinMovementMeters;
+        m_StuckRecoveryFreeSeconds = config.stuckRecoveryFreeSeconds;
+        m_StuckRecoveryStatusCheckSeconds = config.stuckRecoveryStatusCheckSeconds;
+        m_StuckStimulusForwardDistance = config.stuckStimulusForwardDistance;
+        m_StuckStimulusShareRadius = config.stuckStimulusShareRadius;
+        m_StuckStimulusRetrySeconds = config.stuckStimulusRetrySeconds;
+        m_StuckStimulusLifetimeSeconds = config.stuckStimulusLifetimeSeconds;
+        m_StuckStimulusStrengthMultiplier = config.stuckStimulusStrengthMultiplier;
+        m_FinalHoldEnabled = config.finalHoldEnabled;
+        m_FinalHoldRadius = config.finalHoldRadius;
+        m_FinalHoldReturnRadius = config.finalHoldReturnRadius;
+        m_FinalHoldCheckSeconds = config.finalHoldCheckSeconds;
+        m_StuckSampleValid = false;
+        m_StuckSamplePosition = Vector(0.0, 0.0, 0.0);
+        m_StuckSampleDistance = 0.0;
+        m_StuckSampleTime = 0;
+        m_RecoveryResumeMode = "MIGRATION";
+        m_RecoveryFreeUntilTime = 0;
+        m_NextRecoveryStatusCheckTime = 0;
+        m_RecoveryCalmAfterTime = 0;
+        m_NextHoldCheckTime = 0;
+        m_HoldCalmAfterTime = 0;
+    }
+}
+
+class S77MigrateRecoveryStimulusRecord
+{
+    string m_RuntimeGroupId;
+    vector m_Position;
+    int m_ExpiresTime;
+
+    void S77MigrateRecoveryStimulusRecord(string runtimeGroupId, vector position, int expiresTime)
+    {
+        m_RuntimeGroupId = runtimeGroupId;
+        m_Position = position;
+        m_ExpiresTime = expiresTime;
     }
 }
 
@@ -117,6 +179,7 @@ class S77MigrateManager
     protected ref array<ref S77MigrateScenarioConfig> m_Scenarios;
     protected ref array<ref S77MigrateGroupState> m_Groups;
     protected ref array<ref S77MigrateUnitState> m_Units;
+    protected ref array<ref S77MigrateRecoveryStimulusRecord> m_RecoveryStimuli;
     protected ref PGFilter m_PathFilter;
     protected ref NoiseParams m_StimulusParams;
     protected NoiseSystem m_NoiseSystem;
@@ -142,6 +205,7 @@ class S77MigrateManager
         m_Scenarios = new array<ref S77MigrateScenarioConfig>();
         m_Groups = new array<ref S77MigrateGroupState>();
         m_Units = new array<ref S77MigrateUnitState>();
+        m_RecoveryStimuli = new array<ref S77MigrateRecoveryStimulusRecord>();
         m_PathFilter = new PGFilter();
         int includeFlags = PGPolyFlags.WALK | PGPolyFlags.DOOR | PGPolyFlags.INSIDE;
         int excludeFlags = PGPolyFlags.DISABLED | PGPolyFlags.SWIM | PGPolyFlags.SWIM_SEA | PGPolyFlags.JUMP | PGPolyFlags.CLIMB | PGPolyFlags.CRAWL | PGPolyFlags.CROUCH;
@@ -400,7 +464,7 @@ class S77MigrateManager
         for (int i = 0; i < m_Scenarios.Count(); i++)
         {
             S77MigrateScenarioConfig scenario = m_Scenarios.Get(i);
-            if (scenario && (scenario.finalActivationEnabled == 1 || (scenario.routeActivationEnabled == 1 && scenario.routePoints.Count() > 0)))
+            if (scenario && (scenario.finalActivationEnabled == 1 || scenario.stuckRecoveryEnabled == 1 || (scenario.routeActivationEnabled == 1 && scenario.routePoints.Count() > 0)))
                 return true;
         }
 
@@ -413,14 +477,14 @@ class S77MigrateManager
 
         if (!GetGame().ConfigIsExisting(AI_STIMULUS_NOISE_PATH))
         {
-            Print(EVENT_LOG_PREFIX + " ERROR: AI stimulus preset is unavailable: " + AI_STIMULUS_NOISE_PATH + "; migration and arrival release remain active");
+            Print(EVENT_LOG_PREFIX + " ERROR: AI stimulus preset is unavailable: " + AI_STIMULUS_NOISE_PATH + "; migration and configured arrival behavior remain active without AI stimulus");
             return;
         }
 
         m_NoiseSystem = GetGame().GetNoiseSystem();
         if (!m_NoiseSystem)
         {
-            Print(EVENT_LOG_PREFIX + " ERROR: NoiseSystem is unavailable; infected will continue to arrival before RELEASED");
+            Print(EVENT_LOG_PREFIX + " ERROR: NoiseSystem is unavailable; infected will continue route and configured arrival behavior without AI stimulus");
             return;
         }
 
@@ -515,7 +579,7 @@ class S77MigrateManager
         string infectedId = "INF_" + (index + 1).ToString();
         int logIntervalMs = Math.Round(config.logIntervalSeconds * 1000.0);
         vector migrationTarget = finalTargetCenter + routeOffset;
-        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, groupState.m_RuntimeGroupId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, logIntervalMs);
+        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, groupState.m_RuntimeGroupId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, config, logIntervalMs);
         m_Units.Insert(state);
         groupState.m_Members.Insert(state);
 
@@ -566,6 +630,7 @@ class S77MigrateManager
         state.m_Waypoints = newWaypoints;
         state.m_WaypointIndex = 1;
         state.m_NextPathRetryTime = 0;
+        ResetStuckSample(state);
         Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " Path built for id=" + state.m_InfectedId + " routePoint=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString() + " waypoints=" + newWaypoints.Count().ToString() + " target=" + currentRouteTarget.ToString());
         return true;
     }
@@ -605,30 +670,27 @@ class S77MigrateManager
             int mindState = controller.GetMindState();
             bool vanillaBusyNow = vanillaTarget != null || mindState != DayZInfectedConstants.MINDSTATE_CALM;
 
+            if (state.m_Mode == "STUCK_RECOVERY")
+            {
+                UpdateStuckRecovery(state, controller, vanillaBusyNow, now);
+                continue;
+            }
+
+            if (state.m_Mode == "HOLD_FREE")
+            {
+                UpdateHoldFree(state, controller, vanillaBusyNow, now);
+                continue;
+            }
+
             if (vanillaBusyNow)
             {
-                ReleaseRouteControl(controller);
-                state.m_Mode = "AGGRO";
-                state.m_VanillaBusy = true;
-                state.m_ResumeAfterTime = 0;
+                EnterVanillaBusy(state, controller);
                 continue;
             }
 
             if (state.m_VanillaBusy)
             {
-                ReleaseRouteControl(controller);
-
-                if (state.m_ResumeAfterTime == 0)
-                    state.m_ResumeAfterTime = now + AGGRO_COOLDOWN_MS;
-
-                if (now < state.m_ResumeAfterTime)
-                    continue;
-
-                state.m_VanillaBusy = false;
-                state.m_ResumeAfterTime = 0;
-                state.m_Mode = "MIGRATION";
-
-                if (!BuildPath(state))
+                if (!ResumeAfterVanillaBusy(state, controller, now))
                     continue;
             }
 
@@ -642,7 +704,349 @@ class S77MigrateManager
                 continue;
             }
 
+            if (UpdateStuckDetection(state, controller, now))
+                continue;
+
             FollowPath(state, controller);
+        }
+
+        PruneRecoveryStimuli(now);
+    }
+
+    protected void EnterVanillaBusy(S77MigrateUnitState state, DayZInfectedInputController controller)
+    {
+        ReleaseRouteControl(controller);
+        state.m_RecoveryResumeMode = GetMovementIntent(state);
+        state.m_Mode = "AGGRO";
+        state.m_VanillaBusy = true;
+        state.m_ResumeAfterTime = 0;
+        ResetStuckSample(state);
+    }
+
+    protected bool ResumeAfterVanillaBusy(S77MigrateUnitState state, DayZInfectedInputController controller, int now)
+    {
+        ReleaseRouteControl(controller);
+
+        if (state.m_ResumeAfterTime == 0)
+            state.m_ResumeAfterTime = now + AGGRO_COOLDOWN_MS;
+
+        if (now < state.m_ResumeAfterTime)
+            return false;
+
+        state.m_VanillaBusy = false;
+        state.m_ResumeAfterTime = 0;
+        state.m_Mode = state.m_RecoveryResumeMode;
+        if (state.m_Mode != "RETURN_TO_HOLD")
+            state.m_Mode = "MIGRATION";
+
+        return BuildPath(state);
+    }
+
+    protected string GetMovementIntent(S77MigrateUnitState state)
+    {
+        if (state && state.m_Mode == "RETURN_TO_HOLD")
+            return "RETURN_TO_HOLD";
+
+        return "MIGRATION";
+    }
+
+    protected void UpdateStuckRecovery(S77MigrateUnitState state, DayZInfectedInputController controller, bool vanillaBusyNow, int now)
+    {
+        ReleaseRouteControl(controller);
+
+        if (vanillaBusyNow)
+        {
+            state.m_RecoveryCalmAfterTime = 0;
+            if (now >= state.m_NextRecoveryStatusCheckTime)
+            {
+                Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_WAIT_BUSY scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " nextCheckSeconds=" + state.m_StuckRecoveryStatusCheckSeconds.ToString());
+                state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
+            }
+            return;
+        }
+
+        if (now < state.m_RecoveryFreeUntilTime)
+            return;
+
+        if (now < state.m_NextRecoveryStatusCheckTime)
+            return;
+
+        if (state.m_RecoveryCalmAfterTime == 0)
+        {
+            state.m_RecoveryCalmAfterTime = now + AGGRO_COOLDOWN_MS;
+            state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
+            Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_CALM scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " cooldownMs=" + AGGRO_COOLDOWN_MS.ToString());
+            return;
+        }
+
+        if (now < state.m_RecoveryCalmAfterTime)
+        {
+            state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
+            return;
+        }
+
+        state.m_Mode = state.m_RecoveryResumeMode;
+        if (state.m_Mode != "RETURN_TO_HOLD")
+            state.m_Mode = "MIGRATION";
+
+        state.m_VanillaBusy = false;
+        state.m_RecoveryFreeUntilTime = 0;
+        state.m_NextRecoveryStatusCheckTime = 0;
+        state.m_RecoveryCalmAfterTime = 0;
+        ResetStuckSample(state);
+
+        if (BuildPath(state))
+            Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_RESUME scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " position=" + state.m_Infected.GetPosition().ToString() + " target=" + GetCurrentRouteTarget(state).ToString());
+    }
+
+    protected void UpdateHoldFree(S77MigrateUnitState state, DayZInfectedInputController controller, bool vanillaBusyNow, int now)
+    {
+        ReleaseRouteControl(controller);
+        ResetStuckSample(state);
+
+        if (now < state.m_NextHoldCheckTime)
+            return;
+
+        state.m_NextHoldCheckTime = now + Math.Round(state.m_FinalHoldCheckSeconds * 1000.0);
+
+        float distance = HorizontalDistance(state.m_Infected.GetPosition(), state.m_FinalTargetCenter);
+        if (distance <= state.m_FinalHoldRadius)
+        {
+            state.m_HoldCalmAfterTime = 0;
+            return;
+        }
+
+        if (vanillaBusyNow)
+        {
+            state.m_HoldCalmAfterTime = 0;
+            Print(MIGRATION_LOG_PREFIX + " HOLD_RETURN_WAIT_BUSY scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " distance=" + distance.ToString() + " holdRadius=" + state.m_FinalHoldRadius.ToString());
+            return;
+        }
+
+        if (state.m_HoldCalmAfterTime == 0)
+        {
+            state.m_HoldCalmAfterTime = now + AGGRO_COOLDOWN_MS;
+            Print(MIGRATION_LOG_PREFIX + " HOLD_OUTSIDE scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " distance=" + distance.ToString() + " holdRadius=" + state.m_FinalHoldRadius.ToString() + " cooldownMs=" + AGGRO_COOLDOWN_MS.ToString());
+            return;
+        }
+
+        if (now < state.m_HoldCalmAfterTime)
+            return;
+
+        StartReturnToHold(state);
+    }
+
+    protected bool UpdateStuckDetection(S77MigrateUnitState state, DayZInfectedInputController controller, int now)
+    {
+        if (state.m_StuckRecoveryEnabled != 1)
+            return false;
+
+        if (state.m_Mode != "MIGRATION" && state.m_Mode != "RETURN_TO_HOLD")
+            return false;
+
+        if (!state.m_StuckSampleValid)
+        {
+            SetStuckSample(state, now);
+            return false;
+        }
+
+        int detectionMs = Math.Round(state.m_StuckDetectionSeconds * 1000.0);
+        if (now < state.m_StuckSampleTime + detectionMs)
+            return false;
+
+        vector position = state.m_Infected.GetPosition();
+        vector controlTarget = GetCurrentControlTarget(state);
+        float currentDistance = HorizontalDistance(position, controlTarget);
+        float movedDistance = HorizontalDistance(position, state.m_StuckSamplePosition);
+        float progress = state.m_StuckSampleDistance - currentDistance;
+
+        if (movedDistance >= state.m_StuckMinMovementMeters || progress >= state.m_StuckMinMovementMeters)
+        {
+            SetStuckSample(state, now);
+            return false;
+        }
+
+        Print(MIGRATION_LOG_PREFIX + " STUCK_DETECTED scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " position=" + position.ToString() + " target=" + controlTarget.ToString() + " elapsed=" + ((now - state.m_StuckSampleTime) / 1000.0).ToString() + " moved=" + movedDistance.ToString() + " progress=" + progress.ToString());
+        TriggerStuckRecovery(state, controller, now, position, controlTarget);
+        return true;
+    }
+
+    protected bool IsUnitStalledAtSample(S77MigrateUnitState state, int now)
+    {
+        if (!state || !state.m_Infected || !state.m_Infected.IsAlive() || !state.m_StuckSampleValid)
+            return false;
+
+        if (state.m_Mode != "MIGRATION" && state.m_Mode != "RETURN_TO_HOLD")
+            return false;
+
+        int detectionMs = Math.Round(state.m_StuckDetectionSeconds * 1000.0);
+        if (now < state.m_StuckSampleTime + detectionMs)
+            return false;
+
+        vector position = state.m_Infected.GetPosition();
+        vector controlTarget = GetCurrentControlTarget(state);
+        float movedDistance = HorizontalDistance(position, state.m_StuckSamplePosition);
+        float progress = state.m_StuckSampleDistance - HorizontalDistance(position, controlTarget);
+        return movedDistance < state.m_StuckMinMovementMeters && progress < state.m_StuckMinMovementMeters;
+    }
+
+    protected void TriggerStuckRecovery(S77MigrateUnitState state, DayZInfectedInputController controller, int now, vector position, vector controlTarget)
+    {
+        vector direction = vector.Direction(position, controlTarget);
+        direction[1] = 0.0;
+        if (direction.Length() <= 0.01)
+        {
+            SetStuckSample(state, now);
+            return;
+        }
+
+        direction.Normalize();
+        vector stimulusPosition = position + direction * state.m_StuckStimulusForwardDistance;
+        stimulusPosition[1] = position[1];
+
+        S77MigrateGroupState groupState = GetGroupState(state);
+        string resumeMode = GetMovementIntent(state);
+        BeginStuckRecoveryState(state, controller, now, resumeMode);
+        ReleaseNearbyStuckMembers(groupState, state, now);
+
+        bool blockedByLocalCooldown = false;
+        if (groupState)
+        {
+            int recordIndex = FindRecoveryStimulusRecord(groupState.m_RuntimeGroupId, stimulusPosition, state.m_StuckStimulusShareRadius);
+            if (recordIndex >= 0)
+            {
+                S77MigrateRecoveryStimulusRecord record = m_RecoveryStimuli.Get(recordIndex);
+                if (record && now < record.m_ExpiresTime)
+                    blockedByLocalCooldown = true;
+                else
+                {
+                    Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_RETRY scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " position=" + stimulusPosition.ToString());
+                    m_RecoveryStimuli.Remove(recordIndex);
+                }
+            }
+        }
+
+        if (blockedByLocalCooldown)
+        {
+            Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_SHARED scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " localCooldownActive=1 shareRadius=" + state.m_StuckStimulusShareRadius.ToString());
+            return;
+        }
+
+        if (groupState)
+        {
+            Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_STIMULUS scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " position=" + stimulusPosition.ToString() + " lifetime=" + state.m_StuckStimulusLifetimeSeconds.ToString() + " strength=" + state.m_StuckStimulusStrengthMultiplier.ToString());
+            EmitAIStimulus(groupState, stimulusPosition, state.m_StuckStimulusLifetimeSeconds, state.m_StuckStimulusStrengthMultiplier, "STUCK_RECOVERY");
+            m_RecoveryStimuli.Insert(new S77MigrateRecoveryStimulusRecord(groupState.m_RuntimeGroupId, stimulusPosition, now + Math.Round(state.m_StuckStimulusRetrySeconds * 1000.0)));
+        }
+    }
+
+    protected void BeginStuckRecoveryState(S77MigrateUnitState state, DayZInfectedInputController controller, int now, string resumeMode)
+    {
+        ReleaseRouteControl(controller);
+        state.m_RecoveryResumeMode = resumeMode;
+        state.m_Mode = "STUCK_RECOVERY";
+        state.m_VanillaBusy = false;
+        state.m_ResumeAfterTime = 0;
+        state.m_RecoveryFreeUntilTime = now + Math.Round(state.m_StuckRecoveryFreeSeconds * 1000.0);
+        state.m_NextRecoveryStatusCheckTime = state.m_RecoveryFreeUntilTime;
+        state.m_RecoveryCalmAfterTime = 0;
+        ResetStuckSample(state);
+        Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_RELEASE scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " resumeMode=" + resumeMode + " freeSeconds=" + state.m_StuckRecoveryFreeSeconds.ToString());
+    }
+
+    protected void ReleaseNearbyStuckMembers(S77MigrateGroupState groupState, S77MigrateUnitState initiator, int now)
+    {
+        if (!groupState || !initiator)
+            return;
+
+        vector initiatorPosition = initiator.m_Infected.GetPosition();
+        for (int i = 0; i < groupState.m_Members.Count(); i++)
+        {
+            S77MigrateUnitState state = groupState.m_Members.Get(i);
+            if (!IsActiveGroupMember(groupState, state) || state == initiator)
+                continue;
+
+            if (HorizontalDistance(initiatorPosition, state.m_Infected.GetPosition()) > initiator.m_StuckStimulusShareRadius)
+                continue;
+
+            if (!IsUnitStalledAtSample(state, now))
+                continue;
+
+            DayZInfectedInputController controller = state.m_Infected.GetInputController();
+            if (!controller)
+                continue;
+
+            EntityAI target = controller.GetTargetEntity();
+            int mindState = controller.GetMindState();
+            if (target || mindState != DayZInfectedConstants.MINDSTATE_CALM)
+                continue;
+
+            string resumeMode = GetMovementIntent(state);
+            BeginStuckRecoveryState(state, controller, now, resumeMode);
+            Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_SHARED scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " initiator=" + initiator.m_InfectedId + " shareRadius=" + initiator.m_StuckStimulusShareRadius.ToString());
+        }
+    }
+
+    protected void SetStuckSample(S77MigrateUnitState state, int now)
+    {
+        state.m_StuckSampleValid = true;
+        state.m_StuckSamplePosition = state.m_Infected.GetPosition();
+        state.m_StuckSampleDistance = HorizontalDistance(state.m_StuckSamplePosition, GetCurrentControlTarget(state));
+        state.m_StuckSampleTime = now;
+    }
+
+    protected void ResetStuckSample(S77MigrateUnitState state)
+    {
+        if (!state)
+            return;
+
+        state.m_StuckSampleValid = false;
+        state.m_StuckSampleTime = 0;
+        state.m_StuckSampleDistance = 0.0;
+    }
+
+    protected vector GetCurrentControlTarget(S77MigrateUnitState state)
+    {
+        if (state.m_Waypoints && state.m_WaypointIndex >= 0 && state.m_WaypointIndex < state.m_Waypoints.Count())
+            return state.m_Waypoints.Get(state.m_WaypointIndex);
+
+        return GetCurrentRouteTarget(state);
+    }
+
+    protected S77MigrateGroupState GetGroupState(S77MigrateUnitState state)
+    {
+        if (!state)
+            return null;
+
+        for (int i = 0; i < m_Groups.Count(); i++)
+        {
+            S77MigrateGroupState groupState = m_Groups.Get(i);
+            if (groupState && groupState.m_RuntimeGroupId == state.m_RuntimeGroupId)
+                return groupState;
+        }
+
+        return null;
+    }
+
+    protected int FindRecoveryStimulusRecord(string runtimeGroupId, vector position, float radius)
+    {
+        for (int i = 0; i < m_RecoveryStimuli.Count(); i++)
+        {
+            S77MigrateRecoveryStimulusRecord record = m_RecoveryStimuli.Get(i);
+            if (record && record.m_RuntimeGroupId == runtimeGroupId && HorizontalDistance(record.m_Position, position) <= radius)
+                return i;
+        }
+
+        return -1;
+    }
+
+    protected void PruneRecoveryStimuli(int now)
+    {
+        for (int i = m_RecoveryStimuli.Count() - 1; i >= 0; i--)
+        {
+            S77MigrateRecoveryStimulusRecord record = m_RecoveryStimuli.Get(i);
+            if (!record || now >= record.m_ExpiresTime)
+                m_RecoveryStimuli.Remove(i);
         }
     }
 
@@ -840,14 +1244,24 @@ class S77MigrateManager
             {
                 state.m_RoutePointIndex++;
                 ReleaseRouteControl(controller);
+                ResetStuckSample(state);
                 Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " ROUTE_POINT reached=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString());
                 BuildPath(state);
                 return;
             }
         }
 
+        if (state.m_Mode == "RETURN_TO_HOLD" && HorizontalDistance(position, state.m_MigrationTarget) <= state.m_FinalHoldReturnRadius)
+        {
+            EnterHoldFree(state, controller, "HOLD_RETURNED");
+            return;
+        }
+
         while (state.m_WaypointIndex < state.m_Waypoints.Count() && HorizontalDistance(position, state.m_Waypoints.Get(state.m_WaypointIndex)) <= WAYPOINT_TOLERANCE)
+        {
             state.m_WaypointIndex++;
+            ResetStuckSample(state);
+        }
 
         if (state.m_WaypointIndex >= state.m_Waypoints.Count())
         {
@@ -858,16 +1272,17 @@ class S77MigrateManager
                 state.m_Waypoints.Clear();
                 state.m_WaypointIndex = 0;
                 state.m_NextPathRetryTime = GetGame().GetTime() + PATH_RETRY_INTERVAL_MS;
+                ResetStuckSample(state);
                 return;
             }
 
-            ReleaseUnit(state, controller, "ARRIVAL");
+            CompleteFinalArrival(state, controller, "ARRIVAL");
             return;
         }
 
         if (ManualRouteComplete(state) && HorizontalDistance(position, state.m_MigrationTarget) <= ARRIVAL_TOLERANCE)
         {
-            ReleaseUnit(state, controller, "ARRIVAL");
+            CompleteFinalArrival(state, controller, "ARRIVAL");
             return;
         }
 
@@ -881,7 +1296,65 @@ class S77MigrateManager
         float headingRadians = direction.VectorToAngles()[0] * Math.DEG2RAD;
         controller.OverrideHeading(true, headingRadians);
         controller.OverrideMovementSpeed(true, MIGRATION_SPEED);
-        state.m_Mode = "MIGRATION";
+        if (state.m_Mode != "RETURN_TO_HOLD")
+            state.m_Mode = "MIGRATION";
+    }
+
+    protected void CompleteFinalArrival(S77MigrateUnitState state, DayZInfectedInputController controller, string reason)
+    {
+        if (state.m_FinalHoldEnabled == 1)
+        {
+            EnterHoldFree(state, controller, reason);
+            return;
+        }
+
+        ReleaseUnit(state, controller, reason);
+    }
+
+    protected void EnterHoldFree(S77MigrateUnitState state, DayZInfectedInputController controller, string reason)
+    {
+        if (!state || !state.m_Infected || !state.m_Infected.IsAlive())
+            return;
+
+        ReleaseRouteControl(controller);
+        if (state.m_Waypoints)
+            state.m_Waypoints.Clear();
+
+        state.m_WaypointIndex = 0;
+        state.m_RoutePointIndex = state.m_RoutePoints.Count();
+        state.m_Mode = "HOLD_FREE";
+        state.m_VanillaBusy = false;
+        state.m_ResumeAfterTime = 0;
+        state.m_NextPathRetryTime = 0;
+        state.m_RecoveryFreeUntilTime = 0;
+        state.m_NextRecoveryStatusCheckTime = 0;
+        state.m_RecoveryCalmAfterTime = 0;
+        state.m_HoldCalmAfterTime = 0;
+        state.m_NextHoldCheckTime = GetGame().GetTime() + Math.Round(state.m_FinalHoldCheckSeconds * 1000.0);
+        ResetStuckSample(state);
+
+        string eventName = "HOLD_ENTER";
+        if (reason == "HOLD_RETURNED")
+            eventName = "HOLD_RETURNED";
+
+        Print(MIGRATION_LOG_PREFIX + " " + eventName + " scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " reason=" + reason + " position=" + state.m_Infected.GetPosition().ToString() + " holdRadius=" + state.m_FinalHoldRadius.ToString() + " returnRadius=" + state.m_FinalHoldReturnRadius.ToString());
+    }
+
+    protected void StartReturnToHold(S77MigrateUnitState state)
+    {
+        if (!state || !state.m_Infected || !state.m_Infected.IsAlive())
+            return;
+
+        state.m_RoutePointIndex = state.m_RoutePoints.Count();
+        state.m_Mode = "RETURN_TO_HOLD";
+        state.m_RecoveryResumeMode = "RETURN_TO_HOLD";
+        state.m_VanillaBusy = false;
+        state.m_ResumeAfterTime = 0;
+        state.m_HoldCalmAfterTime = 0;
+        ResetStuckSample(state);
+
+        if (BuildPath(state))
+            Print(MIGRATION_LOG_PREFIX + " HOLD_RETURN_START scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " position=" + state.m_Infected.GetPosition().ToString() + " target=" + state.m_MigrationTarget.ToString() + " returnRadius=" + state.m_FinalHoldReturnRadius.ToString());
     }
 
     protected void ReleaseUnit(S77MigrateUnitState state, DayZInfectedInputController controller, string reason)
@@ -895,6 +1368,12 @@ class S77MigrateManager
         state.m_VanillaBusy = false;
         state.m_ResumeAfterTime = 0;
         state.m_NextPathRetryTime = 0;
+        state.m_RecoveryFreeUntilTime = 0;
+        state.m_NextRecoveryStatusCheckTime = 0;
+        state.m_RecoveryCalmAfterTime = 0;
+        state.m_HoldCalmAfterTime = 0;
+        state.m_NextHoldCheckTime = 0;
+        ResetStuckSample(state);
         if (state.m_Waypoints)
             state.m_Waypoints.Clear();
         state.m_WaypointIndex = 0;
@@ -989,6 +1468,9 @@ class S77MigrateManager
             if (state && !state.m_Released && state.m_Infected && state.m_Infected.IsAlive())
                 ReleaseRouteControl(state.m_Infected.GetInputController());
         }
+
+        if (m_RecoveryStimuli)
+            m_RecoveryStimuli.Clear();
     }
 
     protected void ReleaseRouteControl(DayZInfectedInputController controller)

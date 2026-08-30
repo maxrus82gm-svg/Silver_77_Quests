@@ -56,11 +56,25 @@
 - `targetFormationSpacing` — базовый интервал сетки индивидуальных целей возле target, в метрах. Default: `4.5`.
 - `targetFormationJitter` — случайное отклонение индивидуальной цели по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `logIntervalSeconds` — интервал диагностического лога infected, в секундах. Default: `10.0`.
-- `finalActivationEnabled` — включает group-level AI stimulus в финальной зоне. При `0` infected просто доходит до цели и получает `RELEASED`. Default: `1`.
+- `finalActivationEnabled` — включает group-level AI stimulus в финальной зоне. Это не release-механика: итоговое поведение actual arrival определяется `finalHoldEnabled`. Default: `1`.
 - `finalActivationTriggerPercent` — процент текущих живых active members runtime-группы, необходимый для финального импульса. Default: `30.0`.
 - `finalActivationDistance` — горизонтальный радиус X/Z финальной зоны подсчёта вокруг raw `targetPosition`. Default: `12.0` метров.
 - `finalStimulusLifetimeSeconds` — время существования AI-only stimulus. Default: `1.0` секунда.
 - `finalStimulusStrengthMultiplier` — множитель силы AI stimulus. Default: `1.0`; фактический радиус и реакцию нужно подтвердить runtime-тестом.
+- `stuckRecoveryEnabled` — включает индивидуальное восстановление застрявших infected через временную передачу vanilla AI и направленный AI-only stimulus. Default: `1`.
+- `stuckDetectionSeconds` — период контрольного stuck-sample перед выводом о застревании. Default: `4.0` секунды.
+- `stuckMinMovementMeters` — минимальное горизонтальное движение или прогресс к текущей управляющей цели, ниже которого infected считается застрявшим. Default: `1.0` метр.
+- `stuckRecoveryFreeSeconds` — минимальное свободное время vanilla AI после stuck recovery. Default: `30.0` секунд.
+- `stuckRecoveryStatusCheckSeconds` — редкий интервал проверки, можно ли вернуть спокойного infected под migration control после recovery. Default: `3.0` секунды.
+- `stuckStimulusForwardDistance` — расстояние вперёд от infected по направлению к текущему waypoint/route target для recovery stimulus. Default: `10.0` метров.
+- `stuckStimulusShareRadius` — локальный радиус одной recovery-кучки: nearby stuck members той же runtime-группы могут быть отпущены на общий stimulus, а повторные stimuli рядом временно блокируются. Default: `20.0` метров.
+- `stuckStimulusRetrySeconds` — локальный spatial cooldown перед следующим recovery stimulus в той же кучке. Default: `5.0` секунд.
+- `stuckStimulusLifetimeSeconds` — время существования recovery AI-only stimulus. Default: `1.0` секунда.
+- `stuckStimulusStrengthMultiplier` — множитель силы recovery stimulus. Default: `1.0`; точная эффективная дальность остаётся предметом runtime-подбора.
+- `finalHoldEnabled` — включает удержание infected возле финальной зоны вместо терминального `RELEASED` после actual arrival. Default: `1`.
+- `finalHoldRadius` — большой горизонтальный X/Z радиус свободной жизни возле `targetPosition`; внутри него manager не направляет infected. Default: `200.0` метров.
+- `finalHoldReturnRadius` — радиус возвращения к индивидуальной финальной цели `targetPosition + routeOffset`, после которого `RETURN_TO_HOLD` снова переходит в `HOLD_FREE`. Default: `30.0` метров.
+- `finalHoldCheckSeconds` — редкий интервал проверки расстояния в `HOLD_FREE`. Default: `5.0` секунд.
 
 ## Многоточечный маршрут
 
@@ -113,13 +127,41 @@ Stimulus создаётся через `NoiseSystem::AddNoiseTarget()` с `Noise
     "routeStimulusLifetimeSeconds": 1.0,
     "routeStimulusStrengthMultiplier": 1.0
 
-## Финальная accumulation zone и RELEASED
+## Финальная accumulation zone
 
-Final target использует ту же percentage-механику. Внутри `finalActivationDistance` считаются только фактически находящиеся там живые active members данной runtime-группы, независимо от их логического индекса маршрута; уже `RELEASED` infected исключены. При достижении `finalActivationTriggerPercent` создаётся один stimulus точно в raw `targetPosition`. Финальная зона тоже имеет ARMED/TRIGGERED/rearm и может дать несколько импульсов после падения и нового роста occupancy.
+Final target использует ту же percentage-механику. Внутри `finalActivationDistance` считаются только фактически находящиеся там живые active members данной runtime-группы, независимо от их логического индекса маршрута; терминальные `RELEASED` infected исключены. При достижении `finalActivationTriggerPercent` создаётся один stimulus точно в raw `targetPosition`. Финальная зона тоже имеет ARMED/TRIGGERED/rearm и может дать несколько импульсов после падения и нового роста occupancy.
 
-Final stimulus не переводит всю группу и отдельных infected в `RELEASED`. Он только даёт vanilla AI perception stimulus. Индивидуальный infected получает `RELEASED` исключительно при фактическом arrival по существующей логике конечного navmesh path. После этого entity не удаляется, lifetime flags не меняются, route retries и возврат к migration control прекращаются, а infected остаётся vanilla AI.
+Final stimulus не переводит всю группу и отдельных infected в `RELEASED` или `HOLD_FREE`. Он только даёт vanilla AI perception stimulus.
 
-Если preset или `NoiseSystem` недоступны, manager пишет ограниченное предупреждение; group counting, migration route, vanilla handoff и arrival -> `RELEASED` продолжают работать без слышимого fallback-звука.
+## Stuck recovery
+
+Stuck recovery работает индивидуально для infected в режимах `MIGRATION` и `RETURN_TO_HOLD`. Он не применяется к `HOLD_FREE`, активному vanilla AI, dead infected и терминальному `RELEASED`.
+
+Manager делает контрольный sample позиции и расстояния до текущей управляющей цели: текущего nav waypoint, а если он недоступен — текущего route target. Через `stuckDetectionSeconds` infected считается застрявшим только если он одновременно почти не сместился по X/Z и не сделал прогресс к цели больше `stuckMinMovementMeters`.
+
+При подтверждённом stuck manager:
+
+1. логирует `STUCK_DETECTED`;
+2. снимает `OverrideHeading` и `OverrideMovementSpeed`;
+3. переводит infected в `STUCK_RECOVERY`;
+4. создаёт AI-only recovery stimulus впереди по направлению к текущей управляющей цели на `stuckStimulusForwardDistance`;
+5. даёт infected минимум `stuckRecoveryFreeSeconds` свободного vanilla AI.
+
+Nearby stuck members той же runtime-группы внутри `stuckStimulusShareRadius` могут быть тоже отпущены от route overrides на общий stimulus. Spatial cooldown `stuckStimulusRetrySeconds` не даёт одной локальной кучке создавать пачку simultaneous stimuli; если затор не разобран, следующий stimulus возможен после cooldown уже от подходящего stuck infected. Записи recent recovery stimuli очищаются автоматически и не должны копиться бесконечно.
+
+После free-period manager проверяет recovery status не чаще `stuckRecoveryStatusCheckSeconds`. Если у infected есть target или mind state не `CALM`, возврат не выполняется. Только после `target == null`, `CALM` и защитного cooldown строится новый путь от текущей позиции к правильному intent: `MIGRATION` или `RETURN_TO_HOLD`.
+
+## Final hold и RETURN_TO_HOLD
+
+Если `finalHoldEnabled = 0`, actual arrival сохраняет старое терминальное поведение: `RELEASED`, entity остаётся в мире, а manager больше не назначает route control.
+
+Если `finalHoldEnabled = 1`, actual arrival не делает терминальный `RELEASED`. Manager снимает route overrides, очищает path и переводит конкретного infected в `HOLD_FREE`. В `HOLD_FREE` он свободно живёт под vanilla AI внутри `finalHoldRadius` от raw `targetPosition`; manager не заставляет его стоять в центре.
+
+Если `HOLD_FREE` infected вышел дальше `finalHoldRadius`, manager сначала проверяет vanilla AI. При target или non-`CALM` mind state возврат к поселению не начинается. После `target == null`, `CALM` и cooldown только этот infected переходит в `RETURN_TO_HOLD`; путь строится к индивидуальной финальной цели `targetPosition + routeOffset`.
+
+Когда `RETURN_TO_HOLD` входит в `finalHoldReturnRadius`, route overrides снимаются, path очищается и infected снова становится `HOLD_FREE`. На `RETURN_TO_HOLD` действует тот же stuck recovery. Если infected во время возврата увидел игрока, manager отдаёт его vanilla AI и после спокойного cooldown возвращает именно к `RETURN_TO_HOLD`, а не начинает старый маршрут заново.
+
+Если preset или `NoiseSystem` недоступны, manager пишет ограниченное предупреждение; group counting, migration route, vanilla handoff, stuck recovery без stimulus и final hold продолжают работать без слышимого fallback-звука.
 
 Пример структуры третьего объекта, который добавляется внутрь массива после существующего объекта через запятую:
 
@@ -147,7 +189,21 @@ Final stimulus не переводит всю группу и отдельных
         "finalActivationTriggerPercent": 30.0,
         "finalActivationDistance": 12.0,
         "finalStimulusLifetimeSeconds": 1.0,
-        "finalStimulusStrengthMultiplier": 1.0
+        "finalStimulusStrengthMultiplier": 1.0,
+        "stuckRecoveryEnabled": 1,
+        "stuckDetectionSeconds": 4.0,
+        "stuckMinMovementMeters": 1.0,
+        "stuckRecoveryFreeSeconds": 30.0,
+        "stuckRecoveryStatusCheckSeconds": 3.0,
+        "stuckStimulusForwardDistance": 10.0,
+        "stuckStimulusShareRadius": 20.0,
+        "stuckStimulusRetrySeconds": 5.0,
+        "stuckStimulusLifetimeSeconds": 1.0,
+        "stuckStimulusStrengthMultiplier": 1.0,
+        "finalHoldEnabled": 1,
+        "finalHoldRadius": 200.0,
+        "finalHoldReturnRadius": 30.0,
+        "finalHoldCheckSeconds": 5.0
     }
 
 Координаты примера условные и не являются принятым маршрутом.
@@ -172,6 +228,6 @@ Final stimulus не переводит всю группу и отдельных
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
 
-То же правило относится к `routePoints`, route-activation и final-activation полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing TASK 135 fields получают constructor defaults только в памяти. Чтобы задать пользовательский маршрут или изменить активацию, поля нужно вручную добавить в нужный объект `scenarios`.
+То же правило относится к `routePoints`, route/final activation, stuck recovery и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing TASK 135/TASK 139 fields получают constructor defaults только в памяти. Чтобы задать пользовательский маршрут, изменить активацию, recovery или hold, поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.

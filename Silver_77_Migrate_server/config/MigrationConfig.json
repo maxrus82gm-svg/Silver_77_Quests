@@ -65,7 +65,21 @@
             "finalActivationTriggerPercent": 30.0,
             "finalActivationDistance": 12.0,
             "finalStimulusLifetimeSeconds": 1.0,
-            "finalStimulusStrengthMultiplier": 1.0
+            "finalStimulusStrengthMultiplier": 1.0,
+            "stuckRecoveryEnabled": 1,
+            "stuckDetectionSeconds": 4.0,
+            "stuckMinMovementMeters": 1.0,
+            "stuckRecoveryFreeSeconds": 30.0,
+            "stuckRecoveryStatusCheckSeconds": 3.0,
+            "stuckStimulusForwardDistance": 10.0,
+            "stuckStimulusShareRadius": 20.0,
+            "stuckStimulusRetrySeconds": 5.0,
+            "stuckStimulusLifetimeSeconds": 1.0,
+            "stuckStimulusStrengthMultiplier": 1.0,
+            "finalHoldEnabled": 1,
+            "finalHoldRadius": 200.0,
+            "finalHoldReturnRadius": 30.0,
+            "finalHoldCheckSeconds": 5.0
         },
         {
             "enabled": 1,
@@ -131,7 +145,21 @@
             "finalActivationTriggerPercent": 30.0,
             "finalActivationDistance": 12.0,
             "finalStimulusLifetimeSeconds": 1.0,
-            "finalStimulusStrengthMultiplier": 1.0
+            "finalStimulusStrengthMultiplier": 1.0,
+            "stuckRecoveryEnabled": 1,
+            "stuckDetectionSeconds": 4.0,
+            "stuckMinMovementMeters": 1.0,
+            "stuckRecoveryFreeSeconds": 30.0,
+            "stuckRecoveryStatusCheckSeconds": 3.0,
+            "stuckStimulusForwardDistance": 10.0,
+            "stuckStimulusShareRadius": 20.0,
+            "stuckStimulusRetrySeconds": 5.0,
+            "stuckStimulusLifetimeSeconds": 1.0,
+            "stuckStimulusStrengthMultiplier": 1.0,
+            "finalHoldEnabled": 1,
+            "finalHoldRadius": 200.0,
+            "finalHoldReturnRadius": 30.0,
+            "finalHoldCheckSeconds": 5.0
         }
     ]
 }
