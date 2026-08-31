@@ -34,6 +34,11 @@ class S77MigrateScenarioConfig
     int stuckRecoveryEnabled;
     float stuckDetectionSeconds;
     float stuckMinMovementMeters;
+    int routeProgressWatchdogEnabled;
+    float routeProgressCheckSeconds;
+    float routeProgressMinProgressMeters;
+    float routeProgressMaxBacktrackMeters;
+    int routeProgressBadCheckLimit;
     float stuckRecoveryFreeSeconds;
     float stuckRecoveryStatusCheckSeconds;
     float stuckStimulusForwardDistance;
@@ -80,6 +85,11 @@ class S77MigrateScenarioConfig
         stuckRecoveryEnabled = 1;
         stuckDetectionSeconds = 6.0;
         stuckMinMovementMeters = 2.0;
+        routeProgressWatchdogEnabled = 1;
+        routeProgressCheckSeconds = 30.0;
+        routeProgressMinProgressMeters = 5.0;
+        routeProgressMaxBacktrackMeters = 10.0;
+        routeProgressBadCheckLimit = 2;
         stuckRecoveryFreeSeconds = 30.0;
         stuckRecoveryStatusCheckSeconds = 3.0;
         stuckStimulusForwardDistance = 10.0;
@@ -188,6 +198,21 @@ class S77MigrateScenarioConfig
 
         if (stuckMinMovementMeters <= 0.0)
             stuckMinMovementMeters = 2.0;
+
+        if (routeProgressWatchdogEnabled != 1)
+            routeProgressWatchdogEnabled = 0;
+
+        if (routeProgressCheckSeconds <= 0.0)
+            routeProgressCheckSeconds = 30.0;
+
+        if (routeProgressMinProgressMeters <= 0.0)
+            routeProgressMinProgressMeters = 5.0;
+
+        if (routeProgressMaxBacktrackMeters <= 0.0)
+            routeProgressMaxBacktrackMeters = 10.0;
+
+        if (routeProgressBadCheckLimit < 1)
+            routeProgressBadCheckLimit = 2;
 
         if (stuckRecoveryFreeSeconds <= 0.0)
             stuckRecoveryFreeSeconds = 30.0;

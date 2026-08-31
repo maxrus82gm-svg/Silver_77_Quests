@@ -23,6 +23,11 @@ class S77MigrateUnitState
     int m_StuckRecoveryEnabled;
     float m_StuckDetectionSeconds;
     float m_StuckMinMovementMeters;
+    int m_RouteProgressWatchdogEnabled;
+    float m_RouteProgressCheckSeconds;
+    float m_RouteProgressMinProgressMeters;
+    float m_RouteProgressMaxBacktrackMeters;
+    int m_RouteProgressBadCheckLimit;
     float m_StuckRecoveryFreeSeconds;
     float m_StuckRecoveryStatusCheckSeconds;
     float m_StuckStimulusForwardDistance;
@@ -38,6 +43,11 @@ class S77MigrateUnitState
     vector m_StuckSamplePosition;
     float m_StuckSampleDistance;
     int m_StuckSampleTime;
+    bool m_RouteProgressSampleValid;
+    float m_RouteProgressPreviousDistance;
+    int m_NextRouteProgressCheckTime;
+    int m_RouteProgressBadCheckCount;
+    int m_RouteProgressStaggerMs;
     string m_RecoveryResumeMode;
     int m_RecoveryFreeUntilTime;
     int m_NextRecoveryStatusCheckTime;
@@ -70,6 +80,11 @@ class S77MigrateUnitState
         m_StuckRecoveryEnabled = config.stuckRecoveryEnabled;
         m_StuckDetectionSeconds = config.stuckDetectionSeconds;
         m_StuckMinMovementMeters = config.stuckMinMovementMeters;
+        m_RouteProgressWatchdogEnabled = config.routeProgressWatchdogEnabled;
+        m_RouteProgressCheckSeconds = config.routeProgressCheckSeconds;
+        m_RouteProgressMinProgressMeters = config.routeProgressMinProgressMeters;
+        m_RouteProgressMaxBacktrackMeters = config.routeProgressMaxBacktrackMeters;
+        m_RouteProgressBadCheckLimit = config.routeProgressBadCheckLimit;
         m_StuckRecoveryFreeSeconds = config.stuckRecoveryFreeSeconds;
         m_StuckRecoveryStatusCheckSeconds = config.stuckRecoveryStatusCheckSeconds;
         m_StuckStimulusForwardDistance = config.stuckStimulusForwardDistance;
@@ -85,6 +100,11 @@ class S77MigrateUnitState
         m_StuckSamplePosition = Vector(0.0, 0.0, 0.0);
         m_StuckSampleDistance = 0.0;
         m_StuckSampleTime = 0;
+        m_RouteProgressSampleValid = false;
+        m_RouteProgressPreviousDistance = 0.0;
+        m_NextRouteProgressCheckTime = 0;
+        m_RouteProgressBadCheckCount = 0;
+        m_RouteProgressStaggerMs = Math.Round(Math.RandomFloatInclusive(0.0, m_RouteProgressCheckSeconds) * 1000.0);
         m_RecoveryResumeMode = "MIGRATION";
         m_RecoveryFreeUntilTime = 0;
         m_NextRecoveryStatusCheckTime = 0;
@@ -464,7 +484,7 @@ class S77MigrateManager
         for (int i = 0; i < m_Scenarios.Count(); i++)
         {
             S77MigrateScenarioConfig scenario = m_Scenarios.Get(i);
-            if (scenario && (scenario.finalActivationEnabled == 1 || scenario.stuckRecoveryEnabled == 1 || (scenario.routeActivationEnabled == 1 && scenario.routePoints.Count() > 0)))
+            if (scenario && (scenario.finalActivationEnabled == 1 || scenario.stuckRecoveryEnabled == 1 || scenario.routeProgressWatchdogEnabled == 1 || (scenario.routeActivationEnabled == 1 && scenario.routePoints.Count() > 0)))
                 return true;
         }
 
@@ -631,6 +651,7 @@ class S77MigrateManager
         state.m_WaypointIndex = 1;
         state.m_NextPathRetryTime = 0;
         ResetStuckSample(state);
+        ScheduleRouteProgressBaseline(state, GetGame().GetTime());
         Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " Path built for id=" + state.m_InfectedId + " routePoint=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString() + " waypoints=" + newWaypoints.Count().ToString() + " target=" + currentRouteTarget.ToString());
         return true;
     }
@@ -663,6 +684,7 @@ class S77MigrateManager
             {
                 if (state.m_StuckSampleValid)
                     ResetStuckSample(state);
+                SuspendRouteProgressWatchdog(state);
                 continue;
             }
 
@@ -714,6 +736,9 @@ class S77MigrateManager
             if (UpdateStuckDetection(state, controller, now))
                 continue;
 
+            if (UpdateRouteProgressWatchdog(state, controller, now))
+                continue;
+
             FollowPath(state, controller);
         }
 
@@ -728,6 +753,7 @@ class S77MigrateManager
         state.m_VanillaBusy = true;
         state.m_ResumeAfterTime = 0;
         ResetStuckSample(state);
+        SuspendRouteProgressWatchdog(state);
     }
 
     protected bool ResumeAfterVanillaBusy(S77MigrateUnitState state, DayZInfectedInputController controller, int now)
@@ -807,6 +833,7 @@ class S77MigrateManager
     {
         ReleaseRouteControl(controller);
         ResetStuckSample(state);
+        SuspendRouteProgressWatchdog(state);
 
         if (now < state.m_NextHoldCheckTime)
             return;
@@ -895,6 +922,89 @@ class S77MigrateManager
         return movedDistance < state.m_StuckMinMovementMeters;
     }
 
+    protected bool UpdateRouteProgressWatchdog(S77MigrateUnitState state, DayZInfectedInputController controller, int now)
+    {
+        if (state.m_RouteProgressWatchdogEnabled != 1)
+            return false;
+
+        if (state.m_Mode != "MIGRATION" && state.m_Mode != "RETURN_TO_HOLD")
+            return false;
+
+        if (!state.m_Waypoints || state.m_WaypointIndex >= state.m_Waypoints.Count())
+            return false;
+
+        if (state.m_NextRouteProgressCheckTime == 0)
+        {
+            ScheduleRouteProgressBaseline(state, now);
+            return false;
+        }
+
+        if (now < state.m_NextRouteProgressCheckTime)
+            return false;
+
+        vector position = state.m_Infected.GetPosition();
+        vector logicalTarget = GetCurrentRouteTarget(state);
+        float currentDistance = HorizontalDistance(position, logicalTarget);
+
+        if ((!ManualRouteComplete(state) && currentDistance <= state.m_RoutePointReachRadius) || (ManualRouteComplete(state) && state.m_Mode == "RETURN_TO_HOLD" && currentDistance <= state.m_FinalHoldReturnRadius) || (ManualRouteComplete(state) && state.m_Mode == "MIGRATION" && currentDistance <= ARRIVAL_TOLERANCE))
+        {
+            SuspendRouteProgressWatchdog(state);
+            return false;
+        }
+
+        int checkIntervalMs = Math.Round(state.m_RouteProgressCheckSeconds * 1000.0);
+        if (!state.m_RouteProgressSampleValid)
+        {
+            state.m_RouteProgressSampleValid = true;
+            state.m_RouteProgressPreviousDistance = currentDistance;
+            state.m_RouteProgressBadCheckCount = 0;
+            state.m_NextRouteProgressCheckTime = now + checkIntervalMs;
+            return false;
+        }
+
+        float previousDistance = state.m_RouteProgressPreviousDistance;
+        float progress = previousDistance - currentDistance;
+        float backtrack = currentDistance - previousDistance;
+        string reason = "";
+
+        if (backtrack >= state.m_RouteProgressMaxBacktrackMeters)
+        {
+            reason = "BACKTRACK";
+        }
+        else if (progress >= state.m_RouteProgressMinProgressMeters)
+        {
+            state.m_RouteProgressBadCheckCount = 0;
+        }
+        else
+        {
+            state.m_RouteProgressBadCheckCount++;
+            if (state.m_RouteProgressBadCheckCount >= state.m_RouteProgressBadCheckLimit)
+                reason = "NO_PROGRESS";
+        }
+
+        state.m_RouteProgressPreviousDistance = currentDistance;
+        state.m_NextRouteProgressCheckTime = now + checkIntervalMs;
+
+        if (reason == "")
+            return false;
+
+        string routeProgressLog = MIGRATION_LOG_PREFIX + " ROUTE_PROGRESS_LOST scenario=" + state.m_ScenarioId;
+        routeProgressLog = routeProgressLog + " group=" + state.m_RuntimeGroupId;
+        routeProgressLog = routeProgressLog + " id=" + state.m_InfectedId;
+        routeProgressLog = routeProgressLog + " mode=" + state.m_Mode;
+        routeProgressLog = routeProgressLog + " logicalTarget=" + logicalTarget.ToString();
+        routeProgressLog = routeProgressLog + " previous=" + previousDistance.ToString();
+        routeProgressLog = routeProgressLog + " current=" + currentDistance.ToString();
+        routeProgressLog = routeProgressLog + " progress=" + progress.ToString();
+        routeProgressLog = routeProgressLog + " backtrack=" + backtrack.ToString();
+        routeProgressLog = routeProgressLog + " badChecks=" + state.m_RouteProgressBadCheckCount.ToString();
+        routeProgressLog = routeProgressLog + " reason=" + reason;
+        Print(routeProgressLog);
+
+        TriggerStuckRecovery(state, controller, now, position, logicalTarget);
+        return true;
+    }
+
     protected void TriggerStuckRecovery(S77MigrateUnitState state, DayZInfectedInputController controller, int now, vector position, vector controlTarget)
     {
         vector direction = vector.Direction(position, controlTarget);
@@ -956,6 +1066,7 @@ class S77MigrateManager
         state.m_NextRecoveryStatusCheckTime = state.m_RecoveryFreeUntilTime;
         state.m_RecoveryCalmAfterTime = 0;
         ResetStuckSample(state);
+        SuspendRouteProgressWatchdog(state);
         Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_RELEASE scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " resumeMode=" + resumeMode + " freeSeconds=" + state.m_StuckRecoveryFreeSeconds.ToString());
     }
 
@@ -1008,6 +1119,29 @@ class S77MigrateManager
         state.m_StuckSampleValid = false;
         state.m_StuckSampleTime = 0;
         state.m_StuckSampleDistance = 0.0;
+    }
+
+    protected void ScheduleRouteProgressBaseline(S77MigrateUnitState state, int now)
+    {
+        SuspendRouteProgressWatchdog(state);
+        if (!state || state.m_RouteProgressWatchdogEnabled != 1)
+            return;
+
+        if (state.m_Mode != "MIGRATION" && state.m_Mode != "RETURN_TO_HOLD")
+            return;
+
+        state.m_NextRouteProgressCheckTime = now + state.m_RouteProgressStaggerMs;
+    }
+
+    protected void SuspendRouteProgressWatchdog(S77MigrateUnitState state)
+    {
+        if (!state)
+            return;
+
+        state.m_RouteProgressSampleValid = false;
+        state.m_RouteProgressPreviousDistance = 0.0;
+        state.m_NextRouteProgressCheckTime = 0;
+        state.m_RouteProgressBadCheckCount = 0;
     }
 
     protected vector GetCurrentControlTarget(S77MigrateUnitState state)
@@ -1253,6 +1387,7 @@ class S77MigrateManager
                 state.m_RoutePointIndex++;
                 ReleaseRouteControl(controller);
                 ResetStuckSample(state);
+                SuspendRouteProgressWatchdog(state);
                 Print(MIGRATION_LOG_PREFIX + " scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " ROUTE_POINT reached=" + state.m_RoutePointIndex.ToString() + "/" + state.m_RoutePoints.Count().ToString());
                 BuildPath(state);
                 return;
@@ -1281,6 +1416,7 @@ class S77MigrateManager
                 state.m_WaypointIndex = 0;
                 state.m_NextPathRetryTime = GetGame().GetTime() + PATH_RETRY_INTERVAL_MS;
                 ResetStuckSample(state);
+                SuspendRouteProgressWatchdog(state);
                 return;
             }
 
@@ -1340,6 +1476,7 @@ class S77MigrateManager
         state.m_HoldCalmAfterTime = 0;
         state.m_NextHoldCheckTime = GetGame().GetTime() + Math.Round(state.m_FinalHoldCheckSeconds * 1000.0);
         ResetStuckSample(state);
+        SuspendRouteProgressWatchdog(state);
 
         string eventName = "HOLD_ENTER";
         if (reason == "HOLD_RETURNED")
@@ -1360,6 +1497,7 @@ class S77MigrateManager
         state.m_ResumeAfterTime = 0;
         state.m_HoldCalmAfterTime = 0;
         ResetStuckSample(state);
+        SuspendRouteProgressWatchdog(state);
 
         if (BuildPath(state))
             Print(MIGRATION_LOG_PREFIX + " HOLD_RETURN_START scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " position=" + state.m_Infected.GetPosition().ToString() + " target=" + state.m_MigrationTarget.ToString() + " returnRadius=" + state.m_FinalHoldReturnRadius.ToString());
@@ -1382,6 +1520,7 @@ class S77MigrateManager
         state.m_HoldCalmAfterTime = 0;
         state.m_NextHoldCheckTime = 0;
         ResetStuckSample(state);
+        SuspendRouteProgressWatchdog(state);
         if (state.m_Waypoints)
             state.m_Waypoints.Clear();
         state.m_WaypointIndex = 0;

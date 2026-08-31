@@ -64,6 +64,11 @@
 - `stuckRecoveryEnabled` — включает индивидуальное восстановление застрявших infected через временную передачу vanilla AI и направленный AI-only stimulus. Default: `1`.
 - `stuckDetectionSeconds` — период индивидуального контрольного stuck-sample. Default: `6.0` секунд.
 - `stuckMinMovementMeters` — минимальное итоговое горизонтальное X/Z-смещение world position между sample и текущей позицией. Default: `2.0` метра; ровно `2.0` считается достаточным движением.
+- `routeProgressWatchdogEnabled` — включает второй индивидуальный уровень контроля полезного прогресса к текущей логической маршрутной цели. Default: `1`.
+- `routeProgressCheckSeconds` — длительность одного comparison window watchdog. Default: `30.0` секунд.
+- `routeProgressMinProgressMeters` — минимальное уменьшение дистанции до logical route target за окно, считающееся хорошим прогрессом. Default: `5.0` метров.
+- `routeProgressMaxBacktrackMeters` — увеличение дистанции за одно окно, которое немедленно подтверждает уход назад. Default: `10.0` метров.
+- `routeProgressBadCheckLimit` — число последовательных окон с недостаточным прогрессом до подтверждения проблемы. Default: `2`.
 - `stuckRecoveryFreeSeconds` — минимальное свободное время vanilla AI после stuck recovery. Default: `30.0` секунд.
 - `stuckRecoveryStatusCheckSeconds` — редкий интервал проверки, можно ли вернуть спокойного infected под migration control после recovery. Default: `3.0` секунды.
 - `stuckStimulusForwardDistance` — расстояние вперёд от infected по направлению к текущему waypoint/route target для recovery stimulus. Default: `10.0` метров.
@@ -153,6 +158,22 @@ Nearby stuck members той же runtime-группы внутри `stuckStimulu
 
 После free-period manager проверяет recovery status не чаще `stuckRecoveryStatusCheckSeconds`. Если у infected есть target или mind state не `CALM`, возврат не выполняется. Только после `target == null`, `CALM` и защитного cooldown строится новый путь от текущей позиции к правильному intent: `MIGRATION` или `RETURN_TO_HOLD`.
 
+## Route Progress Watchdog
+
+Watchdog дополняет, но не заменяет короткий stuck detector `6 sec / 2 m`. Он работает только в `MIGRATION` и `RETURN_TO_HOLD` и сравнивает горизонтальную дистанцию до `GetCurrentRouteTarget(state)`: текущего `routePoint + routeOffset` либо индивидуального `m_MigrationTarget`. Текущий navmesh waypoint для этого решения не используется.
+
+Первый baseline каждого infected назначается с индивидуальным controlled jitter внутри одного `routeProgressCheckSeconds`; последующие comparison windows имеют полную configured-длительность. Все проверки выполняются в существующем manager update cycle без отдельного `CallLater` на infected. Обычная проверка содержит только world position, logical target, X/Z distance и несколько сравнений; `FindPath()`, group scan и stimulus при нормальном результате не вызываются.
+
+За окно рассчитывается:
+
+`progress = previousDistance - currentDistance`
+
+- `progress >= routeProgressMinProgressMeters` — хороший прогресс, bad-check counter сбрасывается;
+- `currentDistance - previousDistance >= routeProgressMaxBacktrackMeters` — немедленный `ROUTE_PROGRESS_LOST` с причиной `BACKTRACK`;
+- меньший прогресс увеличивает индивидуальный bad-check counter; при достижении `routeProgressBadCheckLimit` создаётся `ROUTE_PROGRESS_LOST` с причиной `NO_PROGRESS`.
+
+После подтверждённого `ROUTE_PROGRESS_LOST` manager переиспользует существующий directed recovery к logical route target: снимает overrides, создаёт AI-only stimulus, даёт vanilla freedom и возвращает правильный intent только после free-period, `target == null`, `CALM` и cooldown, после чего `BuildPath()` строится от актуальной позиции. В `AGGRO`, `STUCK_RECOVERY`, `HOLD_FREE` и `RELEASED` watchdog не работает; его baseline сбрасывается при смене path, logical target или режима.
+
 ## Final hold и RETURN_TO_HOLD
 
 Если `finalHoldEnabled = 0`, actual arrival сохраняет старое терминальное поведение: `RELEASED`, entity остаётся в мире, а manager больше не назначает route control.
@@ -195,6 +216,11 @@ Nearby stuck members той же runtime-группы внутри `stuckStimulu
         "stuckRecoveryEnabled": 1,
         "stuckDetectionSeconds": 6.0,
         "stuckMinMovementMeters": 2.0,
+        "routeProgressWatchdogEnabled": 1,
+        "routeProgressCheckSeconds": 30.0,
+        "routeProgressMinProgressMeters": 5.0,
+        "routeProgressMaxBacktrackMeters": 10.0,
+        "routeProgressBadCheckLimit": 2,
         "stuckRecoveryFreeSeconds": 30.0,
         "stuckRecoveryStatusCheckSeconds": 3.0,
         "stuckStimulusForwardDistance": 10.0,
@@ -230,6 +256,6 @@ Nearby stuck members той же runtime-группы внутри `stuckStimulu
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
 
-То же правило относится к `routePoints`, route/final activation, stuck recovery и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing TASK 135/TASK 139 fields получают constructor defaults только в памяти. Чтобы задать пользовательский маршрут, изменить активацию, recovery или hold, поля нужно вручную добавить в нужный объект `scenarios`.
+То же правило относится к `routePoints`, route/final activation, stuck recovery, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing TASK 135/TASK 139/TASK 142 fields получают constructor defaults только в памяти. Чтобы задать пользовательский маршрут, изменить активацию, recovery, watchdog или hold, поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.
