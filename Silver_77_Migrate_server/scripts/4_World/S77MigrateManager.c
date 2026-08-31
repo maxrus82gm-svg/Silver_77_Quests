@@ -666,21 +666,21 @@ class S77MigrateManager
             if (!controller)
                 continue;
 
-            EntityAI vanillaTarget = controller.GetTargetEntity();
-            int mindState = controller.GetMindState();
-            bool vanillaBusyNow = vanillaTarget != null || mindState != DayZInfectedConstants.MINDSTATE_CALM;
-
             if (state.m_Mode == "STUCK_RECOVERY")
             {
-                UpdateStuckRecovery(state, controller, vanillaBusyNow, now);
+                UpdateStuckRecovery(state, controller, now);
                 continue;
             }
 
             if (state.m_Mode == "HOLD_FREE")
             {
-                UpdateHoldFree(state, controller, vanillaBusyNow, now);
+                UpdateHoldFree(state, controller, now);
                 continue;
             }
+
+            EntityAI vanillaTarget = controller.GetTargetEntity();
+            int mindState = controller.GetMindState();
+            bool vanillaBusyNow = vanillaTarget != null || mindState != DayZInfectedConstants.MINDSTATE_CALM;
 
             if (vanillaBusyNow)
             {
@@ -750,20 +750,9 @@ class S77MigrateManager
         return "MIGRATION";
     }
 
-    protected void UpdateStuckRecovery(S77MigrateUnitState state, DayZInfectedInputController controller, bool vanillaBusyNow, int now)
+    protected void UpdateStuckRecovery(S77MigrateUnitState state, DayZInfectedInputController controller, int now)
     {
         ReleaseRouteControl(controller);
-
-        if (vanillaBusyNow)
-        {
-            state.m_RecoveryCalmAfterTime = 0;
-            if (now >= state.m_NextRecoveryStatusCheckTime)
-            {
-                Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_WAIT_BUSY scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " nextCheckSeconds=" + state.m_StuckRecoveryStatusCheckSeconds.ToString());
-                state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
-            }
-            return;
-        }
 
         if (now < state.m_RecoveryFreeUntilTime)
             return;
@@ -771,19 +760,27 @@ class S77MigrateManager
         if (now < state.m_NextRecoveryStatusCheckTime)
             return;
 
+        state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
+
+        EntityAI vanillaTarget = controller.GetTargetEntity();
+        int mindState = controller.GetMindState();
+        bool vanillaBusyNow = vanillaTarget != null || mindState != DayZInfectedConstants.MINDSTATE_CALM;
+        if (vanillaBusyNow)
+        {
+            state.m_RecoveryCalmAfterTime = 0;
+            Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_WAIT_BUSY scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " nextCheckSeconds=" + state.m_StuckRecoveryStatusCheckSeconds.ToString());
+            return;
+        }
+
         if (state.m_RecoveryCalmAfterTime == 0)
         {
             state.m_RecoveryCalmAfterTime = now + AGGRO_COOLDOWN_MS;
-            state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
             Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_CALM scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " cooldownMs=" + AGGRO_COOLDOWN_MS.ToString());
             return;
         }
 
         if (now < state.m_RecoveryCalmAfterTime)
-        {
-            state.m_NextRecoveryStatusCheckTime = now + Math.Round(state.m_StuckRecoveryStatusCheckSeconds * 1000.0);
             return;
-        }
 
         state.m_Mode = state.m_RecoveryResumeMode;
         if (state.m_Mode != "RETURN_TO_HOLD")
@@ -799,7 +796,7 @@ class S77MigrateManager
             Print(MIGRATION_LOG_PREFIX + " STUCK_RECOVERY_RESUME scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " position=" + state.m_Infected.GetPosition().ToString() + " target=" + GetCurrentRouteTarget(state).ToString());
     }
 
-    protected void UpdateHoldFree(S77MigrateUnitState state, DayZInfectedInputController controller, bool vanillaBusyNow, int now)
+    protected void UpdateHoldFree(S77MigrateUnitState state, DayZInfectedInputController controller, int now)
     {
         ReleaseRouteControl(controller);
         ResetStuckSample(state);
@@ -816,6 +813,9 @@ class S77MigrateManager
             return;
         }
 
+        EntityAI vanillaTarget = controller.GetTargetEntity();
+        int mindState = controller.GetMindState();
+        bool vanillaBusyNow = vanillaTarget != null || mindState != DayZInfectedConstants.MINDSTATE_CALM;
         if (vanillaBusyNow)
         {
             state.m_HoldCalmAfterTime = 0;
