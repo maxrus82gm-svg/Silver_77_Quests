@@ -110,6 +110,8 @@
 
 - `TASK 140` — в roadmap `Silver_77_Migrate` зафиксировано будущее направление `Quest → World Event`: Quest System проверяет активный незавершённый квест, этап и trigger-условие и только инициирует событие по устойчивому идентификатору, а World Event / Migration System отдельно исполняет spawn, состав группы, маршрут, AI handoff, stuck recovery, final hold и жизненный цикл. Сохранены варианты геозон/NPC/предметов/действий, возможное будущее обобщение за пределы infected, repeat protection и временные параметры; точный JSON/API contract и правила scope/cooldown/persistence оставлены `TBD`. Код, JSON, config и gameplay не менялись; TASK 139 остаётся `IMPLEMENTED / WAITING FOR RUNTIME`.
 
+- `TASK 141` — stuck detection migration infected переведён на строго индивидуальный критерий реального итогового X/Z world displacement: при source defaults `< 2.0 m` за `6.0 sec` запускает существующий `STUCK_RECOVERY`, а `>= 2.0 m` обновляет sample; progress к waypoint сохранён только в диагностическом логе и больше не отменяет stuck. Тот же критерий использует nearby shared recovery. Route/final percentage accumulation code-path сохранена, но её constructor defaults и оба source scenario отключены; при двух отключённых переключателях group counting пропускается до `CountActiveGroupMembers()`. Natural vanilla aggro handoff, TASK 139 recovery timings и final hold не менялись. Source JSON и документация обновлены; runtime profile не переписывался, PBO и сервер не запускались, результат ожидает runtime-проверки.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

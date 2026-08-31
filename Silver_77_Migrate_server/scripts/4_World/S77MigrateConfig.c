@@ -61,7 +61,7 @@ class S77MigrateScenarioConfig
         targetPosition = new array<float>();
         routePoints = new array<ref array<float>>();
         routePointReachRadius = 6.0;
-        routeActivationEnabled = 1;
+        routeActivationEnabled = 0;
         routeActivationTriggerPercent = 30.0;
         routeActivationRadius = 12.0;
         routeActivationRadii = new array<float>();
@@ -72,14 +72,14 @@ class S77MigrateScenarioConfig
         targetFormationSpacing = 4.5;
         targetFormationJitter = 0.5;
         logIntervalSeconds = 10.0;
-        finalActivationEnabled = 1;
+        finalActivationEnabled = 0;
         finalActivationTriggerPercent = 30.0;
         finalActivationDistance = 12.0;
         finalStimulusLifetimeSeconds = 1.0;
         finalStimulusStrengthMultiplier = 1.0;
         stuckRecoveryEnabled = 1;
-        stuckDetectionSeconds = 4.0;
-        stuckMinMovementMeters = 1.0;
+        stuckDetectionSeconds = 6.0;
+        stuckMinMovementMeters = 2.0;
         stuckRecoveryFreeSeconds = 30.0;
         stuckRecoveryStatusCheckSeconds = 3.0;
         stuckStimulusForwardDistance = 10.0;
@@ -184,10 +184,10 @@ class S77MigrateScenarioConfig
             stuckRecoveryEnabled = 0;
 
         if (stuckDetectionSeconds <= 0.0)
-            stuckDetectionSeconds = 4.0;
+            stuckDetectionSeconds = 6.0;
 
         if (stuckMinMovementMeters <= 0.0)
-            stuckMinMovementMeters = 1.0;
+            stuckMinMovementMeters = 2.0;
 
         if (stuckRecoveryFreeSeconds <= 0.0)
             stuckRecoveryFreeSeconds = 30.0;

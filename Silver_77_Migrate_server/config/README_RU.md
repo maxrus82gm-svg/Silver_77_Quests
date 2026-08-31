@@ -45,7 +45,7 @@
 - `targetPosition` — центр конечной точки маршрута как `[X, Y, Z]`.
 - `routePoints` — произвольный массив промежуточных мировых точек `[X, Y, Z]`. Допустимо любое количество, включая пустой массив. Default: `[]`.
 - `routePointReachRadius` — горизонтальный радиус X/Z, в котором индивидуальная промежуточная точка считается достигнутой. Default: `6.0` метра.
-- `routeActivationEnabled` — включает group-level AI stimulus на промежуточных точках. Default: `1`.
+- `routeActivationEnabled` — включает legacy group-level AI stimulus на промежуточных точках. Default: `0`; код и остальные параметры сохранены для специальных сценариев, но стандартная migration-схема их не использует.
 - `routeActivationTriggerPercent` — процент текущих живых active members конкретной runtime-группы, необходимый для импульса. Default: `30.0`.
 - `routeActivationRadius` — общий горизонтальный радиус X/Z зоны подсчёта возле raw route point. Default: `12.0` метров.
 - `routeActivationRadii` — optional-массив индивидуальных радиусов с теми же индексами, что у `routePoints`. Отсутствующее, лишнее или неположительное значение использует `routeActivationRadius`.
@@ -56,14 +56,14 @@
 - `targetFormationSpacing` — базовый интервал сетки индивидуальных целей возле target, в метрах. Default: `4.5`.
 - `targetFormationJitter` — случайное отклонение индивидуальной цели по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `logIntervalSeconds` — интервал диагностического лога infected, в секундах. Default: `10.0`.
-- `finalActivationEnabled` — включает group-level AI stimulus в финальной зоне. Это не release-механика: итоговое поведение actual arrival определяется `finalHoldEnabled`. Default: `1`.
+- `finalActivationEnabled` — включает legacy group-level AI stimulus в финальной зоне. Это не release-механика: итоговое поведение actual arrival определяется `finalHoldEnabled`. Default: `0`; стандартная migration-схема отключает этот процентный trigger.
 - `finalActivationTriggerPercent` — процент текущих живых active members runtime-группы, необходимый для финального импульса. Default: `30.0`.
 - `finalActivationDistance` — горизонтальный радиус X/Z финальной зоны подсчёта вокруг raw `targetPosition`. Default: `12.0` метров.
 - `finalStimulusLifetimeSeconds` — время существования AI-only stimulus. Default: `1.0` секунда.
 - `finalStimulusStrengthMultiplier` — множитель силы AI stimulus. Default: `1.0`; фактический радиус и реакцию нужно подтвердить runtime-тестом.
 - `stuckRecoveryEnabled` — включает индивидуальное восстановление застрявших infected через временную передачу vanilla AI и направленный AI-only stimulus. Default: `1`.
-- `stuckDetectionSeconds` — период контрольного stuck-sample перед выводом о застревании. Default: `4.0` секунды.
-- `stuckMinMovementMeters` — минимальное горизонтальное движение или прогресс к текущей управляющей цели, ниже которого infected считается застрявшим. Default: `1.0` метр.
+- `stuckDetectionSeconds` — период индивидуального контрольного stuck-sample. Default: `6.0` секунд.
+- `stuckMinMovementMeters` — минимальное итоговое горизонтальное X/Z-смещение world position между sample и текущей позицией. Default: `2.0` метра; ровно `2.0` считается достаточным движением.
 - `stuckRecoveryFreeSeconds` — минимальное свободное время vanilla AI после stuck recovery. Default: `30.0` секунд.
 - `stuckRecoveryStatusCheckSeconds` — редкий интервал проверки, можно ли вернуть спокойного infected под migration control после recovery. Default: `3.0` секунды.
 - `stuckStimulusForwardDistance` — расстояние вперёд от infected по направлению к текущему waypoint/route target для recovery stimulus. Default: `10.0` метров.
@@ -97,7 +97,9 @@
     ],
     "routePointReachRadius": 6.0
 
-## Волновая активация route points
+## Волновая активация route points (опциональная legacy-механика)
+
+В стандартном source-конфиге `routeActivationEnabled = 0` и `finalActivationEnabled = 0`. При одновременном отключении manager пропускает runtime-группу до подсчёта `aliveCount`, поэтому percentage accumulation не участвует в текущем baseline и не создаёт лишний group count. Ниже описана сохранённая code-path, которую можно явно включить для специального сценария.
 
 Каждый фактический `StartScenario()` создаёт собственную runtime-группу с уникальным ID и списком только успешно созданных этим запуском infected. Поэтому будущие повторные запуски одинакового `scenarioId` не смешивают members. Runtime group ID пока не сохраняется между рестартами.
 
@@ -120,7 +122,7 @@ Stimulus создаётся через `NoiseSystem::AddNoiseTarget()` с `Noise
 Короткий пример:
 
     "routePointReachRadius": 6.0,
-    "routeActivationEnabled": 1,
+    "routeActivationEnabled": 0,
     "routeActivationTriggerPercent": 30.0,
     "routeActivationRadius": 12.0,
     "routeActivationRadii": [8.0, 15.0, 12.0],
@@ -137,7 +139,7 @@ Final stimulus не переводит всю группу и отдельных
 
 Stuck recovery работает индивидуально для infected в режимах `MIGRATION` и `RETURN_TO_HOLD`. Он не применяется к `HOLD_FREE`, активному vanilla AI, dead infected и терминальному `RELEASED`.
 
-Manager делает контрольный sample позиции и расстояния до текущей управляющей цели: текущего nav waypoint, а если он недоступен — текущего route target. Через `stuckDetectionSeconds` infected считается застрявшим только если он одновременно почти не сместился по X/Z и не сделал прогресс к цели больше `stuckMinMovementMeters`.
+Manager сохраняет индивидуальный sample реальной world position infected. Через `stuckDetectionSeconds` он сравнивает sample и текущую позицию только в горизонтальной плоскости X/Z. Если итоговое смещение меньше `stuckMinMovementMeters`, infected считается застрявшим; progress к текущему waypoint может оставаться в диагностике, но не отменяет `STUCK_DETECTED`. При смещении, равном threshold или превышающем его, sample обновляется и начинается следующий интервал.
 
 При подтверждённом stuck manager:
 
@@ -174,7 +176,7 @@ Nearby stuck members той же runtime-группы внутри `stuckStimulu
         "targetPosition": [1200.0, 100.0, 1200.0],
         "routePoints": [],
         "routePointReachRadius": 6.0,
-        "routeActivationEnabled": 1,
+        "routeActivationEnabled": 0,
         "routeActivationTriggerPercent": 30.0,
         "routeActivationRadius": 12.0,
         "routeActivationRadii": [],
@@ -185,14 +187,14 @@ Nearby stuck members той же runtime-группы внутри `stuckStimulu
         "targetFormationSpacing": 4.5,
         "targetFormationJitter": 0.5,
         "logIntervalSeconds": 10.0,
-        "finalActivationEnabled": 1,
+        "finalActivationEnabled": 0,
         "finalActivationTriggerPercent": 30.0,
         "finalActivationDistance": 12.0,
         "finalStimulusLifetimeSeconds": 1.0,
         "finalStimulusStrengthMultiplier": 1.0,
         "stuckRecoveryEnabled": 1,
-        "stuckDetectionSeconds": 4.0,
-        "stuckMinMovementMeters": 1.0,
+        "stuckDetectionSeconds": 6.0,
+        "stuckMinMovementMeters": 2.0,
         "stuckRecoveryFreeSeconds": 30.0,
         "stuckRecoveryStatusCheckSeconds": 3.0,
         "stuckStimulusForwardDistance": 10.0,

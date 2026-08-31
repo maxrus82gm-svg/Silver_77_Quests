@@ -656,8 +656,15 @@ class S77MigrateManager
         for (int i = 0; i < m_Units.Count(); i++)
         {
             S77MigrateUnitState state = m_Units.Get(i);
-            if (!state || !state.m_Infected || !state.m_Infected.IsAlive())
+            if (!state || !state.m_Infected)
                 continue;
+
+            if (!state.m_Infected.IsAlive())
+            {
+                if (state.m_StuckSampleValid)
+                    ResetStuckSample(state);
+                continue;
+            }
 
             if (state.m_Released)
                 continue;
@@ -860,13 +867,13 @@ class S77MigrateManager
         float movedDistance = HorizontalDistance(position, state.m_StuckSamplePosition);
         float progress = state.m_StuckSampleDistance - currentDistance;
 
-        if (movedDistance >= state.m_StuckMinMovementMeters || progress >= state.m_StuckMinMovementMeters)
+        if (movedDistance >= state.m_StuckMinMovementMeters)
         {
             SetStuckSample(state, now);
             return false;
         }
 
-        Print(MIGRATION_LOG_PREFIX + " STUCK_DETECTED scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " position=" + position.ToString() + " target=" + controlTarget.ToString() + " elapsed=" + ((now - state.m_StuckSampleTime) / 1000.0).ToString() + " moved=" + movedDistance.ToString() + " progress=" + progress.ToString());
+        Print(MIGRATION_LOG_PREFIX + " STUCK_DETECTED scenario=" + state.m_ScenarioId + " group=" + state.m_RuntimeGroupId + " id=" + state.m_InfectedId + " mode=" + state.m_Mode + " samplePosition=" + state.m_StuckSamplePosition.ToString() + " currentPosition=" + position.ToString() + " elapsed=" + ((now - state.m_StuckSampleTime) / 1000.0).ToString() + " moved=" + movedDistance.ToString() + " threshold=" + state.m_StuckMinMovementMeters.ToString() + " target=" + controlTarget.ToString() + " progressDiagnostic=" + progress.ToString());
         TriggerStuckRecovery(state, controller, now, position, controlTarget);
         return true;
     }
@@ -884,10 +891,8 @@ class S77MigrateManager
             return false;
 
         vector position = state.m_Infected.GetPosition();
-        vector controlTarget = GetCurrentControlTarget(state);
         float movedDistance = HorizontalDistance(position, state.m_StuckSamplePosition);
-        float progress = state.m_StuckSampleDistance - HorizontalDistance(position, controlTarget);
-        return movedDistance < state.m_StuckMinMovementMeters && progress < state.m_StuckMinMovementMeters;
+        return movedDistance < state.m_StuckMinMovementMeters;
     }
 
     protected void TriggerStuckRecovery(S77MigrateUnitState state, DayZInfectedInputController controller, int now, vector position, vector controlTarget)
@@ -1056,6 +1061,9 @@ class S77MigrateManager
         {
             S77MigrateGroupState groupState = m_Groups.Get(groupIndex);
             if (!groupState)
+                continue;
+
+            if (groupState.m_RouteActivationEnabled != 1 && groupState.m_FinalActivationEnabled != 1)
                 continue;
 
             int aliveCount = CountActiveGroupMembers(groupState);
