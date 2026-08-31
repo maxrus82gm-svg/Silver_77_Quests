@@ -108,6 +108,8 @@
 
 - `TASK 139 FIX 1` — устранено review-несоответствие performance model: `STUCK_RECOVERY` и `HOLD_FREE` теперь обрабатываются до общего vanilla busy check. После recovery free-period target/mind проверяются только по `stuckRecoveryStatusCheckSeconds`; внутри final hold radius target/mind не запрашиваются ради hold logic, а снаружи проверяются только по `finalHoldCheckSeconds`. Перед `BuildPath()` и `RETURN_TO_HOLD` используется свежая gated проверка, при этом быстрая защита `MIGRATION` / `RETURN_TO_HOLD` от vanilla aggression сохранена в общем цикле `250 ms`. Статическая проверка пройдена; runtime, PBO и сервер не запускались.
 
+- `TASK 140` — в roadmap `Silver_77_Migrate` зафиксировано будущее направление `Quest → World Event`: Quest System проверяет активный незавершённый квест, этап и trigger-условие и только инициирует событие по устойчивому идентификатору, а World Event / Migration System отдельно исполняет spawn, состав группы, маршрут, AI handoff, stuck recovery, final hold и жизненный цикл. Сохранены варианты геозон/NPC/предметов/действий, возможное будущее обобщение за пределы infected, repeat protection и временные параметры; точный JSON/API contract и правила scope/cooldown/persistence оставлены `TBD`. Код, JSON, config и gameplay не менялись; TASK 139 остаётся `IMPLEMENTED / WAITING FOR RUNTIME`.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
