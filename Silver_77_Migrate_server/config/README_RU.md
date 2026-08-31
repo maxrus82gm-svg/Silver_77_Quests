@@ -72,8 +72,8 @@
 - `stuckRecoveryFreeSeconds` — минимальное свободное время vanilla AI после stuck recovery. Default: `30.0` секунд.
 - `stuckRecoveryStatusCheckSeconds` — редкий интервал проверки, можно ли вернуть спокойного infected под migration control после recovery. Default: `3.0` секунды.
 - `stuckStimulusForwardDistance` — расстояние вперёд от infected по направлению к текущему waypoint/route target для recovery stimulus. Default: `10.0` метров.
-- `stuckStimulusShareRadius` — локальный радиус одной recovery-кучки: nearby stuck members той же runtime-группы могут быть отпущены на общий stimulus, а повторные stimuli рядом временно блокируются. Default: `20.0` метров.
-- `stuckStimulusRetrySeconds` — локальный spatial cooldown перед следующим recovery stimulus в той же кучке. Default: `5.0` секунд.
+- `stuckStimulusShareRadius` — legacy-поле, сохраняемое в JSON/parser для backward compatibility. После TASK 144 manager его не использует: соседние infected не переводятся в recovery принудительно. Default в parser: `20.0` метров.
+- `stuckStimulusRetrySeconds` — legacy-поле, сохраняемое в JSON/parser для backward compatibility. После TASK 144 manager его не использует: spatial cooldown не подавляет собственный stimulus другого infected. Default в parser: `5.0` секунд.
 - `stuckStimulusLifetimeSeconds` — время существования recovery AI-only stimulus. Default: `1.0` секунда.
 - `stuckStimulusStrengthMultiplier` — множитель силы recovery stimulus. Default: `1.0`; точная эффективная дальность остаётся предметом runtime-подбора.
 - `finalHoldEnabled` — включает удержание infected возле финальной зоны вместо терминального `RELEASED` после actual arrival. Default: `1`.
@@ -154,7 +154,11 @@ Manager сохраняет индивидуальный sample реальной 
 4. создаёт AI-only recovery stimulus впереди по направлению к текущей управляющей цели на `stuckStimulusForwardDistance`;
 5. даёт infected минимум `stuckRecoveryFreeSeconds` свободного vanilla AI.
 
-Nearby stuck members той же runtime-группы внутри `stuckStimulusShareRadius` могут быть тоже отпущены от route overrides на общий stimulus. Spatial cooldown `stuckStimulusRetrySeconds` не даёт одной локальной кучке создавать пачку simultaneous stimuli; если затор не разобран, следующий stimulus возможен после cooldown уже от подходящего stuck infected. Записи recent recovery stimuli очищаются автоматически и не должны копиться бесконечно.
+Recovery полностью индивидуален. Только infected, который сам получил `STUCK_DETECTED` или `ROUTE_PROGRESS_LOST`, переходит в `STUCK_RECOVERY` и создаёт один собственный directed stimulus. Соседи могут естественно услышать этот world AI stimulus и начать двигаться, но manager не меняет их state и не считает их recovery выполненным. Если сосед остаётся застрявшим, его собственный detector продолжает работать и позднее создаёт отдельный stimulus без spatial/group suppression.
+
+Пока infected находится в `STUCK_RECOVERY`, оба detector не выполняются, поэтому один incident не создаёт повторный spam. После `STUCK_RECOVERY_RESUME` и нового `BuildPath()` samples создаются заново; при новом застревании тот же infected снова имеет право на отдельный recovery stimulus без lifetime-ограничения.
+
+`STUCK_RECOVERY_STIMULUS` содержит `cause=STUCK` либо `cause=ROUTE_PROGRESS_LOST`, infected ID и фактическую target semantics. Если control target практически совпал с позицией, manager пробует существующий logical route target. При полном отсутствии usable direction recovery всё равно начинается без бесконечного reset sample, а stimulus пропускается с диагностикой `STUCK_RECOVERY_STIMULUS_SKIPPED reason=NO_USABLE_DIRECTION`.
 
 После free-period manager проверяет recovery status не чаще `stuckRecoveryStatusCheckSeconds`. Если у infected есть target или mind state не `CALM`, возврат не выполняется. Только после `target == null`, `CALM` и защитного cooldown строится новый путь от текущей позиции к правильному intent: `MIGRATION` или `RETURN_TO_HOLD`.
 
