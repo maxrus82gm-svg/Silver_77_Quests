@@ -9,6 +9,7 @@ const string S77_MIGRATE_LEGACY_SCENARIO_002_CONFIG = "$profile:Silver_77_Migrat
 class S77MigrateScenarioConfig
 {
     int enabled;
+    int weatherChangeEnabled;
     string scenarioId;
     int infectedCount;
     ref array<string> infectedTypes;
@@ -60,6 +61,7 @@ class S77MigrateScenarioConfig
     void SetBaseDefaults()
     {
         enabled = 1;
+        weatherChangeEnabled = 1;
         scenarioId = "";
         infectedCount = 10;
         SetDefaultInfectedTypes();
@@ -130,6 +132,9 @@ class S77MigrateScenarioConfig
     {
         if (enabled != 1)
             enabled = 0;
+
+        if (weatherChangeEnabled != 1)
+            weatherChangeEnabled = 0;
 
         if (infectedCount < 1)
             infectedCount = 10;

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation_DayZ_Qwest/13_ЛОР.md",
+                "file": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "13_ЛОР"
+              "title": "11_Задача_агенту"
             }
           }
         ]
@@ -187,6 +187,7 @@
   },
   "active": "bdc3435b2ace8d59",
   "lastOpenFiles": [
+    "Documentation_DayZ_Qwest/13_ЛОР.md",
     "Documentation_DayZ_Qwest/11_Задача_агенту.md",
     "Silver_77_Migrate_server/config/README_RU.md",
     "Silver_77_Migrate_server/config/MigrationConfig.json",
@@ -204,7 +205,6 @@
     "Silver_77_Migrate_server/$PBOPREFIX$",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md",
-    "Documentation_DayZ_Qwest/13_ЛОР.md",
     "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md",
     "Documentation_DayZ_Qwest/12_Старт_агента.md"
   ]

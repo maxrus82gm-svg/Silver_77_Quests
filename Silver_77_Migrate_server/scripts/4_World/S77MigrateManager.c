@@ -363,7 +363,23 @@ class S77MigrateManager
             PrepareAIStimulus();
 
         int delayMs = Math.Round(m_Config.eventDelaySeconds * 1000.0);
+        int weatherRequestingScenarios = CountWeatherRequestingScenarios();
+        bool shouldStartWeatherTransition = false;
+        string weatherDecision = "SKIP_GLOBAL_DISABLED";
+
         if (m_Config.weatherEnabled == 1)
+        {
+            weatherDecision = "SKIP_NO_SCENARIO_REQUEST";
+            if (weatherRequestingScenarios > 0)
+            {
+                shouldStartWeatherTransition = true;
+                weatherDecision = "TRANSITION";
+            }
+        }
+
+        LogInfo(EVENT_LOG_PREFIX + " WEATHER_DECISION globalEnabled=" + m_Config.weatherEnabled.ToString() + " requestingScenarios=" + weatherRequestingScenarios.ToString() + " enabledScenarios=" + m_Scenarios.Count().ToString() + " result=" + weatherDecision);
+
+        if (shouldStartWeatherTransition)
         {
             m_WeatherStartScheduled = true;
             LogInfo(EVENT_LOG_PREFIX + " Global weather scheduled in " + m_Config.eventDelaySeconds.ToString() + " seconds; transition=" + m_Config.weatherTransitionSeconds.ToString() + " seconds; scenarios=" + m_Scenarios.Count().ToString());
@@ -372,9 +388,22 @@ class S77MigrateManager
         else
         {
             m_StartGroupsScheduled = true;
-            LogInfo(EVENT_LOG_PREFIX + " Weather disabled; all enabled groups scheduled in " + m_Config.eventDelaySeconds.ToString() + " seconds");
+            LogInfo(EVENT_LOG_PREFIX + " Weather transition skipped; all enabled groups scheduled in " + m_Config.eventDelaySeconds.ToString() + " seconds");
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartAllScenarios, delayMs, false);
         }
+    }
+
+    protected int CountWeatherRequestingScenarios()
+    {
+        int requestingScenarios = 0;
+        for (int scenarioIndex = 0; scenarioIndex < m_Scenarios.Count(); scenarioIndex++)
+        {
+            S77MigrateScenarioConfig scenario = m_Scenarios.Get(scenarioIndex);
+            if (scenario && scenario.weatherChangeEnabled == 1)
+                requestingScenarios++;
+        }
+
+        return requestingScenarios;
     }
 
     protected void BeginWeatherTransition()

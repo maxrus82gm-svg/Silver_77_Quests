@@ -49,7 +49,7 @@ Profile log:
 
 ## Погода и гроза
 
-- `weatherEnabled` — включает общий погодный предвестник. При `0` группы запускаются после `eventDelaySeconds` без изменения погоды.
+- `weatherEnabled` — глобальный master switch погодного предвестника. При `0` ни один scenario не может запросить смену погоды, и группы запускаются после `eventDelaySeconds` без weather transition.
 - `weatherTransitionSeconds` — длительность плавного перехода overcast, fog и rain, в секундах. Default: `180.0`.
 - `weatherOvercast` — целевая облачность от `0.0` до `1.0`. Default: `1.0`.
 - `weatherFog` — целевая плотность тумана от `0.0` до `1.0`. Default: `0.8`.
@@ -63,6 +63,10 @@ Profile log:
 
 При defaults погодный переход начинается через `30` секунд, длится `180` секунд, а storm ramp идёт последние `60` секунд. После завершения перехода все включённые объекты массива `scenarios` запускаются в один общий момент. Rain остаётся равным `0.0`.
 
+Для текущего batch-запуска действует агрегированное правило: если `weatherEnabled = 1` и хотя бы один включённый scenario имеет `weatherChangeEnabled = 1`, выполняется ровно один общий weather transition. Если у всех включённых scenarios значение `0`, transition пропускается и вся пачка запускается после обычного `eventDelaySeconds`. При `weatherEnabled = 0` transition всегда пропускается независимо от scenario flags.
+
+Погода DayZ глобальна для мира. Поэтому scenario с `weatherChangeEnabled = 0`, запущенный в одной пачке со scenario, у которого стоит `1`, сам не инициирует transition, но всё равно находится в той же изменённой погоде. При будущем отдельном запуске event/scenario этот флаг позволит тихому patrol или quest event не запрашивать погоду; точный `StartEvent`-контракт в текущей реализации отсутствует.
+
 ## Массив scenarios
 
 Количество сценариев не ограничено двумя и не задаётся в коде. Manager последовательно перебирает весь массив `scenarios`. Чтобы добавить третью группу, нужно добавить в массив ещё один полный JSON-объект с уникальным `scenarioId`; отдельный файл и метод вида `LoadScenario003()` не требуются.
@@ -72,6 +76,7 @@ Profile log:
 Параметры каждого scenario:
 
 - `enabled` — включает конкретную группу: `1` — создавать, `0` — пропустить.
+- `weatherChangeEnabled` — определяет, запрашивает ли этот scenario существующий глобальный weather transition: `1` — запрашивает, `0` — сам не инициирует. Default: `1`. Это не локальная защита от уже изменённой погоды мира.
 - `scenarioId` — уникальный текстовый идентификатор группы для состояния infected и серверных логов.
 - `infectedCount` — количество infected в группе.
 - `infectedTypes` — список vanilla class names infected. Если infected больше элементов списка, классы повторяются по кругу.
@@ -228,6 +233,7 @@ Watchdog дополняет, но не заменяет короткий stuck d
 
     {
         "enabled": 1,
+        "weatherChangeEnabled": 0,
         "scenarioId": "MIGRATION_TEST_003",
         "infectedCount": 10,
         "infectedTypes": ["ZmbM_HikerSkinny_Blue"],
@@ -294,6 +300,6 @@ Watchdog дополняет, но не заменяет короткий stuck d
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
 
-То же правило относится к `routePoints`, route/final activation, stuck recovery, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing TASK 135/TASK 139/TASK 142 fields получают constructor defaults только в памяти. Чтобы задать пользовательский маршрут, изменить активацию, recovery, watchdog или hold, поля нужно вручную добавить в нужный объект `scenarios`.
+То же правило относится к `weatherChangeEnabled`, `routePoints`, route/final activation, stuck recovery, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing nested fields получают constructor defaults только в памяти; для `weatherChangeEnabled` это `1`. Чтобы сценарий явно не запрашивал погоду или чтобы задать пользовательский маршрут, изменить активацию, recovery, watchdog либо hold, соответствующие поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.

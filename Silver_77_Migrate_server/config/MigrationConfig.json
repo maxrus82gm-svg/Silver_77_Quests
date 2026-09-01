@@ -17,6 +17,7 @@
     "scenarios": [
         {
             "enabled": 1,
+            "weatherChangeEnabled": 1,
             "scenarioId": "MIGRATION_TEST_001",
             "infectedCount": 10,
             "infectedTypes": [
@@ -90,6 +91,7 @@
         },
         {
             "enabled": 1,
+            "weatherChangeEnabled": 1,
             "scenarioId": "MIGRATION_TEST_002",
             "infectedCount": 10,
             "infectedTypes": [
