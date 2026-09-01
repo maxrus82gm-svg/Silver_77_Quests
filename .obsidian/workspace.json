@@ -187,6 +187,7 @@
   },
   "active": "bdc3435b2ace8d59",
   "lastOpenFiles": [
+    "Support/Migration.txt",
     "Support/Migration.log",
     "Migration.log",
     "Documentation_DayZ_Qwest/12_Старт_агента.md",
@@ -207,7 +208,6 @@
     "Silver_77_Migrate_server/scripts/4_World/S77MigrateManager.c",
     "Silver_77_Migrate_server/config/MigrationScenario_001.json",
     "Silver_77_Migrate_server/mod.cpp",
-    "Silver_77_Migrate_server/config.cpp",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
     "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md",
     "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md"
