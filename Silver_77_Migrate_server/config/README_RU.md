@@ -11,7 +11,41 @@
 ## Общие параметры события
 
 - `enabled` — включает всё событие: `1` — включено, `0` — выключено.
+- `loggingEnabled` — включает обычные INFO/event/lifecycle-записи Migration одновременно в RPT и `$profile:Silver_77_Migrate/Migration.log`. Default: `1`. Критические ERROR остаются в RPT независимо от этого флага и пишутся в profile log, если файл удалось открыть.
+- `stuckDebugLoggingEnabled` — при одновременно включённом `loggingEnabled` добавляет подробные `STUCK_SAMPLE_START`, `STUCK_SAMPLE_CHECK` и `STUCK_SAMPLE_RESET`. Default: `0`; для диагностики TASK 146 пользователь вручную ставит `1` в runtime JSON.
 - `eventDelaySeconds` — задержка от инициализации мода до начала погодного перехода, в секундах. Default: `30.0`.
+
+## Логирование и диагностика stuck/recovery
+
+Server-only manager использует подтверждённые DayZ FileIO `OpenFile(..., FileMode.APPEND)`, `FPrintln()` и `CloseFile()`. Один file handle открывается при инициализации сессии и закрывается в штатном `Stop()`; файл не открывается заново на каждом movement tick. Каждая строка получает безопасный server-runtime timestamp `timeMs` через `GetGame().GetTime()` и одновременно отправляется через `Print()` в RPT.
+
+Profile log:
+
+`$profile:Silver_77_Migrate/Migration.log`
+
+Основные уровни:
+
+- INFO — важные event, spawn, route, aggro, recovery, hold, release/death и периодические unit-state записи; зависят от `loggingEnabled`;
+- STUCK DEBUG — одна запись начала sample, одна проверка после полного interval и event-based reset с причиной; требует обоих флагов `loggingEnabled = 1` и `stuckDebugLoggingEnabled = 1`;
+- ERROR — всегда остаётся в RPT; после успешного открытия profile log дублируется и туда даже при `loggingEnabled = 0`.
+
+Диагностическая цепочка одного короткого stuck incident:
+
+`STUCK_SAMPLE_START -> STUCK_SAMPLE_CHECK result=STUCK -> STUCK_DETECTED -> STUCK_RECOVERY_RELEASE -> STUCK_RECOVERY_STIMULUS_ATTEMPT -> STUCK_RECOVERY_STIMULUS_OK/FAILED/SKIPPED -> STUCK_RECOVERY_CALM -> STUCK_RECOVERY_RESUME`
+
+`STUCK_SAMPLE_CHECK` содержит `positionA`, `positionB`, `elapsedSeconds`, реальное `movedXZ`, threshold и `MOVING`/`STUCK`. `STUCK_SAMPLE_RESET` показывает event-причины вроде `AGGRO`, `BUILD_PATH`, `ROUTE_POINT_CHANGED`, `WAYPOINT_CHANGED`, `STUCK_RECOVERY`, `HOLD_FREE`, `DEATH` или release. Recovery marker содержит `cause=STUCK` либо `cause=ROUTE_PROGRESS_LOST`. Результат stimulus формируется по фактическому bool, возвращённому `EmitAIStimulus()`.
+
+Для текущего runtime-теста вручную добавить/выставить в верхней части существующего `$profile:Silver_77_Migrate/MigrationConfig.json`:
+
+    "loggingEnabled": 1,
+    "stuckDebugLoggingEnabled": 1,
+
+Параметры scenario остаются без изменения:
+
+    "stuckDetectionSeconds": 6.0,
+    "stuckMinMovementMeters": 2.0
+
+Сложная rotation/архивация в TASK 146 не реализована. Пока используется один append-файл; вне целевой диагностики `stuckDebugLoggingEnabled` следует вернуть в `0`. Production size limit/rotation можно добавить отдельной задачей после измерения фактического роста файла.
 
 ## Погода и гроза
 
@@ -55,7 +89,7 @@
 - `spawnFormationJitter` — случайное отклонение spawn-позиции по X/Z в обе стороны, в метрах. Default: `0.5`.
 - `targetFormationSpacing` — базовый интервал сетки индивидуальных целей возле target, в метрах. Default: `4.5`.
 - `targetFormationJitter` — случайное отклонение индивидуальной цели по X/Z в обе стороны, в метрах. Default: `0.5`.
-- `logIntervalSeconds` — интервал диагностического лога infected, в секундах. Default: `10.0`.
+- `logIntervalSeconds` — интервал обычной unit-state записи infected, в секундах. Default: `10.0`; применяется только при глобальном `loggingEnabled = 1`.
 - `finalActivationEnabled` — включает legacy group-level AI stimulus в финальной зоне. Это не release-механика: итоговое поведение actual arrival определяется `finalHoldEnabled`. Default: `0`; стандартная migration-схема отключает этот процентный trigger.
 - `finalActivationTriggerPercent` — процент текущих живых active members runtime-группы, необходимый для финального импульса. Default: `30.0`.
 - `finalActivationDistance` — горизонтальный радиус X/Z финальной зоны подсчёта вокруг raw `targetPosition`. Default: `12.0` метров.

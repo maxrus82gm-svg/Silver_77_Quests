@@ -1,5 +1,7 @@
 {
     "enabled": 1,
+    "loggingEnabled": 1,
+    "stuckDebugLoggingEnabled": 0,
     "eventDelaySeconds": 30.0,
     "weatherEnabled": 1,
     "weatherTransitionSeconds": 180.0,

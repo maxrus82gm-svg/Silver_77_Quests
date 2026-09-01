@@ -1,6 +1,7 @@
 const string S77_MIGRATE_PROFILE_DIR = "$profile:Silver_77_Migrate";
 const string S77_MIGRATE_CONFIG = "$profile:Silver_77_Migrate/MigrationConfig.json";
 const string S77_MIGRATE_CONFIG_TEMP = "$profile:Silver_77_Migrate/MigrationConfig.migration.tmp";
+const string S77_MIGRATE_LOG_FILE = "$profile:Silver_77_Migrate/Migration.log";
 const string S77_MIGRATE_LEGACY_EVENT_CONFIG = "$profile:Silver_77_Migrate/MigrationEvent.json";
 const string S77_MIGRATE_LEGACY_SCENARIO_001_CONFIG = "$profile:Silver_77_Migrate/MigrationScenario_001.json";
 const string S77_MIGRATE_LEGACY_SCENARIO_002_CONFIG = "$profile:Silver_77_Migrate/MigrationScenario_002.json";
@@ -349,6 +350,8 @@ class S77MigrateScenarioConfig
 class S77MigrateConfig
 {
     int enabled;
+    int loggingEnabled;
+    int stuckDebugLoggingEnabled;
     float eventDelaySeconds;
     int weatherEnabled;
     float weatherTransitionSeconds;
@@ -366,6 +369,8 @@ class S77MigrateConfig
     void S77MigrateConfig()
     {
         enabled = 1;
+        loggingEnabled = 1;
+        stuckDebugLoggingEnabled = 0;
         eventDelaySeconds = 30.0;
         weatherEnabled = 1;
         weatherTransitionSeconds = 180.0;
@@ -394,6 +399,12 @@ class S77MigrateConfig
     {
         if (enabled != 1)
             enabled = 0;
+
+        if (loggingEnabled != 1)
+            loggingEnabled = 0;
+
+        if (stuckDebugLoggingEnabled != 1)
+            stuckDebugLoggingEnabled = 0;
 
         if (eventDelaySeconds < 0.0)
             eventDelaySeconds = 0.0;
