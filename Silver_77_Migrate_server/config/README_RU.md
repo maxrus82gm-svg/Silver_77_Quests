@@ -104,6 +104,11 @@ Profile log:
 - `stuckRecoveryEnabled` — включает индивидуальное восстановление застрявших infected через временную передачу vanilla AI и направленный AI-only stimulus. Default: `1`.
 - `stuckDetectionSeconds` — период индивидуального контрольного stuck-sample. Default: `6.0` секунд.
 - `stuckMinMovementMeters` — минимальное итоговое горизонтальное X/Z-смещение world position между sample и текущей позицией. Default: `2.0` метра; ровно `2.0` считается достаточным движением.
+- `stuckReverseEnabled` — включает второй уровень recovery, если первый stimulus/free-period не дал физического смещения. Default: `1`.
+- `stuckReverseDistanceMeters` — расстояние локальной reverse-цели в направлении, противоположном сохранённому направлению на route/control target. Default: `10.0` метров.
+- `stuckReverseMaxSeconds` — максимальная продолжительность одной reverse-попытки. Default: `5.0` секунд.
+- `stuckReverseRetrySeconds` — задержка перед повторной попыткой начать прерванный vanilla-busy reverse. Default: `10.0` секунд.
+- `stuckPostReverseFreeSeconds` — свободное vanilla-время после окончания reverse и перед новым `BuildPath()`. Default: `10.0` секунд.
 - `routeProgressWatchdogEnabled` — включает второй индивидуальный уровень контроля полезного прогресса к текущей логической маршрутной цели. Default: `1`.
 - `routeProgressCheckSeconds` — длительность одного comparison window watchdog. Default: `30.0` секунд.
 - `routeProgressMinProgressMeters` — минимальное уменьшение дистанции до logical route target за окно, считающееся хорошим прогрессом. Default: `5.0` метров.
@@ -202,6 +207,12 @@ Recovery полностью индивидуален. Только infected, к�
 
 После free-period manager проверяет recovery status не чаще `stuckRecoveryStatusCheckSeconds`. Если у infected есть target или mind state не `CALM`, возврат не выполняется. Только после `target == null`, `CALM` и защитного cooldown строится новый путь от текущей позиции к правильному intent: `MIGRATION` или `RETURN_TO_HOLD`.
 
+После первого free-period TASK 151 дополнительно сравнивает текущую world position с позицией начала recovery по X/Z. `STUCK_RECOVERY_STIMULUS_OK` означает только успешное создание stimulus. Физически успешным recovery считается только `movedXZ >= stuckMinMovementMeters`; это фиксирует `STUCK_RECOVERY_MOVEMENT_CHECK result=MOVED`. При `NO_MOVEMENT` и включённом `stuckReverseEnabled` начинается одна локальная reverse-попытка.
+
+Reverse не является движением спиной и не меняет `routePoints`, `migrationTarget` или logical target. Infected разворачивается в сторону, противоположную сохранённому направлению на control/logical target, и временно получает `OverrideHeading` / `OverrideMovementSpeed` к локальной точке примерно в `stuckReverseDistanceMeters`. Попытка завершается при смещении минимум на `stuckMinMovementMeters` либо по `stuckReverseMaxSeconds`; teleport и `SetPosition` не используются.
+
+Перед любым возвратом manager control общий vanilla-busy guard требует доступный controller, отсутствие target и `MINDSTATE_CALM`. Natural target/aggro немедленно запрещает или прерывает reverse; overrides снимаются, context incident сохраняется, а новая попытка возможна только после retry, `CALM` и cooldown. После `STUCK_REVERSE_END` manager всегда снимает overrides, выдерживает `stuckPostReverseFreeSeconds`, снова ждёт vanilla idle + cooldown и лишь затем строит path к исходному intent. `stuckReverseEnabled = 0` полностью сохраняет одноуровневый recovery без reverse fallback.
+
 ## Route Progress Watchdog
 
 Watchdog дополняет, но не заменяет короткий stuck detector `6 sec / 2 m`. Он работает только в `MIGRATION` и `RETURN_TO_HOLD` и сравнивает горизонтальную дистанцию до `GetCurrentRouteTarget(state)`: текущего `routePoint + routeOffset` либо индивидуального `m_MigrationTarget`. Текущий navmesh waypoint для этого решения не используется.
@@ -262,6 +273,11 @@ Watchdog дополняет, но не заменяет короткий stuck d
         "stuckRecoveryEnabled": 1,
         "stuckDetectionSeconds": 6.0,
         "stuckMinMovementMeters": 2.0,
+        "stuckReverseEnabled": 1,
+        "stuckReverseDistanceMeters": 10.0,
+        "stuckReverseMaxSeconds": 5.0,
+        "stuckReverseRetrySeconds": 10.0,
+        "stuckPostReverseFreeSeconds": 10.0,
         "routeProgressWatchdogEnabled": 1,
         "routeProgressCheckSeconds": 30.0,
         "routeProgressMinProgressMeters": 5.0,
@@ -302,6 +318,6 @@ Watchdog дополняет, но не заменяет короткий stuck d
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
 
-То же правило относится к `weatherChangeEnabled`, `groupLifetimeSeconds`, `routePoints`, route/final activation, stuck recovery, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing nested fields получают constructor defaults только в памяти; для `weatherChangeEnabled` это `1`, для `groupLifetimeSeconds` — `14400.0`. Чтобы scenario явно не запрашивал погоду, получил другое время жизни или чтобы задать пользовательский маршрут, изменить активацию, recovery, watchdog либо hold, соответствующие поля нужно вручную добавить в нужный объект `scenarios`.
+То же правило относится к `weatherChangeEnabled`, `groupLifetimeSeconds`, `routePoints`, route/final activation, stuck recovery/reverse, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing nested fields получают constructor defaults и `Normalize()` defaults только в памяти; для `weatherChangeEnabled` это `1`, для `groupLifetimeSeconds` — `14400.0`, для reverse fallback — `1 / 10.0 / 5.0 / 10.0 / 10.0`. Чтобы scenario явно не запрашивал погоду, получил другое время жизни или чтобы задать пользовательский маршрут, изменить activation/recovery/reverse/watchdog/hold, соответствующие поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.

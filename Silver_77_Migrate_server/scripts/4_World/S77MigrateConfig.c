@@ -37,6 +37,11 @@ class S77MigrateScenarioConfig
     int stuckRecoveryEnabled;
     float stuckDetectionSeconds;
     float stuckMinMovementMeters;
+    int stuckReverseEnabled;
+    float stuckReverseDistanceMeters;
+    float stuckReverseMaxSeconds;
+    float stuckReverseRetrySeconds;
+    float stuckPostReverseFreeSeconds;
     int routeProgressWatchdogEnabled;
     float routeProgressCheckSeconds;
     float routeProgressMinProgressMeters;
@@ -90,6 +95,11 @@ class S77MigrateScenarioConfig
         stuckRecoveryEnabled = 1;
         stuckDetectionSeconds = 6.0;
         stuckMinMovementMeters = 2.0;
+        stuckReverseEnabled = 1;
+        stuckReverseDistanceMeters = 10.0;
+        stuckReverseMaxSeconds = 5.0;
+        stuckReverseRetrySeconds = 10.0;
+        stuckPostReverseFreeSeconds = 10.0;
         routeProgressWatchdogEnabled = 1;
         routeProgressCheckSeconds = 30.0;
         routeProgressMinProgressMeters = 5.0;
@@ -209,6 +219,21 @@ class S77MigrateScenarioConfig
 
         if (stuckMinMovementMeters <= 0.0)
             stuckMinMovementMeters = 2.0;
+
+        if (stuckReverseEnabled != 1)
+            stuckReverseEnabled = 0;
+
+        if (stuckReverseDistanceMeters <= 0.0)
+            stuckReverseDistanceMeters = 10.0;
+
+        if (stuckReverseMaxSeconds <= 0.0)
+            stuckReverseMaxSeconds = 5.0;
+
+        if (stuckReverseRetrySeconds <= 0.0)
+            stuckReverseRetrySeconds = 10.0;
+
+        if (stuckPostReverseFreeSeconds <= 0.0)
+            stuckPostReverseFreeSeconds = 10.0;
 
         if (routeProgressWatchdogEnabled != 1)
             routeProgressWatchdogEnabled = 0;
