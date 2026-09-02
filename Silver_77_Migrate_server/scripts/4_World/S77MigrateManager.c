@@ -749,6 +749,8 @@ class S77MigrateManager
         formationLog = formationLog + targetFormationRotation.ToString();
         formationLog = formationLog + " routePoints=";
         formationLog = formationLog + routePoints.Count().ToString();
+        formationLog = formationLog + " lifetimeSeconds=";
+        formationLog = formationLog + config.groupLifetimeSeconds.ToString();
         LogInfo(formationLog);
 
         int beforeCount = m_Units.Count();
@@ -798,6 +800,9 @@ class S77MigrateManager
             LogError(logMessage683);
             return;
         }
+
+        infected.SetLifetimeMax(config.groupLifetimeSeconds);
+        infected.SetLifetime(config.groupLifetimeSeconds);
 
         string infectedId = "INF_" + (index + 1).ToString();
         int logIntervalMs = Math.Round(config.logIntervalSeconds * 1000.0);

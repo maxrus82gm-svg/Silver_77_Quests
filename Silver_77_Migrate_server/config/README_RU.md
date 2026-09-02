@@ -79,6 +79,7 @@ Profile log:
 - `weatherChangeEnabled` — определяет, запрашивает ли этот scenario существующий глобальный weather transition: `1` — запрашивает, `0` — сам не инициирует. Default: `1`. Это не локальная защита от уже изменённой погоды мира.
 - `scenarioId` — уникальный текстовый идентификатор группы для состояния infected и серверных логов.
 - `infectedCount` — количество infected в группе.
+- `groupLifetimeSeconds` — максимальное время жизни каждого infected, созданного этой конкретной migration-группой. Default: `14400.0` секунд (4 часа). Значение задаётся отдельно для каждого scenario, поэтому разные группы могут иметь разные сроки: `86400.0` — сутки, `604800.0` — неделя. Искусственного верхнего application-level ограничения нет. Неположительное значение заменяется default `14400.0` через `Normalize()`.
 - `infectedTypes` — список vanilla class names infected. Если infected больше элементов списка, классы повторяются по кругу.
 - `spawnPosition` — центр появления группы как `[X, Y, Z]` в метрах мира.
 - `targetPosition` — центр конечной точки маршрута как `[X, Y, Z]`.
@@ -236,6 +237,7 @@ Watchdog дополняет, но не заменяет короткий stuck d
         "weatherChangeEnabled": 0,
         "scenarioId": "MIGRATION_TEST_003",
         "infectedCount": 10,
+        "groupLifetimeSeconds": 14400.0,
         "infectedTypes": ["ZmbM_HikerSkinny_Blue"],
         "spawnPosition": [1000.0, 100.0, 1000.0],
         "targetPosition": [1200.0, 100.0, 1200.0],
@@ -300,6 +302,6 @@ Watchdog дополняет, но не заменяет короткий stuck d
 
 Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
 
-То же правило относится к `weatherChangeEnabled`, `routePoints`, route/final activation, stuck recovery, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing nested fields получают constructor defaults только в памяти; для `weatherChangeEnabled` это `1`. Чтобы сценарий явно не запрашивал погоду или чтобы задать пользовательский маршрут, изменить активацию, recovery, watchdog либо hold, соответствующие поля нужно вручную добавить в нужный объект `scenarios`.
+То же правило относится к `weatherChangeEnabled`, `groupLifetimeSeconds`, `routePoints`, route/final activation, stuck recovery, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing nested fields получают constructor defaults только в памяти; для `weatherChangeEnabled` это `1`, для `groupLifetimeSeconds` — `14400.0`. Чтобы scenario явно не запрашивал погоду, получил другое время жизни или чтобы задать пользовательский маршрут, изменить активацию, recovery, watchdog либо hold, соответствующие поля нужно вручную добавить в нужный объект `scenarios`.
 
 Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.

@@ -20,6 +20,7 @@
             "weatherChangeEnabled": 1,
             "scenarioId": "MIGRATION_TEST_001",
             "infectedCount": 10,
+            "groupLifetimeSeconds": 14400.0,
             "infectedTypes": [
                 "ZmbF_JournalistNormal_Blue",
                 "ZmbM_CitizenASkinny_Brown",
@@ -94,6 +95,7 @@
             "weatherChangeEnabled": 1,
             "scenarioId": "MIGRATION_TEST_002",
             "infectedCount": 10,
+            "groupLifetimeSeconds": 14400.0,
             "infectedTypes": [
                 "ZmbF_JournalistNormal_Blue",
                 "ZmbM_CitizenASkinny_Brown",

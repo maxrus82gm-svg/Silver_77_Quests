@@ -12,6 +12,7 @@ class S77MigrateScenarioConfig
     int weatherChangeEnabled;
     string scenarioId;
     int infectedCount;
+    float groupLifetimeSeconds;
     ref array<string> infectedTypes;
     ref array<float> spawnPosition;
     ref array<float> targetPosition;
@@ -64,6 +65,7 @@ class S77MigrateScenarioConfig
         weatherChangeEnabled = 1;
         scenarioId = "";
         infectedCount = 10;
+        groupLifetimeSeconds = 14400.0;
         SetDefaultInfectedTypes();
         spawnPosition = new array<float>();
         targetPosition = new array<float>();
@@ -138,6 +140,9 @@ class S77MigrateScenarioConfig
 
         if (infectedCount < 1)
             infectedCount = 10;
+
+        if (groupLifetimeSeconds <= 0.0)
+            groupLifetimeSeconds = 14400.0;
 
         if (!infectedTypes || infectedTypes.Count() == 0)
             SetDefaultInfectedTypes();
