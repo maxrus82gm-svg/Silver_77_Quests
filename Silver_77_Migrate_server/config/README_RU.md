@@ -6,7 +6,25 @@
 
 Исходный образец находится в `Silver_77_Migrate_server/config/MigrationConfig.json`. JSON не поддерживает комментарии, поэтому пояснения хранятся только в этом README.
 
-Верхняя часть файла содержит общие настройки одного migration-события и погоды. Ниже расположен массив `scenarios`; каждый его объект описывает отдельную migration-группу. В текущем default находятся два объекта: `MIGRATION_TEST_001` и `MIGRATION_TEST_002`.
+Верхняя часть файла содержит общие настройки запуска и погоды. Ниже расположены три самостоятельных массива: `groups`, `events` и `activations`. В текущем default находятся две группы `MIGRATION_TEST_001` / `MIGRATION_TEST_002`, одно событие `EVENT_GLOBAL_MIGRATION` и две точки активации.
+
+## Архитектура GROUP / EVENT / ACTIVATION
+
+- `GROUP` в массиве `groups` — полный blueprint одной migration-группы. Стабильный уникальный `groupId` используется программно, а отдельное `name` является только человекочитаемой подписью и может содержать кириллицу.
+- `EVENT` в массиве `events` — устойчивый `eventId`, `name` и список `groupIds`, запускаемых одним batch.
+- `ACTIVATION` в массиве `activations` — устойчивый `activationId`, информационное `name`, тип `STARTUP` либо `EXTERNAL`, а также `targetType` (`GROUP`/`EVENT`) и `targetId`.
+
+Canonical startup activation `ACT_STARTUP_GLOBAL_MIGRATION` направлена на `EVENT_GLOBAL_MIGRATION`; это событие включает обе текущие группы. `ACT_EXTERNAL_GLOBAL_MIGRATION` само ничего не запускает и ждёт явного server-side вызова.
+
+Минимальная public facade для будущих интеграций:
+
+- `S77MigrateAPI.Activate(activationId)`;
+- `S77MigrateAPI.StartGroup(groupId)`;
+- `S77MigrateAPI.StartEvent(eventId)`.
+
+Все операции возвращают `bool`: `true` означает, что batch принят для подготовки, `false` — запрос отклонён. Причина фиксируется в server log маркерами `NOT_FOUND`, `DISABLED`, `INVALID_TARGET`, `NO_RUNNABLE_GROUPS` либо `LAUNCH_BUSY`. Во время delay/weather preparation новая заявка не ставится в очередь и получает `false`; уже живые runtime-группы блокировкой не являются. Каждый новый принятый запуск создаёт новый `runtimeGroupId`, не удаляя предыдущие группы.
+
+Quest-мод, trigger/zone, scheduler и random в TASK 154 к facade не подключены.
 
 ## Сборка и эталонный Support
 
@@ -33,7 +51,7 @@ Runtime-логика не использует Support-файл. Рабочий 
 - `enabled` — включает всё событие: `1` — включено, `0` — выключено.
 - `loggingEnabled` — включает обычные INFO/event/lifecycle-записи Migration одновременно в RPT и `$profile:Silver_77_Migrate/Migration.log`. Default: `1`. Критические ERROR остаются в RPT независимо от этого флага и пишутся в profile log, если файл удалось открыть.
 - `stuckDebugLoggingEnabled` — при одновременно включённом `loggingEnabled` добавляет подробные `STUCK_SAMPLE_START`, `STUCK_SAMPLE_CHECK` и `STUCK_SAMPLE_RESET`. Default: `0`; для диагностики TASK 146 пользователь вручную ставит `1` в runtime JSON.
-- `eventDelaySeconds` — задержка от инициализации мода до начала погодного перехода, в секундах. Default: `30.0`.
+- `eventDelaySeconds` — задержка от принятия каждого launch batch до начала погодного перехода либо непосредственного запуска групп, в секундах. Default: `30.0`.
 
 ## Логирование и диагностика stuck/recovery
 
@@ -81,25 +99,26 @@ Profile log:
 - `weatherStormTimeoutSeconds` — минимальный интервал между молниями, в секундах. Default: `30.0`.
 - `weatherStormRampSeconds` — длительность нарастания storm density в конце погодного перехода, в секундах. Default: `60.0`.
 
-При defaults погодный переход начинается через `30` секунд, длится `180` секунд, а storm ramp идёт последние `60` секунд. После завершения перехода все включённые объекты массива `scenarios` запускаются в один общий момент. Rain остаётся равным `0.0`.
+При defaults погодный переход начинается через `30` секунд, длится `180` секунд, а storm ramp идёт последние `60` секунд. После завершения перехода запускаются только runnable-группы текущего GROUP/EVENT batch. Rain остаётся равным `0.0`.
 
-Для текущего batch-запуска действует агрегированное правило: если `weatherEnabled = 1` и хотя бы один включённый scenario имеет `weatherChangeEnabled = 1`, выполняется ровно один общий weather transition. Если у всех включённых scenarios значение `0`, transition пропускается и вся пачка запускается после обычного `eventDelaySeconds`. При `weatherEnabled = 0` transition всегда пропускается независимо от scenario flags.
+Для текущего batch-запуска действует агрегированное правило: если `weatherEnabled = 1` и хотя бы одна runnable GROUP имеет `weatherChangeEnabled = 1`, выполняется ровно один общий weather transition. Если у всех групп текущего batch значение `0`, transition пропускается и пачка запускается после обычного `eventDelaySeconds`. При `weatherEnabled = 0` transition всегда пропускается независимо от group flags.
 
-Погода DayZ глобальна для мира. Поэтому scenario с `weatherChangeEnabled = 0`, запущенный в одной пачке со scenario, у которого стоит `1`, сам не инициирует transition, но всё равно находится в той же изменённой погоде. При будущем отдельном запуске event/scenario этот флаг позволит тихому patrol или quest event не запрашивать погоду; точный `StartEvent`-контракт в текущей реализации отсутствует.
+Погода DayZ глобальна для мира. Поэтому GROUP с `weatherChangeEnabled = 0`, запущенная в одной пачке с GROUP, у которой стоит `1`, сама не инициирует transition, но всё равно находится в той же изменённой погоде. Решение всегда относится только к текущему batch; ранее созданные runtime-группы не учитываются.
 
-## Массив scenarios
+## Массив groups
 
-Количество сценариев не ограничено двумя и не задаётся в коде. Manager последовательно перебирает весь массив `scenarios`. Чтобы добавить третью группу, нужно добавить в массив ещё один полный JSON-объект с уникальным `scenarioId`; отдельный файл и метод вида `LoadScenario003()` не требуются.
+Количество GROUP не ограничено двумя и не задаётся в коде. Чтобы добавить третью группу, нужно добавить в массив ещё один полный JSON-объект с уникальным `groupId`, после чего при необходимости сослаться на него из `events[].groupIds`. Отдельный файл или отдельный loader-метод не требуется.
 
-Порядок объектов в массиве сохраняется и определяет порядок их запуска в рамках одного события.
+Порядок `groupIds` внутри EVENT определяет порядок запуска групп в его batch.
 
-Параметры каждого scenario:
+Параметры каждой GROUP:
 
 - `enabled` — включает конкретную группу: `1` — создавать, `0` — пропустить.
-- `weatherChangeEnabled` — определяет, запрашивает ли этот scenario существующий глобальный weather transition: `1` — запрашивает, `0` — сам не инициирует. Default: `1`. Это не локальная защита от уже изменённой погоды мира.
-- `scenarioId` — уникальный текстовый идентификатор группы для состояния infected и серверных логов.
+- `weatherChangeEnabled` — определяет, запрашивает ли эта GROUP существующий глобальный weather transition: `1` — запрашивает, `0` — сама не инициирует. Default: `1`. Это не локальная защита от уже изменённой погоды мира.
+- `groupId` — обязательный стабильный и уникальный технический идентификатор GROUP для EVENT, ACTIVATION, API, runtime state и логов.
+- `name` — отдельное информационное имя GROUP; не используется как ID и не обязано быть уникальным.
 - `infectedCount` — количество infected в группе.
-- `groupLifetimeSeconds` — максимальное время жизни каждого infected, созданного этой конкретной migration-группой. Default: `14400.0` секунд (4 часа). Значение задаётся отдельно для каждого scenario, поэтому разные группы могут иметь разные сроки: `86400.0` — сутки, `604800.0` — неделя. Искусственного верхнего application-level ограничения нет. Неположительное значение заменяется default `14400.0` через `Normalize()`.
+- `groupLifetimeSeconds` — максимальное время жизни каждого infected, созданного этой конкретной migration-группой. Default: `14400.0` секунд (4 часа). Значение задаётся отдельно для каждой GROUP, поэтому разные группы могут иметь разные сроки: `86400.0` — сутки, `604800.0` — неделя. Искусственного верхнего application-level ограничения нет. Неположительное значение заменяется default `14400.0` через `Normalize()`.
 - `infectedTypes` — список vanilla class names infected. Если infected больше элементов списка, классы повторяются по кругу.
 - `spawnPosition` — центр появления группы как `[X, Y, Z]` в метрах мира.
 - `targetPosition` — центр конечной точки маршрута как `[X, Y, Z]`.
@@ -171,7 +190,7 @@ Profile log:
 
 В стандартном source-конфиге `routeActivationEnabled = 0` и `finalActivationEnabled = 0`. При одновременном отключении manager пропускает runtime-группу до подсчёта `aliveCount`, поэтому percentage accumulation не участвует в текущем baseline и не создаёт лишний group count. Ниже описана сохранённая code-path, которую можно явно включить для специального сценария.
 
-Каждый фактический `StartScenario()` создаёт собственную runtime-группу с уникальным ID и списком только успешно созданных этим запуском infected. Поэтому будущие повторные запуски одинакового `scenarioId` не смешивают members. Runtime group ID пока не сохраняется между рестартами.
+Каждый фактический запуск GROUP создаёт собственную runtime-группу с новым уникальным `runtimeGroupId` и списком только успешно созданных этим запуском infected. Поэтому повторные запуски одинакового `groupId` не смешивают members. Runtime group ID пока не сохраняется между рестартами.
 
 Denominator — текущее количество живых, ещё не `RELEASED` members именно этой runtime-группы. Убитые сразу перестают учитываться. Vanilla infected, infected других модов и members другой runtime-группы в процент не входят. Требуемое количество рассчитывается так:
 
@@ -261,12 +280,13 @@ Watchdog дополняет, но не заменяет короткий stuck d
 
 Если preset или `NoiseSystem` недоступны, manager пишет ограниченное предупреждение; group counting, migration route, vanilla handoff, stuck recovery без stimulus и final hold продолжают работать без слышимого fallback-звука.
 
-Пример структуры третьего объекта, который добавляется внутрь массива после существующего объекта через запятую:
+Пример структуры третьего объекта, который добавляется внутрь массива `groups` после существующего объекта через запятую:
 
     {
         "enabled": 1,
         "weatherChangeEnabled": 0,
-        "scenarioId": "MIGRATION_TEST_003",
+        "groupId": "MIGRATION_TEST_003",
+        "name": "Миграционная группа 003",
         "infectedCount": 10,
         "groupLifetimeSeconds": 14400.0,
         "infectedTypes": ["ZmbM_HikerSkinny_Blue"],
@@ -328,16 +348,16 @@ Watchdog дополняет, но не заменяет короткий stuck d
 
 Все существующие старые файлы сначала должны успешно прочитаться. Затем их пользовательские значения переносятся в новый единый объект, временный JSON валидируется и только после этого устанавливается как `MigrationConfig.json`. Старые runtime-файлы не удаляются и не изменяются.
 
-Если найденный старый JSON повреждён, единый файл автоматически не создаётся: сомнительные данные не заменяются defaults. Если старых файлов нет, создаётся единый конфиг с двумя default-сценариями.
+Если найденный старый JSON повреждён, единый файл автоматически не создаётся: сомнительные данные не заменяются defaults. Если старых файлов нет, создаётся единый конфиг с двумя default GROUP, глобальным EVENT и STARTUP/EXTERNAL ACTIVATION.
 
 Если `MigrationConfig.json` уже существует, активным считается только он. Старые три runtime-файла игнорируются и остаются на диске для ручного контроля или последующего удаления пользователем.
 
 ## Add-only и совместимость
 
-Существующий `MigrationConfig.json` loader не переписывает, не пересобирает и не пересортировывает. Существующие глобальные значения, порядок объектов `scenarios` и их пользовательские значения сохраняются. Malformed unified JSON остаётся нетронутым и останавливает запуск события.
+Существующий `MigrationConfig.json` loader не переписывает, не пересобирает и не пересортировывает. Malformed или семантически невалидный unified JSON остаётся нетронутым и останавливает запуск.
 
-Для отсутствующих полей применяются constructor defaults только в загруженном runtime-объекте, без записи обратно в пользовательский JSON. Вложенный массив не патчится текстово: новые scenario-объекты никогда не добавляются автоматически. Это безопасное ограничение текущей add-only совместимости.
+Legacy runtime-файл с массивом `scenarios` продолжает загружаться. Для каждого старого объекта `scenarioId` становится in-memory fallback для `groupId`, отсутствующее `name` получает безопасное информационное значение, а все enabled legacy-группы объединяются в созданный только в памяти `EVENT_GLOBAL_MIGRATION`. Там же создаются совместимые STARTUP и EXTERNAL activation. Runtime JSON на диске при этом не изменяется.
 
-То же правило относится к `weatherChangeEnabled`, `groupLifetimeSeconds`, `routePoints`, route/final activation, stuck recovery/reverse, route progress watchdog и final hold полям: существующий runtime JSON автоматически не переписывается ради новых nested fields. Missing nested fields получают constructor defaults и `Normalize()` defaults только в памяти; для `weatherChangeEnabled` это `1`, для `groupLifetimeSeconds` — `14400.0`, для reverse fallback — `1 / 10.0 / 5.0 / 10.0 / 10.0`. Чтобы scenario явно не запрашивал погоду, получил другое время жизни или чтобы задать пользовательский маршрут, изменить activation/recovery/reverse/watchdog/hold, соответствующие поля нужно вручную добавить в нужный объект `scenarios`.
+Новая canonical schema использует `groups`, `events` и `activations`. Все `groupId`, `eventId` и `activationId` проверяются на непустое уникальное значение, EVENT-ссылки и ACTIVATION target должны существовать, а `type` ограничен `STARTUP`/`EXTERNAL`. Lookup по `name` не выполняется. EVENT сначала разрешает все ссылки целиком и только затем запускает batch, поэтому неизвестный `groupId` не приводит к частичному старту.
 
-Поля `spawnDelaySeconds` и weather-поля из старого Scenario 001 поддерживаются только одноразовой миграцией старой схемы. Внутри актуального массива `scenarios` они не используются.
+Остальные отсутствующие nested-поля старого runtime получают constructor/`Normalize()` defaults только в памяти. Поля `spawnDelaySeconds` и scenario-level weather из ещё более старых отдельных JSON поддерживаются только одноразовой миграцией; в актуальном массиве `groups` они не используются.

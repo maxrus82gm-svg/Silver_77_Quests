@@ -2,7 +2,7 @@ class S77MigrateUnitState
 {
     DayZInfected m_Infected;
     string m_InfectedId;
-    string m_ScenarioId;
+    string m_GroupId;
     string m_RuntimeGroupId;
     string m_ClassName;
     vector m_MigrationTarget;
@@ -67,11 +67,11 @@ class S77MigrateUnitState
     int m_HoldCalmAfterTime;
     bool m_DeathLogged;
 
-    void S77MigrateUnitState(DayZInfected infected, string infectedId, string scenarioId, string runtimeGroupId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, S77MigrateScenarioConfig config, int logIntervalMs)
+    void S77MigrateUnitState(DayZInfected infected, string infectedId, string groupId, string runtimeGroupId, vector migrationTarget, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints, float routePointReachRadius, S77MigrateScenarioConfig config, int logIntervalMs)
     {
         m_Infected = infected;
         m_InfectedId = infectedId;
-        m_ScenarioId = scenarioId;
+        m_GroupId = groupId;
         m_RuntimeGroupId = runtimeGroupId;
         m_ClassName = infected.GetType();
         m_MigrationTarget = migrationTarget;
@@ -141,7 +141,7 @@ class S77MigrateUnitState
 class S77MigrateGroupState
 {
     string m_RuntimeGroupId;
-    string m_ScenarioId;
+    string m_GroupId;
     ref array<ref S77MigrateUnitState> m_Members;
     ref TVectorArray m_RoutePoints;
     ref array<float> m_RouteActivationRadii;
@@ -162,7 +162,7 @@ class S77MigrateGroupState
     void S77MigrateGroupState(string runtimeGroupId, S77MigrateScenarioConfig config, TVectorArray routePoints)
     {
         m_RuntimeGroupId = runtimeGroupId;
-        m_ScenarioId = config.scenarioId;
+        m_GroupId = config.groupId;
         m_Members = new array<ref S77MigrateUnitState>();
         m_RoutePoints = routePoints;
         m_RouteActivationRadii = new array<float>();
@@ -206,14 +206,15 @@ class S77MigrateManager
     protected const float MIGRATION_SPEED = 1.0;
 
     protected ref S77MigrateConfig m_Config;
-    protected ref array<ref S77MigrateScenarioConfig> m_Scenarios;
+    protected ref array<ref S77MigrateScenarioConfig> m_GroupConfigs;
+    protected ref array<ref S77MigrateScenarioConfig> m_PendingGroups;
     protected ref array<ref S77MigrateGroupState> m_Groups;
     protected ref array<ref S77MigrateUnitState> m_Units;
     protected ref PGFilter m_PathFilter;
     protected ref NoiseParams m_StimulusParams;
     protected NoiseSystem m_NoiseSystem;
     protected bool m_StimulusReady;
-    protected bool m_EventStarted;
+    protected bool m_LaunchBusy;
     protected bool m_RouteUpdateScheduled;
     protected bool m_LogScheduled;
     protected bool m_StartGroupsScheduled;
@@ -233,7 +234,8 @@ class S77MigrateManager
 
     void S77MigrateManager()
     {
-        m_Scenarios = new array<ref S77MigrateScenarioConfig>();
+        m_GroupConfigs = new array<ref S77MigrateScenarioConfig>();
+        m_PendingGroups = new array<ref S77MigrateScenarioConfig>();
         m_Groups = new array<ref S77MigrateGroupState>();
         m_Units = new array<ref S77MigrateUnitState>();
         m_PathFilter = new PGFilter();
@@ -340,6 +342,48 @@ class S77MigrateManager
         s_Instance = null;
     }
 
+    static bool ActivateById(string activationId)
+    {
+        if (!s_Instance || !s_Instance.m_Initialized || !s_Instance.m_Config)
+        {
+            string notReadyLog = "[S77Migrate][EVENT] ACTIVATION_REQUEST activationId=";
+            notReadyLog = notReadyLog + activationId;
+            notReadyLog = notReadyLog + " result=NOT_READY";
+            Print(notReadyLog);
+            return false;
+        }
+
+        return s_Instance.RequestActivation(activationId);
+    }
+
+    static bool StartGroupById(string groupId)
+    {
+        if (!s_Instance || !s_Instance.m_Initialized || !s_Instance.m_Config)
+        {
+            string notReadyLog = "[S77Migrate][EVENT] GROUP_START_REQUEST groupId=";
+            notReadyLog = notReadyLog + groupId;
+            notReadyLog = notReadyLog + " result=NOT_READY";
+            Print(notReadyLog);
+            return false;
+        }
+
+        return s_Instance.RequestGroup(groupId);
+    }
+
+    static bool StartEventById(string eventId)
+    {
+        if (!s_Instance || !s_Instance.m_Initialized || !s_Instance.m_Config)
+        {
+            string notReadyLog = "[S77Migrate][EVENT] EVENT_START_REQUEST eventId=";
+            notReadyLog = notReadyLog + eventId;
+            notReadyLog = notReadyLog + " result=NOT_READY";
+            Print(notReadyLog);
+            return false;
+        }
+
+        return s_Instance.RequestEvent(eventId);
+    }
+
     protected void InitializeEvent()
     {
         if (m_Initialized)
@@ -367,39 +411,19 @@ class S77MigrateManager
         logMessage327 = logMessage327 + m_Config.stuckDebugLoggingEnabled.ToString();
         LogInfo(logMessage327);
 
-        for (int scenarioIndex = 0; scenarioIndex < m_Config.scenarios.Count(); scenarioIndex++)
+        for (int groupIndex = 0; groupIndex < m_Config.groups.Count(); groupIndex++)
         {
-            S77MigrateScenarioConfig scenario = m_Config.scenarios.Get(scenarioIndex);
-            if (!scenario)
+            S77MigrateScenarioConfig group = m_Config.groups.Get(groupIndex);
+            if (!group)
             {
                 string logMessage334 = EVENT_LOG_PREFIX;
-                logMessage334 = logMessage334 + " ERROR: null scenario skipped at index=";
-                logMessage334 = logMessage334 + scenarioIndex.ToString();
+                logMessage334 = logMessage334 + " ERROR: null GROUP skipped at index=";
+                logMessage334 = logMessage334 + groupIndex.ToString();
                 LogError(logMessage334);
                 continue;
             }
 
-            if (!scenario.IsValid())
-            {
-                string logMessage340 = EVENT_LOG_PREFIX;
-                logMessage340 = logMessage340 + " ERROR: invalid scenario skipped at index=";
-                logMessage340 = logMessage340 + scenarioIndex.ToString();
-                logMessage340 = logMessage340 + " scenarioId=";
-                logMessage340 = logMessage340 + scenario.scenarioId;
-                LogError(logMessage340);
-                continue;
-            }
-
-            if (scenario.enabled == 1)
-                m_Scenarios.Insert(scenario);
-            else
-            {
-                string logMessage347 = MIGRATION_LOG_PREFIX;
-                logMessage347 = logMessage347 + " scenario=";
-                logMessage347 = logMessage347 + scenario.scenarioId;
-                logMessage347 = logMessage347 + " disabled";
-                LogInfo(logMessage347);
-            }
+            m_GroupConfigs.Insert(group);
         }
 
         if (m_Config.enabled != 1)
@@ -412,89 +436,319 @@ class S77MigrateManager
             return;
         }
 
-        if (m_Scenarios.Count() == 0)
-        {
-            LogInfo(EVENT_LOG_PREFIX + " No enabled migration scenarios; event start aborted");
-            return;
-        }
-
         if (NeedsAIStimulus())
             PrepareAIStimulus();
 
+        bool startupFound = false;
+        for (int activationIndex = 0; activationIndex < m_Config.activations.Count(); activationIndex++)
+        {
+            S77MigrateActivationConfig activation = m_Config.activations.Get(activationIndex);
+            if (!activation || activation.enabled != 1 || activation.type != "STARTUP")
+                continue;
+
+            startupFound = true;
+            RequestActivation(activation.activationId);
+        }
+
+        if (!startupFound)
+            LogInfo(EVENT_LOG_PREFIX + " No enabled STARTUP activation; waiting for public API request");
+    }
+
+    protected bool RequestActivation(string activationId)
+    {
+        string requestLog = EVENT_LOG_PREFIX;
+        requestLog = requestLog + " ACTIVATION_REQUEST activationId=";
+        requestLog = requestLog + activationId;
+        LogInfo(requestLog);
+
+        S77MigrateActivationConfig activation = m_Config.FindActivation(activationId);
+        if (!activation)
+        {
+            string notFoundLog = EVENT_LOG_PREFIX;
+            notFoundLog = notFoundLog + " ACTIVATION_REQUEST activationId=";
+            notFoundLog = notFoundLog + activationId;
+            notFoundLog = notFoundLog + " result=NOT_FOUND";
+            LogInfo(notFoundLog);
+            return false;
+        }
+
+        if (activation.enabled != 1)
+        {
+            string disabledLog = EVENT_LOG_PREFIX;
+            disabledLog = disabledLog + " ACTIVATION_REQUEST activationId=";
+            disabledLog = disabledLog + activationId;
+            disabledLog = disabledLog + " result=DISABLED";
+            LogInfo(disabledLog);
+            return false;
+        }
+
+        string resolvedLog = EVENT_LOG_PREFIX;
+        resolvedLog = resolvedLog + " ACTIVATION_RESOLVED activationId=";
+        resolvedLog = resolvedLog + activation.activationId;
+        resolvedLog = resolvedLog + " type=";
+        resolvedLog = resolvedLog + activation.type;
+        resolvedLog = resolvedLog + " targetType=";
+        resolvedLog = resolvedLog + activation.targetType;
+        resolvedLog = resolvedLog + " targetId=";
+        resolvedLog = resolvedLog + activation.targetId;
+        LogInfo(resolvedLog);
+
+        if (activation.targetType == "GROUP")
+            return RequestGroup(activation.targetId);
+
+        if (activation.targetType == "EVENT")
+            return RequestEvent(activation.targetId);
+
+        string invalidTargetLog = EVENT_LOG_PREFIX;
+        invalidTargetLog = invalidTargetLog + " ACTIVATION_REQUEST activationId=";
+        invalidTargetLog = invalidTargetLog + activationId;
+        invalidTargetLog = invalidTargetLog + " result=INVALID_TARGET";
+        LogInfo(invalidTargetLog);
+        return false;
+    }
+
+    protected bool RequestGroup(string groupId)
+    {
+        string requestLog = EVENT_LOG_PREFIX;
+        requestLog = requestLog + " GROUP_START_REQUEST groupId=";
+        requestLog = requestLog + groupId;
+        LogInfo(requestLog);
+
+        S77MigrateScenarioConfig group = m_Config.FindGroup(groupId);
+        if (!group)
+        {
+            string notFoundLog = EVENT_LOG_PREFIX;
+            notFoundLog = notFoundLog + " GROUP_START_REQUEST groupId=";
+            notFoundLog = notFoundLog + groupId;
+            notFoundLog = notFoundLog + " result=NOT_FOUND";
+            LogInfo(notFoundLog);
+            return false;
+        }
+
+        if (group.enabled != 1)
+        {
+            string disabledLog = EVENT_LOG_PREFIX;
+            disabledLog = disabledLog + " GROUP_START_REQUEST groupId=";
+            disabledLog = disabledLog + groupId;
+            disabledLog = disabledLog + " result=DISABLED";
+            LogInfo(disabledLog);
+            return false;
+        }
+
+        array<ref S77MigrateScenarioConfig> requestedGroups = new array<ref S77MigrateScenarioConfig>();
+        requestedGroups.Insert(group);
+        return BeginLaunchBatch(requestedGroups, "GROUP", groupId);
+    }
+
+    protected bool RequestEvent(string eventId)
+    {
+        string requestLog = EVENT_LOG_PREFIX;
+        requestLog = requestLog + " EVENT_START_REQUEST eventId=";
+        requestLog = requestLog + eventId;
+        LogInfo(requestLog);
+
+        S77MigrateEventConfig eventConfig = m_Config.FindEvent(eventId);
+        if (!eventConfig)
+        {
+            string notFoundLog = EVENT_LOG_PREFIX;
+            notFoundLog = notFoundLog + " EVENT_START_REQUEST eventId=";
+            notFoundLog = notFoundLog + eventId;
+            notFoundLog = notFoundLog + " result=NOT_FOUND";
+            LogInfo(notFoundLog);
+            return false;
+        }
+
+        if (eventConfig.enabled != 1)
+        {
+            string disabledLog = EVENT_LOG_PREFIX;
+            disabledLog = disabledLog + " EVENT_START_REQUEST eventId=";
+            disabledLog = disabledLog + eventId;
+            disabledLog = disabledLog + " result=DISABLED";
+            LogInfo(disabledLog);
+            return false;
+        }
+
+        array<ref S77MigrateScenarioConfig> resolvedGroups = new array<ref S77MigrateScenarioConfig>();
+        for (int resolveIndex = 0; resolveIndex < eventConfig.groupIds.Count(); resolveIndex++)
+        {
+            string referencedGroupId = eventConfig.groupIds.Get(resolveIndex);
+            S77MigrateScenarioConfig referencedGroup = m_Config.FindGroup(referencedGroupId);
+            if (!referencedGroup)
+            {
+                string invalidReferenceLog = EVENT_LOG_PREFIX;
+                invalidReferenceLog = invalidReferenceLog + " EVENT_START_REQUEST eventId=";
+                invalidReferenceLog = invalidReferenceLog + eventId;
+                invalidReferenceLog = invalidReferenceLog + " result=INVALID_TARGET groupId=";
+                invalidReferenceLog = invalidReferenceLog + referencedGroupId;
+                LogInfo(invalidReferenceLog);
+                return false;
+            }
+
+            resolvedGroups.Insert(referencedGroup);
+        }
+
+        array<ref S77MigrateScenarioConfig> runnableGroups = new array<ref S77MigrateScenarioConfig>();
+        for (int groupIndex = 0; groupIndex < resolvedGroups.Count(); groupIndex++)
+        {
+            S77MigrateScenarioConfig group = resolvedGroups.Get(groupIndex);
+            if (group.enabled == 1)
+            {
+                runnableGroups.Insert(group);
+                continue;
+            }
+
+            string skippedLog = EVENT_LOG_PREFIX;
+            skippedLog = skippedLog + " EVENT_RESOLVED eventId=";
+            skippedLog = skippedLog + eventId;
+            skippedLog = skippedLog + " groupId=";
+            skippedLog = skippedLog + group.groupId;
+            skippedLog = skippedLog + " result=DISABLED_SKIPPED";
+            LogInfo(skippedLog);
+        }
+
+        string resolvedLog = EVENT_LOG_PREFIX;
+        resolvedLog = resolvedLog + " EVENT_RESOLVED eventId=";
+        resolvedLog = resolvedLog + eventId;
+        resolvedLog = resolvedLog + " groups=";
+        resolvedLog = resolvedLog + BuildGroupIdList(runnableGroups);
+        LogInfo(resolvedLog);
+
+        if (runnableGroups.Count() == 0)
+        {
+            string noRunnableLog = EVENT_LOG_PREFIX;
+            noRunnableLog = noRunnableLog + " EVENT_START_REQUEST eventId=";
+            noRunnableLog = noRunnableLog + eventId;
+            noRunnableLog = noRunnableLog + " result=NO_RUNNABLE_GROUPS";
+            LogInfo(noRunnableLog);
+            return false;
+        }
+
+        return BeginLaunchBatch(runnableGroups, "EVENT", eventId);
+    }
+
+    protected bool BeginLaunchBatch(array<ref S77MigrateScenarioConfig> groups, string requestType, string requestId)
+    {
+        if (m_Stopped || m_Config.enabled != 1)
+        {
+            string disabledLog = EVENT_LOG_PREFIX;
+            disabledLog = disabledLog + " LAUNCH_STARTED requestType=";
+            disabledLog = disabledLog + requestType;
+            disabledLog = disabledLog + " requestId=";
+            disabledLog = disabledLog + requestId;
+            disabledLog = disabledLog + " result=DISABLED";
+            LogInfo(disabledLog);
+            return false;
+        }
+
+        if (m_LaunchBusy)
+        {
+            string busyLog = EVENT_LOG_PREFIX;
+            busyLog = busyLog + " LAUNCH_BUSY requestType=";
+            busyLog = busyLog + requestType;
+            busyLog = busyLog + " requestId=";
+            busyLog = busyLog + requestId;
+            LogInfo(busyLog);
+            return false;
+        }
+
+        m_PendingGroups.Clear();
+        for (int copyIndex = 0; copyIndex < groups.Count(); copyIndex++)
+            m_PendingGroups.Insert(groups.Get(copyIndex));
+
+        m_LaunchBusy = true;
         int delayMs = Math.Round(m_Config.eventDelaySeconds * 1000.0);
-        int weatherRequestingScenarios = CountWeatherRequestingScenarios();
+        int weatherRequestingGroups = CountWeatherRequestingGroups(m_PendingGroups);
         bool shouldStartWeatherTransition = false;
         string weatherDecision = "SKIP_GLOBAL_DISABLED";
 
         if (m_Config.weatherEnabled == 1)
         {
-            weatherDecision = "SKIP_NO_SCENARIO_REQUEST";
-            if (weatherRequestingScenarios > 0)
+            weatherDecision = "SKIP_NO_GROUP_REQUEST";
+            if (weatherRequestingGroups > 0)
             {
                 shouldStartWeatherTransition = true;
                 weatherDecision = "TRANSITION";
             }
         }
 
-        string logMessage380 = EVENT_LOG_PREFIX;
-        logMessage380 = logMessage380 + " WEATHER_DECISION globalEnabled=";
-        logMessage380 = logMessage380 + m_Config.weatherEnabled.ToString();
-        logMessage380 = logMessage380 + " requestingScenarios=";
-        logMessage380 = logMessage380 + weatherRequestingScenarios.ToString();
-        logMessage380 = logMessage380 + " enabledScenarios=";
-        logMessage380 = logMessage380 + m_Scenarios.Count().ToString();
-        logMessage380 = logMessage380 + " result=";
-        logMessage380 = logMessage380 + weatherDecision;
-        LogInfo(logMessage380);
+        string weatherLog = EVENT_LOG_PREFIX;
+        weatherLog = weatherLog + " WEATHER_DECISION globalEnabled=";
+        weatherLog = weatherLog + m_Config.weatherEnabled.ToString();
+        weatherLog = weatherLog + " requestingGroups=";
+        weatherLog = weatherLog + weatherRequestingGroups.ToString();
+        weatherLog = weatherLog + " batchGroups=";
+        weatherLog = weatherLog + m_PendingGroups.Count().ToString();
+        weatherLog = weatherLog + " result=";
+        weatherLog = weatherLog + weatherDecision;
+        LogInfo(weatherLog);
+
+        string startedLog = EVENT_LOG_PREFIX;
+        startedLog = startedLog + " LAUNCH_STARTED requestType=";
+        startedLog = startedLog + requestType;
+        startedLog = startedLog + " requestId=";
+        startedLog = startedLog + requestId;
+        startedLog = startedLog + " groups=";
+        startedLog = startedLog + BuildGroupIdList(m_PendingGroups);
+        startedLog = startedLog + " delaySeconds=";
+        startedLog = startedLog + m_Config.eventDelaySeconds.ToString();
+        LogInfo(startedLog);
 
         if (shouldStartWeatherTransition)
         {
             m_WeatherStartScheduled = true;
-            string logMessage385 = EVENT_LOG_PREFIX;
-            logMessage385 = logMessage385 + " Global weather scheduled in ";
-            logMessage385 = logMessage385 + m_Config.eventDelaySeconds.ToString();
-            logMessage385 = logMessage385 + " seconds; transition=";
-            logMessage385 = logMessage385 + m_Config.weatherTransitionSeconds.ToString();
-            logMessage385 = logMessage385 + " seconds; scenarios=";
-            logMessage385 = logMessage385 + m_Scenarios.Count().ToString();
-            LogInfo(logMessage385);
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(BeginWeatherTransition, delayMs, false);
         }
         else
         {
             m_StartGroupsScheduled = true;
-            string logMessage391 = EVENT_LOG_PREFIX;
-            logMessage391 = logMessage391 + " Weather transition skipped; all enabled groups scheduled in ";
-            logMessage391 = logMessage391 + m_Config.eventDelaySeconds.ToString();
-            logMessage391 = logMessage391 + " seconds";
-            LogInfo(logMessage391);
-            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartAllScenarios, delayMs, false);
+            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(StartPendingGroups, delayMs, false);
         }
+
+        return true;
     }
 
-    protected int CountWeatherRequestingScenarios()
+    protected int CountWeatherRequestingGroups(array<ref S77MigrateScenarioConfig> groups)
     {
-        int requestingScenarios = 0;
-        for (int scenarioIndex = 0; scenarioIndex < m_Scenarios.Count(); scenarioIndex++)
+        int requestingGroups = 0;
+        for (int groupIndex = 0; groupIndex < groups.Count(); groupIndex++)
         {
-            S77MigrateScenarioConfig scenario = m_Scenarios.Get(scenarioIndex);
-            if (scenario && scenario.weatherChangeEnabled == 1)
-                requestingScenarios++;
+            S77MigrateScenarioConfig group = groups.Get(groupIndex);
+            if (group && group.weatherChangeEnabled == 1)
+                requestingGroups++;
         }
 
-        return requestingScenarios;
+        return requestingGroups;
+    }
+
+    protected string BuildGroupIdList(array<ref S77MigrateScenarioConfig> groups)
+    {
+        string result = "[";
+        for (int i = 0; i < groups.Count(); i++)
+        {
+            if (i > 0)
+                result = result + ",";
+
+            S77MigrateScenarioConfig group = groups.Get(i);
+            if (group)
+                result = result + group.groupId;
+        }
+
+        result = result + "]";
+        return result;
     }
 
     protected void BeginWeatherTransition()
     {
         m_WeatherStartScheduled = false;
-        if (m_Stopped || m_EventStarted)
+        if (m_Stopped || !m_LaunchBusy)
             return;
 
         Weather weather = GetGame().GetWeather();
         if (!weather)
         {
             LogError(EVENT_LOG_PREFIX + " ERROR: Weather API is unavailable; event start aborted");
+            m_PendingGroups.Clear();
+            m_LaunchBusy = false;
             return;
         }
 
@@ -580,7 +834,7 @@ class S77MigrateManager
     protected void BeginStormRamp()
     {
         m_StormRampStartScheduled = false;
-        if (m_Stopped || !m_WeatherControlActive || m_EventStarted)
+        if (m_Stopped || !m_WeatherControlActive || !m_LaunchBusy)
             return;
 
         m_StormRampStartTime = GetGame().GetTime();
@@ -591,7 +845,8 @@ class S77MigrateManager
 
     protected void UpdateStormRamp()
     {
-        if (m_Stopped || !m_WeatherControlActive || m_EventStarted || m_EffectiveStormRampSeconds <= 0.0)
+        bool launchInactive = m_Stopped || !m_WeatherControlActive || !m_LaunchBusy;
+        if (launchInactive || m_EffectiveStormRampSeconds <= 0.0)
         {
             StopStormRampCallbacks();
             return;
@@ -642,8 +897,8 @@ class S77MigrateManager
         else
             ApplyStormDensity(0.0, 0.0);
 
-        LogInfo(EVENT_LOG_PREFIX + " Weather transition completed; starting all enabled migration groups");
-        StartAllScenarios();
+        LogInfo(EVENT_LOG_PREFIX + " Weather transition completed; starting current migration batch");
+        StartPendingGroups();
         ReleaseWeatherControl();
     }
 
@@ -667,10 +922,17 @@ class S77MigrateManager
 
     protected bool NeedsAIStimulus()
     {
-        for (int i = 0; i < m_Scenarios.Count(); i++)
+        for (int i = 0; i < m_GroupConfigs.Count(); i++)
         {
-            S77MigrateScenarioConfig scenario = m_Scenarios.Get(i);
-            if (scenario && (scenario.finalActivationEnabled == 1 || scenario.stuckRecoveryEnabled == 1 || scenario.routeProgressWatchdogEnabled == 1 || (scenario.routeActivationEnabled == 1 && scenario.routePoints.Count() > 0)))
+            S77MigrateScenarioConfig group = m_GroupConfigs.Get(i);
+            if (!group)
+                continue;
+
+            bool finalStimulusNeeded = group.finalActivationEnabled == 1;
+            bool stuckStimulusNeeded = group.stuckRecoveryEnabled == 1;
+            bool watchdogStimulusNeeded = group.routeProgressWatchdogEnabled == 1;
+            bool routeStimulusNeeded = group.routeActivationEnabled == 1 && group.routePoints.Count() > 0;
+            if (finalStimulusNeeded || stuckStimulusNeeded || watchdogStimulusNeeded || routeStimulusNeeded)
                 return true;
         }
 
@@ -707,35 +969,38 @@ class S77MigrateManager
         LogInfo(logMessage599);
     }
 
-    protected void StartAllScenarios()
+    protected void StartPendingGroups()
     {
         m_StartGroupsScheduled = false;
-        if (m_Stopped)
+        if (m_Stopped || !m_LaunchBusy)
             return;
 
-        if (m_EventStarted)
-        {
-            LogInfo(EVENT_LOG_PREFIX + " Duplicate group start ignored");
-            return;
-        }
+        int beforeCount = m_Units.Count();
+        int batchGroupCount = m_PendingGroups.Count();
+        for (int groupIndex = 0; groupIndex < m_PendingGroups.Count(); groupIndex++)
+            StartGroupBlueprint(m_PendingGroups.Get(groupIndex));
 
-        m_EventStarted = true;
-        for (int scenarioIndex = 0; scenarioIndex < m_Scenarios.Count(); scenarioIndex++)
-            StartScenario(m_Scenarios.Get(scenarioIndex));
+        int batchSpawnedCount = m_Units.Count() - beforeCount;
 
         string logMessage618 = EVENT_LOG_PREFIX;
-        logMessage618 = logMessage618 + " All enabled scenarios started; scenarios=";
-        logMessage618 = logMessage618 + m_Scenarios.Count().ToString();
-        logMessage618 = logMessage618 + " totalSpawned=";
-        logMessage618 = logMessage618 + m_Units.Count().ToString();
+        logMessage618 = logMessage618 + " Current launch batch completed; groups=";
+        logMessage618 = logMessage618 + batchGroupCount.ToString();
+        logMessage618 = logMessage618 + " spawned=";
+        logMessage618 = logMessage618 + batchSpawnedCount.ToString();
         LogInfo(logMessage618);
+        m_PendingGroups.Clear();
+        m_LaunchBusy = false;
+
         if (m_Units.Count() == 0)
             return;
 
-        m_RouteUpdateScheduled = true;
-        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(UpdateRoutes, UPDATE_INTERVAL_MS, true);
+        if (!m_RouteUpdateScheduled)
+        {
+            m_RouteUpdateScheduled = true;
+            GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(UpdateRoutes, UPDATE_INTERVAL_MS, true);
+        }
 
-        if (m_Config.loggingEnabled == 1)
+        if (m_Config.loggingEnabled == 1 && !m_LogScheduled)
         {
             m_LogScheduled = true;
             GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(LogUnitStates, LOG_CHECK_INTERVAL_MS, true);
@@ -743,21 +1008,21 @@ class S77MigrateManager
         }
     }
 
-    protected void StartScenario(S77MigrateScenarioConfig config)
+    protected void StartGroupBlueprint(S77MigrateScenarioConfig config)
     {
         vector spawnCenter = config.GetSpawnPosition();
         vector targetCenter = config.GetTargetPosition();
         TVectorArray routePoints = config.GetRoutePoints();
         m_NextRuntimeGroupSerial++;
-        string runtimeGroupId = config.scenarioId + "_RUN_" + m_NextRuntimeGroupSerial.ToString();
+        string runtimeGroupId = config.groupId + "_RUN_" + m_NextRuntimeGroupSerial.ToString();
         S77MigrateGroupState groupState = new S77MigrateGroupState(runtimeGroupId, config, routePoints);
         m_Groups.Insert(groupState);
         float spawnFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
         float targetFormationRotation = Math.RandomFloatInclusive(0.0, 360.0);
         string scenarioPrefix = MIGRATION_LOG_PREFIX;
-        scenarioPrefix = scenarioPrefix + " scenario=";
-        scenarioPrefix = scenarioPrefix + config.scenarioId;
-        scenarioPrefix = scenarioPrefix + " group=";
+        scenarioPrefix = scenarioPrefix + " groupId=";
+        scenarioPrefix = scenarioPrefix + config.groupId;
+        scenarioPrefix = scenarioPrefix + " runtimeGroupId=";
         scenarioPrefix = scenarioPrefix + runtimeGroupId;
 
         string formationLog = scenarioPrefix;
@@ -800,9 +1065,9 @@ class S77MigrateManager
     protected void SpawnMigrationInfected(S77MigrateScenarioConfig config, S77MigrateGroupState groupState, int index, string className, vector spawnPosition, vector finalTargetCenter, vector routeOffset, TVectorArray routePoints)
     {
         string scenarioPrefix = MIGRATION_LOG_PREFIX;
-        scenarioPrefix = scenarioPrefix + " scenario=";
-        scenarioPrefix = scenarioPrefix + config.scenarioId;
-        scenarioPrefix = scenarioPrefix + " group=";
+        scenarioPrefix = scenarioPrefix + " groupId=";
+        scenarioPrefix = scenarioPrefix + config.groupId;
+        scenarioPrefix = scenarioPrefix + " runtimeGroupId=";
         scenarioPrefix = scenarioPrefix + groupState.m_RuntimeGroupId;
         if (!GetGame().ConfigIsExisting("CfgVehicles " + className) || !GetGame().IsKindOf(className, "DayZInfected"))
         {
@@ -833,7 +1098,7 @@ class S77MigrateManager
         string infectedId = "INF_" + (index + 1).ToString();
         int logIntervalMs = Math.Round(config.logIntervalSeconds * 1000.0);
         vector migrationTarget = finalTargetCenter + routeOffset;
-        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.scenarioId, groupState.m_RuntimeGroupId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, config, logIntervalMs);
+        S77MigrateUnitState state = new S77MigrateUnitState(infected, infectedId, config.groupId, groupState.m_RuntimeGroupId, migrationTarget, finalTargetCenter, routeOffset, routePoints, config.routePointReachRadius, config, logIntervalMs);
         m_Units.Insert(state);
         groupState.m_Members.Insert(state);
 
@@ -865,9 +1130,9 @@ class S77MigrateManager
         if (!aiWorld)
         {
             string logMessage710 = MIGRATION_LOG_PREFIX;
-            logMessage710 = logMessage710 + " scenario=";
-            logMessage710 = logMessage710 + state.m_ScenarioId;
-            logMessage710 = logMessage710 + " group=";
+            logMessage710 = logMessage710 + " groupId=";
+            logMessage710 = logMessage710 + state.m_GroupId;
+            logMessage710 = logMessage710 + " runtimeGroupId=";
             logMessage710 = logMessage710 + state.m_RuntimeGroupId;
             logMessage710 = logMessage710 + " id=";
             logMessage710 = logMessage710 + state.m_InfectedId;
@@ -884,9 +1149,9 @@ class S77MigrateManager
         if (!aiWorld.SampleNavmeshPosition(currentPosition, 8.0, m_PathFilter, sampledStart))
         {
             string logMessage721 = MIGRATION_LOG_PREFIX;
-            logMessage721 = logMessage721 + " PATH_ERROR scenario=";
-            logMessage721 = logMessage721 + state.m_ScenarioId;
-            logMessage721 = logMessage721 + " group=";
+            logMessage721 = logMessage721 + " PATH_ERROR groupId=";
+            logMessage721 = logMessage721 + state.m_GroupId;
+            logMessage721 = logMessage721 + " runtimeGroupId=";
             logMessage721 = logMessage721 + state.m_RuntimeGroupId;
             logMessage721 = logMessage721 + " id=";
             logMessage721 = logMessage721 + state.m_InfectedId;
@@ -899,9 +1164,9 @@ class S77MigrateManager
         if (!aiWorld.SampleNavmeshPosition(currentRouteTarget, 15.0, m_PathFilter, sampledTarget))
         {
             string logMessage727 = MIGRATION_LOG_PREFIX;
-            logMessage727 = logMessage727 + " PATH_ERROR scenario=";
-            logMessage727 = logMessage727 + state.m_ScenarioId;
-            logMessage727 = logMessage727 + " group=";
+            logMessage727 = logMessage727 + " PATH_ERROR groupId=";
+            logMessage727 = logMessage727 + state.m_GroupId;
+            logMessage727 = logMessage727 + " runtimeGroupId=";
             logMessage727 = logMessage727 + state.m_RuntimeGroupId;
             logMessage727 = logMessage727 + " id=";
             logMessage727 = logMessage727 + state.m_InfectedId;
@@ -915,9 +1180,9 @@ class S77MigrateManager
         if (!aiWorld.FindPath(sampledStart, sampledTarget, m_PathFilter, newWaypoints) || newWaypoints.Count() < 2)
         {
             string logMessage734 = MIGRATION_LOG_PREFIX;
-            logMessage734 = logMessage734 + " PATH_ERROR scenario=";
-            logMessage734 = logMessage734 + state.m_ScenarioId;
-            logMessage734 = logMessage734 + " group=";
+            logMessage734 = logMessage734 + " PATH_ERROR groupId=";
+            logMessage734 = logMessage734 + state.m_GroupId;
+            logMessage734 = logMessage734 + " runtimeGroupId=";
             logMessage734 = logMessage734 + state.m_RuntimeGroupId;
             logMessage734 = logMessage734 + " id=";
             logMessage734 = logMessage734 + state.m_InfectedId;
@@ -935,9 +1200,9 @@ class S77MigrateManager
         ResetStuckSample(state, "BUILD_PATH");
         ScheduleRouteProgressBaseline(state, GetGame().GetTime());
         string logMessage743 = MIGRATION_LOG_PREFIX;
-        logMessage743 = logMessage743 + " BUILD_PATH scenario=";
-        logMessage743 = logMessage743 + state.m_ScenarioId;
-        logMessage743 = logMessage743 + " group=";
+        logMessage743 = logMessage743 + " BUILD_PATH groupId=";
+        logMessage743 = logMessage743 + state.m_GroupId;
+        logMessage743 = logMessage743 + " runtimeGroupId=";
         logMessage743 = logMessage743 + state.m_RuntimeGroupId;
         logMessage743 = logMessage743 + " id=";
         logMessage743 = logMessage743 + state.m_InfectedId;
@@ -987,9 +1252,9 @@ class S77MigrateManager
                 {
                     state.m_DeathLogged = true;
                     string logMessage778 = MIGRATION_LOG_PREFIX;
-                    logMessage778 = logMessage778 + " DEATH scenario=";
-                    logMessage778 = logMessage778 + state.m_ScenarioId;
-                    logMessage778 = logMessage778 + " group=";
+                    logMessage778 = logMessage778 + " DEATH groupId=";
+                    logMessage778 = logMessage778 + state.m_GroupId;
+                    logMessage778 = logMessage778 + " runtimeGroupId=";
                     logMessage778 = logMessage778 + state.m_RuntimeGroupId;
                     logMessage778 = logMessage778 + " id=";
                     logMessage778 = logMessage778 + state.m_InfectedId;
@@ -1070,9 +1335,9 @@ class S77MigrateManager
         if (firstHandoff)
         {
             string logMessage852 = MIGRATION_LOG_PREFIX;
-            logMessage852 = logMessage852 + " VANILLA_AGGRO_HANDOFF scenario=";
-            logMessage852 = logMessage852 + state.m_ScenarioId;
-            logMessage852 = logMessage852 + " group=";
+            logMessage852 = logMessage852 + " VANILLA_AGGRO_HANDOFF groupId=";
+            logMessage852 = logMessage852 + state.m_GroupId;
+            logMessage852 = logMessage852 + " runtimeGroupId=";
             logMessage852 = logMessage852 + state.m_RuntimeGroupId;
             logMessage852 = logMessage852 + " id=";
             logMessage852 = logMessage852 + state.m_InfectedId;
@@ -1112,9 +1377,9 @@ class S77MigrateManager
         if (pathBuilt)
         {
             string logMessage873 = MIGRATION_LOG_PREFIX;
-            logMessage873 = logMessage873 + " VANILLA_AGGRO_RESUME scenario=";
-            logMessage873 = logMessage873 + state.m_ScenarioId;
-            logMessage873 = logMessage873 + " group=";
+            logMessage873 = logMessage873 + " VANILLA_AGGRO_RESUME groupId=";
+            logMessage873 = logMessage873 + state.m_GroupId;
+            logMessage873 = logMessage873 + " runtimeGroupId=";
             logMessage873 = logMessage873 + state.m_RuntimeGroupId;
             logMessage873 = logMessage873 + " id=";
             logMessage873 = logMessage873 + state.m_InfectedId;
@@ -1205,9 +1470,9 @@ class S77MigrateManager
             movementResult = "MOVED";
 
         string movementLog = MIGRATION_LOG_PREFIX;
-        movementLog = movementLog + " STUCK_RECOVERY_MOVEMENT_CHECK scenario=";
-        movementLog = movementLog + state.m_ScenarioId;
-        movementLog = movementLog + " group=";
+        movementLog = movementLog + " STUCK_RECOVERY_MOVEMENT_CHECK groupId=";
+        movementLog = movementLog + state.m_GroupId;
+        movementLog = movementLog + " runtimeGroupId=";
         movementLog = movementLog + state.m_RuntimeGroupId;
         movementLog = movementLog + " id=";
         movementLog = movementLog + state.m_InfectedId;
@@ -1286,9 +1551,9 @@ class S77MigrateManager
 
         float targetDistance = HorizontalDistance(currentPosition, reverseTarget);
         string startLog = MIGRATION_LOG_PREFIX;
-        startLog = startLog + " STUCK_REVERSE_START scenario=";
-        startLog = startLog + state.m_ScenarioId;
-        startLog = startLog + " group=";
+        startLog = startLog + " STUCK_REVERSE_START groupId=";
+        startLog = startLog + state.m_GroupId;
+        startLog = startLog + " runtimeGroupId=";
         startLog = startLog + state.m_RuntimeGroupId;
         startLog = startLog + " id=";
         startLog = startLog + state.m_InfectedId;
@@ -1355,9 +1620,9 @@ class S77MigrateManager
             result = "MOVED";
 
         string endLog = MIGRATION_LOG_PREFIX;
-        endLog = endLog + " STUCK_REVERSE_END scenario=";
-        endLog = endLog + state.m_ScenarioId;
-        endLog = endLog + " group=";
+        endLog = endLog + " STUCK_REVERSE_END groupId=";
+        endLog = endLog + state.m_GroupId;
+        endLog = endLog + " runtimeGroupId=";
         endLog = endLog + state.m_RuntimeGroupId;
         endLog = endLog + " id=";
         endLog = endLog + state.m_InfectedId;
@@ -1380,9 +1645,9 @@ class S77MigrateManager
         state.m_ReverseStartedTime = 0;
 
         string freeLog = MIGRATION_LOG_PREFIX;
-        freeLog = freeLog + " STUCK_POST_REVERSE_FREE scenario=";
-        freeLog = freeLog + state.m_ScenarioId;
-        freeLog = freeLog + " group=";
+        freeLog = freeLog + " STUCK_POST_REVERSE_FREE groupId=";
+        freeLog = freeLog + state.m_GroupId;
+        freeLog = freeLog + " runtimeGroupId=";
         freeLog = freeLog + state.m_RuntimeGroupId;
         freeLog = freeLog + " id=";
         freeLog = freeLog + state.m_InfectedId;
@@ -1452,9 +1717,9 @@ class S77MigrateManager
             string resumeLog = MIGRATION_LOG_PREFIX;
             resumeLog = resumeLog + " ";
             resumeLog = resumeLog + eventName;
-            resumeLog = resumeLog + " scenario=";
-            resumeLog = resumeLog + state.m_ScenarioId;
-            resumeLog = resumeLog + " group=";
+            resumeLog = resumeLog + " groupId=";
+            resumeLog = resumeLog + state.m_GroupId;
+            resumeLog = resumeLog + " runtimeGroupId=";
             resumeLog = resumeLog + state.m_RuntimeGroupId;
             resumeLog = resumeLog + " id=";
             resumeLog = resumeLog + state.m_InfectedId;
@@ -1475,9 +1740,9 @@ class S77MigrateManager
         string waitLog = MIGRATION_LOG_PREFIX;
         waitLog = waitLog + " ";
         waitLog = waitLog + eventName;
-        waitLog = waitLog + " scenario=";
-        waitLog = waitLog + state.m_ScenarioId;
-        waitLog = waitLog + " group=";
+        waitLog = waitLog + " groupId=";
+        waitLog = waitLog + state.m_GroupId;
+        waitLog = waitLog + " runtimeGroupId=";
         waitLog = waitLog + state.m_RuntimeGroupId;
         waitLog = waitLog + " id=";
         waitLog = waitLog + state.m_InfectedId;
@@ -1493,9 +1758,9 @@ class S77MigrateManager
     protected void LogRecoveryCalm(S77MigrateUnitState state)
     {
         string calmLog = MIGRATION_LOG_PREFIX;
-        calmLog = calmLog + " STUCK_RECOVERY_CALM scenario=";
-        calmLog = calmLog + state.m_ScenarioId;
-        calmLog = calmLog + " group=";
+        calmLog = calmLog + " STUCK_RECOVERY_CALM groupId=";
+        calmLog = calmLog + state.m_GroupId;
+        calmLog = calmLog + " runtimeGroupId=";
         calmLog = calmLog + state.m_RuntimeGroupId;
         calmLog = calmLog + " id=";
         calmLog = calmLog + state.m_InfectedId;
@@ -1530,9 +1795,9 @@ class S77MigrateManager
         {
             state.m_HoldCalmAfterTime = 0;
             string logMessage956 = MIGRATION_LOG_PREFIX;
-            logMessage956 = logMessage956 + " HOLD_RETURN_WAIT_BUSY scenario=";
-            logMessage956 = logMessage956 + state.m_ScenarioId;
-            logMessage956 = logMessage956 + " group=";
+            logMessage956 = logMessage956 + " HOLD_RETURN_WAIT_BUSY groupId=";
+            logMessage956 = logMessage956 + state.m_GroupId;
+            logMessage956 = logMessage956 + " runtimeGroupId=";
             logMessage956 = logMessage956 + state.m_RuntimeGroupId;
             logMessage956 = logMessage956 + " id=";
             logMessage956 = logMessage956 + state.m_InfectedId;
@@ -1550,9 +1815,9 @@ class S77MigrateManager
         {
             state.m_HoldCalmAfterTime = now + AGGRO_COOLDOWN_MS;
             string logMessage963 = MIGRATION_LOG_PREFIX;
-            logMessage963 = logMessage963 + " HOLD_OUTSIDE scenario=";
-            logMessage963 = logMessage963 + state.m_ScenarioId;
-            logMessage963 = logMessage963 + " group=";
+            logMessage963 = logMessage963 + " HOLD_OUTSIDE groupId=";
+            logMessage963 = logMessage963 + state.m_GroupId;
+            logMessage963 = logMessage963 + " runtimeGroupId=";
             logMessage963 = logMessage963 + state.m_RuntimeGroupId;
             logMessage963 = logMessage963 + " id=";
             logMessage963 = logMessage963 + state.m_InfectedId;
@@ -1603,9 +1868,9 @@ class S77MigrateManager
             sampleResult = "MOVING";
 
         string logMessage1001 = MIGRATION_LOG_PREFIX;
-        logMessage1001 = logMessage1001 + " STUCK_SAMPLE_CHECK scenario=";
-        logMessage1001 = logMessage1001 + state.m_ScenarioId;
-        logMessage1001 = logMessage1001 + " group=";
+        logMessage1001 = logMessage1001 + " STUCK_SAMPLE_CHECK groupId=";
+        logMessage1001 = logMessage1001 + state.m_GroupId;
+        logMessage1001 = logMessage1001 + " runtimeGroupId=";
         logMessage1001 = logMessage1001 + state.m_RuntimeGroupId;
         logMessage1001 = logMessage1001 + " id=";
         logMessage1001 = logMessage1001 + state.m_InfectedId;
@@ -1632,9 +1897,9 @@ class S77MigrateManager
         }
 
         string logMessage1009 = MIGRATION_LOG_PREFIX;
-        logMessage1009 = logMessage1009 + " STUCK_DETECTED scenario=";
-        logMessage1009 = logMessage1009 + state.m_ScenarioId;
-        logMessage1009 = logMessage1009 + " group=";
+        logMessage1009 = logMessage1009 + " STUCK_DETECTED groupId=";
+        logMessage1009 = logMessage1009 + state.m_GroupId;
+        logMessage1009 = logMessage1009 + " runtimeGroupId=";
         logMessage1009 = logMessage1009 + state.m_RuntimeGroupId;
         logMessage1009 = logMessage1009 + " id=";
         logMessage1009 = logMessage1009 + state.m_InfectedId;
@@ -1726,9 +1991,9 @@ class S77MigrateManager
             return false;
 
         string routeProgressLog = MIGRATION_LOG_PREFIX;
-        routeProgressLog = routeProgressLog + " ROUTE_PROGRESS_LOST scenario=";
-        routeProgressLog = routeProgressLog + state.m_ScenarioId;
-        routeProgressLog = routeProgressLog + " group=";
+        routeProgressLog = routeProgressLog + " ROUTE_PROGRESS_LOST groupId=";
+        routeProgressLog = routeProgressLog + state.m_GroupId;
+        routeProgressLog = routeProgressLog + " runtimeGroupId=";
         routeProgressLog = routeProgressLog + state.m_RuntimeGroupId;
         routeProgressLog = routeProgressLog + " id=";
         routeProgressLog = routeProgressLog + state.m_InfectedId;
@@ -1771,9 +2036,9 @@ class S77MigrateManager
         if (direction.Length() <= 0.01)
         {
             string logMessage1114 = MIGRATION_LOG_PREFIX;
-            logMessage1114 = logMessage1114 + " STUCK_RECOVERY_STIMULUS_ATTEMPT scenario=";
-            logMessage1114 = logMessage1114 + state.m_ScenarioId;
-            logMessage1114 = logMessage1114 + " group=";
+            logMessage1114 = logMessage1114 + " STUCK_RECOVERY_STIMULUS_ATTEMPT groupId=";
+            logMessage1114 = logMessage1114 + state.m_GroupId;
+            logMessage1114 = logMessage1114 + " runtimeGroupId=";
             logMessage1114 = logMessage1114 + state.m_RuntimeGroupId;
             logMessage1114 = logMessage1114 + " id=";
             logMessage1114 = logMessage1114 + state.m_InfectedId;
@@ -1793,9 +2058,9 @@ class S77MigrateManager
             logMessage1114 = logMessage1114 + state.m_StuckStimulusStrengthMultiplier.ToString();
             LogInfo(logMessage1114);
             string logMessage1115 = MIGRATION_LOG_PREFIX;
-            logMessage1115 = logMessage1115 + " STUCK_RECOVERY_STIMULUS_SKIPPED scenario=";
-            logMessage1115 = logMessage1115 + state.m_ScenarioId;
-            logMessage1115 = logMessage1115 + " group=";
+            logMessage1115 = logMessage1115 + " STUCK_RECOVERY_STIMULUS_SKIPPED groupId=";
+            logMessage1115 = logMessage1115 + state.m_GroupId;
+            logMessage1115 = logMessage1115 + " runtimeGroupId=";
             logMessage1115 = logMessage1115 + state.m_RuntimeGroupId;
             logMessage1115 = logMessage1115 + " id=";
             logMessage1115 = logMessage1115 + state.m_InfectedId;
@@ -1818,9 +2083,9 @@ class S77MigrateManager
         vector stimulusPosition = position + direction * state.m_StuckStimulusForwardDistance;
         stimulusPosition[1] = position[1];
         string logMessage1122 = MIGRATION_LOG_PREFIX;
-        logMessage1122 = logMessage1122 + " STUCK_RECOVERY_STIMULUS_ATTEMPT scenario=";
-        logMessage1122 = logMessage1122 + state.m_ScenarioId;
-        logMessage1122 = logMessage1122 + " group=";
+        logMessage1122 = logMessage1122 + " STUCK_RECOVERY_STIMULUS_ATTEMPT groupId=";
+        logMessage1122 = logMessage1122 + state.m_GroupId;
+        logMessage1122 = logMessage1122 + " runtimeGroupId=";
         logMessage1122 = logMessage1122 + state.m_RuntimeGroupId;
         logMessage1122 = logMessage1122 + " id=";
         logMessage1122 = logMessage1122 + state.m_InfectedId;
@@ -1846,9 +2111,9 @@ class S77MigrateManager
         if (!groupState)
         {
             string logMessage1127 = MIGRATION_LOG_PREFIX;
-            logMessage1127 = logMessage1127 + " STUCK_RECOVERY_STIMULUS_SKIPPED scenario=";
-            logMessage1127 = logMessage1127 + state.m_ScenarioId;
-            logMessage1127 = logMessage1127 + " group=";
+            logMessage1127 = logMessage1127 + " STUCK_RECOVERY_STIMULUS_SKIPPED groupId=";
+            logMessage1127 = logMessage1127 + state.m_GroupId;
+            logMessage1127 = logMessage1127 + " runtimeGroupId=";
             logMessage1127 = logMessage1127 + state.m_RuntimeGroupId;
             logMessage1127 = logMessage1127 + " id=";
             logMessage1127 = logMessage1127 + state.m_InfectedId;
@@ -1871,9 +2136,9 @@ class S77MigrateManager
         if (stimulusCreated)
         {
             string logMessage1133 = MIGRATION_LOG_PREFIX;
-            logMessage1133 = logMessage1133 + " STUCK_RECOVERY_STIMULUS_OK scenario=";
-            logMessage1133 = logMessage1133 + state.m_ScenarioId;
-            logMessage1133 = logMessage1133 + " group=";
+            logMessage1133 = logMessage1133 + " STUCK_RECOVERY_STIMULUS_OK groupId=";
+            logMessage1133 = logMessage1133 + state.m_GroupId;
+            logMessage1133 = logMessage1133 + " runtimeGroupId=";
             logMessage1133 = logMessage1133 + state.m_RuntimeGroupId;
             logMessage1133 = logMessage1133 + " id=";
             logMessage1133 = logMessage1133 + state.m_InfectedId;
@@ -1892,9 +2157,9 @@ class S77MigrateManager
         else
         {
             string logMessage1135 = MIGRATION_LOG_PREFIX;
-            logMessage1135 = logMessage1135 + " STUCK_RECOVERY_STIMULUS_FAILED scenario=";
-            logMessage1135 = logMessage1135 + state.m_ScenarioId;
-            logMessage1135 = logMessage1135 + " group=";
+            logMessage1135 = logMessage1135 + " STUCK_RECOVERY_STIMULUS_FAILED groupId=";
+            logMessage1135 = logMessage1135 + state.m_GroupId;
+            logMessage1135 = logMessage1135 + " runtimeGroupId=";
             logMessage1135 = logMessage1135 + state.m_RuntimeGroupId;
             logMessage1135 = logMessage1135 + " id=";
             logMessage1135 = logMessage1135 + state.m_InfectedId;
@@ -1939,9 +2204,9 @@ class S77MigrateManager
         ResetStuckSample(state, "STUCK_RECOVERY");
         SuspendRouteProgressWatchdog(state);
         string logMessage1150 = MIGRATION_LOG_PREFIX;
-        logMessage1150 = logMessage1150 + " STUCK_RECOVERY_RELEASE scenario=";
-        logMessage1150 = logMessage1150 + state.m_ScenarioId;
-        logMessage1150 = logMessage1150 + " group=";
+        logMessage1150 = logMessage1150 + " STUCK_RECOVERY_RELEASE groupId=";
+        logMessage1150 = logMessage1150 + state.m_GroupId;
+        logMessage1150 = logMessage1150 + " runtimeGroupId=";
         logMessage1150 = logMessage1150 + state.m_RuntimeGroupId;
         logMessage1150 = logMessage1150 + " id=";
         logMessage1150 = logMessage1150 + state.m_InfectedId;
@@ -1963,9 +2228,9 @@ class S77MigrateManager
         state.m_StuckSampleDistance = HorizontalDistance(state.m_StuckSamplePosition, GetCurrentControlTarget(state));
         state.m_StuckSampleTime = now;
         string logMessage1159 = MIGRATION_LOG_PREFIX;
-        logMessage1159 = logMessage1159 + " STUCK_SAMPLE_START scenario=";
-        logMessage1159 = logMessage1159 + state.m_ScenarioId;
-        logMessage1159 = logMessage1159 + " group=";
+        logMessage1159 = logMessage1159 + " STUCK_SAMPLE_START groupId=";
+        logMessage1159 = logMessage1159 + state.m_GroupId;
+        logMessage1159 = logMessage1159 + " runtimeGroupId=";
         logMessage1159 = logMessage1159 + state.m_RuntimeGroupId;
         logMessage1159 = logMessage1159 + " id=";
         logMessage1159 = logMessage1159 + state.m_InfectedId;
@@ -1996,9 +2261,9 @@ class S77MigrateManager
                 sampleAgeMs = GetGame().GetTime() - state.m_StuckSampleTime;
 
             string logMessage1173 = MIGRATION_LOG_PREFIX;
-            logMessage1173 = logMessage1173 + " STUCK_SAMPLE_RESET scenario=";
-            logMessage1173 = logMessage1173 + state.m_ScenarioId;
-            logMessage1173 = logMessage1173 + " group=";
+            logMessage1173 = logMessage1173 + " STUCK_SAMPLE_RESET groupId=";
+            logMessage1173 = logMessage1173 + state.m_GroupId;
+            logMessage1173 = logMessage1173 + " runtimeGroupId=";
             logMessage1173 = logMessage1173 + state.m_RuntimeGroupId;
             logMessage1173 = logMessage1173 + " id=";
             logMessage1173 = logMessage1173 + state.m_InfectedId;
@@ -2105,9 +2370,9 @@ class S77MigrateManager
                 return;
 
             string activationLog = MIGRATION_LOG_PREFIX;
-            activationLog = activationLog + " ROUTE_ACTIVATION scenario=";
-            activationLog = activationLog + groupState.m_ScenarioId;
-            activationLog = activationLog + " group=";
+            activationLog = activationLog + " ROUTE_ACTIVATION groupId=";
+            activationLog = activationLog + groupState.m_GroupId;
+            activationLog = activationLog + " runtimeGroupId=";
             activationLog = activationLog + groupState.m_RuntimeGroupId;
             activationLog = activationLog + " point=";
             activationLog = activationLog + pointNumber.ToString();
@@ -2132,9 +2397,9 @@ class S77MigrateManager
         {
             groupState.m_RouteActivationArmed.Set(pointIndex, true);
             string logMessage1285 = MIGRATION_LOG_PREFIX;
-            logMessage1285 = logMessage1285 + " ROUTE_ACTIVATION_REARMED scenario=";
-            logMessage1285 = logMessage1285 + groupState.m_ScenarioId;
-            logMessage1285 = logMessage1285 + " group=";
+            logMessage1285 = logMessage1285 + " ROUTE_ACTIVATION_REARMED groupId=";
+            logMessage1285 = logMessage1285 + groupState.m_GroupId;
+            logMessage1285 = logMessage1285 + " runtimeGroupId=";
             logMessage1285 = logMessage1285 + groupState.m_RuntimeGroupId;
             logMessage1285 = logMessage1285 + " point=";
             logMessage1285 = logMessage1285 + pointNumber.ToString();
@@ -2157,9 +2422,9 @@ class S77MigrateManager
                 return;
 
             string activationLog = MIGRATION_LOG_PREFIX;
-            activationLog = activationLog + " FINAL_ACTIVATION scenario=";
-            activationLog = activationLog + groupState.m_ScenarioId;
-            activationLog = activationLog + " group=";
+            activationLog = activationLog + " FINAL_ACTIVATION groupId=";
+            activationLog = activationLog + groupState.m_GroupId;
+            activationLog = activationLog + " runtimeGroupId=";
             activationLog = activationLog + groupState.m_RuntimeGroupId;
             activationLog = activationLog + " alive=";
             activationLog = activationLog + aliveCount.ToString();
@@ -2182,9 +2447,9 @@ class S77MigrateManager
         {
             groupState.m_FinalActivationArmed = true;
             string logMessage1316 = MIGRATION_LOG_PREFIX;
-            logMessage1316 = logMessage1316 + " FINAL_REARMED scenario=";
-            logMessage1316 = logMessage1316 + groupState.m_ScenarioId;
-            logMessage1316 = logMessage1316 + " group=";
+            logMessage1316 = logMessage1316 + " FINAL_REARMED groupId=";
+            logMessage1316 = logMessage1316 + groupState.m_GroupId;
+            logMessage1316 = logMessage1316 + " runtimeGroupId=";
             logMessage1316 = logMessage1316 + groupState.m_RuntimeGroupId;
             logMessage1316 = logMessage1316 + " inside=";
             logMessage1316 = logMessage1316 + insideCount.ToString();
@@ -2201,9 +2466,9 @@ class S77MigrateManager
             if (!groupState.m_StimulusFailureLogged)
             {
                 string logMessage1326 = MIGRATION_LOG_PREFIX;
-                logMessage1326 = logMessage1326 + " WARNING: AI stimulus unavailable scenario=";
-                logMessage1326 = logMessage1326 + groupState.m_ScenarioId;
-                logMessage1326 = logMessage1326 + " group=";
+                logMessage1326 = logMessage1326 + " WARNING: AI stimulus unavailable groupId=";
+                logMessage1326 = logMessage1326 + groupState.m_GroupId;
+                logMessage1326 = logMessage1326 + " runtimeGroupId=";
                 logMessage1326 = logMessage1326 + groupState.m_RuntimeGroupId;
                 logMessage1326 = logMessage1326 + "; migration route remains active";
                 LogInfo(logMessage1326);
@@ -2221,9 +2486,9 @@ class S77MigrateManager
         string stimulusLog = MIGRATION_LOG_PREFIX;
         stimulusLog = stimulusLog + " ";
         stimulusLog = stimulusLog + stimulusType;
-        stimulusLog = stimulusLog + " scenario=";
-        stimulusLog = stimulusLog + groupState.m_ScenarioId;
-        stimulusLog = stimulusLog + " group=";
+        stimulusLog = stimulusLog + " groupId=";
+        stimulusLog = stimulusLog + groupState.m_GroupId;
+        stimulusLog = stimulusLog + " runtimeGroupId=";
         stimulusLog = stimulusLog + groupState.m_RuntimeGroupId;
         stimulusLog = stimulusLog + " ";
         stimulusLog = stimulusLog + pointLabel;
@@ -2323,9 +2588,9 @@ class S77MigrateManager
                 ResetStuckSample(state, "ROUTE_POINT_CHANGED");
                 SuspendRouteProgressWatchdog(state);
                 string logMessage1426 = MIGRATION_LOG_PREFIX;
-                logMessage1426 = logMessage1426 + " ROUTE_POINT_REACHED scenario=";
-                logMessage1426 = logMessage1426 + state.m_ScenarioId;
-                logMessage1426 = logMessage1426 + " group=";
+                logMessage1426 = logMessage1426 + " ROUTE_POINT_REACHED groupId=";
+                logMessage1426 = logMessage1426 + state.m_GroupId;
+                logMessage1426 = logMessage1426 + " runtimeGroupId=";
                 logMessage1426 = logMessage1426 + state.m_RuntimeGroupId;
                 logMessage1426 = logMessage1426 + " id=";
                 logMessage1426 = logMessage1426 + state.m_InfectedId;
@@ -2432,9 +2697,9 @@ class S77MigrateManager
         string logMessage1520 = MIGRATION_LOG_PREFIX;
         logMessage1520 = logMessage1520 + " ";
         logMessage1520 = logMessage1520 + eventName;
-        logMessage1520 = logMessage1520 + " scenario=";
-        logMessage1520 = logMessage1520 + state.m_ScenarioId;
-        logMessage1520 = logMessage1520 + " group=";
+        logMessage1520 = logMessage1520 + " groupId=";
+        logMessage1520 = logMessage1520 + state.m_GroupId;
+        logMessage1520 = logMessage1520 + " runtimeGroupId=";
         logMessage1520 = logMessage1520 + state.m_RuntimeGroupId;
         logMessage1520 = logMessage1520 + " id=";
         logMessage1520 = logMessage1520 + state.m_InfectedId;
@@ -2475,9 +2740,9 @@ class S77MigrateManager
         if (BuildPath(state))
         {
             string logMessage1538 = MIGRATION_LOG_PREFIX;
-            logMessage1538 = logMessage1538 + " HOLD_RETURN_START scenario=";
-            logMessage1538 = logMessage1538 + state.m_ScenarioId;
-            logMessage1538 = logMessage1538 + " group=";
+            logMessage1538 = logMessage1538 + " HOLD_RETURN_START groupId=";
+            logMessage1538 = logMessage1538 + state.m_GroupId;
+            logMessage1538 = logMessage1538 + " runtimeGroupId=";
             logMessage1538 = logMessage1538 + state.m_RuntimeGroupId;
             logMessage1538 = logMessage1538 + " id=";
             logMessage1538 = logMessage1538 + state.m_InfectedId;
@@ -2515,9 +2780,9 @@ class S77MigrateManager
             state.m_Waypoints.Clear();
         state.m_WaypointIndex = 0;
         string logMessage1562 = MIGRATION_LOG_PREFIX;
-        logMessage1562 = logMessage1562 + " RELEASED scenario=";
-        logMessage1562 = logMessage1562 + state.m_ScenarioId;
-        logMessage1562 = logMessage1562 + " group=";
+        logMessage1562 = logMessage1562 + " RELEASED groupId=";
+        logMessage1562 = logMessage1562 + state.m_GroupId;
+        logMessage1562 = logMessage1562 + " runtimeGroupId=";
         logMessage1562 = logMessage1562 + state.m_RuntimeGroupId;
         logMessage1562 = logMessage1562 + " id=";
         logMessage1562 = logMessage1562 + state.m_InfectedId;
@@ -2576,9 +2841,9 @@ class S77MigrateManager
             float distanceToTarget = HorizontalDistance(position, state.m_FinalTargetCenter);
 
             string logLine = MIGRATION_LOG_PREFIX;
-            logLine = logLine + " scenario=";
-            logLine = logLine + state.m_ScenarioId;
-            logLine = logLine + " group=";
+            logLine = logLine + " groupId=";
+            logLine = logLine + state.m_GroupId;
+            logLine = logLine + " runtimeGroupId=";
             logLine = logLine + state.m_RuntimeGroupId;
             logLine = logLine + " id=";
             logLine = logLine + state.m_InfectedId;
@@ -2606,7 +2871,7 @@ class S77MigrateManager
     protected void Stop()
     {
         m_Stopped = true;
-        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(StartAllScenarios);
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(StartPendingGroups);
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(BeginWeatherTransition);
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(CompleteWeatherTransition);
         StopStormRampCallbacks();
@@ -2614,6 +2879,8 @@ class S77MigrateManager
         m_StartGroupsScheduled = false;
         m_WeatherStartScheduled = false;
         m_WeatherCompletionScheduled = false;
+        m_LaunchBusy = false;
+        m_PendingGroups.Clear();
 
         ReleaseWeatherControl();
 

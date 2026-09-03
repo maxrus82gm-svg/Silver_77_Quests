@@ -14,11 +14,12 @@
     "weatherStormThreshold": 0.8,
     "weatherStormTimeoutSeconds": 30.0,
     "weatherStormRampSeconds": 60.0,
-    "scenarios": [
+    "groups": [
         {
             "enabled": 1,
             "weatherChangeEnabled": 1,
-            "scenarioId": "MIGRATION_TEST_001",
+            "groupId": "MIGRATION_TEST_001",
+            "name": "Миграционная группа 001",
             "infectedCount": 10,
             "groupLifetimeSeconds": 14400.0,
             "infectedTypes": [
@@ -98,7 +99,8 @@
         {
             "enabled": 1,
             "weatherChangeEnabled": 1,
-            "scenarioId": "MIGRATION_TEST_002",
+            "groupId": "MIGRATION_TEST_002",
+            "name": "Миграционная группа 002",
             "infectedCount": 10,
             "groupLifetimeSeconds": 14400.0,
             "infectedTypes": [
@@ -186,6 +188,35 @@
             "finalHoldRadius": 200.0,
             "finalHoldReturnRadius": 30.0,
             "finalHoldCheckSeconds": 5.0
+        }
+    ],
+    "events": [
+        {
+            "enabled": 1,
+            "eventId": "EVENT_GLOBAL_MIGRATION",
+            "name": "Глобальная миграция заражённых",
+            "groupIds": [
+                "MIGRATION_TEST_001",
+                "MIGRATION_TEST_002"
+            ]
+        }
+    ],
+    "activations": [
+        {
+            "enabled": 1,
+            "activationId": "ACT_STARTUP_GLOBAL_MIGRATION",
+            "name": "Запуск глобальной миграции при старте сервера",
+            "type": "STARTUP",
+            "targetType": "EVENT",
+            "targetId": "EVENT_GLOBAL_MIGRATION"
+        },
+        {
+            "enabled": 1,
+            "activationId": "ACT_EXTERNAL_GLOBAL_MIGRATION",
+            "name": "Внешний запуск глобальной миграции",
+            "type": "EXTERNAL",
+            "targetType": "EVENT",
+            "targetId": "EVENT_GLOBAL_MIGRATION"
         }
     ]
 }

@@ -10,6 +10,8 @@ class S77MigrateScenarioConfig
 {
     int enabled;
     int weatherChangeEnabled;
+    string groupId;
+    string name;
     string scenarioId;
     int infectedCount;
     float groupLifetimeSeconds;
@@ -68,6 +70,8 @@ class S77MigrateScenarioConfig
     {
         enabled = 1;
         weatherChangeEnabled = 1;
+        groupId = "";
+        name = "";
         scenarioId = "";
         infectedCount = 10;
         groupLifetimeSeconds = 14400.0;
@@ -121,6 +125,8 @@ class S77MigrateScenarioConfig
     void SetDefaultsScenario001()
     {
         SetBaseDefaults();
+        groupId = "MIGRATION_TEST_001";
+        name = "Миграционная группа 001";
         scenarioId = "MIGRATION_TEST_001";
         SetPosition(spawnPosition, 13203.203125, 82.482025, 13336.852539);
         AddRoutePoint(13162.564453, 104.073151, 13181.419922, 12.0);
@@ -131,6 +137,8 @@ class S77MigrateScenarioConfig
     void SetDefaultsScenario002()
     {
         SetBaseDefaults();
+        groupId = "MIGRATION_TEST_002";
+        name = "Миграционная группа 002";
         scenarioId = "MIGRATION_TEST_002";
         SetPosition(spawnPosition, 12841.188477, 133.146896, 13063.173828);
         AddRoutePoint(12975.204102, 126.648422, 13069.739258, 12.0);
@@ -142,6 +150,14 @@ class S77MigrateScenarioConfig
 
     void Normalize()
     {
+        if (groupId == "")
+            groupId = scenarioId;
+
+        scenarioId = groupId;
+
+        if (name == "")
+            name = groupId;
+
         if (enabled != 1)
             enabled = 0;
 
@@ -289,6 +305,9 @@ class S77MigrateScenarioConfig
         if (scenarioId == "")
             scenarioId = fallbackScenarioId;
 
+        if (groupId == "")
+            groupId = scenarioId;
+
         if (!spawnPosition || spawnPosition.Count() < 3)
         {
             spawnPosition = new array<float>();
@@ -306,7 +325,18 @@ class S77MigrateScenarioConfig
 
     bool IsValid()
     {
-        if (scenarioId == "" || !infectedTypes || infectedTypes.Count() == 0 || !spawnPosition || spawnPosition.Count() < 3 || !targetPosition || targetPosition.Count() < 3 || !routePoints)
+        bool identityValid = groupId != "";
+        bool infectedTypesValid = infectedTypes && infectedTypes.Count() > 0;
+        bool spawnValid = spawnPosition && spawnPosition.Count() >= 3;
+        bool targetValid = targetPosition && targetPosition.Count() >= 3;
+        bool routeValid = false;
+        if (routePoints)
+            routeValid = true;
+
+        if (!identityValid || !infectedTypesValid)
+            return false;
+
+        if (!spawnValid || !targetValid || !routeValid)
             return false;
 
         for (int i = 0; i < routePoints.Count(); i++)
@@ -317,6 +347,11 @@ class S77MigrateScenarioConfig
         }
 
         return true;
+    }
+
+    string GetGroupId()
+    {
+        return groupId;
     }
 
     vector GetSpawnPosition()
@@ -382,6 +417,63 @@ class S77MigrateScenarioConfig
     }
 }
 
+class S77MigrateEventConfig
+{
+    int enabled;
+    string eventId;
+    string name;
+    ref array<string> groupIds;
+
+    void S77MigrateEventConfig()
+    {
+        enabled = 1;
+        eventId = "";
+        name = "";
+        groupIds = new array<string>();
+    }
+
+    void Normalize()
+    {
+        if (enabled != 1)
+            enabled = 0;
+
+        if (!groupIds)
+            groupIds = new array<string>();
+
+        if (name == "")
+            name = eventId;
+    }
+}
+
+class S77MigrateActivationConfig
+{
+    int enabled;
+    string activationId;
+    string name;
+    string type;
+    string targetType;
+    string targetId;
+
+    void S77MigrateActivationConfig()
+    {
+        enabled = 1;
+        activationId = "";
+        name = "";
+        type = "EXTERNAL";
+        targetType = "EVENT";
+        targetId = "";
+    }
+
+    void Normalize()
+    {
+        if (enabled != 1)
+            enabled = 0;
+
+        if (name == "")
+            name = activationId;
+    }
+}
+
 class S77MigrateConfig
 {
     int enabled;
@@ -399,7 +491,10 @@ class S77MigrateConfig
     float weatherStormThreshold;
     float weatherStormTimeoutSeconds;
     float weatherStormRampSeconds;
+    ref array<ref S77MigrateScenarioConfig> groups;
     ref array<ref S77MigrateScenarioConfig> scenarios;
+    ref array<ref S77MigrateEventConfig> events;
+    ref array<ref S77MigrateActivationConfig> activations;
 
     void S77MigrateConfig()
     {
@@ -419,15 +514,10 @@ class S77MigrateConfig
         weatherStormTimeoutSeconds = 30.0;
         weatherStormRampSeconds = 60.0;
 
+        groups = new array<ref S77MigrateScenarioConfig>();
         scenarios = new array<ref S77MigrateScenarioConfig>();
-
-        S77MigrateScenarioConfig scenario001 = new S77MigrateScenarioConfig();
-        scenario001.SetDefaultsScenario001();
-        scenarios.Insert(scenario001);
-
-        S77MigrateScenarioConfig scenario002 = new S77MigrateScenarioConfig();
-        scenario002.SetDefaultsScenario002();
-        scenarios.Insert(scenario002);
+        events = new array<ref S77MigrateEventConfig>();
+        activations = new array<ref S77MigrateActivationConfig>();
     }
 
     void Normalize()
@@ -470,15 +560,240 @@ class S77MigrateConfig
         if (weatherStormRampSeconds < 0.0)
             weatherStormRampSeconds = 0.0;
 
+        if (!groups)
+            groups = new array<ref S77MigrateScenarioConfig>();
+
         if (!scenarios)
             scenarios = new array<ref S77MigrateScenarioConfig>();
 
-        for (int i = 0; i < scenarios.Count(); i++)
+        if (groups.Count() == 0 && scenarios.Count() > 0)
         {
-            S77MigrateScenarioConfig scenario = scenarios.Get(i);
-            if (scenario)
-                scenario.Normalize();
+            for (int legacyIndex = 0; legacyIndex < scenarios.Count(); legacyIndex++)
+                groups.Insert(scenarios.Get(legacyIndex));
         }
+
+        for (int groupIndex = 0; groupIndex < groups.Count(); groupIndex++)
+        {
+            S77MigrateScenarioConfig group = groups.Get(groupIndex);
+            if (group)
+                group.Normalize();
+        }
+
+        if (!events)
+            events = new array<ref S77MigrateEventConfig>();
+
+        if (events.Count() == 0)
+            AddDefaultEvent();
+
+        for (int eventIndex = 0; eventIndex < events.Count(); eventIndex++)
+        {
+            S77MigrateEventConfig eventConfig = events.Get(eventIndex);
+            if (eventConfig)
+                eventConfig.Normalize();
+        }
+
+        if (!activations)
+            activations = new array<ref S77MigrateActivationConfig>();
+
+        if (activations.Count() == 0)
+            AddDefaultActivations();
+
+        for (int activationIndex = 0; activationIndex < activations.Count(); activationIndex++)
+        {
+            S77MigrateActivationConfig activation = activations.Get(activationIndex);
+            if (activation)
+                activation.Normalize();
+        }
+    }
+
+    string GetValidationError()
+    {
+        for (int groupIndex = 0; groupIndex < groups.Count(); groupIndex++)
+        {
+            S77MigrateScenarioConfig group = groups.Get(groupIndex);
+            if (!group)
+                return "null GROUP at index=" + groupIndex.ToString();
+
+            if (!group.IsValid())
+            {
+                string invalidGroupError = "invalid GROUP at index=";
+                invalidGroupError = invalidGroupError + groupIndex.ToString();
+                invalidGroupError = invalidGroupError + " groupId=";
+                invalidGroupError = invalidGroupError + group.groupId;
+                return invalidGroupError;
+            }
+
+            for (int otherGroupIndex = groupIndex + 1; otherGroupIndex < groups.Count(); otherGroupIndex++)
+            {
+                S77MigrateScenarioConfig otherGroup = groups.Get(otherGroupIndex);
+                if (otherGroup && otherGroup.groupId == group.groupId)
+                    return "duplicate groupId=" + group.groupId;
+            }
+        }
+
+        for (int eventIndex = 0; eventIndex < events.Count(); eventIndex++)
+        {
+            S77MigrateEventConfig eventConfig = events.Get(eventIndex);
+            if (!eventConfig || eventConfig.eventId == "")
+                return "invalid EVENT at index=" + eventIndex.ToString();
+
+            for (int otherEventIndex = eventIndex + 1; otherEventIndex < events.Count(); otherEventIndex++)
+            {
+                S77MigrateEventConfig otherEvent = events.Get(otherEventIndex);
+                if (otherEvent && otherEvent.eventId == eventConfig.eventId)
+                    return "duplicate eventId=" + eventConfig.eventId;
+            }
+
+            for (int eventGroupIndex = 0; eventGroupIndex < eventConfig.groupIds.Count(); eventGroupIndex++)
+            {
+                string eventGroupId = eventConfig.groupIds.Get(eventGroupIndex);
+                if (!FindGroup(eventGroupId))
+                {
+                    string unknownGroupError = "EVENT ";
+                    unknownGroupError = unknownGroupError + eventConfig.eventId;
+                    unknownGroupError = unknownGroupError + " references unknown groupId=";
+                    unknownGroupError = unknownGroupError + eventGroupId;
+                    return unknownGroupError;
+                }
+
+                for (int otherReferenceIndex = eventGroupIndex + 1; otherReferenceIndex < eventConfig.groupIds.Count(); otherReferenceIndex++)
+                {
+                    if (eventConfig.groupIds.Get(otherReferenceIndex) == eventGroupId)
+                    {
+                        string duplicateReferenceError = "EVENT ";
+                        duplicateReferenceError = duplicateReferenceError + eventConfig.eventId;
+                        duplicateReferenceError = duplicateReferenceError + " contains duplicate groupId=";
+                        duplicateReferenceError = duplicateReferenceError + eventGroupId;
+                        return duplicateReferenceError;
+                    }
+                }
+            }
+        }
+
+        for (int activationIndex = 0; activationIndex < activations.Count(); activationIndex++)
+        {
+            S77MigrateActivationConfig activation = activations.Get(activationIndex);
+            if (!activation || activation.activationId == "")
+                return "invalid ACTIVATION at index=" + activationIndex.ToString();
+
+            for (int otherActivationIndex = activationIndex + 1; otherActivationIndex < activations.Count(); otherActivationIndex++)
+            {
+                S77MigrateActivationConfig otherActivation = activations.Get(otherActivationIndex);
+                if (otherActivation && otherActivation.activationId == activation.activationId)
+                    return "duplicate activationId=" + activation.activationId;
+            }
+
+            bool typeValid = activation.type == "STARTUP" || activation.type == "EXTERNAL";
+            if (!typeValid)
+            {
+                string invalidTypeError = "ACTIVATION ";
+                invalidTypeError = invalidTypeError + activation.activationId;
+                invalidTypeError = invalidTypeError + " has invalid type=";
+                invalidTypeError = invalidTypeError + activation.type;
+                return invalidTypeError;
+            }
+
+            bool targetTypeValid = activation.targetType == "GROUP" || activation.targetType == "EVENT";
+            if (!targetTypeValid)
+            {
+                string invalidTargetTypeError = "ACTIVATION ";
+                invalidTargetTypeError = invalidTargetTypeError + activation.activationId;
+                invalidTargetTypeError = invalidTargetTypeError + " has invalid targetType=";
+                invalidTargetTypeError = invalidTargetTypeError + activation.targetType;
+                return invalidTargetTypeError;
+            }
+
+            if (activation.targetType == "GROUP" && !FindGroup(activation.targetId))
+            {
+                string unknownGroupTargetError = "ACTIVATION ";
+                unknownGroupTargetError = unknownGroupTargetError + activation.activationId;
+                unknownGroupTargetError = unknownGroupTargetError + " references unknown groupId=";
+                unknownGroupTargetError = unknownGroupTargetError + activation.targetId;
+                return unknownGroupTargetError;
+            }
+
+            if (activation.targetType == "EVENT" && !FindEvent(activation.targetId))
+            {
+                string unknownEventTargetError = "ACTIVATION ";
+                unknownEventTargetError = unknownEventTargetError + activation.activationId;
+                unknownEventTargetError = unknownEventTargetError + " references unknown eventId=";
+                unknownEventTargetError = unknownEventTargetError + activation.targetId;
+                return unknownEventTargetError;
+            }
+        }
+
+        return "";
+    }
+
+    S77MigrateScenarioConfig FindGroup(string groupId)
+    {
+        for (int i = 0; i < groups.Count(); i++)
+        {
+            S77MigrateScenarioConfig group = groups.Get(i);
+            if (group && group.groupId == groupId)
+                return group;
+        }
+
+        return null;
+    }
+
+    S77MigrateEventConfig FindEvent(string eventId)
+    {
+        for (int i = 0; i < events.Count(); i++)
+        {
+            S77MigrateEventConfig eventConfig = events.Get(i);
+            if (eventConfig && eventConfig.eventId == eventId)
+                return eventConfig;
+        }
+
+        return null;
+    }
+
+    S77MigrateActivationConfig FindActivation(string activationId)
+    {
+        for (int i = 0; i < activations.Count(); i++)
+        {
+            S77MigrateActivationConfig activation = activations.Get(i);
+            if (activation && activation.activationId == activationId)
+                return activation;
+        }
+
+        return null;
+    }
+
+    protected void AddDefaultEvent()
+    {
+        S77MigrateEventConfig eventConfig = new S77MigrateEventConfig();
+        eventConfig.eventId = "EVENT_GLOBAL_MIGRATION";
+        eventConfig.name = "Глобальная миграция заражённых";
+
+        for (int i = 0; i < groups.Count(); i++)
+        {
+            S77MigrateScenarioConfig group = groups.Get(i);
+            if (group && group.enabled == 1)
+                eventConfig.groupIds.Insert(group.groupId);
+        }
+
+        events.Insert(eventConfig);
+    }
+
+    protected void AddDefaultActivations()
+    {
+        S77MigrateActivationConfig startup = new S77MigrateActivationConfig();
+        startup.activationId = "ACT_STARTUP_GLOBAL_MIGRATION";
+        startup.name = "Запуск глобальной миграции при старте сервера";
+        startup.type = "STARTUP";
+        startup.targetType = "EVENT";
+        startup.targetId = "EVENT_GLOBAL_MIGRATION";
+        activations.Insert(startup);
+
+        S77MigrateActivationConfig external = new S77MigrateActivationConfig();
+        external.activationId = "ACT_EXTERNAL_GLOBAL_MIGRATION";
+        external.name = "Внешний запуск глобальной миграции";
+        external.type = "EXTERNAL";
+        external.targetType = "EVENT";
+        external.targetId = "EVENT_GLOBAL_MIGRATION";
+        activations.Insert(external);
     }
 
     protected float Clamp01(float value)
@@ -640,6 +955,13 @@ class S77MigrateConfigLoader
 
         config.Normalize();
 
+        string configValidationError = config.GetValidationError();
+        if (configValidationError != "")
+        {
+            Print("[S77Migrate][EVENT] ERROR: unified runtime config validation failed: " + configValidationError);
+            return null;
+        }
+
         if (FileExist(S77_MIGRATE_LEGACY_EVENT_CONFIG) || FileExist(S77_MIGRATE_LEGACY_SCENARIO_001_CONFIG) || FileExist(S77_MIGRATE_LEGACY_SCENARIO_002_CONFIG))
             Print("[S77Migrate][EVENT] Unified config is active; legacy runtime JSON files are ignored and left unchanged");
 
@@ -719,7 +1041,7 @@ class S77MigrateConfigLoader
         }
         migratedScenarios.Insert(migratedScenario002);
 
-        config.scenarios = migratedScenarios;
+        config.groups = migratedScenarios;
         config.Normalize();
 
         if (FileExist(S77_MIGRATE_CONFIG_TEMP))
@@ -741,6 +1063,15 @@ class S77MigrateConfigLoader
             return false;
         }
 
+        tempValidation.Normalize();
+        string tempConfigError = tempValidation.GetValidationError();
+        if (tempConfigError != "")
+        {
+            Print("[S77Migrate][EVENT] ERROR: unified config temp content validation failed: " + tempConfigError);
+            DeleteFile(S77_MIGRATE_CONFIG_TEMP);
+            return false;
+        }
+
         if (FileExist(S77_MIGRATE_CONFIG) || !CopyFile(S77_MIGRATE_CONFIG_TEMP, S77_MIGRATE_CONFIG))
         {
             Print("[S77Migrate][EVENT] ERROR: validated unified config could not be installed");
@@ -752,6 +1083,16 @@ class S77MigrateConfigLoader
         if (!JsonFileLoader<S77MigrateConfig>.LoadFile(S77_MIGRATE_CONFIG, finalValidation, validationError))
         {
             Print("[S77Migrate][EVENT] ERROR: installed unified config failed validation and was removed: " + validationError);
+            DeleteFile(S77_MIGRATE_CONFIG);
+            DeleteFile(S77_MIGRATE_CONFIG_TEMP);
+            return false;
+        }
+
+        finalValidation.Normalize();
+        string finalConfigError = finalValidation.GetValidationError();
+        if (finalConfigError != "")
+        {
+            Print("[S77Migrate][EVENT] ERROR: installed unified config content validation failed: " + finalConfigError);
             DeleteFile(S77_MIGRATE_CONFIG);
             DeleteFile(S77_MIGRATE_CONFIG_TEMP);
             return false;
@@ -804,6 +1145,8 @@ class S77MigrateConfigLoader
     {
         S77MigrateScenarioConfig target = new S77MigrateScenarioConfig();
         target.enabled = source.enabled;
+        target.groupId = source.scenarioId;
+        target.name = source.scenarioId;
         target.scenarioId = source.scenarioId;
         target.infectedCount = source.infectedCount;
         target.infectedTypes = CopyStringArray(source.infectedTypes);
