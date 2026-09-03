@@ -8,6 +8,26 @@
 
 Верхняя часть файла содержит общие настройки одного migration-события и погоды. Ниже расположен массив `scenarios`; каждый его объект описывает отдельную migration-группу. В текущем default находятся два объекта: `MIGRATION_TEST_001` и `MIGRATION_TEST_002`.
 
+## Сборка и эталонный Support
+
+Канонический repository entry point для сборки server-only мода:
+
+`P:\Silver_77_Quests\build_migrate_server.bat`
+
+Wrapper запускает установленный DayZ Addon Builder в подтверждённом для этого script-мода режиме pack-only, подписывает результат существующим ключом `Silver777` и создаёт PBO по фактическому пути:
+
+`P:\Mods_DONE\@Silver_77_Migrate_server\addons\Silver_77_Migrate_server.pbo`
+
+Подпись `Silver_77_Migrate_server.pbo.Silver777.bisign` обновляется той же успешной сборкой; существующий публичный ключ остаётся в папке `key` готового мода.
+
+Только после успешной сборки wrapper создаёт внешнюю папку `Support` в корне готового мода и с overwrite копирует туда canonical source:
+
+`P:\Mods_DONE\@Silver_77_Migrate_server\Support\MigrationConfig.json`
+
+Единственным редактируемым source of truth остаётся `Silver_77_Migrate_server/config/MigrationConfig.json`. Файл `Support/MigrationConfig.json` — эталонная копия для ручного использования и сравнения; он находится вне PBO и автоматически обновляется при каждом успешном запуске wrapper. При ошибке PBO build Support-копия не обновляется, а wrapper завершается с ошибкой.
+
+Runtime-логика не использует Support-файл. Рабочий конфиг по-прежнему находится только в `$profile:Silver_77_Migrate/MigrationConfig.json` и автоматически не перезаписывается из готового мода.
+
 ## Общие параметры события
 
 - `enabled` — включает всё событие: `1` — включено, `0` — выключено.
