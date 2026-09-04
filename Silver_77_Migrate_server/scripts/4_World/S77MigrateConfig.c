@@ -794,13 +794,13 @@ class S77MigrateConfig
         startup.targetId = "EVENT_GLOBAL_MIGRATION";
         activations.Insert(startup);
 
-        S77MigrateActivationConfig external = new S77MigrateActivationConfig();
-        external.activationId = "ACT_EXTERNAL_GLOBAL_MIGRATION";
-        external.name = "Внешний запуск глобальной миграции";
-        external.type = "EXTERNAL";
-        external.targetType = "EVENT";
-        external.targetId = "EVENT_GLOBAL_MIGRATION";
-        activations.Insert(external);
+        S77MigrateActivationConfig externalActivation = new S77MigrateActivationConfig();
+        externalActivation.activationId = "ACT_EXTERNAL_GLOBAL_MIGRATION";
+        externalActivation.name = "Внешний запуск глобальной миграции";
+        externalActivation.type = "EXTERNAL";
+        externalActivation.targetType = "EVENT";
+        externalActivation.targetId = "EVENT_GLOBAL_MIGRATION";
+        activations.Insert(externalActivation);
     }
 
     protected float Clamp01(float value)

@@ -144,6 +144,8 @@
 
 - `TASK 157` — реализован GROUP-level `spawnChancePercent` (`float 0.0–100.0`, default `100.0`) с нормализацией без округления. Direct GROUP и каждая enabled GROUP полностью разрешённого EVENT проходят независимую chance evaluation перед fresh launch; 0%/100% обрабатываются без RNG, chance miss является штатным `true`, а zero selected не включает busy, delay/weather и не создаёт runtime group. Weather получает только selected batch. Старый profile без поля использует default только в памяти, оба canonical test GROUP оставлены на `100.0`; LaunchContext, Director, Scheduler и Persistence не реализовывались. Canonical wrapper успешно пересобрал PBO/подпись и обновил байтово идентичный Support JSON; runtime-сервер не запускался.
 
+- `TASK 158` — устранён подтверждённый runtime compile blocker в `S77MigrateConfig.c`: зарезервированный Enforce identifier `external` в `AddDefaultActivations()` переименован в `externalActivation` во всех обращениях без изменения activation ID, типа, target и логики. Canonical wrapper завершился с exit code `0`, PBO/подпись пересобраны, Support JSON байтово совпадает с canonical. Addon Builder PASS не доказывает Enforce runtime compile; требуется повторный запуск сервера.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
