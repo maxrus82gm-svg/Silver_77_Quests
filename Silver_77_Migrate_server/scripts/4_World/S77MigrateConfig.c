@@ -10,6 +10,7 @@ class S77MigrateScenarioConfig
 {
     int enabled;
     int weatherChangeEnabled;
+    float spawnChancePercent;
     string groupId;
     string name;
     string scenarioId;
@@ -70,6 +71,7 @@ class S77MigrateScenarioConfig
     {
         enabled = 1;
         weatherChangeEnabled = 1;
+        spawnChancePercent = 100.0;
         groupId = "";
         name = "";
         scenarioId = "";
@@ -163,6 +165,11 @@ class S77MigrateScenarioConfig
 
         if (weatherChangeEnabled != 1)
             weatherChangeEnabled = 0;
+
+        if (spawnChancePercent < 0.0)
+            spawnChancePercent = 0.0;
+        else if (spawnChancePercent > 100.0)
+            spawnChancePercent = 100.0;
 
         if (infectedCount < 1)
             infectedCount = 10;

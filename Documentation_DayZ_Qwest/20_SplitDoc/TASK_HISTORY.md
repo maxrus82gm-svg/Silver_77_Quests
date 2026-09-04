@@ -142,6 +142,8 @@
 
 - `TASK 156` — упрощены прямые Obsidian-связи migration-документов. Центральным узлом оставлен `14_Квест_Миграция`: сохранены рёбра 14–15, 14–16 и 14–17, а все wiki-links между парами 15–16, 15–17 и 16–17 удалены с проверкой обеих сторон. Содержание, roadmap, архитектура и `.obsidian` не менялись; моды обновлять не нужно.
 
+- `TASK 157` — реализован GROUP-level `spawnChancePercent` (`float 0.0–100.0`, default `100.0`) с нормализацией без округления. Direct GROUP и каждая enabled GROUP полностью разрешённого EVENT проходят независимую chance evaluation перед fresh launch; 0%/100% обрабатываются без RNG, chance miss является штатным `true`, а zero selected не включает busy, delay/weather и не создаёт runtime group. Weather получает только selected batch. Старый profile без поля использует default только в памяти, оба canonical test GROUP оставлены на `100.0`; LaunchContext, Director, Scheduler и Persistence не реализовывались. Canonical wrapper успешно пересобрал PBO/подпись и обновил байтово идентичный Support JSON; runtime-сервер не запускался.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

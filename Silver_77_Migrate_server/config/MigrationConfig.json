@@ -18,6 +18,7 @@
         {
             "enabled": 1,
             "weatherChangeEnabled": 1,
+            "spawnChancePercent": 100.0,
             "groupId": "MIGRATION_TEST_001",
             "name": "Миграционная группа 001",
             "infectedCount": 10,
@@ -99,6 +100,7 @@
         {
             "enabled": 1,
             "weatherChangeEnabled": 1,
+            "spawnChancePercent": 100.0,
             "groupId": "MIGRATION_TEST_002",
             "name": "Миграционная группа 002",
             "infectedCount": 10,

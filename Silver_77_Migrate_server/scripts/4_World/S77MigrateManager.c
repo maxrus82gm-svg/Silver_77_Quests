@@ -535,6 +535,19 @@ class S77MigrateManager
             return false;
         }
 
+        if (!CanBeginFreshLaunch("GROUP", groupId))
+            return false;
+
+        if (!EvaluateGroupChance(group, "GROUP", groupId))
+        {
+            string noGroupSelectedLog = EVENT_LOG_PREFIX;
+            noGroupSelectedLog = noGroupSelectedLog + " GROUP_START_REQUEST groupId=";
+            noGroupSelectedLog = noGroupSelectedLog + groupId;
+            noGroupSelectedLog = noGroupSelectedLog + " result=NO_GROUP_SELECTED";
+            LogInfo(noGroupSelectedLog);
+            return true;
+        }
+
         array<ref S77MigrateScenarioConfig> requestedGroups = new array<ref S77MigrateScenarioConfig>();
         requestedGroups.Insert(group);
         return BeginLaunchBatch(requestedGroups, "GROUP", groupId);
@@ -623,10 +636,31 @@ class S77MigrateManager
             return false;
         }
 
-        return BeginLaunchBatch(runnableGroups, "EVENT", eventId);
+        if (!CanBeginFreshLaunch("EVENT", eventId))
+            return false;
+
+        array<ref S77MigrateScenarioConfig> selectedGroups = new array<ref S77MigrateScenarioConfig>();
+        for (int chanceIndex = 0; chanceIndex < runnableGroups.Count(); chanceIndex++)
+        {
+            S77MigrateScenarioConfig chanceGroup = runnableGroups.Get(chanceIndex);
+            if (EvaluateGroupChance(chanceGroup, "EVENT", eventId))
+                selectedGroups.Insert(chanceGroup);
+        }
+
+        if (selectedGroups.Count() == 0)
+        {
+            string noGroupSelectedLog = EVENT_LOG_PREFIX;
+            noGroupSelectedLog = noGroupSelectedLog + " EVENT_CHANCE_RESULT eventId=";
+            noGroupSelectedLog = noGroupSelectedLog + eventId;
+            noGroupSelectedLog = noGroupSelectedLog + " result=NO_GROUP_SELECTED";
+            LogInfo(noGroupSelectedLog);
+            return true;
+        }
+
+        return BeginLaunchBatch(selectedGroups, "EVENT", eventId);
     }
 
-    protected bool BeginLaunchBatch(array<ref S77MigrateScenarioConfig> groups, string requestType, string requestId)
+    protected bool CanBeginFreshLaunch(string requestType, string requestId)
     {
         if (m_Stopped || m_Config.enabled != 1)
         {
@@ -650,6 +684,53 @@ class S77MigrateManager
             LogInfo(busyLog);
             return false;
         }
+
+        return true;
+    }
+
+    protected bool EvaluateGroupChance(S77MigrateScenarioConfig group, string requestType, string requestId)
+    {
+        float chancePercent = group.spawnChancePercent;
+        bool selected = true;
+        string rollText = "AUTO_SELECTED";
+
+        if (chancePercent <= 0.0)
+        {
+            selected = false;
+            rollText = "AUTO_SKIPPED";
+        }
+        else if (chancePercent < 100.0)
+        {
+            float rollPercent = Math.RandomFloat01() * 100.0;
+            selected = rollPercent < chancePercent;
+            rollText = rollPercent.ToString();
+        }
+
+        string resultText = "SELECTED";
+        if (!selected)
+            resultText = "SKIPPED";
+
+        string chanceLog = EVENT_LOG_PREFIX;
+        chanceLog = chanceLog + " GROUP_CHANCE_EVALUATION requestType=";
+        chanceLog = chanceLog + requestType;
+        chanceLog = chanceLog + " requestId=";
+        chanceLog = chanceLog + requestId;
+        chanceLog = chanceLog + " groupId=";
+        chanceLog = chanceLog + group.groupId;
+        chanceLog = chanceLog + " spawnChancePercent=";
+        chanceLog = chanceLog + chancePercent.ToString();
+        chanceLog = chanceLog + " roll=";
+        chanceLog = chanceLog + rollText;
+        chanceLog = chanceLog + " result=";
+        chanceLog = chanceLog + resultText;
+        LogInfo(chanceLog);
+        return selected;
+    }
+
+    protected bool BeginLaunchBatch(array<ref S77MigrateScenarioConfig> groups, string requestType, string requestId)
+    {
+        if (!CanBeginFreshLaunch(requestType, requestId))
+            return false;
 
         m_PendingGroups.Clear();
         for (int copyIndex = 0; copyIndex < groups.Count(); copyIndex++)
