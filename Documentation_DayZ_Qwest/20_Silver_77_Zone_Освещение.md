@@ -8,9 +8,9 @@
 
 Родительский документ:
 
-`Documentation_DayZ_Qwest/19_Silver_77_Zone.md`
+[[19_Silver_77_Zone|Silver_77_Zone]]
 
-Планируемая связь в Obsidian:
+Связь в Obsidian:
 
 ```text
 19_Silver_77_Zone
