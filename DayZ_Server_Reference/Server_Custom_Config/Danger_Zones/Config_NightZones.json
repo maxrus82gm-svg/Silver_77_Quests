@@ -1,0 +1,3467 @@
+{
+    "DebugLogs_Enabled": 0,
+    "ZonesList": [
+        {
+            "Comment": "13610.1  49.5  12195.9 = 15 // незавершонная антена у черного озера",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13610.0,
+                65.5166778564453,
+                12195.0
+            ],
+            "Radius": 20.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Скилет у зилка проказа",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13625.8,
+                58.3433778564453,
+                12364.3
+            ],
+            "Radius": 20.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Кладбище черное озеро проказа",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13380.3,
+                81.5000078564453,
+                12192.8
+            ],
+            "Radius": 20.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Вертолет ольша, большое поле",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13267.3,
+                123.2930078564453,
+                12708.3
+            ],
+            "Radius": 30.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "У респы могилы",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13029.4,
+                117.5330078564453,
+                13117.9
+            ],
+            "Radius": 13.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "У респы Вертолет",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12981.9,
+                128.4970078564453,
+                13060.3
+            ],
+            "Radius": 15.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Ольша_перекресток могилы",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12981.9,
+                95.7154078564453,
+                13041.6
+            ],
+            "Radius": 15.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Ольша_большое захоронение около запорожца",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12981.9,
+                95.7154078564453,
+                13041.6
+            ],
+            "Radius": 30.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Ольша_перекресток_трансформаторная",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13317.6,
+                96.7154078564453,
+                13040.4
+            ],
+            "Radius": 15.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Ольша_Висилица",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13332.6,
+				95.7709,
+				12947.7
+            ],
+            "Radius": 10.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Ольша_могильник_за_городом",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13432.4, 
+				88.3255, 
+				12838.5
+            ],
+            "Radius": 25.0,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+        {
+            "Comment": "13688.70 = 12252.70 = 60 // незавершонная стройка у черного озера проказа",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13688.2,
+                49.0482000000000,
+                12253.2
+            ],
+            "Radius": 70.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Большой аэропорт",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                4676.27,
+                339.0082000000000,
+                10305.4
+            ],
+            "Radius": 1000.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Кресты_Зенит",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                8015.27,
+                458.8532000000000,
+                9269.17
+            ],
+            "Radius": 21.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Больница_около_фуникулеров",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                1271.27,
+                296.0082000000000,
+                11409.4
+            ],
+            "Radius": 170.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 150.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Малый аэропорт",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12131.40,
+                140.0082000000000,
+                12507.22
+            ],
+            "Radius": 750.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Зеленогорск_больница_200_метров_высота",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                2755.40,
+                250.0082000000000,
+                5180.02
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Синосток_04",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                1506.40,
+                279.0082000000000,
+                11985.02
+            ],
+            "Radius": 350.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "тополинки_04",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                2901.40,
+                213.78082000000000,
+                12620.80
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Южнее_новая_петровка_ЖД",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                3571.40,
+                221.78082000000000,
+                12546.80
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Перекресток_военка_от_ольши",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13581.7,
+				30.7935,
+				11764.8
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Тисы600",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                1692.36,
+				451.477,
+				14045.5
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Тисы600 +",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                1542.54,
+				440.371,
+				13624.1
+            ],
+            "Radius": 300.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "военка_у_змеинного_хребта",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                10954.54,
+				220.371,
+				13386.1
+            ],
+            "Radius": 300.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "мусорка_машины",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12545.6,
+				53.9013,
+				13779.5
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Североград_Больница",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                8023.40,
+                120.78082000000000,
+                12751.80
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Североград_Пожарка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                7622.40,
+                119.78082000000000,
+                12631.80
+            ],
+            "Radius": 120.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Североград_Печать",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                7917.40,
+                117.78082000000000,
+                12566.80
+            ],
+            "Radius": 80.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		
+		{
+            "Comment": "Военка_у_сосновки",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                2689.86,
+                363.0082000000000,
+                6747.91
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "у_плотины_сергино",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                9548.86,
+                84.0082000000000,
+                13686.91
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "База_НАДЕЖДА",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                7102.99,
+				273.533,
+				7103.04
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Черно_кладбище",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                6717.91,
+				7.01245,
+				2950.68
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "АЛЬКОТРАС",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                2672.75,
+				23.4064,
+				1312.38
+            ],
+            "Radius": 450.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Военная_база_Павлово",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                2163.85, 91.6552, 3360.07
+            ],
+            "Radius": 350.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Военная_база_Болота",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                5057.26, 9.51249, 2438.42
+            ],
+            "Radius": 703.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Пустошка_кладбище",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               2899.76, 304.094, 8072.28
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Каментск_Военная_база",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               7903.09, 341.963, 14676
+            ],
+            "Radius": 302.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "ТИСЫ_Грозовой_перевал",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               3312, 322.887, 15161
+            ],
+            "Radius": 402.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новая_Петровка_ЖД",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               3485, 220.217, 12520
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новая_Петровка_Больница",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               3456.69, 197.018, 13164.8
+            ],
+            "Radius": 172.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Школа_Североград",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                8660.16,
+                104.9732000000000,
+                12802.04
+            ],
+            "Radius": 160.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Пригород_Новодмитровск_Контейнеры",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                10270.16,
+                58.9732000000000,
+                14155.04
+            ],
+            "Radius": 250.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новодмитровск_ментовка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                11482.16,
+                47.9732000000000,
+                14474.04
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новодмитровск_Большая_промзона",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12143.16,
+                27.9732000000000,
+                14324.04
+            ],
+            "Radius": 300.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Военка_у_Турово",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13574.16,
+                5.9732000000000,
+                13767.04
+            ],
+            "Radius": 300.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Светлоярск_ЖД",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13976.16,
+                3.9732000000000,
+                13475.04
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Светлоярск_низ_жд",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                14135.16,
+                3.9732000000000,
+                13152.04
+            ],
+            "Radius": 350.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Ольша_могильник_за_городом_2",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13488.70,
+                75.4632000000000,
+                12808.10
+            ],
+            "Radius": 28.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Промка_карьеры_Каменск_Север",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                7065.02,
+				355.606,
+				14616
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Солнечный_Заправка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13390,
+				4.28562,
+				6620
+            ],
+            "Radius": 60.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Солнечный_каръер_ГОРОД",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13300,
+				9.13248,
+				6103
+            ],
+            "Radius": 60.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Солнечный_больница",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13386.4,
+				6.69979,
+				6312.33
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Солнечный_пристань",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13516.3,
+				3.35314,
+				6330.37
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Солнечный_затор",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13449,
+				5.51307,
+				6009.98
+            ],
+            "Radius": 80.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Калиновка_кладбище",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                7758.94,
+				183.069,
+				13275
+            ],
+            "Radius": 152.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Погоревка_кладбище",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                4538.95,
+				288.392,
+				6390.02
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Светлоярск_Больничка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13876.02,
+                21.0532000000000,
+                13117.2
+            ],
+            "Radius": 120.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новодмитровск",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+			11802.9,
+			29.5504,
+			14304.9
+                
+            ],
+            "Radius": 350.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новодмитровск_лево",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+			11502,
+			46.3769,
+			14487.1
+                
+            ],
+            "Radius": 350.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Горка_мед_кладбище",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                9458.40 ,
+                304.0532000000000,
+                8837.2
+            ],
+            "Radius": 250.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "ЗАПРАВКА_И_БАЗА_ЛЕС",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                10393.40 ,
+                304.0532000000000,
+                9019.2
+            ],
+            "Radius": 300.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Где_то_база_От_горки",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                10456.40 ,
+                179.0532000000000,
+                9147.2
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Березино_Больница_Большая",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                11928.40 ,
+                55.0532000000000,
+                9068.2
+            ],
+            "Radius": 250.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Березино_Больница_малая",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12779.83 ,
+                55.0532000000000,
+                10061.38
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext",
+                "water",
+                "metal_thin_mesh_int",
+                "nam_lakewater_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Березино_Около_промки",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                12924.40 ,
+                7.0532000000000,
+                9932.2
+            ],
+            "Radius": 95.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Березино_кладбище",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13023.40,
+                6.0532000000000,
+                10541.22
+            ],
+            "Radius": 90.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "ВОЕНКА_Старый_Собор",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                6324.16,
+                305.9732000000000,
+                7793.04
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новый_Собор_Ментовка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                7172.41,
+                294.9732000000000,
+                7670.04
+            ],
+            "Radius": 120.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Новый_собор_Церковь",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               7072.85,
+			   297.819,
+			   7721.01
+            ],
+            "Radius": 120.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Пустой_хребет_военка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               10442, 
+			   283.093,
+			   5961.58
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Военка_у_мышкино",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               1151.18, 185.42, 7237.32
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Старое_мед",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               10116.3, 246.064, 5511.97
+            ],
+            "Radius": 150.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Тюльпан_комета_мед",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               10346, 46.219, 3449
+            ],
+            "Radius": 201.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Западнее_северограда_военка",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               7094.83,
+			   130.547,
+			   12710.5
+            ],
+            "Radius": 201.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "незавершонная_антена_у_черного_озера",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               13610.5, 62.2602, 12194.7
+            ],
+            "Radius": 16.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Край_карты_Запад",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               818.365, 6.00885, 1921.54
+            ],
+            "Radius": 450.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Красностав_больница",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               11265.7, 194.894, 12141.2
+            ],
+            "Radius": 120.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Военка_Вересник",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+               4531.82, 320.734, 8321.98
+            ],
+            "Radius": 450.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "3757.24 = 9011.06 = 100  // Выбор  312",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                3757.40,
+                312.0082000000000,
+                9011.22
+            ],
+            "Radius": 100.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "ОЛЬША_ЧЕРНОЕ_ОЗЕРО",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+              13335.1,
+			  92.7776,
+			  12535.4
+            ],
+            "Radius": 31.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Корабль_ГАЗ",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+              13826.8,
+			  1.54573,
+			  11178.8
+            ],
+            "Radius": 200.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+		{
+            "Comment": "Вертолет_Человек",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+              13304.9,
+			  113.47773,
+			  12679.80
+            ],
+            "Radius": 17.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12340.0,
+            "Coord_x_max": 12350.0,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": -138.5166778564453,
+            "Coord_Y_max": -128.5166778564453,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 995.0,
+            "Coord_Z_max": 1005.0,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int",
+                "dirt_ext"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        },
+        {
+            "Comment": "13585.40 = 12488.22 = 80 // На верху у ВАЛЕРЬЯНЫЧа возле павшего вертолета, и пожарных машин проказа",
+            "Enable_detect_to_Radius": 1,
+            "Position_map": [
+                13585.4000000000,
+                61.71797546386719,
+                12488.0000000000
+            ],
+            "Radius": 135,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 12090.2568359375,
+            "Coord_x_max": 12100.2568359375,
+            "Enable_detect_in_Y": 1,
+            "Coord_Y_min": 92.87797546386719,
+            "Coord_Y_max": 102.87797546386719,
+            "Enable_detect_in_Z": 1,
+            "Coord_Z_min": 13614.7646484375,
+            "Coord_Z_max": 13624.7646484375,
+           "Coeficient_light": 0.45,
+            "Enable_detect_SurfaceTypeUnderPlayer": 0,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int"
+            ],
+            "IsDisableWorkZone_In_NightTime": 0,
+            "IsDisableWork_NVG_Item_In_Zone": 0,
+            "Enable_NightZone_OnlyInActiveTime_At_GameWorld": 0,
+            "ListInGameActiveTime": [
+                {
+                    "Start_Hour": 19,
+                    "Start_Minute": 0,
+                    "End_Hour": 23,
+                    "End_Minute": 59
+                }
+            ]
+        }
+    ]
+}

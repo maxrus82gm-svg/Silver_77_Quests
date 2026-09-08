@@ -1,0 +1,255 @@
+// ------------------------------------------------------ Trader Markers -------------------------------------------------------
+
+// Green Mountain:
+//максимыч
+<TraderMarker> 			0 									// Trader ID
+<TraderMarkerPosition>	13089.60,    118.020,    13079.0  	// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<TraderMarkerSafezone>	0									// Safezone Radius
+
+
+// Kumyrna:
+//Кузьмич
+<TraderMarker> 			1
+<TraderMarkerPosition>	8078.4,    459.248,     9311.1
+<TraderMarkerSafezone>	0
+
+
+//Валерьяныч
+<TraderMarker> 			2
+<TraderMarkerPosition>	13442.90,    65.450,     12132.80	
+<TraderMarkerSafezone>	0
+
+
+//медичка ольша
+<TraderMarker> 			3 									// Trader ID
+<TraderMarkerPosition>	13088.50,    118.020,    13079.60  	// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<TraderMarkerSafezone>	0
+
+//Игорь Долбич ольша
+<TraderMarker> 			4 									// Trader ID
+<TraderMarkerPosition>	12460.00,    98.528,    13556.70	// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<TraderMarkerSafezone>	0	
+
+//Василий Прокофьев 
+<TraderMarker> 			5 										// Trader ID
+<TraderMarkerPosition>	13937.80,    1.375,    11751.70 		// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<TraderMarkerSafezone>	0	
+
+
+
+// Григорий Николаевич Вранглер 
+<TraderMarker> 			7 										// Trader ID
+<TraderMarkerPosition>	13926.40,    1.016,    	11750.30 		// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<TraderMarkerSafezone>	0	
+
+// Федор Распутин
+//<TraderMarker> 			8 										// Trader ID
+//<TraderMarkerPosition>	12979.40,    212.680,    	12761.70 		// Coordinate X, 	Coordinate Y, 	Coordinate Z
+//<TraderMarkerSafezone>	0	
+
+
+// Сергей (Воробей)
+<TraderMarker> 			9 									// Trader ID
+<TraderMarkerPosition>	13153.20,    6.352,    10377.00 		// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<TraderMarkerSafezone>	0
+
+
+// ------------------------------------------------------ Objects to Spawn ------------------------------------------------------
+	
+// Green Mountain:
+
+//Максимыч
+<Object> 					SurvivorM_Peter					//	TNPC_акркд именем NPC Убрать если не требуется голосовая
+<ObjectPosition>			13089.6,    118.020,    13079.0        // 	координаты торгаша
+<ObjectOrientation>			40.0, 		0,	 		0				// 	Yaw, 			Pitch, 			Roll
+<ObjectAttachment>			Hikingbagmung_black						// 	Add this if you are using an non Character Object for an Trader (like Vending Machines, etc.). It is needed to make the User Action for the Trading Menu work.
+<ObjectAttachment>  		Bp_Vepr_545
+<ObjectAttachment>  		BP_Mag_Vepr_223
+<ObjectAttachment>			sleepingbag_green_mung										// Add an Item to the Traders Inventory;
+<ObjectAttachment>			FS_ForestOldCap_ColorBase  //ушанка с заправлеными ушами
+<ObjectAttachment>			FS_Forest_Jacket  //афганка куртка
+//<ObjectAttachment>		FS_HuntBag_co  //рюгзак охотника
+<ObjectAttachment>			FS_RusVKPO_pants   // СССр штаны
+//<ObjectAttachment>		BP_Valenki
+<ObjectAttachment>			CombatBoots_Grey
+<ObjectAttachment>			cigar_mung
+
+
+<Object> 					SurvivorM_Peter						// Classname
+<ObjectPosition>			8078.4,    459.248,     9311.1			// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<ObjectOrientation>			-40.234265, 	0,			0				// Yaw, 			Pitch, 			Roll
+<ObjectAttachment>			FP4_HuntingTOP_Bag							
+<ObjectAttachment>			Hatchet
+<ObjectAttachment> 			Msp_WaistPack_Tan
+<ObjectAttachment>			Izh43Shotgun
+<ObjectAttachment>			FS_Flash_Tactical_brown					// Add an Item to the Traders Inventory;
+<ObjectAttachment>			bp_rebak_purp_orng
+<ObjectAttachment>			FS_Jager_Pants_ColorBase
+<ObjectAttachment>			bearfurcowl_mung
+<ObjectAttachment>	   		Lennon_glasses_black_mung
+<ObjectAttachment>			CombatBoots_Grey
+<ObjectAttachment>	    	LeatherGloves_Natural
+<ObjectAttachment>			BaseballCap_Beige
+<ObjectAttachment>   		FS_BomberJack_Brown
+
+//Валерьяныч
+<Object> 					SurvivorM_Peter							// Classname
+<ObjectPosition>			13442.9,    65.450,     12132.8			// Coordinate X, 	Coordinate Y, 	Coordinate Z
+<ObjectOrientation>			90.0, 	0,	0							// Yaw, 			Pitch, 			Roll
+<ObjectAttachment>			FP4_HuntingTOP_Bag					
+<ObjectAttachment>			FishingRod
+<ObjectAttachment> 			Msp_WaistPack_Tan
+<ObjectAttachment>			Izh43Shotgun
+<ObjectAttachment>			FS_Flash_Tactical_brown					// Add an Item to the Traders Inventory;
+<ObjectAttachment>			bp_rebak_purp_orng
+<ObjectAttachment>			FS_Jager_Pants_ColorBase
+<ObjectAttachment>			bearfurcowl_mung
+<ObjectAttachment>			CombatBoots_Grey
+<ObjectAttachment>	   		Lennon_glasses_black_mung
+<ObjectAttachment>	    	LeatherGloves_Natural
+<ObjectAttachment>			BaseballCap_Beige
+<ObjectAttachment>   		FS_PlashType2_Brown
+
+
+//Медичка ОЛЬША
+
+<Object> 					SurvivorF_Eva							//	TNPC_Убрать если не требуется голосовая
+<ObjectPosition>			13088.5,    118.020,    13079.6         // 	Coordinate X, 	Coordinate Y, 	Coordinate Z
+<ObjectOrientation>			40.0, 		0,	 		0				// 	Yaw, 			Pitch, 			Roll
+//<ObjectAttachment>			FS_Eco_Orange_Bag						// 	Add this if you are using an non Character Object for an Trader (like Vending Machines, etc.). It is needed to make the User Action for the Trading Menu work.
+<ObjectAttachment>  		FS_MP153_baikal
+//<ObjectAttachment>		HuntingVest										// Add an Item to the Traders Inventory;
+<ObjectAttachment>			BaseballCap_Red  //Кепка
+//<ObjectAttachment>		FS_Forest_Jacket  //афганка куртка
+//<ObjectAttachment>		Hikingbagmung_pink  //рюгзак туриста
+//<ObjectAttachment>		Msp_MedicBag_Red  //рюгзак медика большой
+<ObjectAttachment>			BP_ranec_med  //рюгзак медика малый
+//<ObjectAttachment>		AviatorGlasses   // очки
+<ObjectAttachment>			ParamedicPants_Green   // Штаны медика
+<ObjectAttachment>			QuiltedJacket_Yellow   // кофта медика
+<ObjectAttachment>			CombatBoots_Grey
+//<ObjectAttachment>		BP_Valenki
+<ObjectAttachment>			FS_TAG_ARMY_MEDIC
+<ObjectAttachment>			HighCapacityVest_Olive// разгрузка
+//<ObjectAttachment>		FP4_POAS_Bag// разгрузка
+
+//Игорь Долбич ОЛЬША
+//Игорь
+<Object> 					SurvivorM_Oliver					//	TNPC_Убрать если не требуется голосовая
+<ObjectPosition>			12460.00,    98.528,    13556.70        // 	координаты торгаша
+<ObjectOrientation>			200.0, 		0,	 		0				// 	Yaw, 			Pitch, 			Roll
+<ObjectAttachment>			Hikingbagmung_black						// 	Add this if you are using an non Character Object for an Trader (like Vending Machines, etc.). It is needed to make the User Action for the Trading Menu work.
+<ObjectAttachment>          AviatorGlasses
+<ObjectAttachment>  		Bp_Vepr_545
+<ObjectAttachment>  		BP_Mag_Vepr_223
+<ObjectAttachment>			sleepingbag_green_mung										// Add an Item to the Traders Inventory;
+<ObjectAttachment>			FS_ForestOldCap_ColorBase  //ушанка с заправлеными ушами
+<ObjectAttachment>			FS_RF_Jacket_VKPO  //
+//<ObjectAttachment>		FS_HuntBag_co  //рюгзак охотника
+<ObjectAttachment>			FS_RusVKPO_pants   // СССр штаны
+<ObjectAttachment>          WorkingGloves_Brown //перчатки
+<ObjectAttachment>			CombatBoots_Grey
+<ObjectAttachment>			cigar_mung
+
+
+
+//Василий Прокопьевич представительство
+<Object> 				SurvivorM_Oliver					//	TNPC_Убрать если не требуется голосовая
+<ObjectPosition>		13937.8,    1.375,    11751.7        // 	координаты торгаша
+<ObjectOrientation>		290.0, 		0,	 		0				// 	Yaw, 			Pitch, 			Roll						
+<ObjectAttachment>  	Bp_Vepr_545
+<ObjectAttachment>  	BP_Mag_Vepr_223
+<ObjectAttachment>		FS_ECO01_Jacket_Pro  // FS_Eco_Green_Jacket, FS_Eco_Gray_Jacket 12 литров
+<ObjectAttachment>		FS_Eco_Orange_Bag  //Балоны с защитой
+<ObjectAttachment>		FS_ECO01_pants_Pro   // хорошие щтаники с защитой 16
+<ObjectAttachment>      WorkingGloves_Brown //перчатки
+<ObjectAttachment>		FS_ECO_Orange_Boots // боты 13 защита
+
+//Серега по кличке Пуля
+//<Object> 					SurvivorM_Seth					//	TNPC_Убрать если не требуется голосовая
+//<ObjectPosition>		13379.8,    68.636,    	12116.7        // 	координаты торгаша
+//<ObjectOrientation>		-290.0, 		0,	 		0				// 	Yaw, 			Pitch, 			Roll						
+//<ObjectAttachment>  	VEPR12u
+//<ObjectAttachment>  	weldinggoggles_mung
+//<ObjectAttachment>  	FS_ForestOldCap_ColorBase  //ушанка с заправлеными ушами
+//<ObjectAttachment>		FS_Forest_Jacket  //афганка куртка
+//<ObjectAttachment>	FS_Eco_Orange_Bag  //Балоны с защитой
+//<ObjectAttachment>		FS_RusVKPO_pants   // СССр штаны
+//<ObjectAttachment>      WorkingGloves_Beige //перчатки
+//<ObjectAttachment>		CombatBoots_Grey
+//<ObjectAttachment>	BP2_HighCapacityVest_GreenBrown // боты 13 защита
+
+
+//Григорий Николаевич Вранглер
+<Object> 					SurvivorM_Oliver					//	TNPC_Убрать если не требуется голосовая
+<ObjectPosition>		13926.40,    1.016,    	11750.30        // 	координаты торгаша
+<ObjectOrientation>		320.0, 		0,	 		0				// 	Yaw, 			Pitch, 			Roll						
+<ObjectAttachment>  	Bp_Vepr_545
+<ObjectAttachment>  	BP_Mag_Vepr_223
+<ObjectAttachment>		FS_ClearSkyType2NH_Green  // FS_Eco_Green_Jacket, FS_Eco_Gray_Jacket 12 литров
+<ObjectAttachment>		FS_Eco_Orange_Bag  //Балоны с защитой
+<ObjectAttachment>		FS_ClearSkyType2_Pants_Green  // хорошие щтаники с защитой 16
+<ObjectAttachment>      WorkingGloves_Brown //перчатки
+<ObjectAttachment>		FS_ECO_Orange_Boots // боты 13 защита
+
+
+// Сергей (Воробей)
+<Object> 					SurvivorM_Seth					// Trader NPC
+<ObjectPosition>			13153.20,    6.352,    10377.00        // Coordinate X, 	Coordinate Y, 	Coordinate Z
+<ObjectOrientation>			90.0, 		0,	 		0				// Yaw, 			Pitch, 			Roll
+<ObjectAttachment>			Hikingbagmung_black
+<ObjectAttachment>  		Bp_Vepr_545
+<ObjectAttachment>  		BP_Mag_Vepr_223
+<ObjectAttachment>			sleepingbag_green_mung
+<ObjectAttachment>			FS_ForestOldCap_ColorBase
+<ObjectAttachment>			FS_RF_Jacket_VKPO
+<ObjectAttachment>			FS_RusVKPO_pants
+<ObjectAttachment>          WorkingGloves_Brown
+<ObjectAttachment>			CombatBoots_Grey
+<ObjectAttachment>			cigar_mung
+
+
+
+//FS_Naem_Pants_CamoUK, FS_Naem_Pants_CamoSword, FS_Naem_Pants_GreenCamo штаны 49 низкое утепление
+//FS_SevaModule_MEDIC, FS_SevaModule_Odinochka
+
+
+// на приставни представительства ВИБИЧ СПАВНИТЬ один раз, потом отключать!!!
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	13915.10,	1.200,	11783.5
+//<ObjectOrientation>	0,			0,			0
+
+// на приставни, бар представительства ВИБИЧ
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	13934.40,	0.600,	11760.3
+//<ObjectOrientation>	0,			0,			0
+
+// Черное озеро остановка
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	13468.60,	63.500,	12146.5
+//<ObjectOrientation>	0,			0,			0
+
+// Черное озеро место для рыбалки
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	13386.90,	67.500,	12112.9
+//<ObjectOrientation>	0,			0,			0
+
+// Черное озеро на скале у домиков
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	13414.50,	81.500,	12179.8
+//<ObjectOrientation>	0,			0,			0
+
+// Зенит
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	8100.08, 458.060, 9307.52
+//<ObjectOrientation>	0,			0,			0
+
+// Зенит
+//<Object>			BarrelHoles_Red
+//<ObjectPosition>	8092.86, 450.0, 9314.44
+//<ObjectOrientation>	0,			0,			0
+
+//<OpenFile> FileName.txt								// Links to another File; Must be right above <FileEnd>!
+
+
+<FileEnd>												// This has to be on the End of this File and is very importand!

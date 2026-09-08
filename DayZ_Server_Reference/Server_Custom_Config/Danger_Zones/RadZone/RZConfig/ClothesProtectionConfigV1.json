@@ -1,0 +1,437 @@
+{
+    "RZListSlotProtection": [
+        {
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_GASMASK_PPM88",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "GP5GasMask",
+                    "Protection": 0
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "GP5GasMaskYellow",
+                    "Protection": 0
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_GasMask_FV",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "GasMask",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "stalker_gasmask_white_mung",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "stalker_gasmask_black_mung",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "GasMaskPMK",
+                    "Protection": 0
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_GasBallon_Odinocki",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Mask",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_GasBallon_DOLG",
+                    "Protection": 1
+                }
+            ]
+        },
+		
+        {
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCHoodBase",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCHoodGray",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "FP4_Hood_black",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_TOX_HeadGear_orange",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_TOX_HeadGear_green",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_TOX_HeadGear_black",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_TOX_HeadGear_Blue",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Headgear",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCHoodYellow",
+                    "Protection": 1
+                }
+            ]
+        },
+        {
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCJacketBase",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCJacketGray",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCJacketYellow",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_Soivet_JacketHood",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_Soivet_Jacket",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO01_Jacket_Pro",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO01_Jacket",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ST_top_tan",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ProJacketST_Black",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_TOX_Jacket_orange",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Body",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ExoTypeJacket_ColorBase",
+                    "Protection": 1
+                }
+            ]
+        },
+        {
+            "SlotName": "Gloves",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCGloves_ColorBase",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Gloves",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCGlovesGray",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Gloves",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCGlovesYellow",
+                    "Protection": 1
+                }
+            ]
+        },
+        {
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCPantsBase",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCPantsGray",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCPantsYellow",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO01_pants",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_TOX_Pants_orange",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO01_pants_Pro",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO_Orange_Pants",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO_Green_Pants",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO_Gray_Pants",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Legs",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ExoTypePants_Standart",
+                    "Protection": 1
+                }
+            ]
+        },
+        {
+            "SlotName": "Feet",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCBootsBase",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Feet",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCBootsGray",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Feet",
+            "ListProtections": [
+                {
+                    "ClotheName": "NBCBootsYellow",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Feet",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO_Green_Boots",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Feet",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO_Orange_Boots",
+                    "Protection": 1
+                }
+            ]
+        },
+		{
+            "SlotName": "Feet",
+            "ListProtections": [
+                {
+                    "ClotheName": "FS_ECO_Gray_Boots",
+                    "Protection": 1
+                }
+            ]
+        }
+    ]
+}

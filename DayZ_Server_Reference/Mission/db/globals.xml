@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<variables>
+    <!-- Максимальное количество животных, одновременно заспавненных на карте -->
+    <var name="AnimalMaxCount" type="0" value="3500"/>
+
+    <!-- Минимальное расстояние от игрока, на котором CE может удалять объекты, метры -->
+    <var name="CleanupAvoidance" type="0" value="100"/>
+
+    <!-- Время жизни трупа животного, секунды -->
+    <var name="CleanupLifetimeDeadAnimal" type="0" value="2000"/>
+
+    <!-- Время жизни трупа заражённого, секунды -->
+    <var name="CleanupLifetimeDeadInfected" type="0" value="330"/>
+
+    <!-- Время жизни трупа игрока, секунды -->
+    <var name="CleanupLifetimeDeadPlayer" type="0" value="1500"/>
+
+    <!-- Время жизни объектов без своей настройки economy, если они уже уничтожены/мертвы -->
+    <var name="CleanupLifetimeDefault" type="0" value="45"/>
+
+    <!-- Сколько объектов CE может удалить за один стандартный проход очистки -->
+    <var name="CleanupLifetimeLimit" type="0" value="50"/>
+
+    <!-- Время жизни предмета в состоянии Ruined, секунды -->
+    <var name="CleanupLifetimeRuined" type="0" value="230"/>
+
+    <!-- Как часто флаг базы обновляет lifetime объектов в своей зоне, секунды -->
+    <var name="FlagRefreshFrequency" type="0" value="432000"/>
+
+    <!-- Максимальный период, на который действует обновление lifetime от флага, секунды -->
+    <var name="FlagRefreshMaxDuration" type="0" value="3456000"/>
+
+    <!-- Порча еды: 1 = включена, 0 = выключена -->
+    <var name="FoodDecay" type="0" value="1"/>
+
+    <!-- Через сколько секунд без игроков Central Economy перейдёт в Idle Mode -->
+    <var name="IdleModeCountdown" type="0" value="60"/>
+
+    <!-- Запускать CE сразу в Idle Mode: 1 = да, 0 = нет -->
+    <var name="IdleModeStartup" type="0" value="1"/>
+
+    <!-- Процент номинального лута, который создаётся при первом запуске без persistence -->
+    <var name="InitialSpawn" type="0" value="100"/>
+
+    <!-- Максимальная степень повреждения нового лута: 0.0 = pristine, 1.0 = ruined -->
+    <var name="LootDamageMax" type="1" value="0.6"/>
+
+    <!-- Минимальная степень повреждения нового лута -->
+    <var name="LootDamageMin" type="1" value="0.0"/>
+
+    <!-- Разрешить CE размещать предметы в предусмотренных proxy-позициях -->
+    <var name="LootProxyPlacement" type="0" value="1"/>
+
+    <!-- На каком расстоянии от игрока новый лут не должен появляться, метры -->
+    <var name="LootSpawnAvoidance" type="0" value="100"/>
+
+    <!-- Количество попыток при одной операции респавна предмета -->
+    <var name="RespawnAttempt" type="0" value="2"/>
+
+    <!-- Максимум предметов одного типа, которые CE может заспавнить за один проход -->
+    <var name="RespawnLimit" type="0" value="20"/>
+
+    <!-- Сколько разных типов предметов CE может обрабатывать при респавне одновременно -->
+    <var name="RespawnTypes" type="0" value="12"/>
+
+    <!-- Какой процент лута восполнять при рестарте до nominal -->
+    <var name="RestartSpawn" type="0" value="0"/>
+
+    <!-- Максимальное количество попыток размещения предметов при первоначальном спавне -->
+    <var name="SpawnInitial" type="0" value="1200"/>
+
+    <!-- Штраф ожидания при переходе между серверами, секунды -->
+    <var name="TimeHopping" type="0" value="60"/>
+
+    <!-- Обычное время входа на сервер, секунды -->
+    <var name="TimeLogin" type="0" value="5"/>
+
+    <!-- Время выхода персонажа с сервера после Logout, секунды -->
+    <var name="TimeLogout" type="0" value="20"/>
+
+    <!-- Дополнительный штраф ожидания для игрока, который ещё считается в игровой сессии -->
+    <var name="TimePenalty" type="0" value="20"/>
+
+    <!-- Обновлять влажность и температуру предметов в мире: 1 = да -->
+    <var name="WorldWetTempUpdate" type="0" value="1"/>
+
+    <!-- Максимальное количество заражённых одновременно на карте -->
+    <var name="ZombieMaxCount" type="0" value="8000"/>
+
+    <!-- Расстояние до зоны, при котором активируется динамический спавн заражённых, метры -->
+    <var name="ZoneSpawnDist" type="0" value="250"/>
+</variables>
+
+

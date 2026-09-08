@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--  ___________ Вы можете найти подробные инструкции в разделе PvZmoD_CustomisableZombies_HELP.txt файл ___________ -->
+<!-- Смотрите новые функции в конце файла  -->
+
+
+<!-- Незабудь подписаться на канал YouTube https://goo.su/2D6R поставить лайк и написать комент)) Тебе не сложно, мне очень приятно.
+     Так же заходи в мою группу Дискорд Don Matteo Family https://discord.gg/R7m8CDR
+
+
+     Перевод и полное редактирование данного файла сделал: Don Matteo  
+-->
+
+
+<types>
+	<type name="File_Name">
+        <Customisable_Zombies_List 		File_Name = "PvZmoD_CustomisableZombies_Characteristics.xml"/>	<!-- Настраиваемый список зомби, не забудьте расширение .xml -->
+    </type>
+	
+	<type name="Features_Activation">
+        <Disable_All_Features	 						Day = "0"	Night = "0"/>	<!-- [0 или 1] Это отключит все функции мода. -->
+        <Zombies_Health_Activated 						Day = "1"	Night = "1"/>	<!-- [0 или 1] Включить или выключить Здоровье зомби -->
+        <Zombies_Resistance_Activated 					Day = "1"	Night = "1"/>	<!-- [0 или 1] Включить или выключить Сопротивление зомби -->
+        <Zombies_Speed_Activated						Day = "1"	Night = "1"/>	<!-- [0 или 1] Включить или выключить Скорость зомби -->
+        <Zombies_CrawlControl_Activated					Day = "1"	Night = "1"/>	<!-- [0 или 1] Включить или выключить Контроль зомби -->
+        <Zombies_Strenght_Activated	 					Day = "1"	Night = "1"/>	<!-- [0 или 1] Включить или выключить Сила зомби -->
+		<Zombies_Vision_Activated						Day = "1" 	Night = "1" WithBloodyHands="1" WithSpecialMask="1" MiniMumRatioDistance="1"/> <!-- [0 или 1] Включить или выключить дальности зрения зомби (WithBloodyHands - если у игрока окровавленные руки // WithSpecialMask - Когда игрок носит одну из масок, коэффициент «WithSpecialMask» из файла характеристик применяется к расстоянию обзора зомби) -->
+        <Player_Fist_Fighting_Activated 				Day = "1"	Night = "1"/>	<!-- [0 или 1] Включить или выключить Кулачный бой игрока -->
+		<Zombies_Hit_Players_On_Obstacles_Activated 	Day = "0"	Night = "0"/>	<!-- [0 или 1] Зомби бьют игроков за препятствиями --> 
+	</type>
+	
+	<type name="Zombies_Caracteristics">
+        <Zombies_Health_Ratio		Day	= "1.0"	Night = "1.0"/>	<!-- [От десятичного числа от 0,0 до бесконечности] Соотношение (%) применяется к здоровью всех зомби -->
+        <Zombies_Strength_Ratio		Day	= "2.0"	Night = "2.0"/> <!-- Дамаг крови,стамины. Кроме вероятности кровотечения [от 0,0 до бесконечности] Соотношение (%) применяется ко всем зомби -->
+        <Zombies_Speed_Ratio		Day	= "1.2"	Night = "0.7"/> <!-- [От десятичного числа от 0,0 до бесконечности] Соотношение (%) применяется ко всем минимальной и максимальной скорости зомби. -->
+	</type>
+	
+    <type name="Players_Caracteristics">
+        <Maximum_Number_Of_Bleeding_Sources_From_Zombies_Combat			Value = "3"	/>          <!-- Это максимальное количество источников кровотечения от зомби. Не включает кровотечение из лестниц или испорченной обуви. -->
+        <Shoes_Degradation_When_Hit_By_Crawling_Zombie					Value = "5" />			<!-- [Десятичные от 0.0 до бесконечности] Ползучие зомби повреждают обувь игрока. Увеличьте его, если хотите усложнить задачу -->
+        <Fist_Fighting	Gloves_Degradation_Speed_When_Fist_Fighting				= "0.6"		/>  <!-- [Десятичные от 0.0 до бесконечности] Перчатки - скорость износа при драке кулаками. Увеличьте его, если хотите усложнить задачу (Тактические перчатки имеют например 100.0 hp) -->
+        <Fist_Fighting 	Bleeding_Chance_If_Fist_Fighting_Without_Gloves 		= "0.1"	/>  <!-- [Десятичные от 0.0 до 1.0] Вероятность кровотечения при кулачном бою без перчаток -->
+        <Fist_Fighting	Player_Dammage_If_Fist_Fighting_Without_Gloves			= "0.5"		/>  <!-- [Десятичные от 0.0 до 100.0] Урон игроку, если кулачный бой без перчаток (Максимальное здоровье игрока составляет 100.0 hp) -->
+        <Fist_Fighting	Player_Health_Limite_To_Take_Dammage_From_Fist_Fighting	= "30.0"	/>  <!-- [Десятичные от 0.0 до 100.0] Предел здоровья игрока, чтобы получить урон от кулачного боя -->
+        <Special_Mask_To_Hide_From_Zombies	List = ""	/>	<!-- Специальная маска, чтобы спрятаться от зомби (без пробелов, используйте запятую между масками) -->
+		  <!-- Эта функция позволяет игроку поражать несколько зомби, когда он выполняет тяжелую атаку. (Удар с разбега)-->
+		<Multi_Hits_On_Heavy_Attack			Radius 					= "1.2"	/>	<!-- [Десятичные от 0.0 до бесконечности] Значение «радиуса» - это радиус (в метрах) вокруг зомби, в который впервые попадает удар. (0.0 => Отключите функцию / слишком высокое значение может вызвать проблемы с производительностью) --> 
+		<Multi_Hits_On_Heavy_Attack			Dammage_Ratio 			= "0.5"	/>	<!-- [Десятичные от 0.0 до 1.0] (вы можете установить > 1,0 но я не думаю, что это имеет смысл с точки зрения игрового процесса) -->
+		<Multi_Hits_On_Heavy_Attack			Min_Dammage_To_Activate	= "20"	/>	<!-- [Десятичные от 0.0 до бесконечности] это значение не позволяет использовать эту функцию, когда игрок сражается с большинством предметов, не являющихся оружием. --> 
+		<Multi_Hits_On_Heavy_Attack			Stamina_Bonus			= "2"	/>	<!-- [Десятичные от 0.0 до бесконечности] Когда игрок поражает многих зомби сильной атакой, он восстанавливает небольшое количество выносливости за каждое попадание зомби (не за первое) -->   
+    </type>
+	      <!-- Возможно, вы заметили, что ванильное ночное расписание не совсем соответствует тому, что мы можем назвать ночью в реальной жизни.
+		       Ванильная система считает, что наступила ночь, когда солнце скрывается за горизонтом, даже если свет все еще яркий.
+		       Эта функция позволяет изменять время начала и конца ночи.
+		       Помните, что это повлияет только на систему ночного зомби этого мода, он не изменит ускорение ванильного времени.-->
+	<type name="Night_Management">
+        <OverRide_Vanilla_Night_Time	Activated 	= "1"		/> <!-- Установите значение 1, чтобы использовать индивидуальные ночные расписания (0, чтобы сохранить обычные (ВАНИЛЬНЫЕ) ночные расписания) / -1: Нет ночной конфигурации (всегда используется дневная конфигурация зомби) -->
+        <Night_Beginning				Time 		= "20:00"	/> <!-- Установите время начала ночи (24 часа) -->
+        <Night_End						Time 		= "05:00"	/> <!-- Установите время окончания ночи (24 часа) -->
+    </type>		
+		  <!-- Каждый раз, когда игрок сбивает зомби машиной (если скорость машины выше Speed_Minimum), радиатор машины получает повреждения.
+		       Учтите, что радиатор получит повреждения, даже если зомби ударится задней частью машины.-->
+	<type name="Damages_To_Vehicles_Radiator_When_Cruching_Zombies">
+ 		<Damages_To_Vehicles		Activated	 			= "1"		/>	<!-- 0 для отключения / 1 для активации этой функции -->
+		<Damages_To_Vehicles		Vehicle_Type_Resistance	= "DefaultCars:200,ExpansionVodnik:200,ExpansionBus:200"/>	<!-- Класс техники:ХП радиатора (Добавление без пробелов, внимательно посмотрите на линейную структуру, если хотите добавить автомобили) -->
+		<Damages_To_Vehicles		Damages_Per_Impact	 	= "0.3"		/>	<!-- десятичный [от 0,0 до бесконечности] Повреждения, полученные радиатором автомобиля при каждом столкновении с зомби -->
+		<Damages_To_Vehicles		Timer_Between_Impacts	= "7"		/>	<!-- Целое число [от 1 до бесконечности] (секунды) (никогда не ниже 1) Это сделано для того, чтобы радиатор не получил одновременного множественного удара. -->
+		<Damages_To_Vehicles		Speed_Minimum	 		= "30"		/>	<!-- Целое число [от 1 до бесконечности] (км/ч) (никогда не ниже 1) Это необходимо для предотвращения повреждения радиатора при медленном движении автомобиля. -->
+		<Damages_To_Vehicles		Speed_Multiplier	 	= "0.01"	/>	<!-- десятичный [от 0,0 до бесконечности] Если установлено значение выше нуля, то чем быстрее транспортное средство движется, тем больше повреждений он получит при попадании в зомби. Например, если установлено значение «0,01», радиатор получит на 1,0 очко повреждения больше, если скорость составляет 100 км / ч (0,01 * 100 = 1,0). -->
+    </type>	
+	
+	<type name="Other">
+		<Special_HeadShot_Weapons	List = "Crossbow_Wood,Crossbow_Summer,Magnum,AKS74U_Black,AKS74U,SVD_1963,Bp_Johnson1941,Expansion_Kedr,SawedoffIzh18,P1,SVD,PP19,CZ527,VSS_AoD,CZ550,LongHorn,Gewehr43_mung,SawedoffMagnum,lebedev_PL15_mung,UMP45,Ruger1022,COLT_1911_Ranger,BPtt, COLT_1911_Camo,COLT_1911_Desert,AK74_Black,AKS74U_Green,COLT_1911_Fury,Vintorez_oldHard,LongHorn,MP5K,COLT_1911,MakarovIJ70,AS_VAL,M9_Berreta,Pistol_Tokarev_Old,Rev_BowRecurve,Glock19,glock_18,Pistol_Tokarev,COLT_1911_red,Tompson,Nagant1895_mung,Rev_Bow,Rev_Crossbow,MKII"/>	<!-- Это список оружия, из которого можно убить зомби с одного удара в голову. (без пробелов, используйте запятую между каждым оружием) -->
+		<Items_Protect_HeadShots	List = "BallisticHelmet,ConstructionHelmet,DarkMotoHelmet,DirtBikeHelmet,FirefightersHelmet,GorkaHelmet,HockeyHelmet,GreatHelm,Mich2001Helmet,MotoHelmet,PumpkinHelmet,SkateHelmet,Ssh68Helmet,TankerHelmet,ZSh3PilotHelmet,WeldingMask" />		<!-- Когда зомби носят предмет из этого списка он не умерает от выстрела в голову. (без пробелов, используйте запятую между каждым шлемом или маской)-->
+		<Friendly_Wolves			List = ""	/>	<!-- Вы можете заставить Волков не нападать на игроков, они просто будут следовать за ними. (без пробелов, используйте запятую между каждым волком) Если не нужно просто сотрите Animal_CanisLupus_White, должно быть так List = "" -->
+    </type>
+	
+	<type name="Debug_do_not_modify">
+        <Debug_Mod 	Activated = "0"/>	<!-- [0 или 1] сохраняйте значение 0 для экономии ресурсов сервера: обновляйте изменения xml каждую 1 секунду в режиме отладки и каждые 30 секунд в обычном режиме (при изменении с 0 на 1 текущий 30-секундный таймер должен завершиться, прежде чем начинать обновление со скоростью 1 с.) -->
+	</type>	
+	
+	
+	<type name="Zombies_Attacking_Stopped_Vehicles">
+ 
+    </type>
+ 
+	<type name="Debug_Only_For_Testing_Or_Debugging">
+ 
+    </type>
+	
+	
+	<type name="Zombies_Throw_Stones">
+ 
+    </type>
+	
+	
+	<type name="NewFeatures">		<!-- Новые функции, вы должны переместить их в правый раздел (не обязательно, но более чистую структуру вам легче настроить) Как я понимаю, это имелось в виду при обновлении и дабовлении новыхч функций вы их копируете и вставляете тут. --> 
+		<Bleeding_Chance_Activated	 						Day = "1"	Night = "1"/>	<!-- [0 or 1]  Активирован шанс кровотечения -->
+		<Zombies_Can_Dodge							 		Day = "1"	Night = "1"/>	<!-- [0 or 1] Зомби Могут уклоняться  -->
+		<Zombies_Hit_Unconscious_Players_Activated			Day = "0"	Night = "0"/>	<!-- [0 or 1] пиздят лежащих игорьков  -->
+		<Zombies_Fight_Wolves_Activated		 				Day = "0"	Night = "0"/>	<!-- [0 or 1] Активирован бой зомби с волками  -->
+		<Zombies_Fight_Bears_Activated		 				Day = "0"	Night = "0"/>	<!-- [0 or 1] Активирован бой зомби с медведями  -->
+		<Zombies_Hearing_Doors_Player_Standing_Activated	Day = "1"	Night = "1"/>	<!-- [0 or 1] Зомби, слышащие Двери, Игрок, стоящий активирован  -->
+		<Zombies_Hearing_Doors_Player_Crouching_Activated	Day = "1"	Night = "1"/>	<!-- [0 or 1] Зомби, слышащие двери, Игрок, присевший на корточки, активирован  -->
+		<Zombies_Breaking_Doors_Activated					Day = "1"	Night = "1"/>	<!-- [0 or 1] Активированы зомби, взламывающие двери  -->
+		<Zombies_Breaking_LockedDoors_Activated				Day = "0"	Night = "0"/>	<!-- [0 or 1] is new feauture should be in "Features_Activation" section  -->
+		<Zombies_Aggressive_Doors_Detection_Activated		Day = "1"	Night = "1"/>	<!-- [0 or 1] is new feauture should be in "Features_Activation" section  -->
+       <Zombies_Clamp_Speed_Mini					Day	= "0.0"	Night = "0.0"/> <!-- [Decimal 1.5=Walk / 2.5=Run / 3.0=Sprint] is new feauture should be in "Zombies_Caracteristics" section-->
+       <Zombies_Clamp_Speed_Maxi					Day	= "3.0"	Night = "3.0"/> <!-- [Decimal 1.5=Walk / 2.5=Run / 3.0=Sprint] is new feauture should be in "Zombies_Caracteristics" section-->
+		<Zombies_Hearing_Standing_Players_Ratio		Day	= "1.0"	Night = "1.0"/> <!-- [Decimal 0.0 to infinite] is new feauture should be in "Zombies_Caracteristics" section -->
+		<Zombies_Hearing_Crouching_Players_Ratio	Day	= "1.0"	Night = "1.0"/> <!-- [Decimal 0.0 to infinite] is new feauture should be in "Zombies_Caracteristics" section -->
+       <Special_Mask_Type_Of_Slot			Slot 		= "Mask"	/>		<!-- This value allow you to use another item than a mask. Set one of these Slots : Mask/Head/Shoulder/Melee/Headgear/Eyewear/Gloves/Armband/Vest/Body/Back/Hips/Legs/Feet/Splint_Right/Hands (is new feauture should be in "Players_Caracteristics" section)-->
+       <Special_Mask_Lifetime				Minutes 	= "0.0"		/>		<!-- [Decimal 0.0 to infinite] 0.0 : Does not degrade automatically (is new feauture should be in "Players_Caracteristics" section)-->
+		<Attack_Stopped_Vehicles	Activated	 			= "0"	/>	<!-- Integer [0 or 1] (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+		<Attack_Stopped_Vehicles	Vehicle_Type_Resistance	= "DefaultCars:100,ExpansionVodnik:200,ExpansionBus:200"/>	<!-- (no spaces, look carefully at the line structure if you want to add vehicles) (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+		<Attack_Stopped_Vehicles	Damage_On_Structure		= "2.0"	/>	<!-- decimal [0.0 to infinite] (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+		<Attack_Stopped_Vehicles	Damage_On_Attachments	= "5.0"	/>	<!-- decimal [0.0 to infinite] (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+		<Attack_Stopped_Vehicles	Attack_Speed_Factor		= "1.0"	/>	<!-- decimal [0.01 to 3.0] more than 3 will make no difference (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+		<Attack_Stopped_Vehicles	Activate_Sounds	 		= "1"	/>	<!-- Integer [0 or 1] (deactivate if desync problems) (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+		<Attack_Stopped_Vehicles	Player_Inside_Can_Be_Hit= "1"	/>	<!-- Integer [0 or 1] (is new feauture should be in "Zombies_Attacking_Stopped_Vehicles" section) -->
+ 
+		<Zombies_Size_Activated								Day = "1"	Night = "1"/>	<!-- [0 or 1] is new feauture should be in "Features_Activation" section  -->
+		<Zombies_Size_Ratio							Day	= "1.0"	Night = "1.5"/> <!-- [Decimal 0.01 to infinite] is new feauture should be in "Zombies_Caracteristics" section -->
+		<Zombies_Maximum_Size_In_Buildings			Value	= "1.4"/> 			<!-- [Decimal 0.01 to infinite] is new feauture should be in "Zombies_Caracteristics" section -->
+		<Damages_To_Vehicles		Moving_Vehicles_Too		= "1"		/>	<!-- Integer [0 or 1] -->
+		<Damages_To_Vehicles		Cruch_Physics_Force_Factor	 = "25"	/>	<!-- decimal [0.0 to infinite] (is multiplied by speed) -->
+		<Damages_To_Vehicles		Cruch_Physics_Force_Mini	 = "700"/>	<!-- decimal [0.0 to infinite] -->
+		<Damages_To_Vehicles		Cruch_Physics_Force_Maxi	 = "3000"/>	<!-- decimal [0.0 to infinite] -->
+		<Attack_Stopped_Vehicles	Physics_Force_Apply		= "1000"/>	<!-- decimal [0 to infinite] -->
+ 
+       <Zombies_Speed_Adjust_Activated						Day = "1"	Night = "1"/>	<!-- [0 or 1]  -->
+		<Zombies_Throw_Stones_Activated						Day	= "1"		Night = "1"/>		<!-- [0 or 1] -->
+		<Zombies_Throw_Stones_Only_If_Player_On_Obstacle	Day	= "1"		Night = "1"/>		<!-- [0 or 1] -->
+		<Zombies_Throw_Stones_Damage_Health					Day	= "2.5"		Night = "2.5"/> 	<!-- [Decimal 0.0 to infinite] -->
+		<Zombies_Throw_Stones_Damage_Shock					Day	= "15.0"	Night = "15.0"/> 	<!-- [Decimal 0.0 to infinite] -->
+		<Zombies_Throw_Stones_Keep_Minimum_Health			Day	= "30.0"	Night = "30.0"/> 	<!-- [Decimal 0.0 to 100] (if you want players don't die by stones)-->	
+		<Zombies_Throw_Stones_Rate							Day	= "5.0"		Night = "5.0"/> 	<!-- [Decimal 1.0 to infinite] (seconds between two throw)-->
+		<Zombies_Throw_Stones_Force							Day	= "90.0"	Night = "90.0"/> 	<!-- [Decimal 0.0 to infinite] (impacts throwing distance, not damages)-->
+		<Zombies_Throw_Stones_Distance_Maxi					Day	= "10.0"	Night = "10.0"/> 	<!-- [Decimal 0.0 to infinite] -->
+ 
+		<Zombies_Stun_By_Bullet_Resistance_Activated		Day = "1"	Night = "1"/>	<!-- [0 or 1] is new feauture should be in "Features_Activation" section  -->
+		<Zombies_Stun_By_Bullet_Resistance_Ratio	Day	= "1.0"	Night = "1.0"/> <!-- [Decimal 0.01 to infinite] is new feauture should be in "Zombies_Caracteristics" section -->
+		<Attack_Stopped_Vehicles	Moving_Vehicles_Too		= "1"		/>	<!-- Integer [0 or 1] -->
+ 
+	</type>
+</types>
+
+<!--  ___________ ВЫ МОЖЕТЕ НАЙТИ ПОДРОБНЫЕ ИНСТРУКЦИИ в файле PvZmoD_CustomisableZombies_HELP.txt___________  -->
+
+

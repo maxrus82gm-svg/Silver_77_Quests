@@ -146,6 +146,8 @@
 
 - `TASK 158` — устранён подтверждённый runtime compile blocker в `S77MigrateConfig.c`: зарезервированный Enforce identifier `external` в `AddDefaultActivations()` переименован в `externalActivation` во всех обращениях без изменения activation ID, типа, target и логики. Canonical wrapper завершился с exit code `0`, PBO/подпись пересобраны, Support JSON байтово совпадает с canonical. Addon Builder PASS не доказывает Enforce runtime compile; требуется повторный запуск сервера.
 
+- `TASK 159` — создана READ-ONLY справочная копия актуальной серверной mission `dayzOffline.chernarusplus`: 75 разрешённых файлов скопированы в `DayZ_Server_Reference` с SHA-256 проверкой. Blanket-ignore `.obsidian/` заменён точечным ignore `workspace*.json`; shared Obsidian settings оставлены Git-visible, а физический `workspace.json` сохранён локально. Wiki-links, graph settings, runtime и моды не менялись.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

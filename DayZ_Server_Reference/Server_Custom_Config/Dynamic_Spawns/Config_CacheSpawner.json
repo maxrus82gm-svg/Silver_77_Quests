@@ -1,0 +1,1959 @@
+{
+    "DebugLogs_enabled": 1,
+    "Enable_ChatMessageWhenSpawned": 0,
+    "ChatMessageWhenSpawned": "Created the new Cache in Map position: %coords%",
+    "CacheList": [
+        {
+            "Classname": "ShronGreenBox",
+            "Min_Caches_In_Map": 61,
+            "Max_Caches_In_Map": 61,
+            "Coords": [
+                {
+                    "Position": [
+                        13670.60000000000,
+                        47.20000000000000,
+                        12193.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13660.60000000000,
+                        53.86400000000000,
+                        12271.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13581.40000000000,
+                        52.91960000000000,
+                        12113.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13580.80000000000,
+                        31.90800000000000,
+                        11746.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13306.30000000000,
+                        44.06700000000000,
+                        11716.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13575.80000000000,
+                        32.54000000000000,
+                        11757.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        14060.90000000000,
+                        3.02700000000000,
+                        12072.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        14040.20000000000,
+                        5.42200000000000,
+                        12058.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        14061.90000000000,
+                        2.80000000000000,
+                        12072.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        14058.30000000000,
+                        4.40000000000000,
+                        12072.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13870.50000000000,
+                        18.10000000000000,
+                        12005.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13717.00000000000,
+                        32.90000000000000,
+                        11955.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13682.70000000000,
+                        36.75400000000000,
+                        11982.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13515.10000000000,
+                        39.10000000000000,
+                        11727.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13555.80000000000,
+                        32.98400000000000,
+                        11731.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13642.20000000000,
+                        48.57240000000000,
+                        12144.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        136629.90000000000,
+                        53.20700000000000,
+                        12137.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        12091.40000000000,
+                        140.01200000000000,
+                        12519.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13140.80000000000,
+                        10.59800000000000,
+                        10736.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        12437.90000000000,
+                        141.55200000000000,
+                        12514.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13446.10000000000,
+                        140.91700000000000,
+                        12541.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        12453.60000000000,
+                        140.91700000000000,
+                        12546.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13333.90000000000,
+                        57.93500000000000,
+                        13542.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13476.80000000000,
+                        79.29000000000000,
+                        13082.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13572.80000000000,
+                        37.51900000000000,
+                        13304.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13461.30000000000,
+                        79.63300000000000,
+                        13065.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13574.10000000000,
+                        32.47600000000000,
+                        11733.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13577.30000000000,
+                        47.38500000000000,
+                        12070.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13582.20000000000,
+                        50.64000000000000,
+                        12071.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        12003.70000000000,
+                        140.78900000000000,
+                        12561.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13644.40000000000,
+                        49.66300000000000,
+                        12147.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13634.40000000000,
+                        56.04100000000000,
+                        12125.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13572.80000000000,
+                        54.28500000000000,
+                        12119.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13578.10000000000,
+                        53.29100000000000,
+                        12149.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13588.20000000000,
+                        59.33400000000000,
+                        12182.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13626.90000000000,
+                        58.23400000000000,
+                        12365.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13581.00000000000,
+                        62.98100000000000,
+                        12380.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13131.90000000000,
+                        5.94400000000000,
+                        10740.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13477.50000000000,
+                        80.06600000000000,
+                        13055.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13348.30000000000,
+                        59.55200000000000,
+                        13519.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        12937.90000000000,
+                        232.83100000000000,
+                        12760.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        12756.20000000000,
+                        126.64400000000000,
+                        12269.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13677.80000000000,
+                        44.81500000000000,
+                        12133.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13589.80000000000,
+                        66.59000000000000,
+                        12692.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13594.90000000000,
+                        60.81200000000000,
+                        12620.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13680.20000000000,
+                        36.73500000000000,
+                        11989.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13821.90000000000,
+                        7.51200000000000,
+                        11740.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13717.70000000000,
+                        23.02900000000000,
+                        11886.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13495.70000000000,
+                        75.95100000000000,
+                        12755.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13381.70000000000,
+                        81.58700000000000,
+                        12193.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13682.90000000000,
+                        48.89900000000000,
+                        12300.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13267.40000000000,
+                        123.32900000000000,
+                        12709.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13583.40000000000,
+                        62.01000000000000,
+                        12491.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Position": [
+                        13540.70000000000,
+                        66.04000000000000,
+                        12383.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13611.20000000000,
+                        61.98100000000000,
+                        12193.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13144.50000000000,
+                        18.79900000000000,
+                        10731.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13580.30000000000,
+                        29.87700000000000,
+                        11781.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        8162.40000000000,
+                        513.29800000000000,
+                        9144.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        8132.83000000000,
+                        570.95200000000000,
+                        9097.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13580.00000000000,
+						54.15800000000000,
+						12068.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13572.60000000000,
+                        8.38600000000000,
+                        11408.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Position": [
+                        13671.70000000000,
+                        75.34300000000000,
+                        12201.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "Time_Wait_Spawn": 2,
+            "Time_Respawn": 240,
+            "ItemsInside": [
+               
+                {
+                    "ItemCharacteristic": {
+                        "Classname": "Pliers",
+                        "Chance_Spawn": 1.2,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 1.0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Ammo_12gaPellets",
+                        "Chance_Spawn": 10.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.5,
+                        "Temperature": 30,
+                        "IsStacked": 0,
+                        "Count_Stack": 10,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+                {
+                    "ItemCharacteristic": {
+                        "Classname": "Nail",
+                        "Chance_Spawn": 0.02,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "GardenLime",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.0,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 5000,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Pipe",
+                        "Chance_Spawn": 12.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": -1.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+                {
+                    "ItemCharacteristic": {
+                        "Classname": "Hammer",
+                        "Chance_Spawn": 2.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "GP5GasMask",
+                        "Chance_Spawn": 7.0,
+                        "Damaged": 0.1,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Apple",
+                        "Chance_Spawn": 10.0,
+                        "Damaged": 0.2,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Rak",
+                        "Chance_Spawn": 15.0,
+                        "Damaged": 0.2,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "KKCR_SunflowerOil",
+                        "Chance_Spawn": 7.0,
+                        "Damaged": 0.2,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 1000,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "GP5GasMask_Filter",
+                        "Chance_Spawn": 7.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 40,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Spraycan_Green",
+                        "Chance_Spawn": 7.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 100,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "TaloonBag_Blue",
+                        "Chance_Spawn": 3.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "FirstAidKit",
+                        "Chance_Spawn": 4.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Screwdriver",
+                        "Chance_Spawn": 3.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "EpoxyPutty",
+                        "Chance_Spawn": 3.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 60,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "NBCJacketGray",
+                        "Chance_Spawn": 3.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "RollingPapers_Jest",
+                        "Chance_Spawn": 7.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 10,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Ushanka_Green",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "NBCPantsGray",
+                        "Chance_Spawn": 3.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "FS_ITEM_VODKA",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.0,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 500,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "MetalWire",
+                        "Chance_Spawn": 2.2,
+                        "Damaged": 0.0,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Hatchet",
+                        "Chance_Spawn": 3.5,
+                        "Damaged": 0.2,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                }
+				
+            ]
+        },
+		{
+            "Classname": "ShronRukzak",
+            "Min_Caches_In_Map": 47,
+            "Max_Caches_In_Map": 47,
+            "Coords": [
+				{
+                    "Position": [
+                        13256.90000000000,
+                        115.24300000000000,
+                        12629.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13867.60000000000,
+					   18.70300000000000,
+					   12005.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13712.40000000000,
+					   31.23970000000000,
+					   11959.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13267.60000000000,
+					   47.62300000000000,
+					   11764.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13568.50000000000,
+					   31.365700000000000,
+					   11762.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13714.40000000000,
+					   35.72800000000000,
+					   11957.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       5921.10000000008,
+					   267.76300000000000,
+					   10322.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13408.40000000000,
+					   80.97600000000000,
+					   13095.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13425.18000000000,
+					   84.75500000000000,
+					   13081.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13236.20000000000,
+					   98.91900000000000,
+					   13088.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13298.90000000000,
+					   44.16400000000000,
+					   11715.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13269.80000000000,
+					   44.82100000000000,
+					   11717.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       13608.90000000000,
+					   50.51200000000000,
+					   12111.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       8105.33000000000,
+					   467.28200000000000,
+					   9232.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       8013.44000000000,
+					   458.86200000000000,
+					   9265.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       8173.18000000000,
+					   479.03400000000000,
+					   9115.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       8059.06000000000,
+					   453.40200000000000,
+					   9503.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       7975.88000000000,
+					   461.73300000000000,
+					   9408.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       8134.25000000000,
+					   560.36200000000000,
+					   9095.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        7394.96000000000,
+						402.39400000000000,
+						9101.1000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13664.86000000000,
+						50.97700000000000,
+						12300.8000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                       7426.27000000000,
+					   407.54400000000000,
+					   9109.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13167.70000000000,
+                        6.28800000000000,
+                        10680.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                    7429.55000000000,
+					427.27500000000000,
+					9102.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13663.55000000000,
+						47.95200000000000,
+						12199.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13566.55000000000,
+						48.66700000000000,
+						12079.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13584.60000000000,
+                        46.64900000000000,
+                        12067.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13254.00000000000,
+                        114.00400000000000,
+                        12617.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13120.10000000000,
+                        12.78100000000000,
+                        10724.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13481.50000000000,
+                        75.46000000000000,
+                        12815.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13595.40000000000,
+                        60.65300000000000,
+                        12619.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13364.20000000000,
+                        53.28300000000000,
+                        11803.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13663.20000000000,
+                        47.95700000000000,
+                        12198.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13641.40000000000,
+                        53.48000000000000,
+                        12143.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13627.10000000000,
+                        56.17500000000000,
+                        12132.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13557.60000000000,
+                        14.04200000000000,
+                        11488.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13459.40000000000,
+                        6.18600000000000,
+                        11085.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13590.50000000000,
+                        30.75200000000000,
+                        11763.0000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13517.30000000000,
+                        37.10000000000000,
+                        11728.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13134.40000000000,
+                        5.89800000000000,
+                        10722.2000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13518.10000000000,
+                        14.53300000000000,
+                        11285.9000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13607.70000000000,
+                        62.03400000000000,
+                        12194.4000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13576.30000000000,
+                        33.78400000000000,
+                        11736.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13580.30000000000,
+                        62.40600000000000,
+                        12491.5000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13585.50000000000,
+                        29.63500000000000,
+                        11794.7000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13684.90000000000,
+                        48.82800000000000,
+                        12276.3000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13362.90000000000,
+                        26.91200000000000,
+                        11261.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+				{
+                    "Position": [
+                        13684.40000000000,
+                        35.03900000000000,
+                        11977.6000000000
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+				
+            ],
+            "Time_Wait_Spawn": 2,
+            "Time_Respawn": 500,
+            "ItemsInside": [
+               
+              
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "RollingPapers_Jest",
+                        "Chance_Spawn": 4.0,
+                        "Damaged": 0.7,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 10,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "BakedBeansCan",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 30.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "TetracyclineAntibiotics",
+                        "Chance_Spawn": 4.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 2,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Ammo_22",
+                        "Chance_Spawn": 4.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 30,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "DuctTape",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Pliers",
+                        "Chance_Spawn": 0.3,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Hammer",
+                        "Chance_Spawn": 1.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Chainsaw",
+                        "Chance_Spawn": 0.1,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "CivilianBelt",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Roadflare",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.2,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "VitaminBottle",
+                        "Chance_Spawn": 5.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 1,
+                        "Count_Stack": 3,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "NBCBootsGray",
+                        "Chance_Spawn": 3.1,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "NBCGlovesGray",
+                        "Chance_Spawn": 5.1,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "NBCHoodGray",
+                        "Chance_Spawn": 5.8,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Chemlight_White",
+                        "Chance_Spawn": 7.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Chemlight_Yellow",
+                        "Chance_Spawn": 8.0,
+                        "Damaged": 0.5,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "PetrolLighter",
+                        "Chance_Spawn": 3.0,
+                        "Damaged": 0.4,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Battery9V",
+                        "Chance_Spawn": 4.0,
+                        "Damaged": 0.2,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "Fabric",
+                        "Chance_Spawn": 4.0,
+                        "Damaged": 0.3,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 4,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                },
+				{
+                    "ItemCharacteristic": {
+                        "Classname": "MetalWire",
+                        "Chance_Spawn": 2.9,
+                        "Damaged": 0.7,
+                        "Weet": 0.0,
+                        "Themperature": 0.0,
+                        "IsStacked": 0,
+                        "Count_Stack": 1,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                    },
+                    "ItemsAttached": []
+                }
+				
+                
+            ]
+        }
+		
+    ]
+}
