@@ -15,6 +15,7 @@
 - [[Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES|SERVER_PROFILE_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES|TRADER_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES|TRIGGER_RULES]]
+- [[Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES|DAYZ_ENFORCE_SCRIPT_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES|DAYZ_LAYOUT_VIEWER_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES|DAYZ_RPC_SYNC_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET|IMAGE_GENERATION_PRESET]]
