@@ -158,6 +158,8 @@
 
 - `TASK 164` — создан первый client-only prototype `Silver_77_Zones_Client`: минимальный `CfgMods` подключает только `5_Mission`, а `MissionGameplay` один раз загружает vanilla `dz\data\lighting\lighting_underground.txt`, создаёт виртуальный центр в 25 метрах перед первым локальным `PlayerBase` и по X/Z-дистанции задаёт `LightingLerp` от 0 до 1 между радиусами 20 и 8 метров. Логи `[S77Z]` фиксируют initialization, центр и смены OUTSIDE / TRANSITION / INNER без покадрового спама; `OnMissionFinish` возвращает lerp к 0. Server, Eye Accommodation, PPE, NVG, audio, hazards и RPC не добавлялись. В `12_Старт_агента.md` дополнительно закреплено, что после старта TASK БЛОК 1 заморожен до AGENT REPORT, а любые уточнения передаются только отдельными сообщениями.
 
+- `TASK 165` — синхронизирована документационная архитектура `Silver_77_Zones`: отдельный `Silver_77_Zones_WEB` исключён, Client/Server сохранены единственной source/runtime-структурой, а существующий `JSON_Quvest` определён как основа общей Web-оболочки с независимыми Quest и Zones модулями. Для Zones закреплены собственные JSON, state, save/backup/profile paths и правило синхронного развития canonical JSON с Web-модулем. Текущее состояние обновлено после Lighting prototype TASK 164, созданы короткие Roadmap и «Приоритетная задача» с первым config pipeline. Папка `Silver_77_Zones_WEB` отсутствовала; код, Quest Editor, build и runtime не менялись.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

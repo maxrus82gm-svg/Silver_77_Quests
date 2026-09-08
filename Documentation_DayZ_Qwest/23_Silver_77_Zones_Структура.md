@@ -20,6 +20,24 @@ Reference старых модов:
 
 `P:\Silver_77_Quests\Source_Modes\zones`
 
+## Web editor / Workshop
+
+Текущий рабочий root:
+
+`P:\Silver_77_Quests\JSON_Quvest`
+
+`JSON_Quvest` пока не переименовывается и не переносится. Это существующий root Quest Workshop и будущая общая оболочка для независимых модулей:
+
+```text
+Workshop
+├── Quest module
+└── Zones module
+```
+
+Runtime/source структура `Silver_77_Zones` остаётся только Client + Server и не получает отдельную WEB-папку.
+
+Каждый Workshop-модуль должен иметь собственные JSON, состояние, save path, backup path и profile export path. Общими остаются оболочка, навигация и визуальный стиль.
+
 ## Разделение ответственности
 
 ### Server

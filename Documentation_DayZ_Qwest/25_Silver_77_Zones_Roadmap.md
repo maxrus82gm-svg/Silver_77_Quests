@@ -1,0 +1,28 @@
+# Silver_77_Zones — Roadmap
+
+- Профильный JSON зон
+- Zones-модуль Web Workshop
+- Отдельные пути и backup
+- Базовые параметры Lighting
+- Сборка Client PBO
+- Runtime User Lighting test
+- Плавный вход и выход
+- Night lights и источники света
+- Server owner конфигурации
+- Server → Client sync
+- Постоянные координаты зон
+- Несколько зон и ID
+- Геометрия и несколько радиусов
+- Динамические компоненты интерфейса
+- Visual-компоненты
+- Audio-компоненты
+- Radiation / toxin
+- Exposure accumulation
+- Protection / PPE
+- Symptoms
+- Quest activation
+- Migration linked actions
+- Persistence
+- Overlap нескольких зон
+- Multiplayer acceptance
+- Финальная упаковка мода
