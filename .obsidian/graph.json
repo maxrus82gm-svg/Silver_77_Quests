@@ -29,7 +29,7 @@
       }
     },
     {
-      "query": "path:\"Documentation_DayZ_Qwest/19_Silver_77_Zone.md\" OR path:\"Documentation_DayZ_Qwest/20_Silver_77_Zone.md\"",
+      "query": "path:\"Documentation_DayZ_Qwest/19_Silver_77_Zone.md\"",
       "color": {
         "a": 1,
         "rgb": 255
@@ -37,6 +37,13 @@
     },
     {
       "query": "path:\"Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 16711680
+      }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/20_Silver_77_Zone_Освещение.md\"",
       "color": {
         "a": 1,
         "rgb": 16711680
@@ -53,6 +60,6 @@
   "repelStrength": 12.6864605652484,
   "linkStrength": 0.463024390243902,
   "linkDistance": 165,
-  "scale": 0.5087618855792498,
+  "scale": 0.713275462622427,
   "close": false
 }
