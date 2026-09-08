@@ -1,0 +1,114 @@
+{
+    "DebugLogs_Enabled": 0,
+    "TimeRepeatCheckPlayers_Seconds": 5.5,
+    "ZonesList": [
+        {
+            "Comment": "Any text for your needs",
+            "Position_play": [
+                12345.0,
+                -133.5166778564453,
+                1000.0
+            ],
+            "SoundSet": "anbient_FrogsLoop_SoundSet",
+            "IsLoop": 1,
+            "IsSetVolume": 0,
+            "SetVolume": 0.11999999731779099,
+            "IsSetVolumeRelative": 0,
+            "SetVolumeRelative": 0.10000000149011612,
+            "IsSetFrequency": 0,
+            "SetFrequency": 1.0,
+            "Enable_detect_to_Radius": 1,
+            "Radius_play": 50.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 13615.7998046875,
+            "Coord_x_max": 13620.7998046875,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": 90.0999984741211,
+            "Coord_Y_max": 98.0999984741211,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 13615.7998046875,
+            "Coord_Z_max": 13620.7998046875,
+            "Enable_detect_SurfaceTypeUnderPlayer": 1,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int"
+            ]
+        },
+        {
+            "Comment": "Any text for your needs",
+            "Position_play": [
+                7500.0,
+                313.29010009765627,
+                7500.0
+            ],
+            "SoundSet": "anbient_GhostLoop_SoundSet",
+            "IsLoop": 1,
+            "IsSetVolume": 0,
+            "SetVolume": 0.11999999731779099,
+            "IsSetVolumeRelative": 0,
+            "SetVolumeRelative": 0.10000000149011612,
+            "IsSetFrequency": 0,
+            "SetFrequency": 1.0,
+            "Enable_detect_to_Radius": 1,
+            "Radius_play": 30.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 13615.7998046875,
+            "Coord_x_max": 13620.7998046875,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": 90.0999984741211,
+            "Coord_Y_max": 98.0999984741211,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 13615.7998046875,
+            "Coord_Z_max": 13620.7998046875,
+            "Enable_detect_SurfaceTypeUnderPlayer": 1,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext"
+            ]
+        },
+        {
+            "Comment": "Any text for your needs",
+            "Position_play": [
+                12095.2568359375,
+                97.87797546386719,
+                13619.7646484375
+            ],
+            "SoundSet": "anbient_ScaryLoop_SoundSet",
+            "IsLoop": 1,
+            "IsSetVolume": 0,
+            "SetVolume": 0.11999999731779099,
+            "IsSetVolumeRelative": 0,
+            "SetVolumeRelative": 0.10000000149011612,
+            "IsSetFrequency": 0,
+            "SetFrequency": 1.0,
+            "Enable_detect_to_Radius": 1,
+            "Radius_play": 40.5,
+            "Enable_detect_in_X": 0,
+            "Coord_x_min": 13615.7998046875,
+            "Coord_x_max": 13620.7998046875,
+            "Enable_detect_in_Y": 0,
+            "Coord_Y_min": 90.0999984741211,
+            "Coord_Y_max": 98.0999984741211,
+            "Enable_detect_in_Z": 0,
+            "Coord_Z_min": 13615.7998046875,
+            "Coord_Z_max": 13620.7998046875,
+            "Enable_detect_SurfaceTypeUnderPlayer": 1,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+                "wood_planks_int",
+                "metal_thin_ext",
+                "metal_thin_int",
+                "concrete_int"
+            ]
+        }
+    ]
+}

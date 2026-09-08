@@ -1,0 +1,55 @@
+Tiredness                           = 1
+    TireTime (minutes)              = 210
+    EyeClosingPoint  (percent)      = 19
+    TextReports                     = 0
+    HeatSourcesAvgTemperatureMin    = 17
+    EnergizingDrinkGain (percent)   = 20
+   
+    EnergizingDrinkClass            = SodaCan_Cola
+    EnergizingDrinkClass            = SodaCan_Pipsi
+    EnergizingDrinkClass            = SodaCan_Spite
+
+    SleepingBagClass                = MediumTent
+    SleepingBagClass                = QuiltedJacket_Black
+    SleepingBagClass                = QuiltedJacket_Blue
+    SleepingBagClass                = QuiltedJacket_Green
+    SleepingBagClass                = QuiltedJacket_Grey
+    SleepingBagClass                = QuiltedJacket_Orange
+    SleepingBagClass                = QuiltedJacket_Red
+    SleepingBagClass                = QuiltedJacket_Violet
+    SleepingBagClass                = QuiltedJacket_Yellow
+
+    SleepingDOF                     = 1
+
+
+TestBloodSelf                       = 1
+TestBloodTarget                     = 1
+TestBloodToxin                      = 1
+
+
+AlcoholicDrinkClass                 = SodaCan_Kvass
+AlcoholicDrinkClass                 = DisinfectantAlcohol = 3.5
+
+AlcoholicLiquid                     = Beer
+AlcoholicLiquid                     = Vodka = 2
+
+
+ZoneType                            = Biohazard
+    ZoneChance (percent)            = 100
+    ZoneCenter (X Y Z)              = 1695.40 0 14042.22
+    ZoneRadiusMin                   = 675
+    ZoneRadiusMax                   = 725
+    ZoneMsgIn                       = CAUTION: YOU ARE IN A BIOHAZARD ZONE
+    ZoneMsgOut                      = YOU LEFT THE BIOHAZARD ZONE
+
+ToxinAccumulationTimeMin            = 5
+ToxinAccumulationTimeMax            = 60
+
+ProtectionSuit                      = NBCBootsGray = 10
+ProtectionSuit                      = NBCGlovesGray = 10
+ProtectionSuit                      = NBCHoodGray = 10
+ProtectionSuit                      = NBCJacketGray = 20
+ProtectionSuit                      = NBCPantsGray = 20
+
+ProtectionSuit                      = GP5GasMask = 30 = 1
+ProtectionSuit                      = GasMask = 30 = 1

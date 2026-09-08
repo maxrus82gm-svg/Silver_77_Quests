@@ -1,0 +1,56 @@
+{
+    "DebugLogs_Enabled": 0,
+    "ZonesList": [
+        {
+            "Comment": "Any text for your needs",
+            "Enable_detect_to_Radius": 0,
+            "Position_map": [
+                12095.256836,
+                97.890442,
+                13619.764648
+            ],
+            "Radius": 50.5,
+            "Enable_detect_in_X": 1,
+            "Coord_x_min": 12090.1,
+            "Coord_x_max": 12098.3,
+            "Enable_detect_in_Y": 1,
+            "Coord_Y_min": 90.1,
+            "Coord_Y_max": 98.1,
+            "Enable_detect_in_Z": 1,
+            "Coord_Z_min": 13615.8,
+            "Coord_Z_max": 13625.8,
+            "Coeficient_light": 0.05,
+			"Enable_detect_SurfaceTypeUnderPlayer": 1,
+            "SurfaceTypes": [
+                "gravel_small_ext",
+                "gravel_small_int",
+                "wood_planks_ext",
+				"wood_planks_int",
+				"metal_thin_ext",
+				"metal_thin_int",
+				"concrete_int",
+				"dirt_ext",
+				"metal_thin_mesh_int",
+				"nam_lakewater_ext",
+				"water"
+            ],
+			"IsDisableWorkZone_In_NightTime": 1,
+			"IsDisableWork_NVG_Item_In_Zone": 1,
+			"Enable_NightZone_OnlyInActiveTime_At_GameWorld": 1,
+            "ListInGameActiveTime": [
+				{
+					"Start_Hour": 6,
+					"Start_Minute": 2,
+					"End_Hour": 15,
+					"End_Minute": 25
+				},
+				{
+					"Start_Hour": 16,
+					"Start_Minute": 30,
+					"End_Hour": 19,
+					"End_Minute": 25
+				}
+			]
+        }
+    ]
+}

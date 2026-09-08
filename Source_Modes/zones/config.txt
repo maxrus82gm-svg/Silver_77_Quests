@@ -1,0 +1,537 @@
+Tiredness					= 1
+
+
+
+	TireTime (minutes)				= 210
+	EyeClosingPoint  (percent)		= 20 //Закрывает глаза при 20
+	TextReports						= 1
+	HeatSourcesAvgTemperatureMin    = 1
+	EnergizingDrinkGain (percent)	= 30 //Энергия от напитка
+	EnergizingDrinkClass			= SodaCan_Cola
+	EnergizingDrinkClass			= SodaCan_Pipsi
+	EnergizingDrinkClass			= SodaCan_Spite
+	EnergizingDrinkClass			= BP1_cola_cherry
+	EnergizingDrinkClass			= BP1_baltika0
+	EnergizingDrinkClass			= SodaCan_Kvass
+	EnergizingDrinkClass			= BP1_limonad
+	EnergizingDrinkClass			= BP1_tarhun
+	EnergizingDrinkClass			= BP_Beer
+	EnergizingDrinkClass			= BP1_tonik_5h
+	EnergizingDrinkClass			= BP1_tonik_Elion
+	EnergizingDrinkClass			= BP1_tonik_yagua
+	EnergizingDrinkClass			= FS_ITEM_NonStop
+	EnergizingDrinkClass			= FS_ITEM_EnergyShokolat
+	EnergizingDrinkClass			= FS_ITEM_COLA
+	
+	
+	
+	
+	
+
+	SleepingBagClass = MediumTent
+	SleepingBagClass = sleepingbag_blue_mung
+	SleepingBagClass = sleepingbag_yellow_mung
+	SleepingBagClass = sleepingbag_red_mung
+	SleepingBagClass = sleepingbag_green_mung
+	SleepingBagClass = Msp_SleepingBag_Purple
+	SleepingBagClass = Msp_MedievalGibbetWithMount
+	SleepingBagClass = Msp_SleepingBag_Green
+	SleepingBagClass = Msp_SleepingBag_Blue
+	SleepingBagClass = Msp_SleepingBag_LimeGreen
+	SleepingBagClass = Msp_SleepingBag_Orange
+	SleepingBagClass = Msp_SleepingBag_Red
+	SleepingBagClass = Msp_Mattress_Pink
+	SleepingBagClass = Msp_Mattress_Yellow
+    SleepingBagClass = QuiltedJacket_Black
+    SleepingBagClass = QuiltedJacket_Blue
+    SleepingBagClass = QuiltedJacket_Green
+    SleepingBagClass = QuiltedJacket_Grey
+    SleepingBagClass = QuiltedJacket_Orange
+    SleepingBagClass = QuiltedJacket_Red
+    SleepingBagClass = QuiltedJacket_Violet
+    SleepingBagClass = QuiltedJacket_Yellow
+	
+
+	SleepingDOF				= 1 //сон
+
+ZombieBleedChance (percent)			= 20  //вероятность кровотечения
+ZombieSalmonellaChance (percent) 	= 50 //вероятность сальмонелы
+WoundInfectionChance (percent)		= 60  //Вероятность инфицирования раны при перевязке (в процентах) = 50
+ZombieArmFractureChance (percent)	= 15 // вероятность перелома
+FeverActive						= 1
+BrainDisease					= 1
+AntibioticsStrength				= 1
+SalineBloodRegen				= 1
+
+
+TestBloodSelf					= 1
+TestBloodTarget					= 1
+TestBloodToxin					= 1
+
+
+
+AlcoholicDrinkClass				= SodaCan_Kvass = 1.0
+AlcoholicDrinkClass				= BP1_tonik_yagua = 1.8
+AlcoholicDrinkClass				= BP1_baylis = 3.0
+AlcoholicDrinkClass				= BP1_Absolut = 4.0
+AlcoholicDrinkClass				= BP1_tonik_5h = 1.5
+AlcoholicDrinkClass				= DisinfectantAlcohol = 3.5
+AlcoholicDrinkClass             = BP1_Jagermeister = 2.5
+AlcoholicDrinkClass				= BP1_Jack = 5.0
+AlcoholicDrinkClass				= BP1_martel = 2.5
+AlcoholicDrinkClass				= BP1_mondoro = 3.5
+AlcoholicDrinkClass				= FS_ITEM_VODKA = 3.5
+AlcoholicDrinkClass				= BP1_baltika0 = 1.0
+AlcoholicDrinkClass				= BP1_baltika9 = 2.8
+AlcoholicDrinkClass				= BP1_baltika7 = 1.5
+AlcoholicDrinkClass				= Vodka = 3.5
+AlcoholicDrinkClass				= bldr.Vodka = 3.5
+AlcoholicDrinkClass				= BP1_tonik_Elion = 2.0
+AlcoholicDrinkClass				= BP1_bootle_sigul =1,5
+
+ZoneType = NoWells   //это отключение колонок в радиусе
+ZoneCenter = 13110.0 0 13102.0  
+ZoneRadius = 10000
+
+DeclareZone = 4 = 4461.40 = 10497.22 = 2500 	// АЭРО СЕВЕРО ЗАПАД 4461.78 / 10497.51  **339 ок
+DeclareZone = 4 = 1695.40 = 14042.22 = 600 		// Тисы600 ОК
+DeclareZone = 4 = 1542.54 = 13624.1 = 300 		// Тисы300 ОК
+DeclareZone = 4 = 10954.40 = 13386.22 = 300 	//военка_у_змеинного_хребта ОК
+DeclareZone = 4 = 11877.40 = 12534.22 = 300   	//ОК
+DeclareZone = 4 = 12545.40 = 13780.22 = 120 	//мусорка_машины ОК
+DeclareZone = 4 = 12131.40 = 12507.22 = 700 	//аэропорт  **140
+DeclareZone = 4 = 13973.40 = 13475.22 = 200 	//Светлоярск жд  OK
+DeclareZone = 4 = 14135.40 = 13152.22 = 100 	//Светлоярск_низ_жд Ок
+DeclareZone = 4 = 13876.40 = 13117.22 = 220 	//Светлоярск_Больничка ОК
+DeclareZone = 4 = 11802.40 = 14304.22 = 350 //Новодмитровск ОК
+DeclareZone = 4 = 11502.40 = 14487.22 = 350 //Новодмитровск_лево OK
+DeclareZone = 4 = 13326.60 = 13041.40 = 25 	//Ольша перекресток ок
+DeclareZone = 4 = 12924.40 = 9964.22 = 120 	//Березино_Около_промки  ОК
+DeclareZone = 4 = 11951.40 = 9097.22 = 120 	//Березино_Больница_Большая  ОК
+DeclareZone = 4 = 13023.40 = 10541.22 = 90 // Березино_кладбище ОK
+DeclareZone = 4 = 12779.83 = 10061.38 = 150 // Березино_Больница_малая ОК
+DeclareZone = 4 = 11928.28 = 9068.63 = 250 	// Березино_Больница_Большая ОК
+DeclareZone = 4 = 13031.40 = 13121.22 = 7 	//Ольша могилы1,  у респы. **117 ОК
+DeclareZone = 4 = 13332.40 = 12948.22 = 10 //Ольша_Висилица, ОК
+DeclareZone = 4 = 12983.40 = 13061.22 = 15 //Ольша_вертолет  ***128 ОК
+DeclareZone = 4 = 13581.70 = 11764.80 = 150 //Ольша вертолет  ***128 ОК
+DeclareZone = 4 = 13304.90 = 12679.80 = 15 //Ольша вертолет_человек  ***15 ОК
+DeclareZone = 4 = 13267.10 = 12709.50 = 30 //Ольша большой вертолет в поле **124 ОК
+DeclareZone = 4 = 13432.40 = 12838.22 = 25 //Ольша_могильник_за_городом ОК
+DeclareZone = 4 = 13488.70 = 12808.10 = 28 //Ольша_могильник_за_городом_2  ОК
+DeclareZone = 4 = 7065.40 = 14616.22 = 200 //Промка_карьеры_Каменск_Север ОК
+DeclareZone = 4 = 13390.40 = 6620.22 = 60 //Солнечный_Заправка ОК
+DeclareZone = 4 = 13300.40 = 6103.22 = 60 //Солнечный_каръер_ГОРОД ОК
+DeclareZone = 4 = 10393.40 = 9019.22 = 300 //ЗАПРАВКА_И_БАЗА_ЛЕС ОК
+DeclareZone = 4 = 13574.40 = 13767.22 = 300 //Военка_у_Турово ОК
+DeclareZone = 4 = 1271.85 = 11409.22 = 170 //Больница_около_фуникулеров ОК
+DeclareZone = 4 = 2689.86 = 6747.91 = 200 //Военка у соснока ОК
+DeclareZone = 4 = 9458.40 = 8837.22 = 200 //Горка_мед_кладбище ОК
+DeclareZone = 4 = 13386.40 = 6312.33 = 100 //Солнечный_больница <13386.4, 6.69979, 6312.33> ОК
+DeclareZone = 4 = 13516.30 = 6330.37 = 100 //Солнечный_пристань 13516.31 / 6330.58 13449.72 ОК
+DeclareZone = 4 = 13449.40 = 6010.22 = 80 //Солнечный_затор  13449.72 / 6010.23 ОК
+DeclareZone = 4 = 4539.40 = 6390.22 = 100 // Погоревка_кладбище 4539.07 / 6390.37 ОК
+DeclareZone = 4 = 10270.40 = 14155.22 = 250 //Пригород_Новодмитровск_контейнеры 10270.40 = 14155.22  58  OK
+DeclareZone = 4 = 11482.40 = 14474.22 = 150 //Новодмитровск_ментовка   OK
+DeclareZone = 4 = 12143.40 = 14324.22 = 300 //Новодмитровск_Большая_промзона   OK
+DeclareZone = 4 = 7759.23 = 13275.84 = 150 //Калиновка_кладбище ОК
+DeclareZone = 4 = 9548.40 = 13686.22 = 100 //у_плотины_сергино  ОК
+DeclareZone = 4 = 7103.40 = 7103.22 = 250 //База_НАДЕЖДА ОК
+DeclareZone = 4 = 6718.40 = 2950.22 = 200 //Черно_кладбище 6718.73 / 2950.66 ОК
+DeclareZone = 4 = 2672.75 = 1312.38 = 350 // АЛЬКОТРАС ОК
+DeclareZone = 4 = 2163.40 = 3360.22 = 350 // Военная_база_Павлово ОК
+DeclareZone = 4 = 5057.40 = 2439.22 = 700 // Военная_база_Болота 5057.73 / 2439.76 ОК
+DeclareZone = 4 = 2900.40 = 8072.22 = 150 // Пустошка_кладбище 2900.43 / 8072.79 ОК
+DeclareZone = 4 = 7903.40 = 14676.22 = 300 // Каментск_Военная_база ОК
+DeclareZone = 4 = 3312.40 = 15161.22 = 400 // ТИСЫ_Грозовой_перевал ОК
+DeclareZone = 4 = 3485.40 = 12520.22 = 150 // Новая_Петровка_ЖД  ОК
+DeclareZone = 4 = 3456.40 = 13164.22 = 170 // Новая_Петровка_Больница ОК
+DeclareZone = 4 = 10456.40 = 9147.22 = 100 // Где_то_база_От_горки ок
+DeclareZone = 4 = 6324.40 = 7793.22 = 150 // Старый_собор_военка 305 м   ОК
+DeclareZone = 4 = 7072.40 = 7721.22 = 150 // Новый_собор_Церковь ОК
+DeclareZone = 4 = 10442.40 = 5962.22 = 150 // Пустой_хребет_военка ОК
+DeclareZone = 4 = 13619.40 = 13755.22 = 150 // Ольша_военка_северо_запад 13619.61 / 13755.65 ОК
+DeclareZone = 4 = 1151.40 = 7238.22 = 150 // Военка_у_мышкино 1151.94 / 7238.14
+//DeclareZone = 4 = 951.40 = 7650.22 = 150 // Военка_у_мышкино_выше_промка_ПИЛОРАМА 951.67 / 7650.36 Пилорама
+DeclareZone = 4 = 10115.40 = 5510.22 = 150 // Старое_мед 10115.09 ОК
+DeclareZone = 4 = 10346.40 = 3449.22 = 200 // Тюльпан_комета_мед ОК
+DeclareZone = 4 = 7095.40 = 12710.22 = 200 // Западнее_северограда_военка 7095.45 / 12710.76 ОК
+DeclareZone = 4 = 7918.40 = 12564.22 = 110 // Североград ПЕЧАТЬ 7095.45 / 12710.76 ОК
+DeclareZone = 4 = 7622.40 = 12630.22 = 120 // Североград Пожарка 7095.45 / 12710.76 ОК
+DeclareZone = 4 = 8023.40 = 12751.22 = 300 // Североград Больницы ОК
+//DeclareZone = 4 = 8724.40 = 12613.22 = 20 // Гдето церквушка и кладбище с вирусом 8724.61 / 12613.30
+DeclareZone = 4 = 4531.40 = 8321.22 = 450//Военка_Вересник
+DeclareZone = 4 = 13380.40 = 12197.22 = 25 // На верху у ВАЛЕРЬЯНЫЧа
+DeclareZone = 4 = 13625.40 = 12365.22 = 60 // На верху у ВАЛЕРЬЯНЫЧа
+DeclareZone = 4 = 13585.40 = 12488.22 = 80 // На верху у ВАЛЕРЬЯНЫЧа возле павшего вертолета, и пожарных машин 68
+DeclareZone = 4 = 13688.70 = 12252.70 = 60 // незавершонная стройка у черного озера 49.0482000000000
+DeclareZone = 4 = 13610.1 = 12195.9 = 15 // незавершонная_антена_у_черного_озера  ОК
+DeclareZone = 4 = 2755.78 = 5180.02 = 250  // Зеленогорск больница OK
+DeclareZone = 4 = 3757.24 = 9011.06 = 100  // Выбор  ОК
+DeclareZone = 4 = 8660.16 = 12802.04 = 150  // школа_Североград  ОК
+DeclareZone = 4 = 7772.41 = 7670.38 = 150  // Новый_собор_ментовка  ОК
+DeclareZone = 4 = 818.41 = 1921.38 = 350  // Край_карты_Запад  ОК
+DeclareZone = 4 = 11265.41 = 12141.38 = 120  // Красностав_больница  ОК
+DeclareZone = 4 = 8015.41 = 9269.38 = 20 //Кресты_Зенит
+ZoneMsgIn 	= "Вы чувствуете покалование по всему телу..."
+ZoneMsgOut  = "Покалывание тела утихает..."
+
+				12131.40,
+                140.0082000000000,
+                12507.22
+
+
+ToxinAccumulationTimeMin = 2
+ToxinAccumulationTimeMax = 100
+
+//Набор 1
+//ProtectionSuit = NBCHoodGray = 17
+//ProtectionSuit = NBCJacketGray = 30
+//ProtectionSuit = NBCPantsGray = 27
+//ProtectionSuit = NBCGlovesGray = 15
+//ProtectionSuit = NBCBootsGray = 13
+//55
+//Набор 2
+//ProtectionSuit = NBCHoodYellow = 19
+ProtectionSuit = NBCHoodWhite = 19
+//ProtectionSuit = NBCJacketYellow = 33
+ProtectionSuit = NBCJacketWhite = 33
+//ProtectionSuit = NBCPantsYellow = 30
+ProtectionSuit = NBCPantsWhite = 30
+//ProtectionSuit = NBCGlovesYellow = 18
+ProtectionSuit = NBCGlovesWhite = 18
+//ProtectionSuit = NBCBootsYellow = 14
+  ProtectionSuit = NBCBootsWhite = 14
+//60
+
+
+
+// 1 еденица хим зы стоит 3 патрона
+
+
+///////////ПРОТИВОГАЗЫ/МАСКИ/ОЧКИ/////////////////////////////////////////////////////////////
+//ПЕРВЫЙ КЛАСС ХИМЗАЩИТЫ/14/14/14/14/20 РАД+,			 		M,		-1,		-1
+ProtectionSuit = weldinggoggles_mung = 5				//очки
+ProtectionSuit = TacticalGoggles = 6 //очки
+ProtectionSuit = FaceCover_Improvised = 4  //самодельная маска
+ProtectionSuit = SurgicalMask = 	5					//мед маска
+ProtectionSuit = NioshFaceMask = 8						//Распиратор
+ProtectionSuit = FP4_DrMask = 10
+
+ProtectionSuit = FS_TOX_HeadGear_orange = 13			// I // Пассивного типа
+ProtectionSuit = FS_TOX_HeadGear_green = 13				// I //	Пассивного типа
+ProtectionSuit = FS_TOX_HeadGear_Blue = 13				// I //	Пассивного типа
+ProtectionSuit = FS_TOX_HeadGear_black = 13				// I //	Пассивного типа
+ProtectionSuit = FS_GASMASK_PPM88 = 20					// I //	Стеклянный дешовка китайская
+ProtectionSuit = mag3_gasmask_mung = 23					// I //	Стеклянный дешовка китайская
+
+
+
+ВТОРОЙ КЛАСС ХИМЗАЩИТЫ/30/32/34 РАД+,				 		M,		-1,		-1
+
+ProtectionSuit = AirborneMask = 50 = 1 					// I //белый противогаз
+ProtectionSuit = GP5GasMask = 70 = 1 					// II //белый противогаз
+ProtectionSuit = FS_GasMask_FV = 70 = 1  				// II //Черный противогаз
+ProtectionSuit = GasMask = 80							// II //боевой черный не требует вставки фильтра, но отсек есть.
+
+
+ProtectionSuit = GP5GasMaskYellow = 85 = 1  			// III //Желтый противогаз
+ProtectionSuit = stalker_gasmask_white_mung = 85  		// III //сталкерский закрывающий шею резиной бежевый
+ProtectionSuit = stalker_gasmask_black_mung = 85 		// III //сталкерский закрывающий шею резиной черный
+ProtectionSuit = GasMaskPMK = 90						// III//черный не требует вставки фильтра, но отсек есть.
+ProtectionSuit = FS_GAS_balon = 95 = 1
+///////////////////////////////////////////////////////////////////////////////////
+ProtectionSuit = FS_GasBallon_Odinocki = 90   			// III //Ставятся вместо противогаза
+ProtectionSuit = FS_GasBallon_DOLG = 90		  			// III // Ставиться вместо противогаза + 100 за хим стойкость 
+
+
+//Капишоны/балаклавы
+
+//0+ КЛАСС ХИМЗАЩИТЫ 
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ProtectionSuit = wolffurcowl_mung = 5
+ProtectionSuit = Balaclava3Holes_Green  = 5         	//*****
+ProtectionSuit = Balaclava3Holes_Blue  = 5				//*****
+ProtectionSuit = Balaclava3Holes_Black  = 5				//*****	
+ProtectionSuit = bearfurcowl_mung  = 6         			//*****
+ProtectionSuit = FP4_Hood_black  = 6					//*****
+ProtectionSuit = WitchHood_Black  = 6					//*****
+ProtectionSuit = WitchHood_Brown  = 6
+ProtectionSuit = WitchHood_Red  = 6
+ProtectionSuit = BalaclavaMask_White = 6
+ProtectionSuit = BalaclavaMask_Pink  = 6
+ProtectionSuit = BalaclavaMask_Green  = 6
+ProtectionSuit = BalaclavaMask_Blue  = 6
+ProtectionSuit = BalaclavaMask_Blackskull  = 6
+ProtectionSuit = BalaclavaMask_Black  = 6
+ProtectionSuit = BalaclavaMask_Beige  = 6
+ProtectionSuit = DarkMotoHelmet_White  = 7
+ProtectionSuit = DarkMotoHelmet_Red  = 7
+ProtectionSuit = DarkMotoHelmet_Lime  = 7
+ProtectionSuit = DarkMotoHelmet_Grey  = 7
+ProtectionSuit = DarkMotoHelmet_Green  = 7
+ProtectionSuit = DarkMotoHelmet_Blue  = 7
+ProtectionSuit = DarkMotoHelmet_Black  = 7
+ProtectionSuit = MotoHelmet_Red  = 7
+ProtectionSuit = MotoHelmet_White  = 7
+ProtectionSuit = MotoHelmet_Lime  = 7
+ProtectionSuit = MotoHelmet_Grey  = 7
+ProtectionSuit = MotoHelmet_Green  = 7
+ProtectionSuit = MotoHelmet_Blue  = 7
+ProtectionSuit = MotoHelmet_Black  = 7
+ProtectionSuit = FS_Poncho_ColorBase = 8
+ProtectionSuit = FS_Poncho_green = 8
+ProtectionSuit = WinterCoif_Blue  = 8
+ProtectionSuit = WinterCoif_Green  = 8
+ProtectionSuit = WinterCoif_Skull  = 8
+ProtectionSuit = WinterCoif_Black  = 9
+ProtectionSuit = OKZKCap_Beige  = 10
+ProtectionSuit = OKZKCap_Green  = 10
+ProtectionSuit = FS_Poncho_black =10
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//ПЕРВЫЙ КЛАСС ХИМЗАЩИТЫ
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//Куртки
+ProtectionSuit = FS_ST_top_tan = 14 					// I // 49 //+ //	+200
+ProtectionSuit = FS_ProJacketST = 14					// I // 49 //++++// +300 за вместимость и навесы, подсумок, кабура, фляга, пистолет, ножны
+ProtectionSuit = FS_ProJacketST_ColorBase = 14			// I // 49 //++++// +300 за вместимость и навесы, подсумок, кабура, фляга, пистолет, ножны
+ProtectionSuit = FS_ProJacketST_Black = 15				// I // 49 //++++// +300 за вместимость и навесы, подсумок, кабура, фляга, пистолет, ножны
+
+ProtectionSuit = FS_Eco_Green_Jacket = 20				// II // 12 //++++ // +100 за тепло
+ProtectionSuit = FS_Eco_Gray_Jacket = 20				// II // 12 //++++ // +280 за вместимость
+ProtectionSuit = FS_Baril_Jacket = 20					// II  //49 // ++++ // Броня
+ProtectionSuit = FS_TOX_Jacket_orange = 21				// II //49 литров // ++++ //  +200 за вместимость +100 утепление
+ProtectionSuit = FS_ExoTypeJacket_ColorBase = 21    	// II // 56 //++++ // +280 за вместимость
+ProtectionSuit = FS_ST_topNoHood_DOLG = 22    			// II // 49 //++++ // Броня +
+ProtectionSuit = FS_ST_topNoHood_SVOBODA = 22    		// II // 49 //++++ // Броня +
+ProtectionSuit = FS_ST_topNoHood_ClearSky = 22    		// II // 49 //++++ // Броня +
+ProtectionSuit = FS_ST_topNoHood_bandit = 22    		// II // 49 //++++ // Броня +
+ProtectionSuit = FS_ST_topNoHood_pixel = 22    			// II // 49 //++++ // Броня +
+ProtectionSuit = FS_ST_topNoHood_tan = 22    			// II // 49 //++++ // Броня +
+ProtectionSuit = FS_ST_topNoHood_Netral = 22    		// II // 49 //++++ // Броня +
+
+ProtectionSuit = NBCHoodGray = 17						// III //антирад
+ProtectionSuit = NBCHoodYellow = 19						// III //антирад
+ProtectionSuit = FS_ECO01_Jacket = 23  					// III //56 литров // ++++ // +280 за вместимость +100 утепление
+ProtectionSuit = FS_ECO01_Jacket_ColorBase = 25			// III //56 литров/ пулевая защита / лучшее утепление
+ProtectionSuit = FS_SevaModule_Odinochka= 28			// III // 49 литров ++++
+ProtectionSuit = FS_ECO01_Jacket_Pro = 28  				// III //56 литров/ пулевая защита / лучшее утепление
+ProtectionSuit = FS_SevaModule_Odinochka= 28
+ProtectionSuit = NBCJacketGray = 30 					// III //Литры 13  //утепление +
+ProtectionSuit = NBCJacketYellow = 33					// III //Литры 13  //утепление +
+
+
+//Штаны
+
+ProtectionSuit = FS_ECO01_pants = 12					// I// 16 //+
+ProtectionSuit = FS_ECO01_pants_ColorBase = 13			// I// 16 //+  
+ProtectionSuit = FS_ECO_Orange_Pants = 14				// I//штаны 20  //+ //+60 к цене за вместимость
+ProtectionSuit = FS_ECO_Green_Pants = 14				// I//штаны 20  //+ //+60 к цене за вместимость	
+ProtectionSuit = FS_ECO_Gray_Pants = 14					// I//штаны 20  //+ //+60 к цене за вместимость
+ProtectionSuit = FS_Baril_Pants = 14
+ProtectionSuit = FS_TOX_Pants_orange = 15				// II//штаны 30 //+ //+120 к цене за вместимость
+ProtectionSuit = FS_TOX_Pants_green = 15				// II//штаны 30 //+ //+120 к цене за вместимость
+ProtectionSuit = FS_TOX_Pants_Blue = 15					// II//штаны 30 //+ //+120 к цене за вместимость
+ProtectionSuit = FS_TOX_Pants_black = 15				// II//штаны 30 //+ //+120 к цене за вместимость + 60 за цвет
+ProtectionSuit = FS_ExoTypePants_Standart = 16  		// II//штаны 36  //+ // +200 к цене за вместимость
+ProtectionSuit = FS_ExoTypePants_ColorBase = 16  		// II//штаны 36  //+ // +200 к цене за вместимость
+ProtectionSuit = FS_ECO01_pants_Pro = 25				// III// 16 //+   //Защита от пуль + 70 за бронь
+ProtectionSuit = NBCPantsGray = 27						// III// 12 //+
+ProtectionSuit = NBCPantsYellow = 30					// III// 12 //+
+
+//Штаны ЭКЗОСКИЛЕТ  Шлем может интегрироваться с балоном, одевается вместо шапки
+ProtectionSuit = FS_ExoStorm_Helm_tank = 45    			// III//штаны 30 //низкое утепление +1500 к цене за вместимость I Уровень вместимости 
+ProtectionSuit = FS_ExoStorm_Pants_tank = 21    		// II//	штаны 30 //низкое утепление +1500 к цене за вместимость I Уровень вместимости 
+ProtectionSuit = FS_ExoStorm_Jacket_tank = 30    		// III//штаны 56 //низкое утепление +1500 к цене за вместимость I Уровень вместимости 
+ProtectionSuit = FS_ExoStorm_Helm_ColorBase = 45    	// III//штаны 30 //низкое утепление +1500 к цене за вместимость I Уровень вместимости
+ProtectionSuit = FS_ExoStorm_Pants_ColorBase = 21    	// III//штаны 30 //низкое утепление +1500 к цене за вместимость I Уровень вместимости 
+ProtectionSuit = FS_ExoStorm_Jacket_ColorBase = 17    	// III//штаны 56 //низкое утепление +1500 к цене за вместимость I Уровень вместимости
+ProtectionSuit = FS_ExoStorm_Helm_specnaz = 45    		// III//штаны 30 //низкое утепление +1500 к цене за вместимость I Уровень вместимости
+ProtectionSuit = FS_ExoStorm_Pants_specnaz = 15    		// III//штаны 30 //низкое утепление +1500 к цене за вместимость I Уровень вместимости 
+ProtectionSuit = FS_ExoStorm_Jacket_specnaz = 17    	// III//штаны 56 //низкое утепление +1500 к цене за вместимость I Уровень вместимости
+
+
+//перчатки
+ProtectionSuit = HandsCover_Improvised = 3  			// 0 
+//медицинские перчатки
+ProtectionSuit = SurgicalGloves_Blue = 7				// 0 
+ProtectionSuit = SurgicalGloves_Green = 7				// 0 
+ProtectionSuit = SurgicalGloves_LightBlue = 7				// 0 
+ProtectionSuit = SurgicalGloves_White = 7				// 0 
+
+ProtectionSuit = WorkingGloves_Beige = 5				// 0 
+ProtectionSuit = WorkingGloves_Black = 5				// 0
+ProtectionSuit = WorkingGloves_Brown = 5				// 0
+ProtectionSuit = WorkingGloves_Yellow = 6				// 0
+ProtectionSuit = NBCGlovesGray = 15 					// III  холодные
+ProtectionSuit = NBCGlovesYellow = 18 					// III  холодные
+
+//Ботинки
+ProtectionSuit = NBCBootsGray = 13						// II	//низкое утепление
+ProtectionSuit = NBCBootsYellow = 14					// II	//низкое утепление
+ProtectionSuit = FS_ECO_Green_Boots = 15				// II //низкое утепление
+ProtectionSuit = FS_ECO_Orange_Boots = 15  				// II //низкое утепление
+ProtectionSuit = FS_ECO_Gray_Boots = 15					// II //низкое утепление
+
+
+//СПЕЦОБОРУДОВАНИЕ 
+ProtectionSuit = FS_Eco_Green_Bag = 15					//I
+ProtectionSuit = FS_Eco_Orange_Bag = 19					//I
+ProtectionSuit = FS_TOX_Ballon = 25   					//II //одевается вместо сумки 42 литра
+FS_SevaMark2_brown = 48					//III
+FS_SevaMark2_Green = 48					//III 
+FS_SevaMark2_Camo = 48					//III
+ProtectionSuit = FS_GasBallon_Odinocki = 50  			//III
+ProtectionSuit = FS_GasBallon_DOLG = 55					//III
+
+
+
+//разгрузки
+
+bikervest_mung = HuntingVest = 4
+ProtectionSuit = HuntingVest = 4
+ProtectionSuit = UKAssVest_Olive = 4
+ProtectionSuit = UKAssVest_Khaki = 4
+ProtectionSuit = UKAssVest_Camo = 4
+ProtectionSuit = UKAssVest_Black = 4
+ProtectionSuit = aod_Vest_Loner_vityazvest = 4
+ProtectionSuit = aod_Vest_Loner1_smershvest = 4
+ProtectionSuit = aod_vest_clearsky_ballisticvest = 4
+ProtectionSuit = tacticalvest_mung = 5
+ProtectionSuit = RC_HighCapacityVest_Tan = 5
+ProtectionSuit = HighCapacityVest_Old = 5
+ProtectionSuit = HighCapacityVest_Olive = 5
+ProtectionSuit = BP2_HighCapacityVest_GreenBrown = 5
+ProtectionSuit = HighCapacityVest_LES = 5
+ProtectionSuit = HighCapacityVest_Black = 5
+ProtectionSuit = BP_PressVest_black = 5
+ProtectionSuit = aod_vest_Military_Corsair_olive = 5
+ProtectionSuit = ClearSky_AoD_Hevy_Vests = 5
+ProtectionSuit = TOPVest_blue = 6 		//36 литро
+ProtectionSuit = TOPVest_ColorBase = 6 //36 литро
+ProtectionSuit = TOPVest_vkpo = 6 		//36 литро
+ProtectionSuit = TOPVest_black = 6 		//36 литро
+ProtectionSuit = TOPVest_desert = 6   	//36 литро
+ProtectionSuit = TOPVest_forest = 6   	//36 литро
+ProtectionSuit = Bp_Meh_Vest_black = 6 
+ProtectionSuit = tacvest_mung = 8
+
+
+//Брюки
+ProtectionSuit = RC_TrackSuitPants_Y = 3
+ProtectionSuit = RC_TrackSuitPants_JM = 3
+ProtectionSuit = TTSKOPants = 6							// I// 30 //+
+ProtectionSuit = HunterPants_Brown = 5
+ProtectionSuit = HunterPants_Spring = 6
+ProtectionSuit = HunterPants_Summer = 6
+ProtectionSuit = HunterPants_Winter = 9
+ProtectionSuit = BP1_HunterPants_Black_1 = 7
+ProtectionSuit = USMCPants_Desert = 8
+ProtectionSuit = USMCJacket_Woodland = 8
+ProtectionSuit = BP_HunterPants_BlackBrown = 8
+
+
+
+//Куртки/ковты/спортивные
+ProtectionSuit = RC_TrackSuitJacket_B = 3
+ProtectionSuit = RC_TrackSuitJacket_JM = 3
+ProtectionSuit = RC_TrackSuitJacket_R = 3
+ProtectionSuit = GorkaEJacket_PautRev = 5
+ProtectionSuit = GorkaEJacket_Summer = 5
+ProtectionSuit = GorkaEJacket_Flat = 5
+ProtectionSuit = GorkaEJacket_Autumn = 5
+ProtectionSuit = Raincoat_Red = 5  				//дождевики
+ProtectionSuit = Raincoat_Black = 5
+ProtectionSuit = Raincoat_Green = 5
+ProtectionSuit = Raincoat_Blue = 5
+ProtectionSuit = Raincoat_Pink = 5
+ProtectionSuit = TacticalShirt_Tan = 5
+ProtectionSuit = BDUJacket = 5
+ProtectionSuit = HuntingJacket_Brown = 5		//42 литра/защита 5 /лучшее утепление
+ProtectionSuit = HuntingJacket_Spring = 5		//42 литра/защита 5 /лучшее утепление
+ProtectionSuit = HuntingJacket_Winter = 5		//42 литра/защита 5 /лучшее утепление
+ProtectionSuit = TacticalShirt_Olive = 6
+ProtectionSuit = TacticalShirt_Grey = 6
+ProtectionSuit = TacticalShirt_Black = 6
+ProtectionSuit = TacticalShirt_Tan = 6
+ProtectionSuit = BP_HuntingJacket_Black = 6		//42 литра/защита 6 /лучшее утепление
+ProtectionSuit = M65Jacket_Khaki = 6
+ProtectionSuit = M65Jacket_Olive = 6
+ProtectionSuit = M65Jacket_Tan = 6
+ProtectionSuit = M65Jacket_Black = 6
+ProtectionSuit = FS_Balaxon_Black = 6
+ProtectionSuit = FS_Balaxon_green = 6
+ProtectionSuit = FS_Balaxon_Black = 6
+ProtectionSuit = FS_Balaxon_Blue = 6
+ProtectionSuit = BP_M65Jacket_GreyRed = 6
+ProtectionSuit = TTsKOJacket_Camo = 6			//42 литра/защита 6 /+++
+ProtectionSuit = FS_RusVKPO_jacket = 7			//49  ++++
+ProtectionSuit = BP2_HuntingJacket_Camo = 7		//42 литра/защита 7 /лучшее утепление
+ProtectionSuit = FS_Winter_Bandit = 7	
+ProtectionSuit = FS_Winter_Olive = 7			//49 литров / защита 9 / высокое утепление
+ProtectionSuit = RCl_M65Jacket_Khaki = 7		//42 литра защита 8 /лучшее утепление	
+ProtectionSuit = FS_BanditJacket_Beige = 8 		// 42 литра / +++ /
+ProtectionSuit = FS_BanditJacket_white = 8 		// 42 литра / +++ /
+ProtectionSuit = FS_BanditJacket_black = 8 		// 42 литра / +++ /
+ProtectionSuit = FS_NoobJacket_black = 8 		//42 литра/защита 7 /++++
+ProtectionSuit = RCl_M65Jacket_DPMDesert = 8	//42 литра защита 8 /лучшее утепление		
+ProtectionSuit = FS_Winter_Svoboda = 9			//49 литров / защита 9 / высокое утепление
+ProtectionSuit = FS_Winter_Naemnik = 9			//49 литров / защита 9 / высокое утепление
+ProtectionSuit = FS_BomberJack_Brown = 10		//49 литров / защита 10 / высокое утепление
+ProtectionSuit = FS_Forest_Jacket = 10
+ProtectionSuit = FS_RF_Jacket_VKPO = 9  		//49 литров
+ProtectionSuit = FS_OldMilitary_Standart = 10  	//56 литров /защита 10 / высокое утеплениецв
+ProtectionSuit = FS_Soivet_Jacket = 11 			//49 литров + ножны, кабура, фляга
+ProtectionSuit = FS_Soivet_JacketHood = 12 		//49 литров + ножны, кабура, фляга
+
+ProtectionSuit = FS_ArmyJacket= 14
+ProtectionSuit = FS_BanditJacket_black= 15
+ProtectionSuit = FS_ArmyJacket_military= 18
+ProtectionSuit = FS_ArmyJacket_DOLG= 20
+
+//Ботинки/Сапоги
+
+		ProtectionSuit = BP_valenki = 3
+		ProtectionSuit = JungleBoots_Olive = 5
+		ProtectionSuit = JungleBoots_Beige = 5
+		ProtectionSuit = JungleBoots_Black = 5
+		ProtectionSuit = JungleBoots_Brown = 5
+		ProtectionSuit = JungleBoots_Green = 5
+		ProtectionSuit = CombatBoots_Grey = 8
+		ProtectionSuit = CombatBoots_Green = 8
+		ProtectionSuit = CombatBoots_Brown = 8
+		ProtectionSuit = CombatBoots_Black = 8
+		ProtectionSuit = CombatBoots_Beige = 8
+		ProtectionSuit = Wellies_Green = 9
+		ProtectionSuit = Wellies_Grey = 9
+		ProtectionSuit = Wellies_Brown = 9
+		ProtectionSuit = Wellies_Black = 9
+		
+
+//Сумки рюкзаки
+
+ProtectionSuit = HuntingBag = 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+
+
+
+
