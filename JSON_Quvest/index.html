@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quest JSON Workshop</title>
     <link rel="stylesheet" href="./styles.css?v=2026-04-26-flow-builder-reward-v2">
+    <link rel="stylesheet" href="./map.css?v=2026-09-10-map-mvp">
   </head>
   <body>
+    <nav class="workshop-tabs" aria-label="Модули Web Workshop">
+      <button class="workshop-tab active" type="button" data-workshop-tab="quest" aria-selected="true">Quest</button>
+      <button class="workshop-tab" type="button" data-workshop-tab="migration" aria-selected="false">Migration</button>
+      <button class="workshop-tab" type="button" data-workshop-tab="zones" aria-selected="false">Zones</button>
+      <button class="workshop-tab" type="button" data-workshop-tab="map" aria-selected="false">Map</button>
+    </nav>
+
+    <section class="workshop-module" data-workshop-module="quest">
     <div class="page-shell">
       <header class="topbar">
         <div class="brand">
@@ -217,7 +226,63 @@
         </aside>
       </main>
     </div>
+    </section>
+
+    <section class="workshop-module workshop-placeholder" data-workshop-module="migration" hidden>
+      <div>
+        <p class="eyebrow">Web Workshop</p>
+        <h1>Migration</h1>
+        <p>Модуль зарезервирован для будущего редактора миграционных событий.</p>
+      </div>
+    </section>
+
+    <section class="workshop-module workshop-placeholder" data-workshop-module="zones" hidden>
+      <div>
+        <p class="eyebrow">Web Workshop</p>
+        <h1>Zones</h1>
+        <p>Модуль зарезервирован для будущего редактора Silver_77_Zones.</p>
+      </div>
+    </section>
+
+    <section class="workshop-module map-module" data-workshop-module="map" hidden>
+      <header class="map-header">
+        <div>
+          <p class="eyebrow">Web Workshop / Map</p>
+          <h1>Карта ChernarusPlus</h1>
+          <p class="map-subtitle">Read-only слой активных MedicalAttention Hazard-зон из repository snapshot.</p>
+        </div>
+        <div class="map-summary">
+          <span id="mapStatus" class="map-status">Не загружено</span>
+          <strong id="mapFeatureCount">0 зон</strong>
+        </div>
+      </header>
+
+      <div class="map-toolbar" aria-label="Управление картой">
+        <button id="mapFitButton" class="button ghost small" type="button">Fit</button>
+        <button id="mapZoomOutButton" class="button ghost small" type="button" aria-label="Уменьшить масштаб">−</button>
+        <button id="mapZoomInButton" class="button ghost small" type="button" aria-label="Увеличить масштаб">+</button>
+        <label><input id="mapLayerToggle" type="checkbox" checked> MedicalAttention</label>
+        <label><input id="mapRadiiToggle" type="checkbox" checked> Радиусы</label>
+        <label><input id="mapLabelsToggle" type="checkbox" checked> Номера</label>
+        <output id="mapCursorCoordinates">X — / Z —</output>
+      </div>
+
+      <div class="map-layout">
+        <div id="mapViewport" class="map-viewport">
+          <svg id="mapSvg" viewBox="0 0 15360 15360" role="img" aria-label="ChernarusPlus с зонами MedicalAttention">
+            <image href="./assets/maps/chernarusplus/map.png" x="0" y="0" width="15360" height="15360" preserveAspectRatio="none"></image>
+            <g id="mapFeatureLayer" class="map-feature-layer"></g>
+          </svg>
+        </div>
+
+        <aside id="mapInfoCard" class="map-info-card" aria-live="polite">
+          <h2>Объект карты</h2>
+          <p>Выберите номер или круг зоны на карте.</p>
+        </aside>
+      </div>
+    </section>
 
     <script src="./app.js?v=2026-04-26-flow-builder-reward-v2"></script>
+    <script src="./map.js?v=2026-09-10-map-mvp"></script>
   </body>
   </html>

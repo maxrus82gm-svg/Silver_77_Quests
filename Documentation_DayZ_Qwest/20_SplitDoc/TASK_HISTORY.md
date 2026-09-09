@@ -168,6 +168,8 @@
 
 - `TASK 168` — создан короткий верхнеуровневый обзор единой системы проекта, связывающий четыре направления: Quest, `Silver_77_Migrate`, `Silver_77_Zones` и «Контроль событий сервера». Зафиксирован будущий единый Web Workshop с независимыми модулями и сохранением изолированных runtime-систем. Обзор подключён как обязательный короткий общий контекст из `12_Старт_агента.md`; существующие ветки документации, `.obsidian`, код, runtime и моды не менялись.
 
+- `TASK 169` — в существующий `JSON_Quvest` добавлен первый рабочий Map MVP общего Web Workshop. Quest сохранён рабочим модулем по умолчанию, Migration/Zones добавлены только как placeholders. Локальная официальная карта Bohemia Interactive ChernarusPlus (`15360 × 15360` world units) отображается нативным SVG с pan, cursor-centered zoom, Fit и X/Z-координатами. Узкий read-only endpoint читает repository snapshot MedicalAttention; parser вывел все 78 активных `DeclareZone`, пропустил 2 закомментированные записи и сохранил реальные Hazard-радиусы, комментарии и source metadata. Внутренняя `MapFeature.geometry.radii[]` подготовлена к нескольким радиусам без введения нового gameplay JSON. Visual/browser smoke-test, launcher, endpoint и возврат в Quest прошли; игровые моды, runtime, source snapshot, Quest JSON и `.obsidian` не менялись.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

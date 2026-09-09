@@ -61,6 +61,14 @@
 - показывать `JSON Preview`
 - экспортировать результат
 
+### 2. Добавлен первый рабочий Map MVP
+
+Web Workshop теперь имеет верхние вкладки `Quest`, `Migration`, `Zones` и `Map`. Quest остаётся рабочим модулем по умолчанию; Migration и Zones пока являются простыми placeholders.
+
+Map использует локальную официальную карту ChernarusPlus и нативный SVG в world-space `15360 × 15360`. Реализованы pan, cursor-centered zoom, Fit, координаты X/Z и read-only слой 78 активных MedicalAttention Hazard-зон из repository snapshot. Центры, реальные радиусы и номера можно независимо показывать или скрывать; выбранная зона открывает карточку подтверждённых source-данных.
+
+Внутренняя map feature model поддерживает `geometry.radii[]` для будущих многокомпонентных слоёв, но не является runtime-контрактом `Silver_77_Zones`.
+
 ---
 
 ## Главные продуктовые решения
@@ -166,6 +174,15 @@
   - работа с конфигом
   - работа с файловым черновиком
 
+- [map.js](P:/Silver_77_Quests/JSON_Quvest/map.js)
+  Map MVP: вкладки Web Workshop, SVG-навигация, parser и renderer read-only map features.
+
+- [map.css](P:/Silver_77_Quests/JSON_Quvest/map.css)
+  Изолированное оформление вкладок и карты.
+
+- [assets/maps/chernarusplus](P:/Silver_77_Quests/JSON_Quvest/assets/maps/chernarusplus)
+  Локальная официальная карта ChernarusPlus и её source attribution.
+
 ### Запуск и сервер
 
 - [start-editor.cmd](P:/Silver_77_Quests/JSON_Quvest/start-editor.cmd)
@@ -184,6 +201,7 @@
   - `/api/health`
   - `/api/config`
   - `/api/current-json`
+  - `/api/map/medical-attention` — узкое read-only чтение repository snapshot
   - `/api/save`
   - `/api/draft`
 

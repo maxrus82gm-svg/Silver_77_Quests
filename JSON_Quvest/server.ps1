@@ -8,6 +8,7 @@ $localConfigPath = Join-Path $scriptDir "editor-config.local.json"
 $draftPath = Join-Path $scriptDir "editor-draft.json"
 $stackRulesPath = Join-Path $rootEditorDir "item-stack-rules.json"
 $itemClassReferencePath = Join-Path $rootEditorDir "item-class-reference.json"
+$medicalAttentionMapSourcePath = Join-Path $projectRoot "DayZ_Server_Reference\Server_Custom_Config\Danger_Zones\MedicalAttention\config.txt"
 $listener = [System.Net.HttpListener]::new()
 $listener.Prefixes.Add("http://127.0.0.1:4173/")
 $listener.Start()
@@ -279,6 +280,8 @@ function Get-ContentType([string]$path) {
     ".css" { return "text/css; charset=utf-8" }
     ".js" { return "application/javascript; charset=utf-8" }
     ".json" { return "application/json; charset=utf-8" }
+    ".png" { return "image/png" }
+    ".md" { return "text/markdown; charset=utf-8" }
     ".cmd" { return "text/plain; charset=utf-8" }
     ".ps1" { return "text/plain; charset=utf-8" }
     default { return "application/octet-stream" }
@@ -331,6 +334,20 @@ while ($listener.IsListening) {
 
     if ($request.HttpMethod -eq "GET" -and $path -eq "/api/health") {
       Write-TextResponse $response 200 "application/json; charset=utf-8" '{"ok":true}'
+      continue
+    }
+
+    if ($request.HttpMethod -eq "GET" -and $path -eq "/api/map/medical-attention") {
+      if (-not (Test-Path -LiteralPath $medicalAttentionMapSourcePath -PathType Leaf)) {
+        Write-TextResponse $response 404 "application/json; charset=utf-8" '{"ok":false,"error":"MedicalAttention repository snapshot not found."}'
+        continue
+      }
+
+      $medicalAttentionText = [System.IO.File]::ReadAllText(
+        $medicalAttentionMapSourcePath,
+        [System.Text.UTF8Encoding]::new($false, $true)
+      )
+      Write-TextResponse $response 200 "text/plain; charset=utf-8" $medicalAttentionText
       continue
     }
 
