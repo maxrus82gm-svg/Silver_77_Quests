@@ -48,6 +48,20 @@
         "a": 1,
         "rgb": 16711680
       }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/27_Контроль_событий_сервера.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 255
+      }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/28_Источники_данных_сервера.md\" OR path:\"Documentation_DayZ_Qwest/29_Карта_мира_сервера.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 16711680
+      }
     }
   ],
   "collapse-display": true,
@@ -56,10 +70,10 @@
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 1,
   "collapse-forces": false,
-  "centerStrength": 0.107121951219512,
-  "repelStrength": 8.26146341463415,
+  "centerStrength": 0,
+  "repelStrength": 7.63707317073171,
   "linkStrength": 0.58790243902439,
   "linkDistance": 165,
-  "scale": 0.7132754626224217,
+  "scale": 0.7132754626224198,
   "close": false
 }
