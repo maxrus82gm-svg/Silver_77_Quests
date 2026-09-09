@@ -164,6 +164,8 @@
 
 - `TASK 167` — по фактическому server launch/config подтверждена активная mission `dayzOffline.chernarusplus`; все 18 territory XML из её `cfgenvironment.xml` проверены и побайтово сопоставлены с `DayZ_Server_Reference/Mission/env`. По `events.xml` и подключённым PBO доказано происхождение `HIMERA`, `FS_SlepDog_Zmb`, `FS_PseDOG` и `FS_DogZMB` из `@FS`; точный origin `Mutant_AoD_Tushkano*` и `Mutant_AoD_Forester1` оставлен `UNKNOWN / NOT CONFIRMED`. Активный `profiles/MedicalAttention/config.txt` сохранён точной repository-копией, а Night/Sound profile JSON подтверждены идентичными существующим snapshots. В документе 28 зафиксированы spatial fields, 78 активных MedicalAttention-зон, разделение Hazard/Visual/Audio radii и выборочные сопоставления с уровнями уверенности. Серверные source-файлы, `.obsidian`, runtime, PBO и моды не менялись; build не требовался.
 
+- `TASK 167 FIX` — подтверждено, что общее Python-правило `env/` в корневом `.gitignore` скрывало `DayZ_Server_Reference/Mission/env`. Добавлены узкие исключения для этого repository snapshot при сохранении обычного ignore для корневых и вложенных Python `env/`. Все 18 активных territory XML теперь видимы Git как untracked для будущего пользовательского commit; дополнительный `domestic_animals_territories.xml` также виден информационно. Содержимое XML не менялось, а БЛОК 1 после отчёта приведён к каноническим трём строкам из `12_Старт_агента.md`.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<territory-type>
+	<!-- Тестовое место -->
+    <territory color="1596586445">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="1794.3" z="13847" r="150"/> <!-- В долине стройка -->
+    </territory>
+	<territory color="6476586448">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="1055.3" z="14626" r="150"/> <!-- В долине стройка -->
+    </territory>
+	<territory color="6476586448">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="2279.3" z="3538" r="150"/> <!-- В долине стройка -->
+    </territory>
+	<territory color="6476586448">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="841.3" z="1936" r="150"/> <!-- В долине стройка -->
+    </territory>
+</territory-type>

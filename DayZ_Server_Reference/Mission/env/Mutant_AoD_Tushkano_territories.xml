@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<territory-type>
+	<!-- Тестовое место -->
+    <territory color="928658644">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="9693.5" z="13152" r="100"/> <!-- В долине стройка -->
+    </territory>
+	<territory color="823658644">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="11871.1" z="12549" r="100"/> <!-- Аэро малое -->
+    </territory>
+	<territory color="852460844">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="11673.1" z="14263" r="100"/> <!-- Новодмитровск -->
+    </territory>
+	<territory color="326586644">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12453.1" z="14455" r="100"/> <!-- Новодмитровск на горе -->
+    </territory>
+	<territory color="852714544">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="15241.1" z="13926" r="100"/> <!-- Хутор -->
+    </territory>
+	<territory color="123985664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="11264.1" z="4299" r="100"/> <!-- Хутор -->
+    </territory>
+	<territory color="819732564">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="11813.1" z="6438" r="100"/> <!-- Хутор -->
+    </territory>
+	<territory color="782526644">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="11406.1" z="10643" r="100"/> <!-- Хутор -->
+    </territory>
+	<territory color="969856644">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="9305.1" z="13478" r="100"/> <!-- Хутор -->
+    </territory>
+	<territory color="951475664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="8653.1" z="13619" r="100"/> <!-- Карер_красная заря -->
+    </territory>
+	<territory color="798545664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="3039.1" z="12347" r="100"/> <!-- Тополники -->
+    </territory>
+	<territory color="965644464">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="2237.1" z="12988" r="100"/> <!-- Тополники -->
+    </territory>
+	<territory color="967954664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="2355.1" z="12611" r="100"/> <!-- Тополники -->
+    </territory>
+	<territory color="965235664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="4569.1" z="8523" r="100"/> <!-- Вересник_Севернее -->
+    </territory>
+	<territory color="754845664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="5104.1" z="1988" r="100"/> <!-- Вересник_Севернее -->
+    </territory>
+	<territory color="159845664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="2908.1" z="3974" r="100"/> <!-- Ербенка_антена -->
+    </territory>
+	<territory color="123545664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="2648.1" z="2242" r="100"/> <!-- Острог_каменка -->
+    </territory>
+	<territory color="558845664">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="2" x="1040.1" z="6598" r="100"/> <!-- Большой_котел_плотина -->
+    </territory>
+	<territory color="753467264">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="2" x="1160.1" z="6228" r="100"/> <!-- Плотина -->
+    </territory>
+	<territory color="754835823">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="56.1" z="1629" r="100"/> <!-- Край_берег -->
+    </territory>
+	<territory color="754357742">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="1346.1" z="4092" r="100"/> <!-- Полонина_Павлово -->
+    </territory>
+	<territory color="658841742">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="11208.1" z="4234" r="100"/> <!-- Полонина_Павлово -->
+    </territory>
+	<territory color="658841742">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="14788.1" z="14093" r="100"/> <!-- Бережки -->
+    </territory>
+	<!-- Черная Поляна -->
+	<territory color="654728144">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12551.5" z="13792" r="50"/> <!-- Свалка -->
+    </territory>
+	<territory color="115828144">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="13505.5" z="6309" r="50"/> <!-- Свалка -->
+    </territory>
+	<territory color="115828144">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12079.5" z="9707" r="50"/> <!-- Березино_водохранилище -->
+    </territory>
+	<territory color="115828144">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="13482.5" z="13071" r="50"/> <!-- Ольша_колхоз -->
+    </territory>
+	
+</territory-type>

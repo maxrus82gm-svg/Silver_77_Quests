@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<territory-type>
+	
+	<territory color="328739897">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="2" x="12993" z="5977.75"  r="50"/> <!-- Солнечный выщка-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="9323" z="8810.75"  r="50"/> <!-- Горка-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="7234" z="9326.75"  r="70"/> <!-- Зенит/лес-->
+	</territory>
+	<territory color="328037397">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="2" dmax="3" x="8831" z="11666.75"  r="70"/> <!-- gvozdimo/колхоз-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="2" dmax="3" x="6882" z="11441.75"  r="150"/> <!-- замок-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="2" dmax="3" x="12655" z="13551.75"  r="150"/> <!-- замок-->
+	</territory>
+	
+</territory-type>
+

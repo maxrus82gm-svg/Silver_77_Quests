@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<territory-type>
+	
+	<territory color="620779407">
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12696" z="9665"  r="80"/> <!-- Березино лесопилка-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12171" z="9758"  r="80"/> <!-- Около березина-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12692" z="8759"  r="80"/> <!-- Сройка_свалка_Березино-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="8354" z="5974"  r="80"/> <!-- Развалины церкви-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="7674" z="5174"  r="80"/> <!-- Сройка_свалка_Березино-->
+		<zone name="HuntingGround" smin="0" smax="0" dmin="1" dmax="1" x="12964" z="6278"  r="80"/> <!-- Сройка_свалка_Березино-->
+	</territory>
+	<territory color="100700455">
+		<zone name="HuntingGround" smin="1" smax="1" dmin="1" dmax="2" x="13812" z="11183"  r="30"/> <!-- У корабля-->
+		<zone name="HuntingGround" smin="0" smax="1" dmin="1" dmax="1" x="12443" z="14084"  r="80"/> <!-- У корабля-->
+	
+	</territory>
+</territory-type>
+

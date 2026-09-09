@@ -5,6 +5,8 @@ __pycache__/
 .venv/
 venv/
 env/
+!DayZ_Server_Reference/Mission/env/
+!DayZ_Server_Reference/Mission/env/**
 
 # Backup files
 *.bak
