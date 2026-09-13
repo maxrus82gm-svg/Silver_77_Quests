@@ -172,6 +172,8 @@
 
 - `TASK 170` — создана самостоятельная документационная ветка собственного медицинского мода `Silver_77_Medicine`: центральный документ связан с аудитом vanilla DayZ, идеями, планируемой Client/Server-структурой, краткой историей, roadmap и living-приоритетом custom Agent/Modifier prototype. Зафиксирована граница `Zones → exposure / trigger → Medicine`: Zones владеет территорией и выдачей воздействия, Medicine — заболеванием, стадиями, симптомами, лечением и persistence. Общая главная, обзор единой системы и документ Zones минимально синхронизированы; runtime-мод, source folders, JSON, Web UI, items, agents и PBO не создавались, моды обновлять не нужно.
 
+- `TASK 171` — выполнен глубокий архитектурный аудит Web Workshop по baseline commit 78 (`85492878ce9feb59696b8262a23dd17794ef025d`). В документе 38 сопоставлены варианты A–D; рекомендована отдельная Map со synchronized detached window, единственным владельцем state/save и доменными spatial adapters. Определены ownership, Quest-роли, Migration-геометрия и activation-only направление bridge, граница Zones/Medicine, external whitelist write-back, конфликты и recovery. Первый implementation slice: существующая Migration GROUP, минимальная форма и Map над одним state с безопасным сохранением. Добавлена одна связь 30 → 38; START → 30 wiki-edge заменена обычным обязательным path. Код, runtime, JSON/config и `.obsidian` не менялись; implementation не начиналась, моды обновлять не нужно.
+
 ## Примечание
 
 История остаётся рабочим журналом фактов и решений. Если какая-то задача требует отдельного повторного подтверждения в игре или review, это нужно явно указывать в формулировке записи.
