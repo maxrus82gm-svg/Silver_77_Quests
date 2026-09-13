@@ -62,6 +62,20 @@
         "a": 1,
         "rgb": 16711680
       }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/39_Глобальный_план.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 255
+      }
+    },
+    {
+      "query": "path:\"Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md\"",
+      "color": {
+        "a": 1,
+        "rgb": 16711680
+      }
     }
   ],
   "collapse-display": true,
@@ -74,6 +88,6 @@
   "repelStrength": 8.51121951219512,
   "linkStrength": 0.669073170731707,
   "linkDistance": 96,
-  "scale": 0.9999999999999595,
+  "scale": 2.75567596063096,
   "close": false
 }
