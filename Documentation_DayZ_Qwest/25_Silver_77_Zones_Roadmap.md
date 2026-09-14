@@ -22,6 +22,7 @@
 - Symptoms
 - Quest activation
 - Migration linked actions
+- Dynamic encounter / Ambush Zone — персональная засада заражённых для каждого подходящего игрока, крики, cooldown и случайная активация
 - Persistence
 - Overlap нескольких зон
 - Multiplayer acceptance
