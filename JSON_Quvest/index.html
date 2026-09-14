@@ -6,6 +6,7 @@
     <title>Quest JSON Workshop</title>
     <link rel="stylesheet" href="./styles.css?v=2026-04-26-flow-builder-reward-v2">
     <link rel="stylesheet" href="./map.css?v=2026-09-10-map-mvp">
+    <link rel="stylesheet" href="./migration.css?v=2026-09-14-migration-map-state-v1">
   </head>
   <body>
     <nav class="workshop-tabs" aria-label="Модули Web Workshop">
@@ -228,11 +229,55 @@
     </div>
     </section>
 
-    <section class="workshop-module workshop-placeholder" data-workshop-module="migration" hidden>
-      <div>
-        <p class="eyebrow">Web Workshop</p>
-        <h1>Migration</h1>
-        <p>Модуль зарезервирован для будущего редактора миграционных событий.</p>
+    <section class="workshop-module migration-module" data-workshop-module="migration" hidden>
+      <header class="migration-header">
+        <div>
+          <p class="eyebrow">Web Workshop / Migration</p>
+          <h1>Пространственный редактор GROUP</h1>
+          <p class="migration-subtitle">Изменения хранятся только в памяти браузера. Запись MigrationConfig в этой версии отключена.</p>
+        </div>
+        <div class="migration-summary" aria-live="polite">
+          <span id="migrationLoadStatus" class="migration-load-status">Не загружено</span>
+          <strong id="migrationDirtyStatus">Без изменений</strong>
+        </div>
+      </header>
+
+      <div id="migrationError" class="migration-error" role="alert" hidden></div>
+
+      <div class="migration-layout">
+        <aside class="migration-panel">
+          <label class="migration-field" for="migrationGroupSelect">
+            <span>Существующая GROUP</span>
+            <select id="migrationGroupSelect" disabled></select>
+          </label>
+
+          <dl class="migration-source-meta">
+            <dt>Источник</dt>
+            <dd id="migrationSourceId">—</dd>
+            <dt>SHA-256</dt>
+            <dd id="migrationRevision">—</dd>
+          </dl>
+
+          <div class="migration-actions">
+            <button id="migrationUndoButton" class="button ghost small" type="button" disabled>Отменить</button>
+            <button id="migrationRedoButton" class="button ghost small" type="button" disabled>Повторить</button>
+            <button id="migrationResetButton" class="button ghost small" type="button" disabled>Сбросить изменения</button>
+          </div>
+
+          <p class="migration-memory-note">Save / write-back появятся только в следующем безопасном slice.</p>
+        </aside>
+
+        <main class="migration-editor">
+          <div id="migrationGroupHeading" class="migration-group-heading">
+            <h2>GROUP не выбрана</h2>
+            <p>Дождитесь загрузки DEV-конфига.</p>
+          </div>
+          <div id="migrationPoints" class="migration-points"></div>
+          <section id="migrationRadiiInfo" class="migration-radii-info" hidden>
+            <h2>Reference geometry — только чтение</h2>
+            <div id="migrationRadiiContent"></div>
+          </section>
+        </main>
       </div>
     </section>
 
@@ -249,7 +294,7 @@
         <div>
           <p class="eyebrow">Web Workshop / Map</p>
           <h1>Карта ChernarusPlus</h1>
-          <p class="map-subtitle">Read-only слой активных MedicalAttention Hazard-зон из repository snapshot.</p>
+          <p class="map-subtitle">Общая пространственная проекция: read-only MedicalAttention и выбранная Migration GROUP из editor state.</p>
         </div>
         <div class="map-summary">
           <span id="mapStatus" class="map-status">Не загружено</span>
@@ -262,8 +307,9 @@
         <button id="mapZoomOutButton" class="button ghost small" type="button" aria-label="Уменьшить масштаб">−</button>
         <button id="mapZoomInButton" class="button ghost small" type="button" aria-label="Увеличить масштаб">+</button>
         <label><input id="mapLayerToggle" type="checkbox" checked> MedicalAttention</label>
+        <label><input id="mapMigrationToggle" type="checkbox" checked> Migration</label>
         <label><input id="mapRadiiToggle" type="checkbox" checked> Радиусы</label>
-        <label><input id="mapLabelsToggle" type="checkbox" checked> Номера</label>
+        <label><input id="mapLabelsToggle" type="checkbox" checked> Labels</label>
         <output id="mapCursorCoordinates">X — / Z —</output>
       </div>
 
@@ -272,6 +318,7 @@
           <svg id="mapSvg" viewBox="0 0 15360 15360" role="img" aria-label="ChernarusPlus с зонами MedicalAttention">
             <image href="./assets/maps/chernarusplus/map.png" x="0" y="0" width="15360" height="15360" preserveAspectRatio="none"></image>
             <g id="mapFeatureLayer" class="map-feature-layer"></g>
+            <g id="mapMigrationLayer" class="map-migration-layer"></g>
           </svg>
         </div>
 
@@ -283,6 +330,7 @@
     </section>
 
     <script src="./app.js?v=2026-04-26-flow-builder-reward-v2"></script>
-    <script src="./map.js?v=2026-09-10-map-mvp"></script>
+    <script src="./migration.js?v=2026-09-14-migration-map-state-v1"></script>
+    <script src="./map.js?v=2026-09-14-migration-map-state-v1"></script>
   </body>
   </html>

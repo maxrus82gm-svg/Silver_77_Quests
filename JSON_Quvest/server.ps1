@@ -9,6 +9,8 @@ $draftPath = Join-Path $scriptDir "editor-draft.json"
 $stackRulesPath = Join-Path $rootEditorDir "item-stack-rules.json"
 $itemClassReferencePath = Join-Path $rootEditorDir "item-class-reference.json"
 $medicalAttentionMapSourcePath = Join-Path $projectRoot "DayZ_Server_Reference\Server_Custom_Config\Danger_Zones\MedicalAttention\config.txt"
+$migrationConfigSourceId = "Silver_77_Migrate_server/config/MigrationConfig.json"
+$migrationConfigSourcePath = Join-Path $projectRoot "Silver_77_Migrate_server\config\MigrationConfig.json"
 $listener = [System.Net.HttpListener]::new()
 $listener.Prefixes.Add("http://127.0.0.1:4173/")
 $listener.Start()
@@ -299,6 +301,16 @@ function Write-TextResponse($response, [int]$statusCode, [string]$contentType, [
   $response.OutputStream.Write($bytes, 0, $bytes.Length)
 }
 
+function Write-BytesResponse($response, [int]$statusCode, [string]$contentType, [byte[]]$bytes) {
+  $response.StatusCode = $statusCode
+  $response.ContentType = $contentType
+  $response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+  $response.Headers["Pragma"] = "no-cache"
+  $response.Headers["Expires"] = "0"
+  $response.ContentLength64 = $bytes.Length
+  $response.OutputStream.Write($bytes, 0, $bytes.Length)
+}
+
 function Write-FileResponse($response, [string]$path) {
   $bytes = [System.IO.File]::ReadAllBytes($path)
   $response.StatusCode = 200
@@ -348,6 +360,26 @@ while ($listener.IsListening) {
         [System.Text.UTF8Encoding]::new($false, $true)
       )
       Write-TextResponse $response 200 "text/plain; charset=utf-8" $medicalAttentionText
+      continue
+    }
+
+    if ($request.HttpMethod -eq "GET" -and $path -eq "/api/migration/config") {
+      if (-not (Test-Path -LiteralPath $migrationConfigSourcePath -PathType Leaf)) {
+        Write-TextResponse $response 404 "application/json; charset=utf-8" '{"ok":false,"error":"Migration DEV config not found."}'
+        continue
+      }
+
+      $migrationBytes = [System.IO.File]::ReadAllBytes($migrationConfigSourcePath)
+      $sha256 = [System.Security.Cryptography.SHA256]::Create()
+      try {
+        $hashBytes = $sha256.ComputeHash($migrationBytes)
+      } finally {
+        $sha256.Dispose()
+      }
+      $revision = ([System.BitConverter]::ToString($hashBytes) -replace "-", "").ToLowerInvariant()
+      $response.AddHeader("X-S77-Source-Id", $migrationConfigSourceId)
+      $response.AddHeader("X-S77-Revision-SHA256", $revision)
+      Write-BytesResponse $response 200 "application/json; charset=utf-8" $migrationBytes
       continue
     }
 
