@@ -181,12 +181,16 @@
       validateGroupNumber(group, "routePointReachRadius", 0, null, groupId, false);
       validateGroupNumber(group, "routeActivationTriggerPercent", 0, 100, groupId, false);
       validateGroupNumber(group, "routeActivationRadius", 0, null, groupId, false);
-      if (!Array.isArray(group.routeActivationRadii) || group.routeActivationRadii.length < group.routePoints.length) {
-        throw new Error(groupId + ".routeActivationRadii должен содержать radius для каждой route point.");
+      if (group.routeActivationRadii != null && !Array.isArray(group.routeActivationRadii)) {
+        throw new Error(groupId + ".routeActivationRadii должен быть массивом, если он задан.");
       }
-      group.routePoints.forEach((unused, routeIndex) => {
-        validateFiniteNumber(group.routeActivationRadii[routeIndex], groupId + ".routeActivationRadii[" + routeIndex + "]", 0, null, false);
-      });
+      if (Array.isArray(group.routeActivationRadii)) {
+        group.routeActivationRadii.forEach((radius, routeIndex) => {
+          if (typeof radius !== "number" || !Number.isFinite(radius)) {
+            throw new Error(groupId + ".routeActivationRadii[" + routeIndex + "] содержит недопустимое число.");
+          }
+        });
+      }
       validateGroupNumber(group, "targetFormationSpacing", 0, null, groupId);
       validateGroupNumber(group, "targetFormationJitter", 0, null, groupId);
       validateGroupNumber(group, "finalActivationTriggerPercent", 0, 100, groupId, false);
@@ -426,12 +430,7 @@
         );
         wrapper.appendChild(shared);
       }
-      wrapper.appendChild(createGroupNumberField(
-        group,
-        "routeActivationRadii",
-        "Радиус активации Route " + (ref.index + 1),
-        { step: "any", index: ref.index }
-      ));
+      wrapper.appendChild(createRouteActivationRadiusField(group, ref.index));
     }
 
     if (ref.kind === "target") {
@@ -464,10 +463,25 @@
         inputKind: "number",
         index: Number.isInteger(options.index) ? options.index : null,
         step: options.step,
-        value: getGroupFieldValue(group, field, options.index)
+        value: Object.prototype.hasOwnProperty.call(options, "value")
+          ? options.value
+          : getGroupFieldValue(group, field, options.index)
       })
     );
     return label;
+  }
+
+  function createRouteActivationRadiusField(group, routeIndex) {
+    const radius = getRouteActivationRadiusInfo(group, routeIndex);
+    const fallbackNote = radius.explicit ? "" : " — fallback: общий " + formatRadius(radius.effective);
+    const field = createGroupNumberField(
+      group,
+      "routeActivationRadii",
+      "Радиус активации Route " + (routeIndex + 1) + fallbackNote,
+      { step: "any", index: routeIndex, value: radius.effective }
+    );
+    field.classList.toggle("uses-fallback", !radius.explicit);
+    return field;
   }
 
   function createGroupToggleField(group, field, labelText) {
@@ -580,8 +594,12 @@
     }
     state.groupFieldEdit = null;
     recomputeDirty();
-    elements.radiiContent.replaceChildren();
-    renderRadiiInfo(getSelectedGroup());
+    if (edit.field === "routeActivationRadius" || edit.field === "routeActivationRadii") {
+      renderEditor();
+    } else {
+      elements.radiiContent.replaceChildren();
+      renderRadiiInfo(getSelectedGroup());
+    }
     emitProjection();
   }
 
@@ -631,7 +649,10 @@
   }
 
   function getGroupFieldValue(group, field, index) {
-    return Number.isInteger(index) ? group[field][index] : group[field];
+    if (!Number.isInteger(index)) {
+      return group[field];
+    }
+    return Array.isArray(group[field]) ? group[field][index] : undefined;
   }
 
   function setGroupFieldValue(group, field, index, value) {
@@ -639,10 +660,39 @@
       return;
     }
     if (Number.isInteger(index)) {
-      group[field][index] = value;
+      if (field === "routeActivationRadii") {
+        setRouteActivationRadius(group, index, value);
+      } else {
+        group[field][index] = value;
+      }
     } else {
       group[field] = value;
     }
+  }
+
+  function setRouteActivationRadius(group, routeIndex, value) {
+    const radii = Array.isArray(group.routeActivationRadii) ? group.routeActivationRadii : [];
+    while (radii.length < routeIndex) {
+      radii.push(group.routeActivationRadius);
+    }
+    if (radii.length === routeIndex) {
+      radii.push(value);
+    } else {
+      radii[routeIndex] = value;
+    }
+    group.routeActivationRadii = radii;
+  }
+
+  function getRouteActivationRadiusInfo(group, routeIndex) {
+    const configured = Array.isArray(group.routeActivationRadii)
+      ? group.routeActivationRadii[routeIndex]
+      : undefined;
+    const explicit = finitePositive(configured);
+    return {
+      explicit: explicit,
+      configured: configured,
+      effective: explicit ? configured : group.routeActivationRadius
+    };
   }
 
   function isValidGroupFieldValue(field, value) {
