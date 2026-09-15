@@ -641,7 +641,21 @@
   }
 
   function recomputeDirty() {
+    syncBaselineConfirmations();
     state.dirty = Boolean(state.baseConfig && state.config && JSON.stringify(state.config) !== JSON.stringify(state.baseConfig));
+  }
+
+  function syncBaselineConfirmations() {
+    if (!state.config || !state.baseConfig) {
+      return;
+    }
+    state.config.groups.forEach((group) => {
+      listPointRefs(group).forEach((ref) => {
+        if (!pointDiffersFromBaseline(ref)) {
+          state.yConfirmed.set(pointKey(ref), true);
+        }
+      });
+    });
   }
 
   function refreshPointYStatus(ref) {

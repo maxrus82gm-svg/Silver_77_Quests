@@ -62,6 +62,9 @@
     mapElements.svg = document.getElementById("mapSvg");
     mapElements.medicalLayer = document.getElementById("mapFeatureLayer");
     mapElements.migrationLayer = document.getElementById("mapMigrationLayer");
+    mapElements.migrationNavigator = document.getElementById("mapMigrationNavigator");
+    mapElements.migrationGroupLabel = document.getElementById("mapMigrationGroupLabel");
+    mapElements.migrationPointList = document.getElementById("mapMigrationPointList");
     mapElements.infoCard = document.getElementById("mapInfoCard");
     mapElements.fitButton = document.getElementById("mapFitButton");
     mapElements.zoomInButton = document.getElementById("mapZoomInButton");
@@ -247,7 +250,7 @@
       const selectedStillExists = Array.isArray(mapState.migrationProjection.points) &&
         mapState.migrationProjection.points.some((point) => point.id === mapState.selected.id);
       if (!selectedStillExists) {
-        mapState.selected = null;
+        clearSelection();
       }
     }
     renderMigrationProjection();
@@ -260,6 +263,7 @@
     mapElements.migrationLayer.replaceChildren();
     const projection = mapState.migrationProjection;
     if (!projection || !projection.available || !projection.group || !Array.isArray(projection.points)) {
+      renderMigrationNavigator();
       updateFeatureCount();
       updateLayerVisibility();
       return;
@@ -326,6 +330,7 @@
     });
 
     updateSymbolScale();
+    renderMigrationNavigator();
     updateLayerVisibility();
     updateFeatureCount();
     refreshSelectedInfo();
@@ -353,6 +358,53 @@
     });
     Array.from(mapElements.migrationLayer.querySelectorAll(".map-migration-point")).forEach((element) => {
       element.classList.toggle("selected", Boolean(mapState.selected && mapState.selected.module === "Migration" && mapState.selected.id === element.dataset.featureId));
+    });
+    Array.from(mapElements.migrationPointList.querySelectorAll("button")).forEach((element) => {
+      element.classList.toggle("selected", Boolean(mapState.selected && mapState.selected.module === "Migration" && mapState.selected.id === element.dataset.featureId));
+    });
+  }
+
+  function clearSelection() {
+    mapState.selected = null;
+    updateSelectionClasses();
+    renderMapHome();
+  }
+
+  function renderMapHome() {
+    const title = document.createElement("h2");
+    title.textContent = "Объект карты";
+    const help = document.createElement("p");
+    help.textContent = "Выберите зону MedicalAttention или точку Migration.";
+    mapElements.infoCard.replaceChildren(title, help);
+  }
+
+  function renderMigrationNavigator() {
+    const projection = mapState.migrationProjection;
+    mapElements.migrationPointList.replaceChildren();
+    const available = Boolean(projection && projection.available && projection.group && Array.isArray(projection.points));
+    mapElements.migrationNavigator.classList.toggle("unavailable", !available);
+    if (!available) {
+      mapElements.migrationGroupLabel.textContent = "Нет данных";
+      return;
+    }
+
+    mapElements.migrationGroupLabel.textContent = projection.group.groupId;
+    projection.points.forEach((point) => {
+      const item = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.featureId = point.id;
+      button.disabled = !mapElements.migrationToggle.checked;
+      button.classList.toggle("selected", Boolean(mapState.selected && mapState.selected.module === "Migration" && mapState.selected.id === point.id));
+      const code = document.createElement("span");
+      code.className = "map-migration-point-code";
+      code.textContent = point.label;
+      const name = document.createElement("span");
+      name.textContent = point.title;
+      button.append(code, name);
+      button.addEventListener("click", () => selectMigrationPoint(point.id));
+      item.appendChild(button);
+      mapElements.migrationPointList.appendChild(item);
     });
   }
 
@@ -472,6 +524,16 @@
     mapElements.medicalLayer.classList.toggle("hide-labels", !mapElements.labelsToggle.checked);
     mapElements.migrationLayer.classList.toggle("hide-radii", !mapElements.radiiToggle.checked);
     mapElements.migrationLayer.classList.toggle("hide-labels", !mapElements.labelsToggle.checked);
+    Array.from(mapElements.migrationPointList.querySelectorAll("button")).forEach((button) => {
+      button.disabled = !mapElements.migrationToggle.checked;
+    });
+    if (
+      mapState.selected &&
+      ((mapState.selected.module === "MedicalAttention" && !mapElements.medicalToggle.checked) ||
+        (mapState.selected.module === "Migration" && !mapElements.migrationToggle.checked))
+    ) {
+      clearSelection();
+    }
   }
 
   function fitMap() {

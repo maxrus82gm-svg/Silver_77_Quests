@@ -1,3 +1,7 @@
+param(
+  [string]$InstanceToken = ""
+)
+
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -11,6 +15,16 @@ $itemClassReferencePath = Join-Path $rootEditorDir "item-class-reference.json"
 $medicalAttentionMapSourcePath = Join-Path $projectRoot "DayZ_Server_Reference\Server_Custom_Config\Danger_Zones\MedicalAttention\config.txt"
 $migrationConfigSourceId = "Silver_77_Migrate_server/config/MigrationConfig.json"
 $migrationConfigSourcePath = Join-Path $projectRoot "Silver_77_Migrate_server\config\MigrationConfig.json"
+$serviceIdentity = "Silver_77_Quests.WebWorkshop"
+if ([string]::IsNullOrWhiteSpace($InstanceToken)) {
+  $InstanceToken = [guid]::NewGuid().ToString("D")
+}
+$healthJson = [ordered]@{
+  ok = $true
+  service = $serviceIdentity
+  instanceToken = $InstanceToken
+  processId = $PID
+} | ConvertTo-Json -Compress
 $listener = [System.Net.HttpListener]::new()
 $listener.Prefixes.Add("http://127.0.0.1:4173/")
 $listener.Start()
@@ -345,7 +359,7 @@ while ($listener.IsListening) {
     $path = $request.Url.AbsolutePath
 
     if ($request.HttpMethod -eq "GET" -and $path -eq "/api/health") {
-      Write-TextResponse $response 200 "application/json; charset=utf-8" '{"ok":true}'
+      Write-TextResponse $response 200 "application/json; charset=utf-8" $healthJson
       continue
     }
 

@@ -5,8 +5,49 @@ $indexPath = Join-Path $scriptDir "index.html"
 $defaultConfigPath = Join-Path $scriptDir "editor-config.json"
 $localConfigPath = Join-Path $scriptDir "editor-config.local.json"
 $serverScript = Join-Path $scriptDir "server.ps1"
-$editorVersion = "2026-04-25"
+$serviceIdentity = "Silver_77_Quests.WebWorkshop"
+$editorVersion = "2026-09-14-task175"
 $editorUrl = "http://127.0.0.1:4173/index.html?v=$editorVersion"
+
+function Get-WorkshopHealth {
+  try {
+    $response = Invoke-WebRequest -Uri "http://127.0.0.1:4173/api/health" -UseBasicParsing -TimeoutSec 1
+    if ($response.StatusCode -ne 200) {
+      return $null
+    }
+    $payload = $response.Content | ConvertFrom-Json
+    return [pscustomobject]@{
+      response = $response
+      payload = $payload
+    }
+  } catch {
+    return $null
+  }
+}
+
+function Get-CanonicalWorkshopServerProcessIds {
+  $knownServerScripts = @(
+    [System.IO.Path]::GetFullPath($serverScript),
+    "P:\Silver_77_Quests\JSON_Quvest\server.ps1",
+    "D:\Dayz\Silver_77_Quests\JSON_Quvest\server.ps1"
+  ) | Select-Object -Unique
+
+  try {
+    return @(Get-CimInstance Win32_Process -ErrorAction Stop |
+      Where-Object {
+        $process = $_
+        $process.Name -in @("powershell.exe", "pwsh.exe") -and
+        $process.ProcessId -ne $PID -and
+        $process.CommandLine -and
+        ($knownServerScripts | Where-Object {
+          $process.CommandLine.IndexOf($_, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+        }).Count -gt 0
+      } |
+      Select-Object -ExpandProperty ProcessId -Unique)
+  } catch {
+    return @()
+  }
+}
 
 function Get-EmbeddedDefaultConfig {
   return [pscustomobject]@{
@@ -142,32 +183,36 @@ if ($sourceFile -and $backupFile -and (Test-Path -LiteralPath $sourceFile -PathT
   }
 }
 
-$serverProcessIds = @()
+$existingHealth = Get-WorkshopHealth
+$serverProcessIds = Get-CanonicalWorkshopServerProcessIds
 
-try {
-  try {
-    Invoke-WebRequest -Uri "http://127.0.0.1:4173/api/shutdown" -Method Post -UseBasicParsing -TimeoutSec 1 | Out-Null
-    Start-Sleep -Milliseconds 300
-  } catch {
+if ($null -ne $existingHealth) {
+  $existingService = [string]$existingHealth.payload.service
+  $identifiedByService = [string]::Equals($existingService, $serviceIdentity, [System.StringComparison]::Ordinal)
+  $identifiedLegacyProcess = $serverProcessIds.Count -gt 0
+
+  if (-not $identifiedByService -and -not $identifiedLegacyProcess) {
+    Write-Host "Port 4173 is occupied by an unknown HTTP responder. Browser was not opened." -ForegroundColor Red
+    exit 1
   }
 
-  $serverProcessIds = Get-CimInstance Win32_Process -ErrorAction Stop |
-    Where-Object {
-      $_.Name -eq "powershell.exe" -and
-      $_.ProcessId -ne $PID -and
-      $_.CommandLine -and
-      $_.CommandLine -like "*server.ps1*" -and
-      $_.CommandLine -like "*$serverScript*"
-    } |
-    Select-Object -ExpandProperty ProcessId -Unique
-} catch {
-  $serverProcessIds = @()
+  try {
+    Invoke-WebRequest -Uri "http://127.0.0.1:4173/api/shutdown" -Method Post -UseBasicParsing -TimeoutSec 2 | Out-Null
+  } catch {
+    Write-Host "Confirmed Workshop server did not accept graceful shutdown. Browser was not opened." -ForegroundColor Red
+    exit 1
+  }
+  Start-Sleep -Milliseconds 500
 }
 
 foreach ($serverProcessId in $serverProcessIds) {
-  try {
-    Stop-Process -Id $serverProcessId -Force -ErrorAction Stop
-  } catch {
+  if (Get-Process -Id $serverProcessId -ErrorAction SilentlyContinue) {
+    try {
+      Stop-Process -Id $serverProcessId -Force -ErrorAction Stop
+    } catch {
+      Write-Host "Confirmed Workshop process $serverProcessId could not be stopped. Browser was not opened." -ForegroundColor Red
+      exit 1
+    }
   }
 }
 
@@ -176,29 +221,44 @@ if ($serverProcessIds.Count -gt 0) {
 }
 
 $serverReady = $false
-Start-Process powershell -ArgumentList @(
+$instanceToken = [guid]::NewGuid().ToString("D")
+$serverProcess = Start-Process powershell -ArgumentList @(
   "-NoProfile",
   "-ExecutionPolicy", "Bypass",
   "-WindowStyle", "Hidden",
-  "-File", $serverScript
-) | Out-Null
+  "-File", $serverScript,
+  "-InstanceToken", $instanceToken
+) -PassThru
+
+$lastHealthIdentity = "no response"
 
 for ($attempt = 0; $attempt -lt 20; $attempt++) {
   Start-Sleep -Milliseconds 250
-  try {
-    $health = Invoke-WebRequest -Uri "http://127.0.0.1:4173/api/health" -UseBasicParsing -TimeoutSec 1
-    if ($health.StatusCode -eq 200) {
-      $serverReady = $true
-      break
-    }
-  } catch {
+  $health = Get-WorkshopHealth
+  if ($null -eq $health) {
+    continue
+  }
+  $observedService = [string]$health.payload.service
+  $observedToken = [string]$health.payload.instanceToken
+  $lastHealthIdentity = "service='$observedService', token='$observedToken'"
+  if (
+    [string]::Equals($observedService, $serviceIdentity, [System.StringComparison]::Ordinal) -and
+    [string]::Equals($observedToken, $instanceToken, [System.StringComparison]::Ordinal)
+  ) {
+    $serverReady = $true
+    break
   }
 }
 
 if (-not $serverReady) {
-  Write-Host "Local server did not start." -ForegroundColor Red
+  if ($serverProcess -and -not $serverProcess.HasExited) {
+    Stop-Process -Id $serverProcess.Id -Force -ErrorAction SilentlyContinue
+  }
+  Write-Host "Canonical Workshop server did not become READY. Observed: $lastHealthIdentity. Browser was not opened." -ForegroundColor Red
   exit 1
 }
+
+Write-Host "Workshop server READY: service=$serviceIdentity instanceToken=$instanceToken"
 
 Start-Process $editorUrl | Out-Null
 
