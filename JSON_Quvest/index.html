@@ -6,7 +6,7 @@
     <title>Quest JSON Workshop</title>
     <link rel="stylesheet" href="./styles.css?v=2026-04-26-flow-builder-reward-v2">
     <link rel="stylesheet" href="./map.css?v=2026-09-10-map-mvp">
-    <link rel="stylesheet" href="./migration.css?v=2026-09-15-migration-compact-ui-v1">
+    <link rel="stylesheet" href="./migration.css?v=2026-09-15-migration-group-fields-v1">
   </head>
   <body>
     <nav class="workshop-tabs" aria-label="Модули Web Workshop">
@@ -274,11 +274,12 @@
             <h2>GROUP не выбрана</h2>
             <p>Дождитесь загрузки DEV-конфига.</p>
           </div>
+          <div id="migrationInfected" class="migration-infected"></div>
           <div id="migrationPoints" class="migration-points"></div>
-          <section id="migrationRadiiInfo" class="migration-radii-info" hidden>
-            <h2>Reference geometry — только чтение</h2>
+          <details id="migrationRadiiInfo" class="migration-radii-info" hidden>
+            <summary>Reference geometry — только чтение</summary>
             <div id="migrationRadiiContent"></div>
-          </section>
+          </details>
         </main>
       </div>
     </section>
@@ -339,7 +340,7 @@
     </section>
 
     <script src="./app.js?v=2026-04-26-flow-builder-reward-v2"></script>
-    <script src="./migration.js?v=2026-09-15-migration-compact-ui-v1"></script>
+    <script src="./migration.js?v=2026-09-15-migration-group-fields-v1"></script>
     <script src="./map.js?v=2026-09-14-migration-map-state-v1"></script>
   </body>
   </html>
