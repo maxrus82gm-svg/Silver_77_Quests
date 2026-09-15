@@ -6,7 +6,7 @@
     <title>Quest JSON Workshop</title>
     <link rel="stylesheet" href="./styles.css?v=2026-04-26-flow-builder-reward-v2">
     <link rel="stylesheet" href="./map.css?v=2026-09-10-map-mvp">
-    <link rel="stylesheet" href="./migration.css?v=2026-09-14-migration-map-state-v1">
+    <link rel="stylesheet" href="./migration.css?v=2026-09-15-migration-compact-ui-v1">
   </head>
   <body>
     <nav class="workshop-tabs" aria-label="Модули Web Workshop">
@@ -246,10 +246,10 @@
 
       <div class="migration-layout">
         <aside class="migration-panel">
-          <label class="migration-field" for="migrationGroupSelect">
-            <span>Существующая GROUP</span>
-            <select id="migrationGroupSelect" disabled></select>
-          </label>
+          <div class="migration-group-picker" aria-labelledby="migrationGroupListLabel">
+            <span id="migrationGroupListLabel">Существующие GROUP</span>
+            <div id="migrationGroupList" class="migration-group-list" role="listbox" aria-disabled="true"></div>
+          </div>
 
           <dl class="migration-source-meta">
             <dt>Источник</dt>
@@ -261,8 +261,10 @@
           <div class="migration-actions">
             <button id="migrationUndoButton" class="button ghost small" type="button" disabled>Отменить</button>
             <button id="migrationRedoButton" class="button ghost small" type="button" disabled>Повторить</button>
-            <button id="migrationResetButton" class="button ghost small" type="button" disabled>Сбросить изменения</button>
+            <button id="migrationResetButton" class="button ghost small" type="button" disabled>Сбросить все изменения</button>
           </div>
+
+          <p class="migration-history-note">Отменить / Повторить — общая история для всех GROUP в Migration.</p>
 
           <p class="migration-memory-note">Save / write-back появятся только в следующем безопасном slice.</p>
         </aside>
@@ -337,7 +339,7 @@
     </section>
 
     <script src="./app.js?v=2026-04-26-flow-builder-reward-v2"></script>
-    <script src="./migration.js?v=2026-09-14-migration-map-state-v1"></script>
+    <script src="./migration.js?v=2026-09-15-migration-compact-ui-v1"></script>
     <script src="./map.js?v=2026-09-14-migration-map-state-v1"></script>
   </body>
   </html>

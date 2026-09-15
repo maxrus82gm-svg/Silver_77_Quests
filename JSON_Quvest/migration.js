@@ -39,7 +39,7 @@
     elements.loadStatus = document.getElementById("migrationLoadStatus");
     elements.dirtyStatus = document.getElementById("migrationDirtyStatus");
     elements.error = document.getElementById("migrationError");
-    elements.groupSelect = document.getElementById("migrationGroupSelect");
+    elements.groupList = document.getElementById("migrationGroupList");
     elements.sourceId = document.getElementById("migrationSourceId");
     elements.revision = document.getElementById("migrationRevision");
     elements.undoButton = document.getElementById("migrationUndoButton");
@@ -52,12 +52,6 @@
   }
 
   function bindControls() {
-    elements.groupSelect.addEventListener("change", () => {
-      cancelActiveEdits();
-      state.selectedGroupId = elements.groupSelect.value;
-      renderEditor();
-      emitProjection();
-    });
     elements.undoButton.addEventListener("click", undo);
     elements.redoButton.addEventListener("click", redo);
     elements.resetButton.addEventListener("click", resetChanges);
@@ -104,7 +98,7 @@
       state.loaded = true;
       recomputeDirty();
 
-      renderGroupSelector();
+      renderGroupList();
       renderEditor();
       setLoadStatus("DEV-конфиг загружен · " + config.groups.length + " GROUP", "");
       emitProjection();
@@ -118,7 +112,7 @@
       state.yConfirmed = new Map();
       showError(error.message);
       setLoadStatus("Migration недоступна", "error");
-      renderGroupSelector();
+      renderGroupList();
       renderEditor();
       emitProjection();
     }
@@ -179,25 +173,43 @@
     return result;
   }
 
-  function renderGroupSelector() {
-    elements.groupSelect.replaceChildren();
+  function renderGroupList() {
+    elements.groupList.replaceChildren();
     if (!state.loaded || !state.config) {
-      const option = document.createElement("option");
-      option.textContent = "GROUP недоступны";
-      option.value = "";
-      elements.groupSelect.appendChild(option);
-      elements.groupSelect.disabled = true;
+      elements.groupList.appendChild(createTextElement("p", "GROUP недоступны", "migration-group-empty"));
+      elements.groupList.setAttribute("aria-disabled", "true");
       return;
     }
 
     state.config.groups.forEach((group) => {
-      const option = document.createElement("option");
-      option.value = group.groupId;
-      option.textContent = group.name ? group.groupId + " — " + group.name : group.groupId;
-      option.selected = group.groupId === state.selectedGroupId;
-      elements.groupSelect.appendChild(option);
+      const option = document.createElement("button");
+      const selected = group.groupId === state.selectedGroupId;
+      option.type = "button";
+      option.className = "migration-group-option";
+      option.dataset.groupId = group.groupId;
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", selected ? "true" : "false");
+      option.classList.toggle("selected", selected);
+      option.title = group.name ? group.groupId + " — " + group.name : group.groupId;
+      option.appendChild(createTextElement("strong", group.groupId));
+      if (group.name) {
+        option.appendChild(createTextElement("span", group.name));
+      }
+      option.addEventListener("click", () => selectGroup(group.groupId));
+      elements.groupList.appendChild(option);
     });
-    elements.groupSelect.disabled = state.config.groups.length === 0;
+    elements.groupList.setAttribute("aria-disabled", state.config.groups.length === 0 ? "true" : "false");
+  }
+
+  function selectGroup(groupId) {
+    if (!getGroup(groupId) || groupId === state.selectedGroupId) {
+      return;
+    }
+    cancelActiveEdits();
+    state.selectedGroupId = groupId;
+    renderGroupList();
+    renderEditor();
+    emitProjection();
   }
 
   function renderEditor() {
@@ -495,7 +507,9 @@
     }
     applyPointSnapshot(operation.ref, operation.before);
     state.redoStack.push(operation);
+    state.selectedGroupId = operation.ref.groupId;
     recomputeDirty();
+    renderGroupList();
     renderEditor();
     emitProjection();
   }
@@ -508,7 +522,9 @@
     }
     applyPointSnapshot(operation.ref, operation.after);
     state.undoStack.push(operation);
+    state.selectedGroupId = operation.ref.groupId;
     recomputeDirty();
+    renderGroupList();
     renderEditor();
     emitProjection();
   }
@@ -526,7 +542,7 @@
       state.selectedGroupId = state.config.groups.length > 0 ? state.config.groups[0].groupId : "";
     }
     recomputeDirty();
-    renderGroupSelector();
+    renderGroupList();
     renderEditor();
     emitProjection();
   }
