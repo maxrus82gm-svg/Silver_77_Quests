@@ -6,6 +6,9 @@
 
 ## Документы
 
+- [[Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES|TASK_PREPARATION_RULES]] — правила ChatGPT для подготовки TASK
+- [[Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING|CONTEXT_ROUTING]] — маршрутизация чтения по роли и операции
+- [[Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES|TASK_LIFECYCLE_RULES]] — отчёт, история, BLOCKED и очистка БЛОКА 1
 - [[Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES|GIT_REVIEW_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES|DOCUMENTATION_RULES]]
 - [[Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES|ENCODING_RULES]]

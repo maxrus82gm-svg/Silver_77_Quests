@@ -6,6 +6,7 @@
 
 ## Документы
 
+- [[Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS|PROJECT_PATHS]] — канонические roots и границы source/output
 - [[Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC|QUEST_LOGIC_SPEC]]
 - [[Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING|RUSSIAN_ENCODING]]
 - [[Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG|README_JSON_CONFIG]]
