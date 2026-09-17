@@ -1,128 +1,147 @@
 ULTRA REPORT
 
-TASK: TASK 182
-
+TASK: TASK 182 — CORRECTIVE PASS
 STATUS: COMPLETED
 
-### READ
-- `Documentation_DayZ_Qwest/11_Задача_агенту.md` (как БЛОК 1, источник user task)
-- `Documentation_DayZ_Qwest/12_Старт_агента.md`
-- `Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md`
-- `Documentation_DayZ_Qwest/Ultra/00_Главная.md`
-- `Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md`
-- `Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md`
-- `Documentation_DayZ_Qwest/TASK_PREPARATION_RULES.md`
-- `Documentation_DayZ_Qwest/TASK_LIFECYCLE_RULES.md`
-- `Documentation_DayZ_Qwest/10_Правила_агента.md`
-- `Documentation_DayZ_Qwest/DOCUMENTATION_RULES.md`
-- `Documentation_DayZ_Qwest/ENCODING_RULES.md`
-- `Documentation_DayZ_Qwest/GIT_REVIEW_RULES.md`
-- `Documentation_DayZ_Qwest/PROJECT_PATHS.md`
+### CONTEXT PROVENANCE
+- Документы переданы Codex в launch-payload. Прямого доступа к файловой системе у Ultra нет.
+- Канонические пути:
+  - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_LIFECYCLE_RULES.md`
+  - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_PREPARATION_RULES.md`
+  - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md`
+  - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\02_Правила_Ultra.md`
+  - `P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\01_Старт_Ultra.md` (опционально)
 
-Дополнительные зависимости не требуются; все необходимые контракты и противоречия выявлены в перечисленных документах.
+### CURRENT STATE
+- Dispatch-header БЛОКА 1 (`11_Задача_агенту.md`) корректен и находится на своём месте.
+- Алгоритм трёх режимов, text-only bridge, запрет авто-делегирования зафиксированы в `CONTEXT_ROUTING.md`.
+- Цепочка документов Ultra (`00->01->02->03->04`) существует; роли определены.
+- Lifecycle-правила существуют, но не содержат узкого служебного разрешения для CODEX.
+- Правила подготовки TASK не требуют системного dispatch-header.
+- Общие правила агента допускают некорректную трактовку очистки для ULTRA.
+- В правилах Ultra отсутствуют постоянные provenance/self-reporting-инварианты.
 
-### CONFIRMED BEFORE FIX
-Противоречия:
-- Неоднозначность lifecycle при жёстком allowlist: успешное выполнение CODEX-задачи требует трёх служебных операций (БЛОК 2 → AGENT REPORT, одна запись TASK_HISTORY, очистка БЛОКА 1), но они не были явно разрешены независимо от функционального scope.
-- Распыление владельца режимов EXECUTOR: логика частично дублировалась между START (`12`), ROUTING (`CONTEXT_ROUTING`) и Ultra-документами.
-- Риск чтения/модификации «чужих» блоков: требовалось закрепить запрет на чтение БЛОКОВ 2/3 и модификацию БЛОКА 3 без явного разрешения.
-- Непоследовательность роли ULTRA: Codex мог читать отчёт или продолжать задачу после вызова Ultra, что нарушает контракт B.
-Непротиворечивые пункты:
-- Канонические пути зафиксированы в PROJECT_PATHS.
-- Кодировка UTF-8 без BOM закреплена в ENCODING_RULES.
-- Git write запрещён вне прямой команды — GIT_REVIEW_RULES.
-- Functional allowlist остаётся точечным источником прав на изменение предметных файлов.
+### ALREADY SATISFIED / NO CHANGE
+- `12_Старт_агента.md`: scope, ссылка на routing верны.
+- `CONTEXT_ROUTING.md`, `Ultra/00_Главная.md`: полная маршрутизация есть.
+- Текущий header в `11_Задача_агенту.md`: менять/дублировать не нужно.
+
+### REAL REMAINING GAPS
+1. `TASK_LIFECYCLE_RULES.md`: отсутствует постоянное узкое разрешение трёх lifecycle-операций для успешного EXECUTOR: CODEX с явным запретом расширения функционального скоупа и исключением для ULTRA/ANALYSIS ONLY.
+2. `TASK_PREPARATION_RULES.md`: будущие TASK не обязаны получать системный dispatch-header.
+3. `10_Правила_агента.md`: формулировка очистки универсальна, должна быть ограничена разрешённым lifecycle.
+4. `Ultra/02_Правила_Ultra.md`: нет постоянных правил происхождения контекста и self-reporting при text-only bridge.
+5. `Ultra/01_Старт_Ultra.md`: может потребоваться один короткий инвариант о том, что без файлового инструмента сведения поступают только через payload.
 
 ### PROPOSED CHANGES
-Файлы для изменения строго в рамках scope:
-- `Documentation_DayZ_Qwest/11_Задача_агенту.md` — добавить канонический dispatch-header.
-- `Documentation_DayZ_Qwest/12_Старт_агента.md` — уточнить роль header'а и заморозку БЛОКА 1; убрать маршрутизацию из START.
-- `Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md` — сделать единственным владельцем логики трёх режимов и чтения отчёта `04`.
-- `Documentation_DayZ_Qwest/Ultra/00_Главная.md` — зафиксировать карту документов и статус payload/report.
-- `Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md` — подтвердить одноразовость `03`, каноничность путей и отсутствие рекурсивного чтения.
-- `Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md` — усилить правило выполнения только текущего payload и место результата (`04`).
-- `Documentation_DayZ_Qwest/TASK_LIFECYCLE_RULES.md` — ввести узкое постоянное служебное разрешение для CODEX SUCCESS, разделив его с functional scope.
+1. Файл: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_LIFECYCLE_RULES.md`
+   Причина: добавить узкое служебное разрешение трёх операций после успешной CODEX-задачи и явно исключить автоматический lifecycle для ULTRA/ANALYSIS ONLY.
 
-### PATCH / REPLACEMENT
+2. Файл: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_PREPARATION_RULES.md`
+   Причина: сделать наличие dispatch-header обязательным элементом БЛОКА 1 будущей TASK со всеми полями.
 
-#### File: Documentation_DayZ_Qwest/11_Задача_агенту.md
-В самое начало файла вставить блок:
+3. Файл: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md`
+   Причина: ограничить очистку режимом/задачей, где lifecycle разрешён.
+
+4. Файл: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\02_Правила_Ultra.md`
+   Причина: закрепить permanent rules A–F по текстовому мосту и происхождению контекста.
+
+5. Файл: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\01_Старт_Ultra.md` (только если нужен быстрый ориентир)
+   Причина: зафиксировать short invariant об отсутствии прямого чтения repository.
+
+### ULTRA BEHAVIOR RULES
+A. Если тексты переданы в payload — писать «CONTEXT PROVIDED IN PAYLOAD», а не утверждать прямое чтение файла.
+B. Не выдумывать доступ: не заявлять открытие репозитория, проверку ФС, выполнение Git-команд или применение патча без соответствующего инструмента.
+C. Использовать точные канонические пути из payload; не сокращать их.
+D. Сначала проверять current state; если правило уже есть — фиксировать ALREADY SATISFIED / NO CHANGE.
+E. Разделять три блока: CURRENT FACT / GAP / PROPOSED CHANGE.
+F. Не объявлять историческую проблему текущей, если она уже исправлена в переданном состоянии.
+
+### EXACT PATCH / REPLACEMENT
+
+#### Patch 1: P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_LIFECYCLE_RULES.md
+```diff
+@@
+ После успешного выполнения TASK исполнитель останавливается. Запись в Git write запрещена.
++
++## Постоянное служебное разрешение для успешно завершённой задачи (EXECUTOR: CODEX)
++
++- Для обычной успешно завершённой implementation/documentation TASK под EXECUTOR: CODEX ровно три операции являются разрешёнными как служебные действия без дополнительного перечисления в functional allowlist:
++  1) Замена содержимого БЛОКА 2 новым AGENT REPORT;
++  2) Добавление одной записи о текущей TASK в `20_SplitDoc/TASK_HISTORY.md`;
++  3) Штатная очистка содержимого завершённого БЛОКА 1.
++- Это разрешение НЕ расширяет функциональный скоуп: изменение любых других функциональных файлов запрещено без отдельного явного разрешения в TASK.
++- БЛОК 3 остаётся запрещённым для изменения без прямого разрешения в TASK.
++- TASK может явно отключить lifecycle; ANALYSIS ONLY его не запускает.
++- При статусе BLOCKED содержимое БЛОКА 1 сохраняется.
++- Для EXECUTOR: ULTRA стандартный Codex-lifecycle автоматически НЕ выполняется: БЛОКИ 1/2/3 и TASK_HISTORY остаются неизменными; закрытие производится отдельным явным шагом.
 ```
-> EXECUTOR: <MODE>
-> ROLE: Codex — исполнитель содержательной задачи; Ultra — вспомогательный субагент по подзадаче
-> USER_TASK_SOURCE: этот файл (БЛОК 1) — единственный пользовательский источник
-> ULTRA_PAYLOAD: P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\03_ULTRA_TASK.md
-> ULTRA_REPORT: P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\04_ULTRA_REPORT.md
-> AUTO-DELEGATION: OFF
+
+#### Patch 2: P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc\TASK_PREPARATION_RULES.md
+```diff
+@@
+ ## Обязательные поля БЛОКА 1
+ 
+-- Номер и тип задачи
++- Исполнитель (EXECUTOR): одно из значений {CODEX, ULTRA, CODEX + ULTRA}. Invalid/unknown значения блокируют dispatch.
++- Режим Codex (CODEX MODE): например, "PAYLOAD BUILD + DISPATCH ONLY".
++- Режим Ultra (ULTRA MODE), если используется Ultra: например, "DOCUMENTATION PATCH PREPARATION".
++- USER TASK SOURCE: абсолютный путь к источнику пользовательской задачи.
++- ULTRA LAUNCH PAYLOAD: абсолютный путь к файлу `Ultra/03_ULTRA_TASK.md`.
++- ULTRA REPORT TARGET: абсолютный путь к файлу `Ultra/04_ULTRA_REPORT.md`.
++- AUTO-DELEGATION: OFF.
++- END DISPATCH HEADER.
++
++- Остальные обязательные поля:
++- Номер и тип задачи
+ - Ожидаемый результат
+ - Baseline/commit
+ - Root cause / context
 ```
-Сразу под ним добавить примечание:
-Примечание: если EXECUTOR отсутствует, неизвестен или повреждён — остановка. Исполнитель определяется исключительно этим заголовком.
 
-#### File: Documentation_DayZ_Qwest/12_Старт_агента.md
-Добавить/заменить параграфы:
-- Старт осуществляется по текущему БЛОКУ 1, документу START, прямо назначенным документам и зависимостям операции из CONTEXT_ROUTING. БЛОКИ 2/3 автоматически не читаются; ссылки не вызывают рекурсивного чтения.
-- EXECUTOR задаёт исполнителя. Полный алгоритм трёх режимов и правила чтения отчёта принадлежат CONTEXT_ROUTING.
-- После старта БЛОК 1 заморожен до завершения lifecycle.
-- Scope записи ограничен явно разрешёнными файлами/разделами; ANALYSIS ONLY не разрешает изменений, отчётов, истории или очистки.
+#### Patch 3: P:\Silver_77_Quests\Documentation_DayZ_Qwest\10_Правила_агента.md
+```diff
+@@
+ После выполнения задачи агент переносит результат в отчёт и историю, затем очищает содержимое БЛОКА 1; подробный алгоритм — в lifecycle.
++Завершение действий (очистка БЛОКА 1, запись отчёта и истории) выполняется строго по `TASK_LIFECYCLE_RULES.md` и только в режиме/задаче, где lifecycle разрешён.
+```
 
-#### File: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md
-Создать новый раздел ## Режимы исполнения и владение чтением отчёта:
-Режимы определяются меткой EXECUTOR в БЛОКЕ 1:
-- CODEX: Codex выполняет содержательную TASK; Ultra не используется; стандартный Codex lifecycle применяется, если TASK не отключает его.
-- ULTRA: Codex — dispatcher; собирает полный непустой payload в 03, вызывает пару 03+04; после возврата не читает 04, не применяет патчи, не продолжает TASK; возвращает технический статус.
-- CODEX+ULTRA: Codex основной; создаёт отдельную подзадачу в новом 03, вызывает 03+04, затем обязательно читает и критически проверяет 04 перед использованием.
-Чтение ULTRA_REPORT (04):
-- В режиме ULTRA: Codex НЕ читает 04.
-- В режиме CODEX+ULTRA: Codex обязан прочитать и проверить 04 сопоставлением с отправленным payload.
-При отсутствии/невалидности EXECUTOR — остановка. При AUTO-DELEGATION: OFF смена исполнителя запрещена.
-Переместить сюда весь текст алгоритмов режимов из других документов; оставить в START лишь указатель на данный раздел.
+#### Patch 4: P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\02_Правила_Ultra.md
+```diff
+@@
+ ...соблюдать scope; `ANALYSIS ONLY` запрещает изменения; чтение не разрешает правку; не чинить соседние проблемы; отделять факты/требования/проверки/историю/гипотезы; не угадывать конфликт; результат только в `04`; предметные выводы требуют актуального контекста; недостаток сведений указывать честно.
++
++## Provenance и self-reporting при text-only bridge
++
++A. Происхождение контекста: если тексты документов переданы в payload, Ultra использует формулировки «CONTEXT PROVIDED IN PAYLOAD» или «передано Codex в launch-payload». Прямым чтением считается только действие реально доступного файлового инструмента.
++B. Не выдумывать доступ: не утверждать, что Ultra открыла файл, проверила filesystem, выполнила Git-команду или физически применила patch, если такого инструмента не было.
++C. Точные пути: использовать канонические пути из payload; не придумывать расположение и не сокращать существующие пути.
++D. Сначала current state, затем patch: перед изменением проверить текущий переданный текст; если правило уже присутствует — фиксировать ALREADY SATISFIED / NO CHANGE.
++E. Разделение фактов и изменений: всегда разделять блоки CURRENT FACT, GAP, PROPOSED CHANGE.
++F. Исторические vs текущие проблемы: не считать исторические дефекты текущими, если текущее состояние их не содержит.
+```
 
-#### File: Documentation_DayZ_Qwest/Ultra/00_Главная.md
-Уточнить секцию про файлы:
-- 03 — одноразовый payload, полностью пересобирается Codex перед каждым вызовом; пользователь его не поддерживает.
-- 04 — результат запуска Ultra; назначение определено в CONTEXT_ROUTING.
-Ссылки не запускают автоматическое чтение Ultra.
-
-#### File: Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md
-Добавить пункт:
-- Файл 03 является техническим payload, а не пользовательским документом. Его содержимое полностью заменяется Codex перед каждым запуском; старое содержимое неактуально.
-
-#### File: Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md
-Добавить/усилить пункты:
-- Выполнять только текущий payload из 03; соседние проблемы не чинить.
-- Результат работы размещать исключительно в 04; любые выводы требуют актуального боевого контекста от Codex.
-- Чтение любых документов не даёт права на их изменение.
-
-#### File: Documentation_DayZ_Qwest/TASK_LIFECYCLE_RULES.md
-Добавить новый подраздел ## Узкое служебное разрешение для CODEX SUCCESS:
-При успешном завершении implementation/documentation TASK c EXECUTOR: CODEX агенту разрешается выполнить ровно три служебные операции независимо от функционального allowlist:
-1) заменить БЛОК 2 на структурированный AGENT REPORT;
-2) добавить ровно одну запись в TASK_HISTORY;
-3) очистить БЛОК 1, оставив три стандартные строки-замороженные маркёра.
-Это разрешение не расширяет functional scope: изменять функциональные файлы можно только если они явно перечислены в allowlist данной TASK. Изменение БЛОКА 3 запрещено без прямого разрешения. TASK может отключить lifecycle соответствующей пометкой; ANALYSIS_ONLY lifecycle не запускает. Для режима ULTRA эти операции не выполняются: вся работа ограничивается формированием 03, вызовом пары 03+04 и возвратом технического статуса; никакие локальные state-изменения (БЛОКИ 1/2/3, история) не производятся.
-
-### WORKFLOW CONTRACT
-- Пользовательский источник: всегда БЛОК 1 (11). Содержимое копируется в payload; сам файл далее заморожен.
-- Payload: Ultra/03_ULTRA_TASK.md формируется Codex полностью заново каждый раз; должен быть непустым перед вызовом.
-- Report: Ultra/04_ULTRA_REPORT.md — единственное место вывода Ultra.
-- Кто читает 04: Контекстное роутинг-владение. В ULTRA — никто; в CODEX+ULTRA — Codex с обязательной верификацией соответствия payload↔отчёт.
-
-### LIFECYCLE FIX
-Узкое служебное разрешение в TASK_LIFECYCLE_RULES устраняет конфликт между требованием успешного lifecycle и точечным allowlist. Оно легализует ровно три технические операции над инфраструктурой агента (REPORT, HISTORY, очистка БЛОКА 1), не давая права трогать функциональные артефакты за пределами allowlist. Это сохраняет принцип минимальных привилегий: functional scope неизменен, служебная гигиена предсказуема. Для ULTRA режим lifecycle намеренно выключен, чтобы сохранить чистоту bridge-вызова. OWNER правила — TASK_LIFECYCLE_RULES.md; START содержит лишь ссылку, ROUTING определяет условия применения.
+#### Patch 5 (опционально): P:\Silver_77_Quests\Documentation_DayZ_Qwest\Ultra\01_Старт_Ultra.md
+```diff
+@@
+ ...канонические пути на `P:`; `03` как технический payload, полностью сформированный Codex перед текущим вызовом...
++
++## Text-only bridge
++
++Без файлового инструмента Ultra получает все сведения исключительно из текста, переданного Codex в launch-payload; прямого открытия боевых документов или repository не происходит.
+```
 
 ### SCENARIO CHECKS
-A CODEX: Header валиден → Codex выполняет TASK → Allowlist ограничивает file_write → Lifecycle-правило разрешает 3 служебные операции без расширения scope.
-B ULTRA: Codex формирует свежий non-empty 03 → вызывает 03+04 → не читает 04 → не меняет БЛОКИ 1/2/3 и историю → возвращает status_only.
-C CODEX+ULTRA: Codex создаёт отдельный 03 → вызывает 03+04 → читает и сверяет 04 с payload → использует результаты после проверки.
-D invalid header: Отсутствие/ошибка EXECUTOR → немедленная остановка, никаких действий.
-E lifecycle: Allowlist=migration.js → разрешены migration.js + 3 служебные операции; другие .js закрыты.
-F ANALYSIS_ONLY: Пометка присутствует → lifecycle-шаг пропускается; BLOCK 1 не очищается.
-
-### ENCODING CHECK
-Все Markdown-файлы остаются в UTF-8 без BOM. Patch оперирует короткими ASCII-блоками (заголовки, списки); кириллица в существующих телах документов не затрагивается. Опасные литералы \n и mojibake не вводятся. Перед применением рекомендуется убедиться, что редактор не добавляет BOM.
+- **CODEX**: Header читается Codex; функциональные права жёсткие; lifecycle-разрешение позволяет ровно три операции.
+- **ULTRA**: Codex формирует новый непустой `03`, вызывает пару `03+04`; report не читается; lifecycle не выполняется.
+- **CODEX + ULTRA**: Codex основной, обязательно читает и проверяет `04` до использования результата.
+- **Invalid header**: Dispatch не начинается.
+- **Lifecycle + narrow service permission**: Только три операции плюс отдельно разрешённый `migration.js`; другие файлы недоступны.
+- **ANALYSIS ONLY**: Lifecycle не запускается.
+- **Provenance при text-only bridge**: Отчёты ссылаются на контекст из payload, без имитации FS/Git-доступа.
 
 ### PROBLEMS
-Не выявлено реальных неразрешимых противоречий в рамках заданного scope. Все конфликты устраняются предложенными изменениями владельцев и введением узкого служебного разрешения.
+Фактических незакрытых проблем после применения данных замен не остаётся.
 
 ### CONCLUSION
-Patch готов к применению человеком. Он централизует owner’ство workflow в CONTEXT_ROUTING, фиксирует дисциплину payload/report, снимает ambiguity вокруг lifecycle через чётко очерченное служебное разрешение и гарантирует корректное поведение во всех шести сценариях A–F. После физического внесения изменений необходимо провести smoke-проверки по сценариям A–F и убедиться, что кодировка UTF-8 без BOM сохранена, а git-статус показывает только ожидаемые diff’ы в указанных файлах.
+Изменить пять файлов согласно предложенным точным патчам. Повторных изменений START/routing/header не требуется. Патчи готовы к отдельному физическому применению методом apply_patch.
