@@ -32,7 +32,7 @@ class DocumentationGraphTests(unittest.TestCase):
             content = path.read_text(encoding="utf-8")
             for raw, _resolved in links:
                 if source == "Documentation_DayZ_Qwest/00_Главная.md" and raw.startswith(
-                        ("11_Задача_агенту", "12_Старт_агента", "Ultra/00_Главная")):
+                        ("10_Правила_агента", "11_Задача_агенту", "12_Старт_агента", "Ultra/00_Главная")):
                     continue  # New canonical destinations, intentionally archived Ultra.
                 if "[[" + raw + "]]" not in content:
                     missing.append((source, raw))
@@ -40,20 +40,33 @@ class DocumentationGraphTests(unittest.TestCase):
 
     def test_new_wiki_links_only_for_visual_navigation(self):
         hub = (DOC / "00_Главная.md").read_text(encoding="utf-8")
-        for target in ("000_Задачи для агента", "11_Задачи_Codex",
-                       "12_Старт", "001_История_задач_Codex",
-                       "05_Очередь_задач", "42_TACTICAL_CONTEXT"):
-            self.assertIn("[[" + target, hub)
+        self.assertIn("[[000_Задачи для агента|", hub)
+        for target in ("10_Правила_агента", "11_Задачи_Codex", "12_Старт",
+                       "001_История_задач_Codex", "05_Очередь_задач",
+                       "42_TACTICAL_CONTEXT", "07_Реестр_задач"):
+            self.assertNotIn("[[" + target, hub, target + " should be below coordinator")
         self.assertNotIn("[[Ultra/00_Главная", hub)
+
+        coordinator = (DOC / "000_Задачи для агента.md").read_text(encoding="utf-8")
+        self.assertEqual(
+            re.findall(r"\\[\\[([^\\]]+)\\]\\]", coordinator),
+            ["42_TACTICAL_CONTEXT|Тактический контекст",
+             "11_Задачи_Codex|Карточка Codex",
+             "07_Реестр_задач|Общий реестр TASK",
+             "10_Правила_агента|Правила агента"])
+        self.assertTrue((DOC / "07_Реестр_задач.md").is_file())
+        rules = (DOC / "10_Правила_агента.md").read_text(encoding="utf-8")
+        self.assertIn("[[12_Старт|Старт Codex]]", rules)
+
+        card = (DOC / "11_Задачи_Codex.md").read_text(encoding="utf-8")
+        self.assertEqual(re.findall(r"\\[\\[([^\\]]+)\\]\\]", card),
+                         ["001_История_задач_Codex"])
         for relative in ("42_TACTICAL_CONTEXT.md", "11_Задача_агенту.md",
                          "12_Старт_агента.md", "001_История_задач_Codex.md",
-                         "000_Задачи для агента.md"):
+                         "07_Реестр_задач.md"):
             self.assertNotIn("[[", (DOC / relative).read_text(encoding="utf-8"), relative)
         index = (DOC / "21_Project_Docs/00_INDEX.md").read_text(encoding="utf-8")
         self.assertNotIn("## Организационный вход", index)
-        card = (DOC / "11_Задачи_Codex.md").read_text(encoding="utf-8")
-        self.assertEqual(re.findall(r"\[\[([^\]]+)\]\]", card),
-                         ["001_История_задач_Codex"])
 
     def test_snapshot_documentation_still_exists(self):
         archive = DOC / "Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest"
