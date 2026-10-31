@@ -49,7 +49,7 @@ class DocumentationGraphTests(unittest.TestCase):
 
         coordinator = (DOC / "000_Задачи для агента.md").read_text(encoding="utf-8")
         self.assertEqual(
-            re.findall(r"\\[\\[([^\\]]+)\\]\\]", coordinator),
+            re.findall(r"\[\[([^\]]+)\]\]", coordinator),
             ["42_TACTICAL_CONTEXT|Тактический контекст",
              "11_Задачи_Codex|Карточка Codex",
              "07_Реестр_задач|Общий реестр TASK",
@@ -59,7 +59,7 @@ class DocumentationGraphTests(unittest.TestCase):
         self.assertIn("[[12_Старт|Старт Codex]]", rules)
 
         card = (DOC / "11_Задачи_Codex.md").read_text(encoding="utf-8")
-        self.assertEqual(re.findall(r"\\[\\[([^\\]]+)\\]\\]", card),
+        self.assertEqual(re.findall(r"\[\[([^\]]+)\]\]", card),
                          ["001_История_задач_Codex"])
         for relative in ("42_TACTICAL_CONTEXT.md", "11_Задача_агенту.md",
                          "12_Старт_агента.md", "001_История_задач_Codex.md",
