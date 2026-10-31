@@ -1,0 +1,26 @@
+name: DayZ documentation and task rotation tests
+
+on:
+  push:
+    branches: [GPT_Dayz]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  doc-tests:
+    name: Windows synthetic documentation tests
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Graph filters, preserved links, and archive exclusions
+        run: python -B Tools/tests/check_doc_graph.py
+      - name: Safe task-slot rotation, synthetic fixtures only
+        run: python -B Documentation_DayZ_Qwest/Task_Reports/TASK_184/tests/test_task_slot_rotate.py

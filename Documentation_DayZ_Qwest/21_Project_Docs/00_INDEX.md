@@ -16,6 +16,3 @@
 - [[Documentation_DayZ_Qwest/21_Project_Docs/README|README]]
 - [[Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG|CHANGELOG]]
 
-## Организационный вход
-
-[[12_Старт]] → [[11_Задачи_Codex]]. Текущее: [[42_TACTICAL_CONTEXT]], OPEN: [[05_Очередь_задач]].
