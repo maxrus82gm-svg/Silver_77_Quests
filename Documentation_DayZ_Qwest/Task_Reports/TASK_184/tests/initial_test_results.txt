@@ -1,0 +1,79 @@
+test_ads_path (__main__.RotationTests.test_ads_path) ... ok
+test_amendment_exact (__main__.RotationTests.test_amendment_exact) ... ERROR
+test_amendment_invalid_json (__main__.RotationTests.test_amendment_invalid_json) ... ok
+test_amendment_missing_from_manifest (__main__.RotationTests.test_amendment_missing_from_manifest) ... ok
+test_amendment_no_source (__main__.RotationTests.test_amendment_no_source) ... ok
+test_amendment_wrong_task (__main__.RotationTests.test_amendment_wrong_task) ... ok
+test_artifact_tampered (__main__.RotationTests.test_artifact_tampered) ... ok
+test_artifact_traversal (__main__.RotationTests.test_artifact_traversal) ... ok
+test_bare_cr (__main__.RotationTests.test_bare_cr) ... ok
+test_bom (__main__.RotationTests.test_bom) ... ok
+test_check_cli (__main__.RotationTests.test_check_cli) ... ok
+test_cli_refusal_exit_json (__main__.RotationTests.test_cli_refusal_exit_json) ... ok
+test_concurrent_card_edit (__main__.RotationTests.test_concurrent_card_edit) ... ok
+test_concurrent_report_edit (__main__.RotationTests.test_concurrent_report_edit) ... ok
+test_device_path (__main__.RotationTests.test_device_path) ... ok
+test_dry_run_zero_writes (__main__.RotationTests.test_dry_run_zero_writes) ... ok
+test_duplicate_amendment (__main__.RotationTests.test_duplicate_amendment) ... ok
+test_duplicate_artifact (__main__.RotationTests.test_duplicate_artifact) ... ok
+test_duplicate_heading (__main__.RotationTests.test_duplicate_heading) ... ok
+test_duplicate_json_key (__main__.RotationTests.test_duplicate_json_key) ... ok
+test_duplicate_marker (__main__.RotationTests.test_duplicate_marker) ... ok
+test_empty_manifest_artifacts (__main__.RotationTests.test_empty_manifest_artifacts) ... ok
+test_empty_task (__main__.RotationTests.test_empty_task) ... ok
+test_existing_lock (__main__.RotationTests.test_existing_lock) ... ok
+test_existing_output (__main__.RotationTests.test_existing_output) ... ok
+test_final_partial (__main__.RotationTests.test_final_partial) ... ok
+test_final_revise (__main__.RotationTests.test_final_revise) ... ok
+test_input_hardlink (__main__.RotationTests.test_input_hardlink) ... ok
+test_invalid_utf8 (__main__.RotationTests.test_invalid_utf8) ... ok
+test_manifest_missing (__main__.RotationTests.test_manifest_missing) ... ok
+test_manifest_not_final (__main__.RotationTests.test_manifest_not_final) ... ok
+test_marker_not_own_line (__main__.RotationTests.test_marker_not_own_line) ... ok
+test_missing_marker (__main__.RotationTests.test_missing_marker) ... ok
+test_mixed_eol (__main__.RotationTests.test_mixed_eol) ... ok
+test_nul (__main__.RotationTests.test_nul) ... ok
+test_outside_output (__main__.RotationTests.test_outside_output) ... ok
+test_outside_snapshot (__main__.RotationTests.test_outside_snapshot) ... ok
+test_parent_traversal (__main__.RotationTests.test_parent_traversal) ... ok
+test_previous_archived_success (__main__.RotationTests.test_previous_archived_success) ... ok
+test_previous_unarchived (__main__.RotationTests.test_previous_unarchived) ... ok
+test_previous_wrong_hash (__main__.RotationTests.test_previous_wrong_hash) ... ok
+test_reordered_heading (__main__.RotationTests.test_reordered_heading) ... ok
+test_repeat (__main__.RotationTests.test_repeat) ... ok
+test_report_missing (__main__.RotationTests.test_report_missing) ... ok
+test_report_status_mismatch (__main__.RotationTests.test_report_status_mismatch) ... ok
+test_report_task_mismatch (__main__.RotationTests.test_report_task_mismatch) ... ok
+test_snapshot_mismatch (__main__.RotationTests.test_snapshot_mismatch) ... ok
+test_status_blocked (__main__.RotationTests.test_status_blocked) ... ok
+test_status_draft (__main__.RotationTests.test_status_draft) ... ok
+test_success_crlf (__main__.RotationTests.test_success_crlf) ... ok
+test_success_lf_exact_and_receipt (__main__.RotationTests.test_success_lf_exact_and_receipt) ... ok
+test_two_task_ids (__main__.RotationTests.test_two_task_ids) ... ok
+test_unknown_marker (__main__.RotationTests.test_unknown_marker) ... ok
+test_windows_case_paths (__main__.RotationTests.test_windows_case_paths) ... ok
+test_windows_junction_input (__main__.RotationTests.test_windows_junction_input) ... ok
+test_windows_junction_output (__main__.RotationTests.test_windows_junction_output) ... ok
+test_wrong_task_id (__main__.RotationTests.test_wrong_task_id) ... ok
+
+======================================================================
+ERROR: test_amendment_exact (__main__.RotationTests.test_amendment_exact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "P:\Silver_77_Quests\Documentation_DayZ_Qwest\Task_Reports\TASK_184\tests\test_task_slot_rotate.py", line 253, in test_amendment_exact
+    raw=p.read_bytes();result=S.rotate(self.args)
+                              ~~~~~~~~^^^^^^^^^^^
+  File "P:\Silver_77_Quests\Tools\task_slot_rotate.py", line 233, in rotate
+    root, card, raw, new, body, previous, output, amendments, receipt, guards = prepare(args)
+                                                                                ~~~~~~~^^^^^^
+  File "P:\Silver_77_Quests\Tools\task_slot_rotate.py", line 203, in prepare
+    require(amendment_nl == nl, "amendment EOL differs from card")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "P:\Silver_77_Quests\Tools\task_slot_rotate.py", line 33, in require
+    raise Refusal(reason)
+task_slot_rotate.Refusal: amendment EOL differs from card
+
+----------------------------------------------------------------------
+Ran 57 tests in 1.985s
+
+FAILED (errors=1)

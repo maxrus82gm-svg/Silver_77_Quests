@@ -1,0 +1,557 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-184",
+  "status": "RESULT READY",
+  "final": true,
+  "date": "2026-11-01",
+  "publication": "LOCAL ONLY / UNKNOWN",
+  "independent_review": "PENDING",
+  "git_operations": false,
+  "actual_rotation": false,
+  "task_sha256": "e44f2804cfdfa8263a4d2e625fa1c0df991bb54cf17e7f61bbd22499eac92aea",
+  "changes": [
+    {
+      "path": "README.md",
+      "before": {
+        "sha256": "43d39204d43e1df7ddb96885a3246533ecc6e9a57b04c8996cfd2dd43d70c575",
+        "size": 2527
+      },
+      "after": {
+        "size": 2507,
+        "sha256": "57a048cbbcb4e5b59daf1f583ace6d3c3b599589ba0c61c1133d4b4f6be43b0e"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/00_Главная.md",
+      "before": {
+        "sha256": "c24bfef9d5db2f12d222e3d2f2a1056e8e352025b13bd24c50738bd7733cbc40",
+        "size": 2185
+      },
+      "after": {
+        "size": 2460,
+        "sha256": "df11af25b3959ab4b367539bb1052973cf701002542ebf37a8b230648e8b750c"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "before": {
+        "sha256": "77fce3dfaf3169018e57f6b7981f6492c2c8f232edd6053f5a501df5782ec05d",
+        "size": 1256
+      },
+      "after": {
+        "size": 1236,
+        "sha256": "ff6c0ef86e87fec948e74fad0443561d7900a89679f901b3228cd78426a91157"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/04_Архитектура.md",
+      "before": {
+        "sha256": "958f5295a82a84cfbe77410c0690366906246b31b0151cb5d3a4bfd695419020",
+        "size": 2295
+      },
+      "after": {
+        "size": 2255,
+        "sha256": "addbb6bdec2122833fe06c5c8b82612e80ad0b3b5a6630e3136499c8e6338163"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "before": {
+        "sha256": "434124f44238363649096dd637aa1451e49762444a4f25779f6d60e11ccf187e",
+        "size": 10703
+      },
+      "after": {
+        "size": 16918,
+        "sha256": "4f8b4920467344516a36775f5de7aaa2273b603178d9c56c598e8cd951a97276"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "before": {
+        "sha256": "865ad6f1371592172a39c4fd2ec59d12002b2d870338761a4d79388837462d9d",
+        "size": 3641
+      },
+      "after": {
+        "size": 3432,
+        "sha256": "d90aaa03850e3f89b20ed1c5dc042e6443c1cbfec9e44710b09ade5bd1af1a83"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "before": {
+        "sha256": "b9ea0ac02f65173d79643d7ed5cf0d9c9362d0db14d20ea8ac6cdf91f6238269",
+        "size": 39308
+      },
+      "after": {
+        "size": 5379,
+        "sha256": "11d39e07fc25a9adf521e22cb9125d625ca1a8a4d75ddf65e73ce6bce87e400b"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "before": {
+        "sha256": "1c94f2d546430ca081f699bbc79f1b72648887187367cfb817623de44e904865",
+        "size": 8593
+      },
+      "after": {
+        "size": 1758,
+        "sha256": "a52ed95e801c64fe02016bd222edbd697f295117d14e783756f96da74f5e76fa"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "before": {
+        "sha256": "b2dfc73b2451be323af37924bf7a549ce547e42dec4d457af88c89196452cfab",
+        "size": 2023
+      },
+      "after": {
+        "size": 2050,
+        "sha256": "3056cd2276077bb3444ce1490030350405680d0ed11ed2330aa28ab4843dfe4c"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "before": {
+        "sha256": "6a49ac82ad461d32bd523682c6283ead88282bc60eecb119b66bf656492a8703",
+        "size": 13999
+      },
+      "after": {
+        "size": 11011,
+        "sha256": "4d688fa9df0a1e3d55e1ee904fc54098439f5afe7fda62aa95d58498b0016e3d"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "before": {
+        "sha256": "91d4022169fbebdd9a3aec66811052624f75d22f737800d5ea039ad9242693d4",
+        "size": 13979
+      },
+      "after": {
+        "size": 15519,
+        "sha256": "a770b7bf2b2f76e615ae0ae2fc3b2c3ba3506e45404e49cd1426f5ee483713a2"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "before": {
+        "sha256": "63160e14bee35a062c6e496a6425c6b6ff9561b5315dc44ca30462a4507ed23c",
+        "size": 12734
+      },
+      "after": {
+        "size": 12908,
+        "sha256": "0ba8f1affacc89bdb787558975bb6e7907267148da7cf25421a174b3424c09cd"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "before": {
+        "sha256": "59d9b25c88a9e65a4439f64fc9a374421dce8c97fb1ab4f571ef9fab07fc5692",
+        "size": 14651
+      },
+      "after": {
+        "size": 15979,
+        "sha256": "3f033a864de184362e045103601536a5c862ca9f92cf0523f26d6387b05702ce"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "before": {
+        "sha256": "98470f2f9368f0ee65f4aa2cddf87eb7eb681fb0de090592f3f87136d82bb972",
+        "size": 6667
+      },
+      "after": {
+        "size": 10414,
+        "sha256": "2531727ee800ef61bb735236ee7e75db0a420089db4269703444ff46008123f2"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "before": {
+        "sha256": "b6da8e7d547f8b045488807daac1fd9ddc6c2f2d5f2d4126fa0d29c32afc4bc6",
+        "size": 8437
+      },
+      "after": {
+        "size": 9391,
+        "sha256": "4da9be3665db25fc99bf6f8e3da1869176288ad745e4f987231cae7035c36e7f"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "before": {
+        "sha256": "bd0d46a8dea299c5669cf814e4393dd1878b496af9789f79fbb71cc9b6d936f4",
+        "size": 1169
+      },
+      "after": {
+        "size": 1344,
+        "sha256": "f40f7007a5dbc59f3fac5d709ca2dd0c44267a4aa48462703fdd5cfc3ba3278a"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "before": {
+        "sha256": "d635ae7e39fcbbc015767c8f9cef8d37373e5bffc04f03545ad33a6a03c6bfef",
+        "size": 3763
+      },
+      "after": {
+        "size": 3756,
+        "sha256": "9c040dc68971cb5995208d9bc5f29fdd9b61ed3f8711cb53d07d61ecc6525267"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "before": {
+        "sha256": "cdd92e5db6c3bddc4223e9d0da4d7fa1ca6806e06586c78d26563034522e2959",
+        "size": 2995
+      },
+      "after": {
+        "size": 2979,
+        "sha256": "ef844519bb915fbca72e95aa3e8419f46af1814a64c963aa8bc954d44143042e"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "JSON_Quvest/README.md",
+      "before": {
+        "sha256": "cc0054dc73a8c4147dd2225b536b95a8777b19a0f4175bb5ffbb92c95674a784",
+        "size": 8077
+      },
+      "after": {
+        "size": 8057,
+        "sha256": "8d2a6f7fed5803b6a1d847c6a8239f33fbf0f06a2722e969b183992ae3d41614"
+      },
+      "action": "MODIFIED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/001_История_задач_Codex.md",
+      "before": null,
+      "after": {
+        "size": 2671,
+        "sha256": "ef0f58f94880e55be12c29d0e118a163067e9349fa547982e03c99f924190213"
+      },
+      "action": "CREATED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/11_Задачи_Codex.md",
+      "before": null,
+      "after": {
+        "size": 32314,
+        "sha256": "05e23840fa7a34ebc0a9838d337c7242e28773eba185e0049c951a5f2a2049ac"
+      },
+      "action": "CREATED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/12_Старт.md",
+      "before": null,
+      "after": {
+        "size": 8838,
+        "sha256": "89fad36c7483a30258a5ae7f07d79d1938df735947092bd6e0888dece305106a"
+      },
+      "action": "CREATED"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md",
+      "before": null,
+      "after": {
+        "size": 18916,
+        "sha256": "5df60ef37b7226eef926ff7de102c9eeca7811956455f3183ad751c852c45dd2"
+      },
+      "action": "CREATED"
+    },
+    {
+      "path": "Tools/task_slot_rotate.py",
+      "before": null,
+      "after": {
+        "size": 16280,
+        "sha256": "19c296042f3fcf7e3f0cf56ee58a2a84313ad9a470a4581f8ca8268e476d4870"
+      },
+      "action": "CREATED"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "Tools/task_slot_rotate.py",
+      "size": 16280,
+      "sha256": "19c296042f3fcf7e3f0cf56ee58a2a84313ad9a470a4581f8ca8268e476d4870"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "migration_matrix.md",
+      "size": 35307,
+      "sha256": "931466c2c117f0fffd9dce918e43236777a846c53b169af06f019cf46a85e890"
+    },
+    {
+      "path": "migration_state.json",
+      "size": 8911,
+      "sha256": "96d68eb07a3f32c2d8030353ed0813fd0508d782bb739cfc20c8f2099aabb354"
+    },
+    {
+      "path": "report.md",
+      "size": 15790,
+      "sha256": "bd1f608dd4d3f88036a412dee5aed3d1edf8c0616aa9b54159430daed981f541"
+    },
+    {
+      "path": "rollback.md",
+      "size": 6115,
+      "sha256": "8b8bc501489ff220e8512f178bc5a44e517a4b28e0c916d97cf5caa04b305a18"
+    },
+    {
+      "path": "snapshot/baseline.json",
+      "size": 158744,
+      "sha256": "8a4ff13a7ab290da045a5fcd8bfdef77a985a612a4eb224e4e0613691485e8a8"
+    },
+    {
+      "path": "snapshot/block_1_task.md",
+      "size": 28249,
+      "sha256": "e44f2804cfdfa8263a4d2e625fa1c0df991bb54cf17e7f61bbd22499eac92aea"
+    },
+    {
+      "path": "snapshot/block_2_legacy.md",
+      "size": 6888,
+      "sha256": "5a9e2197cd38f64cfd0ea1d6fe154284d7e2b08e33d94449b506e7361863801b"
+    },
+    {
+      "path": "snapshot/block_3_legacy.md",
+      "size": 1953,
+      "sha256": "fa83d89501690397b8e723ad866e7bb0025857f5cc92784a39375500ab4ca7d8"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/00_Главная.md",
+      "size": 2185,
+      "sha256": "c24bfef9d5db2f12d222e3d2f2a1056e8e352025b13bd24c50738bd7733cbc40"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "size": 1256,
+      "sha256": "77fce3dfaf3169018e57f6b7981f6492c2c8f232edd6053f5a501df5782ec05d"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/04_Архитектура.md",
+      "size": 2295,
+      "sha256": "958f5295a82a84cfbe77410c0690366906246b31b0151cb5d3a4bfd695419020"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "size": 10703,
+      "sha256": "434124f44238363649096dd637aa1451e49762444a4f25779f6d60e11ccf187e"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "size": 3641,
+      "sha256": "865ad6f1371592172a39c4fd2ec59d12002b2d870338761a4d79388837462d9d"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "size": 39308,
+      "sha256": "b9ea0ac02f65173d79643d7ed5cf0d9c9362d0db14d20ea8ac6cdf91f6238269"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "size": 8593,
+      "sha256": "1c94f2d546430ca081f699bbc79f1b72648887187367cfb817623de44e904865"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "size": 2023,
+      "sha256": "b2dfc73b2451be323af37924bf7a549ce547e42dec4d457af88c89196452cfab"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "size": 13999,
+      "sha256": "6a49ac82ad461d32bd523682c6283ead88282bc60eecb119b66bf656492a8703"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "size": 13979,
+      "sha256": "91d4022169fbebdd9a3aec66811052624f75d22f737800d5ea039ad9242693d4"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "size": 12734,
+      "sha256": "63160e14bee35a062c6e496a6425c6b6ff9561b5315dc44ca30462a4507ed23c"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "size": 14651,
+      "sha256": "59d9b25c88a9e65a4439f64fc9a374421dce8c97fb1ab4f571ef9fab07fc5692"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "size": 6667,
+      "sha256": "98470f2f9368f0ee65f4aa2cddf87eb7eb681fb0de090592f3f87136d82bb972"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "size": 8437,
+      "sha256": "b6da8e7d547f8b045488807daac1fd9ddc6c2f2d5f2d4126fa0d29c32afc4bc6"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "size": 1169,
+      "sha256": "bd0d46a8dea299c5669cf814e4393dd1878b496af9789f79fbb71cc9b6d936f4"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "size": 3763,
+      "sha256": "d635ae7e39fcbbc015767c8f9cef8d37373e5bffc04f03545ad33a6a03c6bfef"
+    },
+    {
+      "path": "snapshot/files/Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "size": 2995,
+      "sha256": "cdd92e5db6c3bddc4223e9d0da4d7fa1ca6806e06586c78d26563034522e2959"
+    },
+    {
+      "path": "snapshot/files/JSON_Quvest/README.md",
+      "size": 8077,
+      "sha256": "cc0054dc73a8c4147dd2225b536b95a8777b19a0f4175bb5ffbb92c95674a784"
+    },
+    {
+      "path": "snapshot/files/README.md",
+      "size": 2527,
+      "sha256": "43d39204d43e1df7ddb96885a3246533ecc6e9a57b04c8996cfd2dd43d70c575"
+    },
+    {
+      "path": "tests/commands.json",
+      "size": 1186,
+      "sha256": "58d53dbe2c5d090c7587ee0b1d735c65c5d202442413367e520e2d3da4988143"
+    },
+    {
+      "path": "tests/fixture_rotation.json",
+      "size": 798,
+      "sha256": "c89120d610e6b77e9702f2b142f70069a606dd9b2eb591c1229fa5b057624012"
+    },
+    {
+      "path": "tests/handoff_task.md",
+      "size": 105,
+      "sha256": "ace22e6f59f4b5660c899929204de02a39175dfe6fcc71ad9b26849b9f10956c"
+    },
+    {
+      "path": "tests/implement_migration.py",
+      "size": 51878,
+      "sha256": "76a56bf66e0422f742c971b9fb835469e7e3c9dc79aec49a3c278e3658cae379"
+    },
+    {
+      "path": "tests/initial_test_results.txt",
+      "size": 5663,
+      "sha256": "29481c42fe17d8efdf0df531e6c3b733578d34c0bcbc9cdf9d2c206b8a921e44"
+    },
+    {
+      "path": "tests/initial_test_summary.json",
+      "size": 118,
+      "sha256": "d360cfd12fc88975f46d902469047974044b15a514a02f0f1ce59d9016f53055"
+    },
+    {
+      "path": "tests/initial_validation_observations.md",
+      "size": 2708,
+      "sha256": "17f27df28cc7704103df739451449253af35d3c2885af4bf870b673bc9dff0e6"
+    },
+    {
+      "path": "tests/migration_writes.json",
+      "size": 1335,
+      "sha256": "a5046e7ab10c3356141d1040a66148e46f0c08bf638c003e37a0a6f1faacb093"
+    },
+    {
+      "path": "tests/navigation_edges.json",
+      "size": 70323,
+      "sha256": "f69ffd8ab53830dcbc852d31099a9c1f1ccde45ad1dd4f722d13300e14a07a5c"
+    },
+    {
+      "path": "tests/observed_settings/graph.json",
+      "size": 2790,
+      "sha256": "921b1b1fc44433f59d415daa123b47b123605675290e30c689c15e64f73cfe73"
+    },
+    {
+      "path": "tests/observed_settings/workspace.json",
+      "size": 9870,
+      "sha256": "9933d27b5e9b65db6a4f012497a681e67c4f14907d50df46611fb06d3cd4d85b"
+    },
+    {
+      "path": "tests/rollback_migration.py",
+      "size": 3319,
+      "sha256": "f6e0afae4639fe542d688ead2c98a3c003ade6a1effb689b933ab6839a8d6bb2"
+    },
+    {
+      "path": "tests/test_results.txt",
+      "size": 5180,
+      "sha256": "3f6110b453fcb7b47dbf5190ec3f67df4acd9332e1dc759e4ecd2ef7a5746bfa"
+    },
+    {
+      "path": "tests/test_summary.json",
+      "size": 150,
+      "sha256": "ab724e59345ca2d1a1d24f394d699ff991b6f1835553f4973fdf1c52ca90c9c0"
+    },
+    {
+      "path": "tests/test_task_slot_rotate.py",
+      "size": 18927,
+      "sha256": "b449ca3cc18c262b263891fcb104bdd54d88835303ebd616e97126d1e92f7ffc"
+    },
+    {
+      "path": "tests/validate_migration.py",
+      "size": 17202,
+      "sha256": "6e95611d42a954993631d44fbe774718759916316999ce2216de809001d1e626"
+    },
+    {
+      "path": "tests/validation_results.json",
+      "size": 22361,
+      "sha256": "6edcf61e17708a8645e1fd28a7299636c79dba3bc538babd30a4ed97357358df"
+    },
+    {
+      "path": "tests/verify_package.py",
+      "size": 2080,
+      "sha256": "a765ce272bc73a5672ff8be43774f9a1fa669ff395f807224323aca60a102aa7"
+    }
+  ],
+  "counts": {
+    "modified": 19,
+    "created_functional": 5,
+    "report_artifacts_excluding_manifest": 45,
+    "unit_tests": 64,
+    "positive": 10,
+    "negative": 54,
+    "migration_checks": 144,
+    "static_wiki_edges": 174,
+    "protected_unchanged": 658
+  },
+  "external_settings_observations": [
+    {
+      "path": ".obsidian/graph.json",
+      "before": {
+        "sha256": "2d3af7207c1883b2f6df0e35a89dca51fd5a81c5ad4793f86b0410bf5802eef7",
+        "size": 2790
+      },
+      "observed": {
+        "size": 2790,
+        "sha256": "921b1b1fc44433f59d415daa123b47b123605675290e30c689c15e64f73cfe73"
+      }
+    },
+    {
+      "path": ".obsidian/workspace.json",
+      "before": {
+        "sha256": "2e4083e52a4e43ca598f5339a76b4cfd8b0bf9219e99b076edfe6069e3c5e5df",
+        "size": 7822
+      },
+      "observed": {
+        "size": 9870,
+        "sha256": "9933d27b5e9b65db6a4f012497a681e67c4f14907d50df46611fb06d3cd4d85b"
+      }
+    }
+  ],
+  "manifest_self_hash": "Excluded to avoid recursive self-hash; verify externally."
+}

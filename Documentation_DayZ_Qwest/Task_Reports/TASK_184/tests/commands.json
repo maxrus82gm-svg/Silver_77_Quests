@@ -1,0 +1,27 @@
+[
+  {
+    "command": "python -B Documentation_DayZ_Qwest/Task_Reports/TASK_184/tests/test_task_slot_rotate.py --record",
+    "exit_code": 0,
+    "result": "64 tests: 10 positive / 54 negative, 0 failure/error/skip"
+  },
+  {
+    "command": "python -B Tools/task_slot_rotate.py check --card Documentation_DayZ_Qwest/11_Задачи_Codex.md --task-id TASK-184",
+    "exit_code": 0,
+    "result": "CHECK_OK; writes=0"
+  },
+  {
+    "command": "python -B Documentation_DayZ_Qwest/Task_Reports/TASK_184/tests/validate_migration.py --record",
+    "exit_code": 0,
+    "result": "144 checks; rollback fixture 3 scenarios included"
+  },
+  {
+    "command": "python -B Documentation_DayZ_Qwest/Task_Reports/TASK_184/tests/rollback_migration.py --root P:/Silver_77_Quests --state P:/Silver_77_Quests/Documentation_DayZ_Qwest/Task_Reports/TASK_184/migration_state.json",
+    "exit_code": 0,
+    "result": "ROLLBACK_DRY_RUN; writes=0; 24 functional files"
+  },
+  {
+    "command": "python -B Documentation_DayZ_Qwest/Task_Reports/TASK_184/tests/verify_package.py",
+    "exit_code": 0,
+    "result": "PACKAGE_INTEGRITY_OK; functional sources and report artifact hashes verified; no real rotation"
+  }
+]

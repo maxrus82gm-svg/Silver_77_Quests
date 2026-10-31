@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "rollback_saved": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/rollback_saved",
+  "files": [
+    {
+      "path": "README.md",
+      "before_sha256": "43d39204d43e1df7ddb96885a3246533ecc6e9a57b04c8996cfd2dd43d70c575",
+      "after_sha256": "57a048cbbcb4e5b59daf1f583ace6d3c3b599589ba0c61c1133d4b4f6be43b0e",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/README.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/00_Главная.md",
+      "before_sha256": "c24bfef9d5db2f12d222e3d2f2a1056e8e352025b13bd24c50738bd7733cbc40",
+      "after_sha256": "df11af25b3959ab4b367539bb1052973cf701002542ebf37a8b230648e8b750c",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/00_Главная.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "before_sha256": "77fce3dfaf3169018e57f6b7981f6492c2c8f232edd6053f5a501df5782ec05d",
+      "after_sha256": "ff6c0ef86e87fec948e74fad0443561d7900a89679f901b3228cd78426a91157",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/01_Текущее_состояние.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/04_Архитектура.md",
+      "before_sha256": "958f5295a82a84cfbe77410c0690366906246b31b0151cb5d3a4bfd695419020",
+      "after_sha256": "addbb6bdec2122833fe06c5c8b82612e80ad0b3b5a6630e3136499c8e6338163",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/04_Архитектура.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "before_sha256": "434124f44238363649096dd637aa1451e49762444a4f25779f6d60e11ccf187e",
+      "after_sha256": "4f8b4920467344516a36775f5de7aaa2273b603178d9c56c598e8cd951a97276",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/05_Очередь_задач.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "before_sha256": "865ad6f1371592172a39c4fd2ec59d12002b2d870338761a4d79388837462d9d",
+      "after_sha256": "d90aaa03850e3f89b20ed1c5dc042e6443c1cbfec9e44710b09ade5bd1af1a83",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/10_Правила_агента.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "before_sha256": "b9ea0ac02f65173d79643d7ed5cf0d9c9362d0db14d20ea8ac6cdf91f6238269",
+      "after_sha256": "11d39e07fc25a9adf521e22cb9125d625ca1a8a4d75ddf65e73ce6bce87e400b",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/11_Задача_агенту.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "before_sha256": "1c94f2d546430ca081f699bbc79f1b72648887187367cfb817623de44e904865",
+      "after_sha256": "a52ed95e801c64fe02016bd222edbd697f295117d14e783756f96da74f5e76fa",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/12_Старт_агента.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "before_sha256": "b2dfc73b2451be323af37924bf7a549ce547e42dec4d457af88c89196452cfab",
+      "after_sha256": "3056cd2276077bb3444ce1490030350405680d0ed11ed2330aa28ab4843dfe4c",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "before_sha256": "6a49ac82ad461d32bd523682c6283ead88282bc60eecb119b66bf656492a8703",
+      "after_sha256": "4d688fa9df0a1e3d55e1ee904fc54098439f5afe7fda62aa95d58498b0016e3d",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "before_sha256": "91d4022169fbebdd9a3aec66811052624f75d22f737800d5ea039ad9242693d4",
+      "after_sha256": "a770b7bf2b2f76e615ae0ae2fc3b2c3ba3506e45404e49cd1426f5ee483713a2",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "before_sha256": "63160e14bee35a062c6e496a6425c6b6ff9561b5315dc44ca30462a4507ed23c",
+      "after_sha256": "0ba8f1affacc89bdb787558975bb6e7907267148da7cf25421a174b3424c09cd",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "before_sha256": "59d9b25c88a9e65a4439f64fc9a374421dce8c97fb1ab4f571ef9fab07fc5692",
+      "after_sha256": "3f033a864de184362e045103601536a5c862ca9f92cf0523f26d6387b05702ce",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "before_sha256": "98470f2f9368f0ee65f4aa2cddf87eb7eb681fb0de090592f3f87136d82bb972",
+      "after_sha256": "2531727ee800ef61bb735236ee7e75db0a420089db4269703444ff46008123f2",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "before_sha256": "b6da8e7d547f8b045488807daac1fd9ddc6c2f2d5f2d4126fa0d29c32afc4bc6",
+      "after_sha256": "4da9be3665db25fc99bf6f8e3da1869176288ad745e4f987231cae7035c36e7f",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "before_sha256": "bd0d46a8dea299c5669cf814e4393dd1878b496af9789f79fbb71cc9b6d936f4",
+      "after_sha256": "f40f7007a5dbc59f3fac5d709ca2dd0c44267a4aa48462703fdd5cfc3ba3278a",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "before_sha256": "d635ae7e39fcbbc015767c8f9cef8d37373e5bffc04f03545ad33a6a03c6bfef",
+      "after_sha256": "9c040dc68971cb5995208d9bc5f29fdd9b61ed3f8711cb53d07d61ecc6525267",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "before_sha256": "cdd92e5db6c3bddc4223e9d0da4d7fa1ca6806e06586c78d26563034522e2959",
+      "after_sha256": "ef844519bb915fbca72e95aa3e8419f46af1814a64c963aa8bc954d44143042e",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/Documentation_DayZ_Qwest/21_Project_Docs/README.md"
+    },
+    {
+      "path": "JSON_Quvest/README.md",
+      "before_sha256": "cc0054dc73a8c4147dd2225b536b95a8777b19a0f4175bb5ffbb92c95674a784",
+      "after_sha256": "8d2a6f7fed5803b6a1d847c6a8239f33fbf0f06a2722e969b183992ae3d41614",
+      "snapshot": "Documentation_DayZ_Qwest/Task_Reports/TASK_184/snapshot/files/JSON_Quvest/README.md"
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/001_История_задач_Codex.md",
+      "before_sha256": null,
+      "after_sha256": "ef0f58f94880e55be12c29d0e118a163067e9349fa547982e03c99f924190213",
+      "snapshot": null
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/11_Задачи_Codex.md",
+      "before_sha256": null,
+      "after_sha256": "05e23840fa7a34ebc0a9838d337c7242e28773eba185e0049c951a5f2a2049ac",
+      "snapshot": null
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/12_Старт.md",
+      "before_sha256": null,
+      "after_sha256": "89fad36c7483a30258a5ae7f07d79d1938df735947092bd6e0888dece305106a",
+      "snapshot": null
+    },
+    {
+      "path": "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md",
+      "before_sha256": null,
+      "after_sha256": "5df60ef37b7226eef926ff7de102c9eeca7811956455f3183ad751c852c45dd2",
+      "snapshot": null
+    },
+    {
+      "path": "Tools/task_slot_rotate.py",
+      "before_sha256": null,
+      "after_sha256": "19c296042f3fcf7e3f0cf56ee58a2a84313ad9a470a4581f8ca8268e476d4870",
+      "snapshot": null
+    }
+  ]
+}

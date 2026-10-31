@@ -6,7 +6,7 @@
 
 - Рабочий проект: `P:\Silver_77_Quests`
 - Активная документация: `P:\Silver_77_Quests\Documentation_DayZ_Qwest`
-- Активная задача: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_Задача_агенту.md`
+- Активная задача: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\11_Задачи_Codex.md`
 - Тематические правила: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\20_SplitDoc`
 - Проектные справочники: `P:\Silver_77_Quests\Documentation_DayZ_Qwest\21_Project_Docs`
 

@@ -1,0 +1,3211 @@
+{
+  "schema": 1,
+  "task_id": "TASK-184",
+  "root": "P:\\Silver_77_Quests",
+  "published_baseline": "USER PROVIDED ONLY: main@b98d082c7eb66b882aaed27efca5b0231bfeba85 / 100",
+  "git_used": false,
+  "mutable": [
+    "README.md",
+    "JSON_Quvest/README.md",
+    "Documentation_DayZ_Qwest/00_Главная.md",
+    "Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+    "Documentation_DayZ_Qwest/04_Архитектура.md",
+    "Documentation_DayZ_Qwest/05_Очередь_задач.md",
+    "Documentation_DayZ_Qwest/10_Правила_агента.md",
+    "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+    "Documentation_DayZ_Qwest/12_Старт_агента.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+    "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+    "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+    "Documentation_DayZ_Qwest/21_Project_Docs/README.md"
+  ],
+  "files": {
+    "$PBOPREFIX$": {
+      "sha256": "07a845843ddefa928e25dfa3c1f3e5e58070d56c3cc55679c6a547e96ded09ec",
+      "size": 16
+    },
+    ".depboOptions": {
+      "sha256": "0e2be84f58fe0ebdfc3333bc800985473ae595a16bec40a2f048c36666b3d829",
+      "size": 226
+    },
+    ".gitignore": {
+      "sha256": "058e0eeb990a8573d72e691e179d8071f7cd8d42368e11651eb6fae957e5b2e6",
+      "size": 378
+    },
+    "Bilder.pur": {
+      "sha256": "2830f8403f3d6d0395a5e05cb4412e15df4ec84d8c9f5b16cf784005a2b2140c",
+      "size": 82930
+    },
+    "build_and_pack.bat": {
+      "sha256": "92e9f59cc299f49aafd2c60f84ad565478bce43a4bdbadda2053c053a36fb095",
+      "size": 2738
+    },
+    "build_migrate_server.bat": {
+      "sha256": "598a29680bf8552ed6587ee401d2989644a40f945255f8461699319f0e71e7ca",
+      "size": 3128
+    },
+    "build_split_mods.bat": {
+      "sha256": "3bfcb15ee875224a26977c81342b1cff1dad6cf360348ecc7306de39a04ecfe4",
+      "size": 3202
+    },
+    "config.cpp": {
+      "sha256": "833c2853d04bb00dff8d2bffcca04f834d31812a310735c594722133e587973b",
+      "size": 1265
+    },
+    "copy_documentation.bat": {
+      "sha256": "c4b8661964f23efe3fbcb23c0495cb084aeec800e3e31a840582f8de7c83ddfd",
+      "size": 635
+    },
+    "DayZ": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "exclude.lst": {
+      "sha256": "8fc27aa26eda49ba6808fda0ea37f9eb1edfae5485ef59a6d55d6f09fc4405fe",
+      "size": 118
+    },
+    "mod.cpp": {
+      "sha256": "f1665e692d109344257338462bced3838de81a4ff88d990c1e4070330aa05f40",
+      "size": 383
+    },
+    "README.md": {
+      "sha256": "43d39204d43e1df7ddb96885a3246533ecc6e9a57b04c8996cfd2dd43d70c575",
+      "size": 2527
+    },
+    "ubn работает .txt": {
+      "sha256": "0b7c6db972d57ea127996739204238af955d9c0fe3386976415d24842f77840d",
+      "size": 3
+    },
+    "возможности_Silver_77_Quests.md": {
+      "sha256": "6d6fd0020d29563b347eee908ac3e199e41645bb3293287b14099a9b34ac43e7",
+      "size": 21302
+    },
+    ".obsidian/app.json": {
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "size": 2
+    },
+    ".obsidian/appearance.json": {
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "size": 2
+    },
+    ".obsidian/core-plugins.json": {
+      "sha256": "763cf20a921fd9955735b278006820b90b207b2fc04d9e79ca648279c7c14276",
+      "size": 696
+    },
+    ".obsidian/graph.json": {
+      "sha256": "2d3af7207c1883b2f6df0e35a89dca51fd5a81c5ad4793f86b0410bf5802eef7",
+      "size": 2790
+    },
+    ".obsidian/workspace.json": {
+      "sha256": "2e4083e52a4e43ca598f5339a76b4cfd8b0bf9219e99b076edfe6069e3c5e5df",
+      "size": 7822
+    },
+    ".vscode/settings.json": {
+      "sha256": "a510610b7365a16bb21e3a38313c58b392a46a317f3d0c7ad1674c63f594a04a",
+      "size": 46
+    },
+    "@Trader/meta.cpp": {
+      "sha256": "f8879d7aa93bf714e96ceac8987858e054cc451c7ea950ec06871555fcadf9d9",
+      "size": 92
+    },
+    "@Trader/mod.cpp": {
+      "sha256": "21d66347b973c4bb3f0e551ff5ed8b0e1607092346c8af7a69f6bb7a7fd3d782",
+      "size": 1052
+    },
+    "@Trader/addons/$PREFIX$": {
+      "sha256": "22dda51865a12787c5ccd385ebd596804a76a6d4f425dc69916e73fc7ee527c0",
+      "size": 9
+    },
+    "@Trader/addons/$REVISION$": {
+      "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "size": 1
+    },
+    "@Trader/addons/config.bin": {
+      "sha256": "eba2d3ea079668f7441d07d9fafd2841e3512b288bdbebe1303fd0b9089e7ad5",
+      "size": 4779
+    },
+    "@Trader/addons/keyLada.p3d": {
+      "sha256": "af6750891fc3e2ca27cbbd14e9496672cae3db2222b12222acc098dba32a25ff",
+      "size": 107053
+    },
+    "@Trader/addons/Road_Cone.p3d": {
+      "sha256": "ce260dc9ce4dd09d62bb9ccac8cc31d1c1cc6fafe50263837e18c010113ee52c",
+      "size": 37253
+    },
+    "@Trader/addons/ruble.p3d": {
+      "sha256": "46604d4457abf1ed3bdd1f58f59c1ee78da3df5ec31d832b9ed0ab683fc7dc9f",
+      "size": 5986
+    },
+    "@Trader/addons/texHeaders.bin": {
+      "sha256": "c7d025bc33702911fe76942f64961260fa1749f16875aec5e33165a4afb13eed",
+      "size": 4282
+    },
+    "@Trader/addons/Trader.pbo": {
+      "sha256": "4f05bacfc15f7ba79f6c6a4443f82f895de95994bd010432bbeeedfb0c5e166d",
+      "size": 11400827
+    },
+    "@Trader/addons/Trader.pbo.dayztrader.bisign": {
+      "sha256": "1bc9dc41a420bc391d2b6a84cfa9b37bd470855635cfc858e77d8e442ba69016",
+      "size": 563
+    },
+    "@Trader/addons/data/hoodie_drj0nes_co.paa": {
+      "sha256": "e5fc3097e49c4852f61045773199f4978735ae065b34b804a1165cb16ccc3188",
+      "size": 608878
+    },
+    "@Trader/addons/data/hoodie_graffiti_co.paa": {
+      "sha256": "10bfa02d92d013a0f9cb5a501bb2f43b7ecc104a871ad0373ef94501776dd682",
+      "size": 772751
+    },
+    "@Trader/addons/data/keyLada.rvmat": {
+      "sha256": "ab05c7d3f8e1072f5b379c86fd00101dbc66e784c23b5be2088aac77fc760809",
+      "size": 1530
+    },
+    "@Trader/addons/data/keyLadaBlack_co.paa": {
+      "sha256": "8be3050a3fc266b1e255cb2d14539d943de7900ea5cb851a4d6c76ab5197b9a8",
+      "size": 123140
+    },
+    "@Trader/addons/data/keyLadaGrayCyan_co.paa": {
+      "sha256": "c508b6321baeac16db379f8ce5b87e0e50d78a7dac585be8113dc0c6b043e279",
+      "size": 123162
+    },
+    "@Trader/addons/data/keyLadaPurple_co.paa": {
+      "sha256": "5b80ab752de0b1c6e9acf2683e2daae9ee89cd737bc60f8a3ea02901eb206103",
+      "size": 123238
+    },
+    "@Trader/addons/data/keyLadaRed_co.paa": {
+      "sha256": "a14721454071055b2c3f920e43c2bfbe8f88f80ae9cd1eb5f69a339400546f4d",
+      "size": 124935
+    },
+    "@Trader/addons/data/keyLadaYellow_co.paa": {
+      "sha256": "d9f441a7079e7f2a855235d4af4e315269d3dad6576733adef6754d10ff7641d",
+      "size": 123248
+    },
+    "@Trader/addons/data/keyLada_damage.rvmat": {
+      "sha256": "70ee41b3c79bc31c232357192d77ad15a0d008dd5d0c6104317301e81fc09058",
+      "size": 1540
+    },
+    "@Trader/addons/data/keyLada_destruct.rvmat": {
+      "sha256": "28c7c9112a70fda4fb98fb7f9ed271e641a208957eff40612386af7c4cf1c55f",
+      "size": 1542
+    },
+    "@Trader/addons/data/keyLada_nohq.paa": {
+      "sha256": "292fa3822c49118467ccb2dd80321de992f9442237bf11ea0b48f0c24dfb6732",
+      "size": 862521
+    },
+    "@Trader/addons/data/keyLada_smdi.paa": {
+      "sha256": "14e22c949b246d6e836f7115262edb10d3fe74360c644c372d1445946d5452e8",
+      "size": 159149
+    },
+    "@Trader/addons/data/roadcone_co.paa": {
+      "sha256": "2de1d2dd56644b10f3466ca5644b20ce2d58bfe250bac2bc715ba2a121e142bb",
+      "size": 752173
+    },
+    "@Trader/addons/data/ruble.rvmat": {
+      "sha256": "94023c77dac45e8f992e72e032ae87b96062475c8f3d5322cda3b1a1920edc54",
+      "size": 1526
+    },
+    "@Trader/addons/data/ruble100_co.paa": {
+      "sha256": "0777c6a8d5d809585f5fc08445ab10c72f77f59d9584be4bb8e1a19b825d39d1",
+      "size": 607233
+    },
+    "@Trader/addons/data/ruble10_co.paa": {
+      "sha256": "3415256b293856f3674a008587b1fee60320724e0914436360eb4a8c08a2749c",
+      "size": 550828
+    },
+    "@Trader/addons/data/ruble1_co.paa": {
+      "sha256": "7c0e5455a62306d5f52ff9302b754fd2e9dd476c40ed5fcf2110bee93d94720f",
+      "size": 638303
+    },
+    "@Trader/addons/data/ruble25_co.paa": {
+      "sha256": "d2fc34f07867233d71468d5ad2b0cd5647a557791bf3c5eac7d20341c5b036bd",
+      "size": 538050
+    },
+    "@Trader/addons/data/ruble50_co.paa": {
+      "sha256": "4d79ccd72157d1b0433c917bbfcbaf8dde07b2b770c206481f10123363a6ea5c",
+      "size": 619266
+    },
+    "@Trader/addons/data/ruble5_co.paa": {
+      "sha256": "162e1321c9a00d333ba84676872efba6ec6fc29852c09cf66cf265eb4e6b4b27",
+      "size": 577148
+    },
+    "@Trader/addons/data/ruble_damage.rvmat": {
+      "sha256": "9e955f6f0f5b64a482e4a65e1baf3d4c884aa096c3e33d9dd4b1f7866685d9f9",
+      "size": 1536
+    },
+    "@Trader/addons/data/ruble_destruct.rvmat": {
+      "sha256": "5204c3d73c60ccead19bc3cfaba0f9646bd9efb07f407c839842d567a681f7e1",
+      "size": 1538
+    },
+    "@Trader/addons/data/ruble_nohq.paa": {
+      "sha256": "6c7b117dafe3ea3518a40be4c79ba2094a6540f5caeeda3a34fe9c5a0f3b7080",
+      "size": 312070
+    },
+    "@Trader/addons/data/ruble_smdi.paa": {
+      "sha256": "193545d0f2aef87b89d0a29c684ec890546908b638ba8e7469d2e0309824ecff",
+      "size": 587972
+    },
+    "@Trader/addons/data/trader_mod_logo.paa": {
+      "sha256": "9ee8c22bc3f901f9fe8ae1dc11054c1bddf2ad769b1bf1f09c2cc9bb17e83cbb",
+      "size": 951160
+    },
+    "@Trader/addons/data/wallet/wallet.p3d": {
+      "sha256": "45fa22508243419b87ee447d0d59a03f6cf67a82597d7c12c60d218f5eefde44",
+      "size": 60288
+    },
+    "@Trader/addons/data/wallet/wallet.rvmat": {
+      "sha256": "d13288d2732b710f228d41ad41858be41db58f86134b27930fd8ea3f60acf6b9",
+      "size": 1438
+    },
+    "@Trader/addons/data/wallet/wallet_co.paa": {
+      "sha256": "54ede9a6d1f1c260ceb9d868d252957e8eca530a5b70fe8e5729eedb66b0732e",
+      "size": 554944
+    },
+    "@Trader/addons/data/wallet/wallet_damage.rvmat": {
+      "sha256": "17e10c00e2badd0e0d9ee2a77c152472c5bcd82f73e5b6cac59010e701f724a6",
+      "size": 1452
+    },
+    "@Trader/addons/data/wallet/wallet_destruct.rvmat": {
+      "sha256": "aa99aa07c233a324d98be7277e324394f2a696a0186552042be637b0f08444f1",
+      "size": 1454
+    },
+    "@Trader/addons/data/wallet/wallet_nohq.paa": {
+      "sha256": "d36021e953a137cc60c22992af9cb010e70f96e4ce10ef9bcbe976b585ea3cfe",
+      "size": 1085653
+    },
+    "@Trader/addons/data/wallet/wallet_smdi.paa": {
+      "sha256": "2678bf90dad9f5fe13f857bd8690e4b3907317dba10e19ea70e2d34f70c2c963",
+      "size": 46514
+    },
+    "@Trader/addons/images/search.edds": {
+      "sha256": "19dcb570b5bb59a44b733b9a23bcafe4c49e0ca32ad9caa0710993e93acde192",
+      "size": 117324
+    },
+    "@Trader/addons/images/search.edds.meta": {
+      "sha256": "010c78f6234cbd1c38fb2f29f441c541b674ded08aac11c2e00dd9b9dfa7104c",
+      "size": 339
+    },
+    "@Trader/addons/languagecore/stringtable.csv": {
+      "sha256": "dea671754cbb1bc9f149de237158510788c1f9a6a48f810fc808e341205c5b33",
+      "size": 17856
+    },
+    "@Trader/addons/scripts/3_Game/DayZGame.c": {
+      "sha256": "57f23dfdc794a9737379de025c2651f7c2a8f63e910adc314e827c7601140048",
+      "size": 1479
+    },
+    "@Trader/addons/scripts/3_Game/Globals.c": {
+      "sha256": "630e698b24fceaae9f00a59d27ebb45687f1bc3d69c2300bd51d35f3774c93c4",
+      "size": 2256
+    },
+    "@Trader/addons/scripts/3_Game/VONManager.c": {
+      "sha256": "fbf1a03c9e9b3130cc5c564f3b6058ef14efc88cf1a6f5757169324d4492d503",
+      "size": 904
+    },
+    "@Trader/addons/scripts/3_Game/Enums/TRPCs.c": {
+      "sha256": "3cd0045f014dfb56428a0c24a2f911b975ec31ba493fc78ac1e49c06891e36d9",
+      "size": 732
+    },
+    "@Trader/addons/scripts/4_World/Animations.c": {
+      "sha256": "025dc6a99b1bcdf40079ee33573ce00850d7954d318a3760348a68715e8631e5",
+      "size": 564
+    },
+    "@Trader/addons/scripts/4_World/FileReadHelper.c": {
+      "sha256": "7eb00e4e3c2c72eb429d8b0d7bbff28a570f3ef2ee08d092f3cc4c98f35c92f9",
+      "size": 1916
+    },
+    "@Trader/addons/scripts/4_World/InventoryTransactions.c": {
+      "sha256": "5e6f348bbf88fd20d6bc51fb7c8882f660382185db6e1973726aaa619930746f",
+      "size": 2713
+    },
+    "@Trader/addons/scripts/4_World/TraderMenu.c": {
+      "sha256": "824120eb581ba8b3de37f01f90ccb8082b623b707e23f83d839f593a6e8b9a42",
+      "size": 21751
+    },
+    "@Trader/addons/scripts/4_World/TraderMessage.c": {
+      "sha256": "bbe37f09a992b7ba2cc51e35475c4d0ad04f3480ff10a1f386f3d6847c974150",
+      "size": 2544
+    },
+    "@Trader/addons/scripts/4_World/TraderNotifications.c": {
+      "sha256": "c15341dc29380bc0e287168f85b32b9ba3442542ff1f7cdeb2724de0b3511852",
+      "size": 4162
+    },
+    "@Trader/addons/scripts/4_World/Wallet.c": {
+      "sha256": "8e299a6d7de76d7ed710a63f5e781ee64ce70a7960fd2f6364dfdc4a0bc1c916",
+      "size": 749
+    },
+    "@Trader/addons/scripts/4_World/Classes/SafeZone/areaexposure.c": {
+      "sha256": "bc4c379cbefd08539a24c63b6275a41237c7740862b100af5d36803253806fd1",
+      "size": 281
+    },
+    "@Trader/addons/scripts/4_World/Classes/SafeZone/contaminatedarea_local.c": {
+      "sha256": "778c7bde0efab6db7c4504b1684a29d2c7b530889b526f15a83142ec11e8b80a",
+      "size": 292
+    },
+    "@Trader/addons/scripts/4_World/Classes/SafeZone/SafeZone.c": {
+      "sha256": "f440f4a736fb5f428fa7d97e7cd709cbae93c6ac7e7f551726d49811e8f19f86",
+      "size": 5325
+    },
+    "@Trader/addons/scripts/4_World/Classes/TransmissionAgents/InfluenzaAgent.c": {
+      "sha256": "caca09508fe9ec917e3dcba1ef3641f7a77842fa73e0aaaacbe4ad4f9c8766df",
+      "size": 217
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/ActionConstructor.c": {
+      "sha256": "c5fbb8c7a2f3f3a8813911b8f7a3b5a1fc1a8689fd5c2937b6c38bc07b418861",
+      "size": 390
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/actioncheckpulsetarget.c": {
+      "sha256": "6e1c7578e49ac5eb982cbe6b996e638c38cf1d54184a9755682c4353840bbd4f",
+      "size": 411
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/ActionDeployObject.c": {
+      "sha256": "54dfa5819fb42731ff8918e5607b1bd7b9d78556dc806a26111f0a1e57716d8e",
+      "size": 256
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/ActionForceConsume.c": {
+      "sha256": "d7d028b8b1cc38fc88d41aebc6723ab8882abf901f89683ba10ee4f45b4be132",
+      "size": 250
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/ActionForceFeedCan.c": {
+      "sha256": "688685b9106630e079408c8bb8238e5d87c8f8e176d393f9435b20ce6556573b",
+      "size": 251
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/ActionLockDoors.c": {
+      "sha256": "6efbb0193e6d3d1b8ddc25798da3c75c84074368b07b6e1866af21435d58fb8f",
+      "size": 254
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/ActionRestrainSelf.c": {
+      "sha256": "4a11aeb0c4e113e71285cdfc3974f2bf93903472a7d9f2b5b6f7492a9c3091bd",
+      "size": 257
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/ActionRestrainTarget.c": {
+      "sha256": "fdf91793151ef489cb85c324fbb2d3626b664e3a073e229e002bcd2a54342ffb",
+      "size": 450
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionBurnSewTarget.c": {
+      "sha256": "ab351cdfa2ad119353094956665fdfd9df5ded4945563a41790c9057aafbff7d",
+      "size": 252
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionCheckPulse.c": {
+      "sha256": "5c161fdabc4fec9fa21ea226eb8727d4be4c1a1fd481266b726b84579f38fbf8",
+      "size": 324
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionCollectBloodTarget.c": {
+      "sha256": "10b2ab4364e1d358141bdddaa3552ce0855a4b9e89f1119fc449ef2ba2723ad2",
+      "size": 259
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionDefibrilateTarget.c": {
+      "sha256": "999526bcb1d82bcf018b41dde857f0f766cecf86272ba4bde596083867f285f5",
+      "size": 256
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionGiveBloodTarget.c": {
+      "sha256": "781b10778ca6708a56dfea029da81140b7e0a82667810b9eedc289979600b5a0",
+      "size": 254
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionGiveSalineTarget.c": {
+      "sha256": "22d077b7d8340173270f157f77a2e85c5bfc21367d53d95fced6e01f16e95bae",
+      "size": 255
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionSewTarget.c": {
+      "sha256": "5dd766c6076139b6587d09578425faf8213f1b2cdf3674f40aae724ed0973db9",
+      "size": 248
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Interact/ActionDetach.c": {
+      "sha256": "37b6528cf21fa9a070e43bc2aab400f470d0ffc6517d3acb421433a532b71834",
+      "size": 415
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/SingleUse/ActionForceConsumeSingle.c": {
+      "sha256": "4ea61233cf111fdd9cda37b5494ecd8143b5c9de2040c671823dc7dd7e5130ec",
+      "size": 256
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/SingleUse/ActionUnpin.c": {
+      "sha256": "a1dc1cd70609171031ef42e16956df00785cbf5bb889025deaea9557883189be",
+      "size": 279
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/SingleUse/Medical/ActionDisinfectTarget.c": {
+      "sha256": "15b1e2d00dd429e9571aa13342f00edb6feb9cda1ccc55653bfbe612c52fca22",
+      "size": 253
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/SingleUse/Medical/ActionInjectTarget.c": {
+      "sha256": "4417f1b3f09f1082313fae88789c6c9743f08110ac132ffcc9a4aa1bcb87ac8c",
+      "size": 250
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Trader/ActionTrade.c": {
+      "sha256": "e489f7da0daaeb177fe010e94c586426f34817b993e0a08358fa166eaf58ffbf",
+      "size": 4427
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Vehicles/ActionLockUnlockVehicle.c": {
+      "sha256": "ccd4d742b8cc658102c92f183d76811dd700d6bb74cb09ec748c67babb8cd651",
+      "size": 7574
+    },
+    "@Trader/addons/scripts/4_World/Classes/UserActionsComponent/Actions/Vehicles/ActionOpenCarDoors.c": {
+      "sha256": "b166f3e148ddbee4ff7ee0463f3caca7b15af94c24dde2ff99f8ded98a57e3a9",
+      "size": 879
+    },
+    "@Trader/addons/scripts/4_World/Classes/Weapons/WeaponManager.c": {
+      "sha256": "cf27a6e620435066c0b4e3cb1282a8475a055986ab60a38d859875c957ca1546",
+      "size": 167
+    },
+    "@Trader/addons/scripts/4_World/Entities/Ammunition_Base.c": {
+      "sha256": "8fa2c83c421776a934edc44693507a9273a68aa7622c8ea48d52b225d183a6fb",
+      "size": 1145
+    },
+    "@Trader/addons/scripts/4_World/Entities/BuildingBase.c": {
+      "sha256": "52741b715f8a26094571d230a8d4d224a5323a9c503dfdcf60a14e309b38fbbf",
+      "size": 160
+    },
+    "@Trader/addons/scripts/4_World/Entities/DayZPlayerImplement.c": {
+      "sha256": "9276e0bf8552ef310b01773d65d0fd0218e05f80294bc5d90b01a36b59cf99cd",
+      "size": 45457
+    },
+    "@Trader/addons/scripts/4_World/Entities/VehicleKey.c": {
+      "sha256": "6f7c19efa827cc5f38ba9031a0f86f0353217000e3606eabc2d227e7e3e78414",
+      "size": 1601
+    },
+    "@Trader/addons/scripts/4_World/Entities/ItemBase/ChemGas_Grenade.c": {
+      "sha256": "ba95d96dbb35d111fcde53e72055a098bde39ad86278dc9221c721cee67ea3ad",
+      "size": 1341
+    },
+    "@Trader/addons/scripts/4_World/Entities/ItemBase/Grenade_Base.c": {
+      "sha256": "4a555fa7857bb8f399686f4b5ac921b95e4ce9c0d23008bde25e29734691d209",
+      "size": 381
+    },
+    "@Trader/addons/scripts/4_World/Entities/ItemBase/ItemBase.c": {
+      "sha256": "e20683746de3bbc7186973b4d7aab99e44c6494a8843d5f24784faa453024f0b",
+      "size": 1017
+    },
+    "@Trader/addons/scripts/4_World/Entities/ItemBase/TrapBase.c": {
+      "sha256": "71829705a87a309bc836627f34c8afb1b3182a19f29c51258e0c3366bd5e96b9",
+      "size": 238
+    },
+    "@Trader/addons/scripts/4_World/Entities/ItemBase/FireplaceBase/BarrelHoles_ColorBase.c": {
+      "sha256": "26becf533a79253d040c12dbcffc420e8f6a9e6334a9cd32dc8939aacbb72e31",
+      "size": 2532
+    },
+    "@Trader/addons/scripts/4_World/Entities/ManBase/PlayerBase.c": {
+      "sha256": "93ea6cb43b71169a79870bf6af082fb56a03d21e422cc91893ed8cddc7b0f43f",
+      "size": 3879
+    },
+    "@Trader/addons/scripts/4_World/Entities/ManBase/DayZPlayer/DayZPlayerMeleeFightLogic_LightHeavy.c": {
+      "sha256": "2a381030ac205debada4be76772345c11dca92578e7070abae5ff1feeda8990f",
+      "size": 538
+    },
+    "@Trader/addons/scripts/4_World/Entities/Vehicles/BoatScript.c": {
+      "sha256": "4cc99926ecd9c4787be24b16c806c7eb5956ecb59c3f4a4274355a356633ee6e",
+      "size": 335
+    },
+    "@Trader/addons/scripts/4_World/Entities/Vehicles/CarScript.c": {
+      "sha256": "00806de94e770e4448d8f6d01ad21df0898533627ac96b862c58e75375ceaca1",
+      "size": 4038
+    },
+    "@Trader/addons/scripts/4_World/GameLabs/Static.c": {
+      "sha256": "8408c228b746ee57d0b58318035c6a42af9a01a4ec7fea5d7ed685a1d9d6dd15",
+      "size": 469
+    },
+    "@Trader/addons/scripts/4_World/Plugins/PluginManager.c": {
+      "sha256": "b807d0f8275dffa159b28a5f6c18509b7a7bb11c376563dcaa7d31ac79a2a5d5",
+      "size": 304
+    },
+    "@Trader/addons/scripts/4_World/Plugins/PluginTraderLogBase.c": {
+      "sha256": "1710527d224fd7a2dc721e71c102f89945531b337b748d5ff700dccce2dcf616",
+      "size": 2578
+    },
+    "@Trader/addons/scripts/4_World/Plugins/PluginTraderServerLog.c": {
+      "sha256": "68f4b2be2386cc7303a51fa55b8926efc17355400cb2aa528c553ec18a456ac3",
+      "size": 161
+    },
+    "@Trader/addons/scripts/4_World/Plugins/PluginTraderTradesLog.c": {
+      "sha256": "2738e7a151d4e50c1c88ad53841e8c031cd75783fcbb43e601602f9f2a4d372a",
+      "size": 157
+    },
+    "@Trader/addons/scripts/4_World/Plugins/PluginBase/PluginTransmissionAgents.c": {
+      "sha256": "72a7b7218a53520ab5d49761089a6a5dbe07d458e1f6f555bda299f53f5996a4",
+      "size": 968
+    },
+    "@Trader/addons/scripts/5_Mission/mission/missionBase.c": {
+      "sha256": "a2b02344d0ead5fcedf6adb36a5c051ec340ae68f6d8b4a9ee9a8e3d78f168db",
+      "size": 461
+    },
+    "@Trader/addons/scripts/5_Mission/mission/missionGameplay.c": {
+      "sha256": "9e110538369027bc6c4c4a7b76b423272edb811e754516d2dcbd6e42a17b85ae",
+      "size": 320
+    },
+    "@Trader/addons/scripts/5_Mission/mission/missionServer.c": {
+      "sha256": "8ff9e168488c3bf04898b8268769d8b540ffab39db428da1e819eb957f1b7734",
+      "size": 42973
+    },
+    "@Trader/addons/scripts/defines/traderDefines.c": {
+      "sha256": "fc4643b339d652066aea8b340d39b85e9312d9c3802667c24f29435037b54a44",
+      "size": 94
+    },
+    "@Trader/addons/scripts/layouts/TraderMenu.layout": {
+      "sha256": "c244f99dd4d79fd11537113866a1474dd11bf5306ff10e230bf4d45dab93eb48",
+      "size": 5313
+    },
+    "@Trader/addons/scripts/layouts/TraderNotification.layout": {
+      "sha256": "0728a0304700ceae82ae93f96a57060cb05da90b1840a9bfeb42f4df7cfc149c",
+      "size": 1183
+    },
+    "@Trader/addons/scripts/layouts/TraderNotificationsContainer.layout": {
+      "sha256": "1ec4e4e8113631787fedba9cc6289be12c3d7dc0a631e4c7cf920b8792b60f19",
+      "size": 375
+    },
+    "@Trader/extras/ReadME.txt": {
+      "sha256": "808123d132d6c79718954417a07ff8efdcb33ef7a0246593bf607f7807023dd7",
+      "size": 191
+    },
+    "@Trader/extras/Trader/TraderAdmins.txt": {
+      "sha256": "d62c66de742de5a03a747b84ba20daebb16703d7620fad1dbd50f0720c5cf6d7",
+      "size": 486
+    },
+    "@Trader/extras/Trader/TraderConfig.txt": {
+      "sha256": "3251fbf8d2c0b016bbede12f068a6189acfe7bd3b6e09d09f2cbd0c14acd2f55",
+      "size": 41383
+    },
+    "@Trader/extras/Trader/TraderConfig_Boats.txt": {
+      "sha256": "8b5ef870f1084c936d872310389cab64ada26e65eefad688c08da157714d3218",
+      "size": 713
+    },
+    "@Trader/extras/Trader/TraderConfig_Vehicles.txt": {
+      "sha256": "e400ce09650d5478ac8341c5f1b01c6b07952dccfe8b7cfe87d5ad0c9155090d",
+      "size": 7771
+    },
+    "@Trader/extras/Trader/TraderObjects.txt": {
+      "sha256": "6eaf189d185cfa213ea298f7f94b795eecb4f7d0db56617ab08c01e05bff38c5",
+      "size": 18476
+    },
+    "@Trader/extras/Trader/TraderVariables.txt": {
+      "sha256": "32bad9ea4aa862fb09c6df21e84e9783ae5a6b15dcceebf3bade2aa0802d9af8",
+      "size": 1103
+    },
+    "@Trader/extras/Trader/TraderVehicleParts.txt": {
+      "sha256": "f455316265e55c5f7936e8a62ea28eada7ac9e08307c82e2ad656cfb170d8ee9",
+      "size": 5280
+    },
+    "@Trader/extras/Trader/TraderVehicleParts_Boats.txt": {
+      "sha256": "831b21ec53b6f31b62338b0d9e8114923ddcad021b8ae9f70f70a496e6015d64",
+      "size": 320
+    },
+    "@Trader/extras/Types/trader_types.xml": {
+      "sha256": "8423dc8ab57011b1e8968c431e9c0399b426535c505f8f160027f970f92b4a68",
+      "size": 3201
+    },
+    "@Trader/keys/dayztrader.bikey": {
+      "sha256": "188de17b7b62ec4c0deb09d82b4032c5b9795525b09babcab61d2d05683154b7",
+      "size": 163
+    },
+    "addons/README.txt": {
+      "sha256": "bf08d45746f33dca69a4c3d3136c7ae3d67bbbd2a892b9ed85fc7015a36f54ce",
+      "size": 387
+    },
+    "DayZ_layout/dayz_layout_viewer.html": {
+      "sha256": "ab7d0142beaf85be7efd07b01b1b8e113ed67fe5573842c46ff147d381082120",
+      "size": 68193
+    },
+    "DayZ_Server_Reference/Mission/cfgeconomycore.xml": {
+      "sha256": "be08e7af2d1ead828edb28532fb9ebbe9318f6f2f608cbb83ea5bbf97b584c42",
+      "size": 1907
+    },
+    "DayZ_Server_Reference/Mission/cfgeffectarea.json": {
+      "sha256": "82e026899951fcecb5f8ea315ee6292a01e2944460b76d5b4534a122f238b6e0",
+      "size": 6280
+    },
+    "DayZ_Server_Reference/Mission/cfgenvironment.xml": {
+      "sha256": "01a2feffa44404771b8822eb3e99fb146e4586f9f3df5d8c64f6b5d149c595f3",
+      "size": 5614
+    },
+    "DayZ_Server_Reference/Mission/cfgeventgroups.xml": {
+      "sha256": "8957770d8b5a45c4b10514800ab955a866639b55729fc11ec50730dc4e99f531",
+      "size": 119196
+    },
+    "DayZ_Server_Reference/Mission/cfgeventspawns.xml": {
+      "sha256": "764c4469294b67979ed375ce244f892818524a93211eb285b52404c5660ed608",
+      "size": 81403
+    },
+    "DayZ_Server_Reference/Mission/cfggameplay.json": {
+      "sha256": "15cc086256188633ffb81dc45723853e694c78e46b3d70edba2d33882ef85b94",
+      "size": 2998
+    },
+    "DayZ_Server_Reference/Mission/cfgignorelist.xml": {
+      "sha256": "ca5ad15776443711e660bdd723d30c17068c817aa24f3053574f2f74e9e9d4bb",
+      "size": 950
+    },
+    "DayZ_Server_Reference/Mission/cfglimitsdefinition.xml": {
+      "sha256": "07f4dedfb53e97b6150eb2374c539604b5800b8ec4c4ae243e26419aa77d4d26",
+      "size": 1280
+    },
+    "DayZ_Server_Reference/Mission/cfglimitsdefinitionuser.xml": {
+      "sha256": "09a7c7d1b355c1bae72dda75d13db5d718af3508ce9797ec0c55b6cb41a9d9f8",
+      "size": 1360
+    },
+    "DayZ_Server_Reference/Mission/cfgplayerspawnpoints.xml": {
+      "sha256": "e50a258545cafb49e307e1ae29b2845a738f94fd346c0e072aff011130f3bb90",
+      "size": 13446
+    },
+    "DayZ_Server_Reference/Mission/cfgrandompresets.xml": {
+      "sha256": "bb864f06528492b5d213c0596cb256af2933438551ba31842e653b38218d12a4",
+      "size": 34111
+    },
+    "DayZ_Server_Reference/Mission/cfgspawnabletypes.xml": {
+      "sha256": "a6ac8987c50e100ff9aa2f5dad56a2eb034036f7c4760e21ae178b5698b99a49",
+      "size": 148649
+    },
+    "DayZ_Server_Reference/Mission/cfgundergroundtriggers.json": {
+      "sha256": "a19f03ff58577894b5c5947825a8fa74239a94fb87a6d9f7e4eacbe4906c8ea6",
+      "size": 35
+    },
+    "DayZ_Server_Reference/Mission/cfgweather.xml": {
+      "sha256": "2c328539c6a6ac0557676a1ef1fc18d4280b5ce1e284b655990e3e7becc2cc97",
+      "size": 4738
+    },
+    "DayZ_Server_Reference/Mission/init.c": {
+      "sha256": "376444aa2a99fc6e7aa290ff51327a1c8642cb45e1d2be59f27db00dc3ba8e71",
+      "size": 3142
+    },
+    "DayZ_Server_Reference/Mission/mapclusterproto.xml": {
+      "sha256": "f29120956d14ee59042fd7ddc05a827b0162d4c5fb98797db37aa9cc3f296a03",
+      "size": 34716
+    },
+    "DayZ_Server_Reference/Mission/mapgroupcluster.xml": {
+      "sha256": "7f64d0868a800b83c2bb55f0c73f6873f0154ffbae73c9f7977323cef9a8a186",
+      "size": 4608598
+    },
+    "DayZ_Server_Reference/Mission/mapgroupcluster01.xml": {
+      "sha256": "129d0ebe767592e8a982b1afc3ea0f8580bc88bacb0278c8403f1bf28092762e",
+      "size": 4565843
+    },
+    "DayZ_Server_Reference/Mission/mapgroupcluster02.xml": {
+      "sha256": "36b372121c4f3194808158996e3a0bf1b181f58949e6a3f0fb977c70387eb05c",
+      "size": 4618527
+    },
+    "DayZ_Server_Reference/Mission/mapgroupcluster03.xml": {
+      "sha256": "2ebde16d76bb881a157cc31731e446dfca9fb616f37f0d7a86b169a68e68c02c",
+      "size": 4653357
+    },
+    "DayZ_Server_Reference/Mission/mapgroupcluster04.xml": {
+      "sha256": "5346b926287a1f3a3c34c3ead3dfa3134f58ef4095a3219f90741c18673b1f1c",
+      "size": 1612664
+    },
+    "DayZ_Server_Reference/Mission/mapgroupdirt.xml": {
+      "sha256": "296d13eef4606680688e05e1a66019f4bb6c91c4cd50450022f123228de5d45f",
+      "size": 71
+    },
+    "DayZ_Server_Reference/Mission/mapgrouppos.xml": {
+      "sha256": "acfb317740198038246a4db5ee6fb7a8d16855aca41fe465defb2351df65b984",
+      "size": 1538239
+    },
+    "DayZ_Server_Reference/Mission/mapgroupproto.xml": {
+      "sha256": "430368d1717cf861e66f09ded021cd5879da1a220aa02715e8345eb3fbc995ae",
+      "size": 1212762
+    },
+    "DayZ_Server_Reference/Mission/CustomSpawnPlayerConfig/init_mod.c": {
+      "sha256": "394ae5a6d7d395d25ddb6d979751aa00a9943ad14efe205334c7f7ef8edddf94",
+      "size": 1368
+    },
+    "DayZ_Server_Reference/Mission/CustomSpawnPlayerConfig/Script.c": {
+      "sha256": "e1f326321472e08a67b1377f63ab4380e9157c73f2c7cc527aa47efe281cd341",
+      "size": 10769
+    },
+    "DayZ_Server_Reference/Mission/CustomSpawnPlayerConfig/Sets.c": {
+      "sha256": "cdefbb09784a4ff95013c0489aa1d3579c81f889beeafce1a9a9e9d2e8bc0696",
+      "size": 3843
+    },
+    "DayZ_Server_Reference/Mission/db/economy.xml": {
+      "sha256": "c26b5f896870c8a7ef951e9db7754a70de51acdd85043e6ff471420332b537dc",
+      "size": 509
+    },
+    "DayZ_Server_Reference/Mission/db/events.xml": {
+      "sha256": "f9be3225c4608b771bc79312d61210a19104d0080a65e2521fb8572c244f0f79",
+      "size": 68638
+    },
+    "DayZ_Server_Reference/Mission/db/globals.xml": {
+      "sha256": "6e93cffb609ed78a071ba39983f89a39054a933d973ccec4b9f9f66871d26568",
+      "size": 5473
+    },
+    "DayZ_Server_Reference/Mission/db/types.xml": {
+      "sha256": "25c7549e9ebec7db25bf825a1511a9a26ec8f9e3abe3c23ff1ac792335597add",
+      "size": 1813127
+    },
+    "DayZ_Server_Reference/Mission/env/bear_territories.xml": {
+      "sha256": "3ee5c0987b2b9ed3e443c98b97543cecb6ed0356af8212e81afaba4f7de1f275",
+      "size": 7472
+    },
+    "DayZ_Server_Reference/Mission/env/cattle_territories.xml": {
+      "sha256": "3bc6f19e91d2484d732ee49c730ce2a6ff701754085665c114584c78c267c5dd",
+      "size": 22893
+    },
+    "DayZ_Server_Reference/Mission/env/domestic_animals_territories.xml": {
+      "sha256": "b8e373905024dd172c6499b2fb615678184ea24d1b8b9d189a1dcc0a422f1b60",
+      "size": 22893
+    },
+    "DayZ_Server_Reference/Mission/env/fox_territories.xml": {
+      "sha256": "b5824e840e7f61d60c0316d607afaab462e5db8d87e5af2dddcdc67f0632bb82",
+      "size": 36914
+    },
+    "DayZ_Server_Reference/Mission/env/FS_DogZMB_territories.xml": {
+      "sha256": "596b19c1edb73bde6e961b19175ed3a3072f7dccca27c60e678533dc0ef1e674",
+      "size": 919
+    },
+    "DayZ_Server_Reference/Mission/env/FS_PseDOG_territories.xml": {
+      "sha256": "33c3966d32c40fe98d1cb65e5e341f83b4dd41b12cdc07c3e0c133738967e5fe",
+      "size": 1264
+    },
+    "DayZ_Server_Reference/Mission/env/FS_SlepDog_Zmb_territories.xml": {
+      "sha256": "1701d7431ae97216b66285416563292ca635e2bedc7d12ab7da0dd137ea813b8",
+      "size": 18134
+    },
+    "DayZ_Server_Reference/Mission/env/hare_territories.xml": {
+      "sha256": "5c528ce291b59e21f6e44336fb68df361b4c673d109ec927ee0e3c70853d2eb2",
+      "size": 43216
+    },
+    "DayZ_Server_Reference/Mission/env/hen_territories.xml": {
+      "sha256": "4ca86f1fefeebd215dc8a4b690e7d22cadea8493373a8c0d2eb55b770e8e0645",
+      "size": 41716
+    },
+    "DayZ_Server_Reference/Mission/env/HIMERA_territories.xml": {
+      "sha256": "45dbd90a6526d94de9a502aae86ae7bb1b8b79c5be59c6b94060f1a9beb7f731",
+      "size": 12705
+    },
+    "DayZ_Server_Reference/Mission/env/Mutant_AoD_Forester1_territories.xml": {
+      "sha256": "9e18c0cf0c52e791430e2111807e643c4331e58bfc96787d156a861671a0bb61",
+      "size": 868
+    },
+    "DayZ_Server_Reference/Mission/env/Mutant_AoD_Tushkano_territories.xml": {
+      "sha256": "668d4b5de4de06f7f97ad0c7f1e607c4a0a05d7269633d41ef46a6feea101a18",
+      "size": 5004
+    },
+    "DayZ_Server_Reference/Mission/env/pig_territories.xml": {
+      "sha256": "737fe92c766eeffac7a5c5e4446cb457a8593823a4c688e5fda7f5197b6edcbe",
+      "size": 19179
+    },
+    "DayZ_Server_Reference/Mission/env/red_deer_territories.xml": {
+      "sha256": "eeb5df0b409602b8b915025f3e04ca053f7bb0297ffcd8b49f1ccd1aff1decd1",
+      "size": 26417
+    },
+    "DayZ_Server_Reference/Mission/env/roe_deer_territories.xml": {
+      "sha256": "07747d8de3f7678c000db41ff91e7a3251b7f5a737cf4d795ae08680f89ee918",
+      "size": 28761
+    },
+    "DayZ_Server_Reference/Mission/env/sheep_goat_territories.xml": {
+      "sha256": "37652c9c12cedaa4b6db6bdcaf6146d7fc9a4982ad82df9bd87142d7f63e55a2",
+      "size": 16198
+    },
+    "DayZ_Server_Reference/Mission/env/wild_boar_territories.xml": {
+      "sha256": "45febec975f59c2ba03c2c08d4eb1392978e50d3a796bef25176b2e5374aeb22",
+      "size": 21477
+    },
+    "DayZ_Server_Reference/Mission/env/wolf_territories.xml": {
+      "sha256": "859c8fec1da9378be855161f8dbca92f5c395f8514d1298f140fba3422ad99fe",
+      "size": 29234
+    },
+    "DayZ_Server_Reference/Mission/env/zombie_territories.xml": {
+      "sha256": "68b0e1461f60c65e4b34aa1a9af8668fe12a0c0ca588f6abb497fc7c0f36a714",
+      "size": 81729
+    },
+    "DayZ_Server_Reference/Mission/expansion/settings/AILocationSettings.json": {
+      "sha256": "61a92e542dfd053feaf377e1d4054a2de31748474d7285c85c15ff6c24def053",
+      "size": 162457
+    },
+    "DayZ_Server_Reference/Mission/expansion/settings/AIPatrolSettings.json": {
+      "sha256": "14846ff4dcd94ebc2f150990215fd941c7d393e618ccbe795cd6a373e2112ba5",
+      "size": 28449
+    },
+    "DayZ_Server_Reference/Mission/expansion/settings/SafeZoneSettings.json": {
+      "sha256": "6ca244835d2dd5d1feb41af8311f1f6076111bc63cecbc19477c3fe775c810fd",
+      "size": 436
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Creatures/PvZmoD_CustomisableZombies_Profile/PvZmoD_CustomisableZombies_Characteristics.xml": {
+      "sha256": "3fbd3eccffc5db0d032b408ddb5afd5653ada22e194b407151e7ff1fff763e46",
+      "size": 344816
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Creatures/PvZmoD_CustomisableZombies_Profile/PvZmoD_CustomisableZombies_Characteristics_Vanilla.xml": {
+      "sha256": "530753db080afd01a962216e4d422ece454ef6d05ac8bbc1db68ae171d9ec0bc",
+      "size": 50242
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Creatures/PvZmoD_CustomisableZombies_Profile/PvZmoD_CustomisableZombies_Globals.xml": {
+      "sha256": "9d8b907342f5a5d954bc27b0d7d2924570627c24be71e720760b0e6ca092b3f0",
+      "size": 21440
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Danger_Zones/Config_NightZones.json": {
+      "sha256": "44d63eb212efadcc65aff7cb7f63d63262729419c541ee1cf90612a21e8b2487",
+      "size": 117796
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Danger_Zones/Config_SoundZones.json": {
+      "sha256": "8ab90b55597dfb2aeb7088ce79126ebf106185e33e59879655c73d613af00866",
+      "size": 142577
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Danger_Zones/MedicalAttention/config.txt": {
+      "sha256": "151a5623f4d34a7b213f9f92f930284c26aa55ba42a49043e0dd92d8bfab71a0",
+      "size": 30031
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Danger_Zones/RadZone/RZConfig/ClothesProtectionConfigV1.json": {
+      "sha256": "bb5053f2795b50d986ac3b458b5bd9c1babb8dcdf22a93a09a769e7516d84343",
+      "size": 10698
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Danger_Zones/RadZone/RZConfig/CrateSystemConfigV1.json": {
+      "sha256": "7119f314d3837dac54bf984118de657f6f1e6dfd2a2b2a20510454f762dddf11",
+      "size": 324
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Danger_Zones/RadZone/RZConfig/RadiationConfigV1.json": {
+      "sha256": "b5b8fbf113cd6c13ef8149302bb780c8cdd5b13393790c6d929ed9027bb58727",
+      "size": 14268
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Dynamic_Spawns/Config_CacheSpawner.json": {
+      "sha256": "35ed2ca99ce4c93a639c525ab788ccfb39a682efe5769890df13a385f5bc62cf",
+      "size": 61094
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Dynamic_Spawns/SpawnerBubaku/SpawnerBubaku.json": {
+      "sha256": "01f27a606fbaa059267baee33fb1bb1b0c7b10e26fb79d4799ff54bb7372c52f",
+      "size": 47
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Expansion_AI/ExpansionMod/Settings/AISettings.json": {
+      "sha256": "19a923044cef5a8977f175e67454156160e8d40377941f6fba0c50f7c7d20019",
+      "size": 1052
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/Trader/TraderConfig.txt": {
+      "sha256": "c89a8acfd9711e2ed9a5a48f61ab9dde1c42794506732b64ad18897617c11347",
+      "size": 224467
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/Trader/TraderObjects.txt": {
+      "sha256": "83854e8d1c1eafcb174181fa5abbcb1579ecee2b6d3a3b38076196df90152f50",
+      "size": 12315
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/Trader/TraderVariables.txt": {
+      "sha256": "577844a83face225cd50814f681b63753cfbe4863e2088f754c18df97fa82464",
+      "size": 1127
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/Trader/TraderVehicleParts.txt": {
+      "sha256": "e4357a930d63e2952227e3873df04c15304f40e40d7ebe2510f58d3fd09d365d",
+      "size": 4865
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusBankingConfig.json": {
+      "sha256": "785814f19ebded29d8ab0d3c23022ac3b6bdb0004e14ebfd8d89a59040a29584",
+      "size": 427
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusGarageConfig.json": {
+      "sha256": "03ba0e3755602fb83c8e018e330527f35f55184fec5af4d9b5c4cdd100c01e64",
+      "size": 1775
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusGeneralConfig.json": {
+      "sha256": "f49a1900ea282af616e6a1e985f47dd8f68ace632d7f64b43faffcfea8c5b9a8",
+      "size": 10405
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusInsuranceConfig.json": {
+      "sha256": "f34a217328b24f3c57f00124c2401d854262c4577d54b716920693971ee319bc",
+      "size": 579
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusLoggingSettings.json": {
+      "sha256": "403c31cd1f2ff4777b810f03ec5d1f8c661abaa7d0fdf6445b834de0344920d0",
+      "size": 53
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusSafeZoneConfig.json": {
+      "sha256": "fd6a2e82f69c81b154a0ee0ae2573a62d768bf234ddf294befbf3e8e52c12d43",
+      "size": 817
+    },
+    "DayZ_Server_Reference/Server_Custom_Config/Trader/TraderPlus/TraderPlusConfig/TraderPlusVehiclesConfig.json": {
+      "sha256": "81c4164108d13f3ec6cad2381fe346d2f45e8e19cb73cb7b9f29a9bdd666aa58",
+      "size": 1954
+    },
+    "Documentation_DayZ_Qwest/00_Главная.md": {
+      "sha256": "c24bfef9d5db2f12d222e3d2f2a1056e8e352025b13bd24c50738bd7733cbc40",
+      "size": 2185
+    },
+    "Documentation_DayZ_Qwest/01_Текущее_состояние.md": {
+      "sha256": "77fce3dfaf3169018e57f6b7981f6492c2c8f232edd6053f5a501df5782ec05d",
+      "size": 1256
+    },
+    "Documentation_DayZ_Qwest/02_Решения.md": {
+      "sha256": "824bb8c10f4301ee2d388964faade68afcf126eaf0e25332217c134f614b2876",
+      "size": 1123
+    },
+    "Documentation_DayZ_Qwest/03_Открытые_вопросы.md": {
+      "sha256": "3d76d3127cdd9234486e41e726243fffc28804dae636d8ec0d39eda91b3b7358",
+      "size": 1147
+    },
+    "Documentation_DayZ_Qwest/04_Архитектура.md": {
+      "sha256": "958f5295a82a84cfbe77410c0690366906246b31b0151cb5d3a4bfd695419020",
+      "size": 2295
+    },
+    "Documentation_DayZ_Qwest/05_Очередь_задач.md": {
+      "sha256": "434124f44238363649096dd637aa1451e49762444a4f25779f6d60e11ccf187e",
+      "size": 10703
+    },
+    "Documentation_DayZ_Qwest/06_Идеи.md": {
+      "sha256": "bc0b424501dd28e19f6205c3ff63bf6cb802460d53bcf2ad0cfa643d4e329253",
+      "size": 882
+    },
+    "Documentation_DayZ_Qwest/10_Правила_агента.md": {
+      "sha256": "865ad6f1371592172a39c4fd2ec59d12002b2d870338761a4d79388837462d9d",
+      "size": 3641
+    },
+    "Documentation_DayZ_Qwest/11_Задача_агенту.md": {
+      "sha256": "b9ea0ac02f65173d79643d7ed5cf0d9c9362d0db14d20ea8ac6cdf91f6238269",
+      "size": 39308
+    },
+    "Documentation_DayZ_Qwest/12_Старт_агента.md": {
+      "sha256": "1c94f2d546430ca081f699bbc79f1b72648887187367cfb817623de44e904865",
+      "size": 8593
+    },
+    "Documentation_DayZ_Qwest/13_ЛОР.md": {
+      "sha256": "07a12f901dc64ee9e95950f09bca6fd96b6d611579a3a0a4f417175ce3e16597",
+      "size": 27513
+    },
+    "Documentation_DayZ_Qwest/14_Квест_Миграция.md": {
+      "sha256": "3dc8aa4f1ba1d3ebc196b03bd2962b115dc5187257b7c7e9eb47c1c12bf6dc79",
+      "size": 43209
+    },
+    "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md": {
+      "sha256": "8a076fd4eef25b9052ccb3b2cc2ba622253fe205be727c2705409c4d327de91d",
+      "size": 43580
+    },
+    "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md": {
+      "sha256": "dff5b9adb8b6bd406e6935702921765180a1b80c65999baccab0b5e197504e4e",
+      "size": 38418
+    },
+    "Documentation_DayZ_Qwest/17_Реализация_Миграции.md": {
+      "sha256": "f889793bd43483a77817f34d378d7ae1df78234b1e69346064e2726a62f66345",
+      "size": 3371
+    },
+    "Documentation_DayZ_Qwest/18_Идеи_Квестов.md": {
+      "sha256": "69e6dee30dad9387376d8f12aff2c1db1a6dafe7a07595ba618da1ffcd6865c7",
+      "size": 29255
+    },
+    "Documentation_DayZ_Qwest/19_Silver_77_Zone.md": {
+      "sha256": "a708c699530fa66b5c27afeeec2fc811645da7b6371a1e832332484e0969790e",
+      "size": 66803
+    },
+    "Documentation_DayZ_Qwest/20_Silver_77_Zone_Освещение.md": {
+      "sha256": "1d31e8a07352f99351829fce58408f2ebe03d90da37361e4359ed19a4fb86b71",
+      "size": 30840
+    },
+    "Documentation_DayZ_Qwest/23_Silver_77_Zones_Структура.md": {
+      "sha256": "9111ab9a483a77e6b74234337838a61cf34aab9ffe645118a196bb3668971a67",
+      "size": 2267
+    },
+    "Documentation_DayZ_Qwest/24_Silver_77_Zones_История_и_план.md": {
+      "sha256": "53b8a383a52a4ea7337b258b31ed4add467e14c0fbe15c9fca715675c9b1dfd8",
+      "size": 1814
+    },
+    "Documentation_DayZ_Qwest/25_Silver_77_Zones_Roadmap.md": {
+      "sha256": "478c3a20ee22a66660e8e960581a2ecf5c6f4b88423cdeb45d69730c9c272cd0",
+      "size": 1128
+    },
+    "Documentation_DayZ_Qwest/26_Silver_77_Zones_Приоритетная_задача.md": {
+      "sha256": "3ad5df5b129e3cdbb02a5d14bb4e1c091b03843ceba8ccf3332b23da91669490",
+      "size": 1390
+    },
+    "Documentation_DayZ_Qwest/27_Контроль_событий_сервера.md": {
+      "sha256": "fe0da3acb7105cefde72f1025c1ed38d27d3eee94f84e8a7f1f618abd2ae746e",
+      "size": 5214
+    },
+    "Documentation_DayZ_Qwest/28_Источники_данных_сервера.md": {
+      "sha256": "8f6bec62b1cb383d12f9de934ce0b89aab514f1838bc966f086f87690cd8d652",
+      "size": 29753
+    },
+    "Documentation_DayZ_Qwest/29_Карта_мира_сервера.md": {
+      "sha256": "fcfc11faf8fc066b0dd6c41774585dbad3e8f08cf845d0c614ec2b963c1b1e66",
+      "size": 11339
+    },
+    "Documentation_DayZ_Qwest/30_Единая_система_проекта.md": {
+      "sha256": "03a692b5dd490ec50776be1fbf879be84852b5c0987209cc362ecb4511ac219b",
+      "size": 4033
+    },
+    "Documentation_DayZ_Qwest/31_Silver_77_Medicine.md": {
+      "sha256": "3cc88f06a440288ab4ecf04560e51a15c132cb14e99a0af9b00dac8d6154fef2",
+      "size": 3561
+    },
+    "Documentation_DayZ_Qwest/31_Квестовая_система_Приоритетная_задача.md": {
+      "sha256": "829367859c5d2094c123cbc8d19f8b9566df8bbbc5be775338e50c845714f748",
+      "size": 1645
+    },
+    "Documentation_DayZ_Qwest/32_Silver_77_Medicine_Аудит_DayZ.md": {
+      "sha256": "b9ffb6bf36a2123943d40dfb5ccd7a056d3e0d36c4172a79954e71d25e4c68e7",
+      "size": 7103
+    },
+    "Documentation_DayZ_Qwest/32_Silver_77_Migrate_Приоритетная_задача.md": {
+      "sha256": "6a8660ed0ad0967a0ac643c932f231f10e395712d9325c34466b11de402f840e",
+      "size": 1765
+    },
+    "Documentation_DayZ_Qwest/33_Silver_77_Medicine_Идеи.md": {
+      "sha256": "cc0fcdefb8eb0e62a21c73347db3f9d2da8438780f720b64e09e78844c36b0a7",
+      "size": 2350
+    },
+    "Documentation_DayZ_Qwest/33_Контроль_событий_сервера_Приоритетная_задача.md": {
+      "sha256": "5ef6b0598a920a1e6b93cf4a36995cf30efd1c403b4cee10b51c6051342aab1a",
+      "size": 1303
+    },
+    "Documentation_DayZ_Qwest/34_Silver_77_Medicine_Структура.md": {
+      "sha256": "9cab16450aa5b0aebfc4cfb0153bdf0e5c268fea22d33dd66741718ba75ec190",
+      "size": 1015
+    },
+    "Documentation_DayZ_Qwest/35_Silver_77_Medicine_История_и_план.md": {
+      "sha256": "9e5900e996b3bb3be4625ad5527bc0f5388ca7c6c98150ca31ec0134eecfaa32",
+      "size": 1212
+    },
+    "Documentation_DayZ_Qwest/36_Silver_77_Medicine_Roadmap.md": {
+      "sha256": "be7bbf1ee299fef24484c61bb68df8ebb6d460e6b82449cf00e02aafa3410849",
+      "size": 916
+    },
+    "Documentation_DayZ_Qwest/37_Silver_77_Medicine_Приоритетная_задача.md": {
+      "sha256": "8e413caada54ac96566ecbb3a9aaea9db4df4defb4b969088adbd01fadcb8b1c",
+      "size": 1123
+    },
+    "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md": {
+      "sha256": "de1539e8a1c0544ffa35bb4bdb35eddfab459e7a04c8d34de01bf033aa142c21",
+      "size": 118966
+    },
+    "Documentation_DayZ_Qwest/39_Глобальный_план.md": {
+      "sha256": "a103d8b20bcba11745434b2f38c8d9ab616306666c4cb9d46b98d55901840c12",
+      "size": 7368
+    },
+    "Documentation_DayZ_Qwest/40_Выполненные_задачи_глобального_плана.md": {
+      "sha256": "ae99b989aa6e3158d8695a53b86e2e8f9c873faa5b5f9ebd6729b52c12ab790f",
+      "size": 1239
+    },
+    "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md": {
+      "sha256": "d77bb7de6257400462c1204b9c3ad3cb8db5ef64a93ed48054e7f5668f4c2e09",
+      "size": 58788
+    },
+    "Documentation_DayZ_Qwest/ChatGPT Image 15 июн. 2026 г., 22_49_12.png": {
+      "sha256": "e603587a94bcb77839465c4ea3fa43134d68d3b06949809014c146a2c775ce88",
+      "size": 2062978
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615154517.png": {
+      "sha256": "71ceafba1891e91cec1034941fe228b78fbc3fb3673d60db43cbe0852d97521b",
+      "size": 2873387
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615154630.png": {
+      "sha256": "69037411e77f6794162d8d5b175f92db1395c19c71aaafe5ff633000715c1afc",
+      "size": 2723782
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615164847.png": {
+      "sha256": "a2fd0de2f6a4273202e23d8446fb0642e7e41e887b2b029c20d555611fb6800f",
+      "size": 2374205
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615165138.png": {
+      "sha256": "82eab09e2daa90812fafbfb1bb614625c82c6f59a2c7a7ba9de17b2a8e9e4966",
+      "size": 2897768
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615165417.png": {
+      "sha256": "cf792b9cfd4032c633be80af916c0f17234083d410d2ab0c25ce0b1a515b6421",
+      "size": 3147078
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615165812.png": {
+      "sha256": "029f6bff8a8d4ba28260ef766e647fbff0458f30224e3dbc442dd5a3e40c4243",
+      "size": 3135228
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615172553.png": {
+      "sha256": "1f3a53863bb7f352e6a3f35131ca5936628898466ca412532477576f4a69de3d",
+      "size": 2575892
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615212110.png": {
+      "sha256": "75275f2b236ee26ea7e1d29c2541597ecdaf7dedc93498d56c59461c06d0e60e",
+      "size": 2791005
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615215633.png": {
+      "sha256": "8051a2f94b32cdcb34228138b524c75c37e3911c934a2db1c82a507ac1ce7213",
+      "size": 2604019
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615221218.png": {
+      "sha256": "30b27e008279aef33cd6c625e57c481a80dec58900e1258ade1334460396f605",
+      "size": 2707807
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615231225.png": {
+      "sha256": "46677ac98b671997eddc34a3121c2678d5a17ac6afb3ee4bcf56cb190d8c311f",
+      "size": 2356433
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615232916.png": {
+      "sha256": "f6a025080af715a5ac8ffbf8f37dad49ce75734a4be09232c8de49d8f4fb4bd5",
+      "size": 2796831
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615233907.png": {
+      "sha256": "913e412aa3a47edc94465b5728b1708e74c670bd854e3d409b518fd48e3c0248",
+      "size": 2923089
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260615235523.png": {
+      "sha256": "4817ff47ca96af6e48482a1c2c8931d32f97a02faba66dfcc8508da181a29e7f",
+      "size": 2680423
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260616001608.png": {
+      "sha256": "f9eb2be90d5d609aaa8c4145a994f8c6afb579e95c64a1659042a805a11c91b5",
+      "size": 3056085
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260616003941.png": {
+      "sha256": "f6a7e2b043ccccda110e4b5842183bdfd07c73654d740f83b08e4eacab80a0b6",
+      "size": 2924286
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617220820.png": {
+      "sha256": "776232f65993b694e3c60dd8cd2dd342ab0f6560afb397d3421fae5d43cac8d4",
+      "size": 3216113
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617222832.png": {
+      "sha256": "b9765e502acb4169d27a04ab389720a1cf32adc6198162549cb98dbcf8ab4357",
+      "size": 3076913
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617224259.png": {
+      "sha256": "34c62ce1de5083ba71a240bf5dd48c528943f7dbf5ef6923acded079c5eaa2a5",
+      "size": 3071104
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617232356.png": {
+      "sha256": "5d4eb67c5076ecb0c8fef5690efd6070287af24fd85b25af125c89a2349b7fed",
+      "size": 2339561
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617235131.png": {
+      "sha256": "4736562af2a83dafd8c1574c31acb7d74c4b982599494df99e4adf45cc9a4805",
+      "size": 2075051
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617235207.png": {
+      "sha256": "6a1e3d409180b4b1dabdb514824361518b9a06676298a06117ce850c1fd3f356",
+      "size": 2068006
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260617235319.png": {
+      "sha256": "2e11335ca0fe4f3ba0a11211c80fc5a56d4226771f7ac7952193a10bf9235927",
+      "size": 2219121
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260618001250.png": {
+      "sha256": "2cfb1acd03c19824b16fd47beffe92a567a81347b5199c081495edca31b115b3",
+      "size": 2758853
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260618002725.png": {
+      "sha256": "12572837b71a9774dc80364fa7e33b784cd9a3dc708b62a861bf3b5e37c752ee",
+      "size": 2925728
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260618002749.png": {
+      "sha256": "c7e30c827b0b4f481255ab7399cb5d382f84e0e786838af8e982f4c55fb19c07",
+      "size": 3286686
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260619220344.png": {
+      "sha256": "24176bf4be14a6ee7039d1478dc7791616779aab57acf22188746c141e97391e",
+      "size": 1956681
+    },
+    "Documentation_DayZ_Qwest/Pasted image 20260619235956.png": {
+      "sha256": "f76db81f99c50b712c14f1e64dbb04923fbb2bf28acf3179fb2aac69ee311565",
+      "size": 2871052
+    },
+    "Documentation_DayZ_Qwest/test.txt": {
+      "sha256": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+      "size": 3
+    },
+    "Documentation_DayZ_Qwest/Квесты, идеи описания классов.canvas": {
+      "sha256": "e4cdf25f0b992b8ca038504b60bb7533b3de9544205198f5c715cc2512b46712",
+      "size": 7154
+    },
+    "Documentation_DayZ_Qwest/.obsidian/workspace.json": {
+      "sha256": "90093f5e5fa847eba40251b63a82502dbf36cfa210edbd99cbe321167a439857",
+      "size": 6139
+    },
+    "Documentation_DayZ_Qwest/.trash/Pasted image 20260615173045.png": {
+      "sha256": "8e0f201e76f93963b05fdd01aac0cadd878d4f612288d5e4a251156f73eaf7bf",
+      "size": 3332788
+    },
+    "Documentation_DayZ_Qwest/.trash/Pasted image 20260615211844.png": {
+      "sha256": "6e755500e0f8db16ca79b90ab370ec18e872dca3fcce295931082c57ce0bf287",
+      "size": 2671929
+    },
+    "Documentation_DayZ_Qwest/.trash/Pasted image 20260617235058.png": {
+      "sha256": "ff1d608b27e4c00a93af79bc04dd85a56ac1761f2f95e748323355735a4d9f81",
+      "size": 2332185
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md": {
+      "sha256": "b2dfc73b2451be323af37924bf7a549ce547e42dec4d457af88c89196452cfab",
+      "size": 2023
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md": {
+      "sha256": "6a49ac82ad461d32bd523682c6283ead88282bc60eecb119b66bf656492a8703",
+      "size": 13999
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES.md": {
+      "sha256": "2e05d266a3f5f74975a072cba49dec17bbfeccc6cb19f56de9e68859c4bf1629",
+      "size": 5133
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md": {
+      "sha256": "85a1428cd0f651526775d9ad2e681bc09fab3fda42ef3ceabbdc49da87fb4b22",
+      "size": 6522
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md": {
+      "sha256": "fc4a8e04e57f62c05ebaf0a06abf630fef7ee3eb8b796af3b0c28d617c9d7c94",
+      "size": 6499
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md": {
+      "sha256": "91d4022169fbebdd9a3aec66811052624f75d22f737800d5ea039ad9242693d4",
+      "size": 13979
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md": {
+      "sha256": "63160e14bee35a062c6e496a6425c6b6ff9561b5315dc44ca30462a4507ed23c",
+      "size": 12734
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md": {
+      "sha256": "59d9b25c88a9e65a4439f64fc9a374421dce8c97fb1ab4f571ef9fab07fc5692",
+      "size": 14651
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md": {
+      "sha256": "6a522caf548c1a371c2feb7c557369b61759b73a7e5d2bfa4e79551321ba0f4f",
+      "size": 8127
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md": {
+      "sha256": "13e6071b6ccbcd0c8468d1c8e218d2f092a0bb1287835943ad854f8dd16563a5",
+      "size": 13234
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES.md": {
+      "sha256": "40b168e227752927cb8fb96ef441eb72b44d279aa382f16c7755023cdbfa7510",
+      "size": 6057
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md": {
+      "sha256": "74734af614c4224790e1ab22ded9aa39c7989b204b9195eea0cb040f382ac61a",
+      "size": 6290
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md": {
+      "sha256": "5b77a9e6393dec0893470233f6e9ea90949e360ec7e61c3fe0e55718eb7be3dc",
+      "size": 5563
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md": {
+      "sha256": "e699bcf59bdd282cd690363f51f7e281f072fd31940de94932c46ce9f57b236d",
+      "size": 6280
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md": {
+      "sha256": "c8168123bd1509ab5ff38dbce6891493299294f3b70331289f33b8921100a918",
+      "size": 82678
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md": {
+      "sha256": "98470f2f9368f0ee65f4aa2cddf87eb7eb681fb0de090592f3f87136d82bb972",
+      "size": 6667
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md": {
+      "sha256": "b6da8e7d547f8b045488807daac1fd9ddc6c2f2d5f2d4126fa0d29c32afc4bc6",
+      "size": 8437
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md": {
+      "sha256": "e4edda6dba60b2239b260ec7ec53be1de69fa2d4b658e8b70df76784a9276b66",
+      "size": 6490
+    },
+    "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md": {
+      "sha256": "5f359fcbde3b90fa30936adc113ede92834bf8107f9ecbeba544c5d7bffc449c",
+      "size": 2576
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md": {
+      "sha256": "bd0d46a8dea299c5669cf814e4393dd1878b496af9789f79fbb71cc9b6d936f4",
+      "size": 1169
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md": {
+      "sha256": "fd68f70bc2a3c5f3a8297c5ece2adcfcb642d1295360389ecc33e548a31cd66d",
+      "size": 8367
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG.md": {
+      "sha256": "ed281275db0f54ea2570f084b114412fd527fe8c1136632ec5a1ce29de4c0e20",
+      "size": 6573
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md": {
+      "sha256": "d635ae7e39fcbbc015767c8f9cef8d37373e5bffc04f03545ad33a6a03c6bfef",
+      "size": 3763
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md": {
+      "sha256": "fece899669169473153ab0d7f786b0b2339f1396afbf6153f96b015f3fea6eb0",
+      "size": 19247
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/README.md": {
+      "sha256": "cdd92e5db6c3bddc4223e9d0da4d7fa1ca6806e06586c78d26563034522e2959",
+      "size": 2995
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION.md": {
+      "sha256": "fdbd2ec6fca936d686960d1160b79ee14dcee2f2df89062ea0dba2144871da83",
+      "size": 8069
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG.md": {
+      "sha256": "37df96d88a9ef46cacfe125a5bd37fa312e159ca21bc5ae824ac50611c131f3d",
+      "size": 11013
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md": {
+      "sha256": "5ca26ecb646aa5fab77771b819ced0a07cb5f8a29d7f776abef6df5f11e0c5f5",
+      "size": 5124
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md": {
+      "sha256": "fc6cfc039bc1f1c1784e523b87e85101d5632f1f584d81f9c3e20efa9a6f8d57",
+      "size": 7316
+    },
+    "Documentation_DayZ_Qwest/21_Project_Docs/STARTER_QUEST_CONFIG.json": {
+      "sha256": "dfbc14a26d583d09d23205451165466e181bf38d5685b5c5d6331fb8eb779167",
+      "size": 23491
+    },
+    "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md": {
+      "sha256": "e04c156cf5cd41838d349f913de21d1739b26b4b01efb90327431fa855d7ee33",
+      "size": 13503
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/00_INDEX.md": {
+      "sha256": "d6412102e6c3b244a09e5834cf51c87a578e4aedec6a9ed8977a56f0baf56dd0",
+      "size": 2821
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/AGENT_TASK_LOOP.md": {
+      "sha256": "7d11135acb976fd8d9fa68652e0aad2d415ae59b82f4d16a26b9d4756dd712d5",
+      "size": 965
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/BUILD.md": {
+      "sha256": "f242c0ec92120c6cee74a367c54b815108c67d46b4a539c4533956c3eb2dd865",
+      "size": 8341
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CHANGELOG.md": {
+      "sha256": "ed281275db0f54ea2570f084b114412fd527fe8c1136632ec5a1ce29de4c0e20",
+      "size": 6573
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTEXT_2026-04-20.md": {
+      "sha256": "11a434596c05ae9cc7ecf0c63147d2088939158afa10543f2c617b85bdad1ca9",
+      "size": 10914
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTROL_CONTEXT.md": {
+      "sha256": "37bf376f5d5f0419639f6c47d0a1239dc0d6fce0532a84aa8020444d6fecc778",
+      "size": 32282
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_EMERGENCY_CONTEXT.md": {
+      "sha256": "9bd7b49c02e9f74d61706c6eff9a6c3d7310b1cb5d5cff43eef78f00bddfa23f",
+      "size": 11408
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_FAST_HANDOFF_2026-04-27.md": {
+      "sha256": "cc751d5f4574ca2f0fe7f192e36235c072740d2d6c3886c0e8db209bc77d9204",
+      "size": 7232
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-25.md": {
+      "sha256": "e6864f55eec17b7ae40ca11d4006feb1f734a10e5a93568f593397adefbc8860",
+      "size": 4991
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-26.md": {
+      "sha256": "8335d758fed4f7292aa101ff20a258637f54edcdd252a8052ebd3cb26c6b1767",
+      "size": 18440
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-29.md": {
+      "sha256": "7ae5fc921d9061c75512ba8769127cab847f7286791a7bfa90a04445a424a5b9",
+      "size": 42761
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_START_HERE.md": {
+      "sha256": "07427b42f37919f80ceac4cea3c3ee226cc0719d503250e42be83f3484de3e76",
+      "size": 46824
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_WORKLOG.md": {
+      "sha256": "044e2949ace8316655967bc334512b488968060f47c332632dd47bfed3fe100f",
+      "size": 97795
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md": {
+      "sha256": "79937f71e77b32c32483d4a97f387bbe249c8ac592c7b8ae97fa7d990c261485",
+      "size": 18694
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README.md": {
+      "sha256": "163573f81cdeabf2618d4dc681c41b9b164bb8a573441310cadef082d63a672d",
+      "size": 2916
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_INSTALLATION.md": {
+      "sha256": "fdbd2ec6fca936d686960d1160b79ee14dcee2f2df89062ea0dba2144871da83",
+      "size": 8069
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_JSON_CONFIG.md": {
+      "sha256": "37df96d88a9ef46cacfe125a5bd37fa312e159ca21bc5ae824ac50611c131f3d",
+      "size": 11013
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/REPORT_2026-04-18.md": {
+      "sha256": "e209a219ab2143bbc3db83f96e30cb331daf20a580bb1664b9d21739d9546cd1",
+      "size": 12823
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/RUSSIAN_ENCODING.md": {
+      "sha256": "915d7f426a6f0d208f7b194671371483ed73a2266fa2f5d88d5ce19680b42338",
+      "size": 4739
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/SPLIT_CLIENT_SERVER.md": {
+      "sha256": "fc6cfc039bc1f1c1784e523b87e85101d5632f1f584d81f9c3e20efa9a6f8d57",
+      "size": 7316
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md": {
+      "sha256": "f17aa86c7d742ffde3ebe4948ee47ef5e348ced8b1d08b1a9c70f41516ea20cc",
+      "size": 6509
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES.md": {
+      "sha256": "fc4a8e04e57f62c05ebaf0a06abf630fef7ee3eb8b796af3b0c28d617c9d7c94",
+      "size": 6499
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/ENCODING_RULES.md": {
+      "sha256": "c3aa9b459ae5f3e97318f7e85f308f573908e05bab04f8724df986006277cdba",
+      "size": 7157
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/GIT_REVIEW_RULES.md": {
+      "sha256": "71cd5b74d78fa29124f2991c5f3d697f26c94c2007cb7c30de868ba5b87fb296",
+      "size": 4210
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_EDITOR_RULES.md": {
+      "sha256": "59c3dad8228a33a5ffd0ac3396c771c8b0c065baeb789a1567a30b1f10b9c3c2",
+      "size": 3788
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_JSON_CONTRACT.md": {
+      "sha256": "3f6858740c66cc821203c0f2255b706662025e1e6d40bd423186512611612ff4",
+      "size": 5518
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_UI_RULES.md": {
+      "sha256": "f2d937df7f322a290369ece4afca23e2f33012603abbb8078c21274d3a59ee4e",
+      "size": 5524
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/SERVER_PROFILE_RULES.md": {
+      "sha256": "669d7cadad02b77a61c6516a9957a3bd1dfaf5ce2e72cf4ed2529727fd8584f0",
+      "size": 3623
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/START.md": {
+      "sha256": "4b7af2bf7d55bffffad31412ca8d79e0c2f053a5aa6be68c13fd28306637baa7",
+      "size": 796
+    },
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/TASK_HISTORY.md": {
+      "sha256": "9ae9a6bd860cfd9949f8fceb123bdcd8d25c6cbe834e17339cc8c1a747af5b17",
+      "size": 11634
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/1.png": {
+      "sha256": "80689de88b26fdbb8926d6788ecf9b9a9c2cc32871c0cfede0d3b709cdfdc20b",
+      "size": 2434778
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/10.png": {
+      "sha256": "efccf2529678889697215116e18bfc793a549d1f7bbe70822785b4abbc5ab847",
+      "size": 2239095
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/11.png": {
+      "sha256": "632bd34ffbc46a75f092d5b83dba9db5512fec3680287207d6afd239aa4c0d1c",
+      "size": 2170210
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/12.png": {
+      "sha256": "f810119140972f6fc22de3c1ec7994047708ad210033c3fc93255b9bdaf454d2",
+      "size": 2174936
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/13.png": {
+      "sha256": "e603587a94bcb77839465c4ea3fa43134d68d3b06949809014c146a2c775ce88",
+      "size": 2062978
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/14.png": {
+      "sha256": "65add0217b1ae98fe845ece9677bd10e4e2e589c7e1e46edb40df7d92483e623",
+      "size": 1835643
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/15.png": {
+      "sha256": "ae0768949a2ed0b638837e29d73d5d5b00d864e9b35c3aa606be0ae4733d44c8",
+      "size": 2266304
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/16.png": {
+      "sha256": "5a221569e1f71380cc324229d1819ed9dd71fa2392dff21d89f4eb0b5bca00df",
+      "size": 2311643
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/17.png": {
+      "sha256": "64b9a0091110f13b2e1eca837a366a1c7a93296a3e15430bbdd46cb3152ea3b5",
+      "size": 2145480
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/18.png": {
+      "sha256": "46299356c5e5a2b6b9476e3d7d6c6acb2b9c99f6ba795f00385519abc3fff0dc",
+      "size": 2555741
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/19.png": {
+      "sha256": "3cf73cde9b7065ded3a7820e1ae98b9a26b38931812e9d8917bf229143168d68",
+      "size": 2423622
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/19_1.png": {
+      "sha256": "feb27ad5fbe90820891329c351f9018a392ac9edfb6f1e771c25ce95f5e09532",
+      "size": 2612083
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/2.png": {
+      "sha256": "ddd58ecf7a43cc3325ae4fe2244f17652b6c7a6a4cc169e864ea786b0a875b98",
+      "size": 2287379
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/20.png": {
+      "sha256": "613005a84288c0a8e5b854e67425673204be69628de6009af3a9a676e6bd4d55",
+      "size": 2275473
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/21.png": {
+      "sha256": "583a81f7f8d8dcaf3e7589371c18b6534fab407e33275265b263227b5a1f1ccb",
+      "size": 2602121
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/22.png": {
+      "sha256": "a72c474426565ea93a2b9f9ecb1c3cf37e0e3b80515c93f6dae7cc80ac9d52e5",
+      "size": 2218898
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/22_1.png": {
+      "sha256": "f5ce83522a47ad11751e8944a62a30b6b54a53adbb4290699cf9cea87b54ec96",
+      "size": 1843646
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/22_2.png": {
+      "sha256": "768a8d72ed7a6530168900d307a2bca734efbb710da9db0c21eabaf4449af1a8",
+      "size": 1887324
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/22_3.png": {
+      "sha256": "353a56a9645469edeea26c23d715c54edfbf758cb3cd8cc177ed4f32b40cc3d4",
+      "size": 2225402
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/23.png": {
+      "sha256": "f1ace67c080122f25d8315aefff9332ccd20b0ef874937b3fb1fa8a7b3c685f6",
+      "size": 2354156
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/24.png": {
+      "sha256": "c8b7cc7ad7038bb08df01fa99e5c08c11631ec3eab0d8a38881a0175602885ba",
+      "size": 2051542
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/25.png": {
+      "sha256": "3c61a7b55c5dcdd9d1182c7a7862b46ed6a77fe1c43913ce69940a0732e36617",
+      "size": 2048520
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/26.png": {
+      "sha256": "cdf0c724b69c5eea564c2a890a54d2600867e511da097809880acf576ba0caec",
+      "size": 2238324
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/27.png": {
+      "sha256": "11411c8dcbfcc40ce351b6fcd7af47282f3000e9dc603be6dafd78c349014df1",
+      "size": 2505933
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/28.png": {
+      "sha256": "b88349a52b5b02e9c763a84a7bb9613dcdb4043c7d99abaf708c22c5010b7ab2",
+      "size": 2494092
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/29.png": {
+      "sha256": "47198fbb3f25d774fb330594dfc66d67f2e84b5b8e49a6ae4b1126e8de77c90e",
+      "size": 2819949
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/29_1.png": {
+      "sha256": "0973d8c29b14255553a56da0071a13a18d4f6ee28d5b4390f1dd9c5123117df5",
+      "size": 2414076
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/29_2.png": {
+      "sha256": "a28bb3d4a4d4905fb8ef34650a752c0621f0a2287e68a0cc704f701db7396e3d",
+      "size": 2280540
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/3.png": {
+      "sha256": "c1fce1753ee3c7b37b80496c0e9f2b6ce1cc0ead2c8a2ead574e57f5de532427",
+      "size": 2343444
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/30.png": {
+      "sha256": "13d1ff0be14cdd52cd101f8af364ff2389e8061f32c27ed2579538a79d1161d4",
+      "size": 1966757
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/31.png": {
+      "sha256": "f3608e25bb0b4abcdbab5caf5b348d2d920ced363649d391adfd2a8b7d9aa9d2",
+      "size": 2154512
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/32.png": {
+      "sha256": "9e532df818ae9f238aa61d2a0efe0612b2575bec2aad96de0b86da22cd37ef5c",
+      "size": 2015357
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/33.png": {
+      "sha256": "61859b81ddba7ad9ea58297728edb63d7632e45d482f27594ece7c92a1c24a4b",
+      "size": 2488494
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/4.png": {
+      "sha256": "6c4ea5bdd66e36d9adc58be66199edbdd462fb54287e8900b18cc5c7dd0f66f1",
+      "size": 2492631
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/5.png": {
+      "sha256": "d05d24ce622128c2c9ee8874743abf3ae4c307a6acd23f4c3bf4ffb4e0f38c85",
+      "size": 2447058
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/6.png": {
+      "sha256": "dfb56d38ee3525a91b4c0f5bb7f661d0d9d7f99112423a4c670b3ba7d0f5bbac",
+      "size": 2410779
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/7.png": {
+      "sha256": "e4872a9e9644c21d2735b920f6d932d85a78c52df44872a8ffc669fe9b28467e",
+      "size": 2287505
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/8.png": {
+      "sha256": "48be1f383ae0dd5d78b350aa2b45a8b446e59ac7a7a30111809d53513da5a1dd",
+      "size": 2649890
+    },
+    "Documentation_DayZ_Qwest/LOR_IMAGE/9.png": {
+      "sha256": "e826e365f55f237f0a559a0862e150aba3e23894a4cb1b4cfc61f62e98b4dd75",
+      "size": 2413144
+    },
+    "Documentation_DayZ_Qwest/Ultra/00_Главная.md": {
+      "sha256": "7121251e82479695868656ca2dcab832e8ff76e153d8cc7bc4cea9904d1706d7",
+      "size": 1017
+    },
+    "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md": {
+      "sha256": "4d4e9107e8a8fd42cc0f680fff55d2900e51903207cc762ed0cb5d1c6017b82a",
+      "size": 2540
+    },
+    "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md": {
+      "sha256": "1376e5658719362cbd46998a691bc850f673498f69f258fb2c91e080b9cfe00e",
+      "size": 2091
+    },
+    "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md": {
+      "sha256": "e16e40d5cb177993fce30e7d5139cec6821e0a8bd918709e320292d08aeee8f1",
+      "size": 24091
+    },
+    "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md": {
+      "sha256": "b014f3f25a0df1b4c848a8885969d4557954b6e95a04b6b44e3d5613ad3512ad",
+      "size": 14729
+    },
+    "Doors and Barricades Fixed/meta.cpp": {
+      "sha256": "06a60066de84fa3c50155d78bef912179a02eade053452c965a046229ad1947a",
+      "size": 114
+    },
+    "Doors and Barricades Fixed/mod.cpp": {
+      "sha256": "ed5ec5c57d3abceb486ceba9e2944bc93a135490ee7efcf41b23af36dce9d88b",
+      "size": 455
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades.pbo": {
+      "sha256": "4f092a4873f22112c8962d4033ae247cfaa963ebed10e5aef75bfecb9e00c925",
+      "size": 39643268
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades.pbo.MastaHiggins.bisign": {
+      "sha256": "b94d3d1bc11d95a67dba08c8444b88adf349532b471ebb6f5bcb9dfb1f244724",
+      "size": 565
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades.txt": {
+      "sha256": "b2b468126922a63c9cde1462c72dee9a53edb7a46e7c4ecffbcede1d5fd8cc7a",
+      "size": 60
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/config.cpp": {
+      "sha256": "55e86523c0178b2c9b61e508b25894ebaabef5fbbaeb275a7995f8596910a6bf",
+      "size": 20079
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/rap.txt": {
+      "sha256": "601edbfbfbc6cf2df59c192fe1bdb5049e92cb27b6f03db614337a109f453d8d",
+      "size": 30
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/texheaders.bin": {
+      "sha256": "ff7f4a2051d7b3d8ff2c43f96c13e3c42048118d0f93de07c6b6a9b10455a9f6",
+      "size": 4918
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/brick/brickbarricade.p3d": {
+      "sha256": "77172dfc90929a35a771b253a2c9dfff6c50bea7fa7384492a89aee0bc4294e6",
+      "size": 95555
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/brick/brickdoorbarricade.p3d": {
+      "sha256": "b2a040e31b344d93cb5ba9864f64d0ee4b710cf173ff5b12cbf354ae2bf96193",
+      "size": 167394
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/brick/brick_wall.p3d": {
+      "sha256": "85715d4184a1a6dbf0080223fa95fef2a5febbab06ed9c2bbbb7fdb4f910b699",
+      "size": 622065
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/brick/data/stone2.paa": {
+      "sha256": "d32604e30f299f53fcdd721caf4136999aaed53828e8f0474f4a82a95b378510",
+      "size": 670314
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/gates/metalgate.p3d": {
+      "sha256": "40846f8ff33f89bf6b532e4c163b70a3b02a8ff24b5dfd4dd16e1ad95ac92030",
+      "size": 75977
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/gates/woodgate.p3d": {
+      "sha256": "d4961d793121bff8c23533748ca796ceaf492032c576afa01c424dd4905329bb",
+      "size": 76203
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/gates/metalgatedoorproxy/portao1.p3d": {
+      "sha256": "7bd79bc1b27b269e79863545cb265f1cf7f94075281147a1bfef4ed4622dda94",
+      "size": 113559
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/gates/metalgatedoorproxy/portao2.p3d": {
+      "sha256": "bfa87158985c54bd412c54c2beaec409e6c38fc392529b7a54588eb84272f780",
+      "size": 110682
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/gates/woodgatedoorproxy/portao1.p3d": {
+      "sha256": "2bd5f3a518936123db49cc58ed5bae480f0dab0306db5f1696e61444f1c23a65",
+      "size": 130598
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/gates/woodgatedoorproxy/portao2.p3d": {
+      "sha256": "a1e7a1afdfb7ca329b6510bee707260a8d4720d8785c182bd57e050af36046bb",
+      "size": 130636
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/metalbarricade.p3d": {
+      "sha256": "76b814c87492152be6bbd1aed92ef54c2b814c9483a1f052b705887f33c71e1b",
+      "size": 5527
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/metaldoor.p3d": {
+      "sha256": "7b59ad38f3454690e7811ed581ce796f3742cce0cb04da9e4c36283c513074e9",
+      "size": 148415
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/metaldoorbarricade.p3d": {
+      "sha256": "6628f9003f7b22fb076b099545c788f9114274dce5b88eaf985b515c7166ed07",
+      "size": 80490
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/metalwall.p3d": {
+      "sha256": "326c39325dadc25307128cf54d617d07b0a9d0d2581a4366c9bd233a411a9dc3",
+      "size": 203095
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/data/frameinsidemetal.paa": {
+      "sha256": "a4f0f3ecfeeed79c8cc5f656702d6e95a1b852b39978b38971bcc5bf275e59da",
+      "size": 1578484
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/data/framemetal.paa": {
+      "sha256": "d297d61954709c820c4f8db3bcf7c9e2741aa4086a815d757bd1986fd1d0dd99",
+      "size": 1818496
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/data/lever.paa": {
+      "sha256": "711dcb1bbcb3964fccff76102e26312fbed9fc2d1c112bbb662d6c3d23632155",
+      "size": 2206810
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/data/metalbot.paa": {
+      "sha256": "e818e7404a3f4acbb20e17e4c70fe3c8451fd7a91301654079055e37641c52de",
+      "size": 2133645
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/data/metalmid.paa": {
+      "sha256": "cb39705b59e7467059f48bcc0851f3d02bb1fc12785507d8ae44917f8d8ef2ac",
+      "size": 1826559
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/data/metaltop.paa": {
+      "sha256": "1473850b519703473591f29e2d18a788c20bfc06ea07cf9daf86fc076ed3e389",
+      "size": 1647700
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/smallmetalplate/config.cpp": {
+      "sha256": "53f49c90e1de1c6f3182a3c0e673799a6c03738c8bee6fa7845aedb077e956f3",
+      "size": 900
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/metal/smallmetalplate/smallplate.p3d": {
+      "sha256": "91ae7e99838617c16f98ff7e1a144cfe35823110a9425f7fa62dffe8fa8ea78a",
+      "size": 14692
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/sound/config.cpp": {
+      "sha256": "d20fff40acae681e725350cdfa38ecbbb05111326a2c6041d7f5a50350b61025",
+      "size": 9504
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/stones/smallbrick/config.cpp": {
+      "sha256": "deb80b0ae41e2cde5489c13fa2565f208a1513704b366f19eed863b766a3cdf9",
+      "size": 1227
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/stones/smallbrick/textures/brick.p3d": {
+      "sha256": "e47b217ee39144654fc51cec71319e386e199d7b46d7a027ff046fcf06b5d585",
+      "size": 3816
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/stones/smallbrick/textures/stone2.paa": {
+      "sha256": "d32604e30f299f53fcdd721caf4136999aaed53828e8f0474f4a82a95b378510",
+      "size": 670314
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/stones/stone/config.cpp": {
+      "sha256": "adf15c0e239697a9da27be4b005d955d7614b31b8db3ebf237f5efa10766db50",
+      "size": 689
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/stones/stone/textures/stone.p3d": {
+      "sha256": "88d86125d944df6a75df42663e89c7aa7adf1495b7c2b8d88de5f8cdc6bd352d",
+      "size": 287375
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/stones/stone/textures/stone.paa": {
+      "sha256": "4ae06f6f2b780d781be4fd4f2b8d08820740ef149b1b5df859da2e51edd35890",
+      "size": 769516
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/well.p3d": {
+      "sha256": "2b2c3ab4d885251cc23b1332d55d27e6a8cd7428e6098e5482c49cfa83403fed",
+      "size": 287817
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/data/balde.paa": {
+      "sha256": "cc8acc8d84bf705f0a9d0943708b0cc4e433cd1163448734006ca3f4077577f8",
+      "size": 655314
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/data/corda.paa": {
+      "sha256": "bd6fbdcc52ec469cdfadb8ce9eb3c341943fef5c3acb0ef846c7add252b1f4ec",
+      "size": 166886
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/data/well.paa": {
+      "sha256": "b06021cc6f43c64ee426fda6853294920305ca83b22c7b12c4301fc31b81ad82",
+      "size": 2509469
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/data/wellwater.rvmat": {
+      "sha256": "7c5c0bccfe34a56c2378895897ada7d1aee9c108b00b87988ff73a2f9da58b84",
+      "size": 1431
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/data/wood.paa": {
+      "sha256": "c79e5eabc14046d95b6bb31bf95a6d943b552350a7936bebbc355225152eaa00",
+      "size": 2584668
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/well/data/wood_vara_r.tga.paa": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/metalwindow.p3d": {
+      "sha256": "b2c6d3785ba41e782a2921087208cba6741b26f482e4ce899a6ad20832880ca1",
+      "size": 12147
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/plankwindow.p3d": {
+      "sha256": "94f1dd2e24af7b651e02e8e44415b7488d2da96aa57b8e92a2c81e6f1cb640c2",
+      "size": 11702
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/metalwindowndoors/proxy_windowmetal1.p3d": {
+      "sha256": "46b3bb0e6f2207b9731bc908861712d3cbd12b924cb391aa68c7a9b608a9dacd",
+      "size": 32746
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/metalwindowndoors/proxy_windowmetal2.p3d": {
+      "sha256": "75c8f8c17c0461b10fad790a3642c2c889d2745b38764b7e3ffbfd803f9cf1a1",
+      "size": 32726
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/metalwindowndoors/proxy_windowmetalfechadura.p3d": {
+      "sha256": "2fd1e788ec06bccd9229e2aadb8a769de2191cb65a252f2d0835c9966c6acdb4",
+      "size": 4224
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/plankwindowdoors/proxy_windowplank1.p3d": {
+      "sha256": "e35d7f3fdbca8d81f611b977ce31c3e55905bca0201aea052ad6858613b2bbd0",
+      "size": 11466
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/plankwindowdoors/proxy_windowplank2.p3d": {
+      "sha256": "93137e842cd8435d4c3ce4f727bd986a4085071114d14c94e4714814b835b33d",
+      "size": 11429
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/windows/plankwindowdoors/proxy_windowplankfechadura.p3d": {
+      "sha256": "2fd1e788ec06bccd9229e2aadb8a769de2191cb65a252f2d0835c9966c6acdb4",
+      "size": 4224
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/log.p3d": {
+      "sha256": "7d94112f47e011b007cff5732bd5aae95196014f2e6cecfd4055090c05865e5e",
+      "size": 4667
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/logpontudo.p3d": {
+      "sha256": "fccc92e78a101637ef4882fb98658487b1ab95601de67d0da30b4e2892dc19ac",
+      "size": 3747
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/proxy_barricadeplanks.p3d": {
+      "sha256": "15f5cabc777ad52c50dea9643e9b46ec6ca06a7e6f748c2b09f4e2a8c9ed1948",
+      "size": 4210
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/proxy_meta.p3d": {
+      "sha256": "bb9a59dd05bdf2cbf3ce15610b7e0aa1fd313229bb55194784365706de40f320",
+      "size": 4462
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/woodbarricade.p3d": {
+      "sha256": "5ef53c36ec541843bd6cf36bf7aef64a2d2f77633a474008fbd6cba09bb06e00",
+      "size": 5281
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/wooddoor.p3d": {
+      "sha256": "591a21a653feff9758db5d2e40746948a45f0f3575be7375cb3b52bdb5a9af5d",
+      "size": 126497
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/wooddoorbarricade.p3d": {
+      "sha256": "45947436365a7a6d438e4ab25f71d10bb0eba73b0324bbe4aa2eda3bae11614d",
+      "size": 81767
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/woodplankdoor.p3d": {
+      "sha256": "ba52e0c4d00dbe9f17b1d561b06a118b8324e166bcde368d28db413d15663a77",
+      "size": 66403
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/woodwall.p3d": {
+      "sha256": "1eac1761cc1bab6968fef5f71fb14f6011ab0fc8f843f5eb7ff9ef615c1947d3",
+      "size": 124263
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/component_door_wooden_door_rama_albedotran.paa": {
+      "sha256": "a4f0f3ecfeeed79c8cc5f656702d6e95a1b852b39978b38971bcc5bf275e59da",
+      "size": 1578484
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/component_door_wooden_rama_albedotranspare.paa": {
+      "sha256": "d297d61954709c820c4f8db3bcf7c9e2741aa4086a815d757bd1986fd1d0dd99",
+      "size": 1818496
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/frameinsidemetal.paa": {
+      "sha256": "a4f0f3ecfeeed79c8cc5f656702d6e95a1b852b39978b38971bcc5bf275e59da",
+      "size": 1578484
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/framemetal.paa": {
+      "sha256": "d297d61954709c820c4f8db3bcf7c9e2741aa4086a815d757bd1986fd1d0dd99",
+      "size": 1818496
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/lever.paa": {
+      "sha256": "711dcb1bbcb3964fccff76102e26312fbed9fc2d1c112bbb662d6c3d23632155",
+      "size": 2206810
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/woodbot.paa": {
+      "sha256": "1fd6397909165fabcdb6f228ddf9fc8197fafc2365cff31bcccc10f3fd55c1a4",
+      "size": 2473215
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/woodmid.paa": {
+      "sha256": "602ae9bb2db3caaffe785d9458f20a18a24c37d6e8d87a8b85fe7503bfacfbbb",
+      "size": 1610322
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/data/woodtop.paa": {
+      "sha256": "97de026c4d50b9036ffa0537ea3eaf7f9715392af7216422938a2a6e23b56335",
+      "size": 1532298
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/data/wood/logpontudo/logpontudo.paa": {
+      "sha256": "221097bb91269fc29978185d44cbc26a555b03b33c71ef9c16eee908434b4709",
+      "size": 2351251
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/languagecore/stringtable.csv": {
+      "sha256": "112b5545745764450d4ec019add694ea3e2d4d4997638ee4d8b42fde207a3f64",
+      "size": 23911
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/logo/dnb_logo.paa": {
+      "sha256": "0b6fc7483854e191d81decefd24c2255b54cf63bc24f9c35be8694bafc6b3d80",
+      "size": 128764
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/3_game/dayzgame.c": {
+      "sha256": "f1f5630a92563eae702eead3d877e15c96adcaf23beab2311c3377ed8ada7c30",
+      "size": 365
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/3_game/moredoorconfig.c": {
+      "sha256": "d46aa9d55a8982821d57e8e3c02103b64efce7ebbb460561e4213dd6ef8587e5",
+      "size": 8842
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/holograms.c": {
+      "sha256": "d7ff97eb6ea93a77160523410d3292ed3dedf438ecbe519fa08e0eefbe7b1c14",
+      "size": 771
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/moredoorcodelock.c": {
+      "sha256": "a677a21abedc21680b65bd23478d1f5900b393101b99edda3793caa27481107e",
+      "size": 446
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/playerbase.c": {
+      "sha256": "2f7767fcbbb5ed4858ae16091f9d8d8f91563146dfe91fcc8d8889d21dc7b202",
+      "size": 1372
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actionclosemoredoor.c": {
+      "sha256": "712180e1866cadbb0f9904f5596ff0873731ff2ec957b2228a9a9114c8aa3ddf",
+      "size": 1033
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actionconstructor.c": {
+      "sha256": "0712bcff9c6fb7604337b8e30eb5a574a5e7d38f4ad95e9b8314ab5df07a09a4",
+      "size": 1221
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actiondestroycombinationlock.c": {
+      "sha256": "7bf5bd497ce6ab386096e4187dda9c63bb11dc74a300283c86ee2c7815308be9",
+      "size": 2152
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actiondestroymoredoor.c": {
+      "sha256": "1a10b4999ad63c280eb93034510aacf5b4cfbff1523703308fc1b0ac25f04be7",
+      "size": 9713
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actiondialcombinationlockonmoredoor.c": {
+      "sha256": "94e230186daa93e2a7eaa1c619e74990680070180dadf858b300824085116e40",
+      "size": 2252
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actiondismantlemoredoor.c": {
+      "sha256": "03cd1b35f033640db1b7cba08b959130b174ae3183085161c7f4c8abf533404a",
+      "size": 6815
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actionnextcombinationlockdialonmoredoor.c": {
+      "sha256": "aa9ac443d024ccb198575ecdd70660198b169e4315499a29ff10012ea4feda91",
+      "size": 1453
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actionopenmoredoor.c": {
+      "sha256": "a9c322bb9ccf94a1a727270aab8b6b068fbab62ecf7c311df8665d501908d92d",
+      "size": 1032
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/actions/actionupgradebarricade.c": {
+      "sha256": "e393de1ba1d6ec93c9042ffb94f4e8be30460b62cfa99cb3bca53a6e787c697a",
+      "size": 11817
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/customclasses/moredoorbase.c": {
+      "sha256": "6b4e26d9b73d93b2c8d9debf8e27a0f29f8aa312d563a1fe8671c64109b09969",
+      "size": 12524
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/customclasses/moredoorkitbase.c": {
+      "sha256": "049c443e646d7151c72ef793c15ef7e89620566bb00d73630d6bf24c01a843d2",
+      "size": 16071
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/destoycarparts/moddedcarparts.c": {
+      "sha256": "4bd2fa8c841355661b909912b11c0af2b264baff63bfd042476e257c847d0c93",
+      "size": 4597
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/miningrocks/actionminerocks.c": {
+      "sha256": "2589cbc2c9ad7c518edb6b97a574bc2a262a668e9082249cc982ba53a7115945",
+      "size": 2151
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/miningrocks/moddeditens.c": {
+      "sha256": "6bb944a7ae37e72bb58b4fb48ef9c4027011f9a756a8b0f5bc7fca39dc64a0c5",
+      "size": 1330
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/miningrocks/moddedregisteraction.c": {
+      "sha256": "034a3895db626b66528d4690eb7d3d4ae41b80beb92ac05f89d04f759637fade",
+      "size": 202
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/craftbarricadekits.c": {
+      "sha256": "cdf079166dfd772e40281252d82754981bcebc0321e3efafc6c495984430ab89",
+      "size": 18510
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/craftmetaldoorkitt3.c": {
+      "sha256": "c3c1b4981139a9a04246d7f877b5e4b10c3b9fa03788196b39028e6a4410eb70",
+      "size": 3678
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/craftplankdoort1.c": {
+      "sha256": "aafe9f3fb6b49fb35ec67167ea94934f08849a27bb94b3826c0216af0a87b595",
+      "size": 7366
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/craftsmallmetal.c": {
+      "sha256": "4acd533e23f6d3fedd7adf9d4d7ac262f0431b1756c38226668c3e0b5e656c58",
+      "size": 3600
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/craftstoneknife.c": {
+      "sha256": "9d20910a5a42921c71bd817507f630b96240e472ba62e9da51141890dc62c5e9",
+      "size": 3936
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/craftwooddoorkitt2.c": {
+      "sha256": "98bed8c53c155efb3ef51d787d843857ad887eb27e37e87ad9390d0c12ef4b8c",
+      "size": 3673
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/moddedrecipe.c": {
+      "sha256": "4795e0cfbda0ee0f674d32c639727f93e3caf784f598ed9e66007db07caf3fb8",
+      "size": 655
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/splitstones_pb.c": {
+      "sha256": "a606f0fe5afd1f74ad5a45d76f07c831dd02bb049917afc1c0fbb017e3afdf15",
+      "size": 7432
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/recipes/splitstonewithstone_pb.c": {
+      "sha256": "bbe75b03c183740af681ecca22cc76b26931cc8075f602c0e5a033543f17034c",
+      "size": 4920
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/tools/hacksaw.c": {
+      "sha256": "47de56583988f8296782fbb453c6e3f1fa86beb25dc4b87f5f60d0f72b7bb7db",
+      "size": 159
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/4_world/tools/hatchet.c": {
+      "sha256": "774b58c7a81f815773dbe726eddf2500c69828aa67515f29174d821092a660d7",
+      "size": 881
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/5_mission/missiongameplay.c": {
+      "sha256": "2e6132dbd55958d8447c6838591fad8a6248271243efd4f0421fbb4e57ed4367",
+      "size": 1723
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/5_mission/missionserver.c": {
+      "sha256": "9c44c1a7832a1c0793d4d01ce732ed98ccd787a4051d9bf04e500f4d83801e41",
+      "size": 1027
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/5_mission/vicinityitemmanager.c": {
+      "sha256": "ebf95bdb16dbe4eecde9e255eb60e59659991b6ee8ae8caa49abb046338d85b8",
+      "size": 412
+    },
+    "Doors and Barricades Fixed/addons/PB_DoorsAndBarricades/scripts/common/define.c": {
+      "sha256": "4179a361ba5a641b798ca4764cd364c1c822d76d38f30404475b9d1709172851",
+      "size": 29
+    },
+    "Doors and Barricades Fixed/ADMIN READ/PBDoorsAndBarricades_types.xml": {
+      "sha256": "bc5548bff7eb31b293fdb0083ad99eb786a4e362d489be31fd3419b90a803bf0",
+      "size": 6114
+    },
+    "Doors and Barricades Fixed/ADMIN READ/PBDoors_Settings_EXAMPLES.json": {
+      "sha256": "af7c54f11691c429e5f6650a3f249c4fd3b393ff1f0a944f3425282614ee9ca1",
+      "size": 2184
+    },
+    "Doors and Barricades Fixed/keys/MastaHiggins.bikey": {
+      "sha256": "66d8cb919913467b362bfa4bb11adae401b4b2268e93ed32e8ef438d9a93baaa",
+      "size": 165
+    },
+    "gui/QuestJournal.layout": {
+      "sha256": "bf8c41c7b0d9c3ca1b55a54ba9cfa743f9676fbc2916f07865e96c7d8fe8a17a",
+      "size": 2293
+    },
+    "gui/QuestMenu.layout": {
+      "sha256": "03760049d2987d12cdbad0472506eebe428d589f3c241bf9bb9663c9044fdced",
+      "size": 3666
+    },
+    "gui/layouts/QuestHint.layout": {
+      "sha256": "79b32da17da8616f8a19ac81886e6bc23a4d62ad9a0b499356edc6865568a885",
+      "size": 879
+    },
+    "JSON_Quvest/.gitignore": {
+      "sha256": "08a710ea60dab3857049989caa0021ddcf8868ea039c51e63f42efde2ebd5927",
+      "size": 54
+    },
+    "JSON_Quvest/app.js": {
+      "sha256": "b1e512de4e186bfab981c3f97b6c35e9674c99f8081c246ee32802a2a8335216",
+      "size": 189212
+    },
+    "JSON_Quvest/editor-config.json": {
+      "sha256": "ca01c465e7f748fe08b0400a1c5c77e18046abac77fca7751c3f1acf6170b0e6",
+      "size": 192
+    },
+    "JSON_Quvest/editor-config.local.json": {
+      "sha256": "5fc70c71cd3e51158fb9cfb58d8d97628b12b6c27e4e70ca1d2aa499a0154fbc",
+      "size": 269
+    },
+    "JSON_Quvest/index.html": {
+      "sha256": "d52cb16539cf49a7c61d137ed9eea8f15f2c4cf6e99c14aeb13b128532f774b9",
+      "size": 16685
+    },
+    "JSON_Quvest/item-class-reference.json": {
+      "sha256": "4d1497ab0a0cd2ff12d4859a942b1dda1b7841983710de07614281f40dbafb34",
+      "size": 2789
+    },
+    "JSON_Quvest/item-stack-rules.json": {
+      "sha256": "766177822a8325fb8df082f072f53d0f8d74426b6787654cdb77db8cddbf4d6a",
+      "size": 197
+    },
+    "JSON_Quvest/map.css": {
+      "sha256": "eaafa5a5013037f4e63453fe212d79fec61302a3a00e1173a2419a92908d6594",
+      "size": 4261
+    },
+    "JSON_Quvest/map.js": {
+      "sha256": "6b1574f8cae1b7e1991b94a644d2db528a72baf8091cbf0ec15144e9ec0e22fa",
+      "size": 30681
+    },
+    "JSON_Quvest/migration.css": {
+      "sha256": "61d7a8d6a82b258b599fc009cbddac8b14bb36a1745b5c66ccb7be3ef9358819",
+      "size": 11342
+    },
+    "JSON_Quvest/migration.js": {
+      "sha256": "1bc952a25f758123448a3e7ecd5ca2f3619e6ee8bef657e137fa15fbaee357d2",
+      "size": 48030
+    },
+    "JSON_Quvest/PROJECT_CONTEXT.md": {
+      "sha256": "3f7435e0a5a1d1fab4a220337f0f1d7fcf627e84a88c2349176d6ece3b3d0549",
+      "size": 33876
+    },
+    "JSON_Quvest/README.md": {
+      "sha256": "cc0054dc73a8c4147dd2225b536b95a8777b19a0f4175bb5ffbb92c95674a784",
+      "size": 8077
+    },
+    "JSON_Quvest/server.ps1": {
+      "sha256": "c5af3fa20f9a87e1a3afae8c3e564364f01d65a9b83279d36aeebef0a970fbf7",
+      "size": 22745
+    },
+    "JSON_Quvest/Silver_77_Quests.json": {
+      "sha256": "ae1c3cd3b74cf0d71930545d44b93c2011ed1a2a3db6a95171879a929f487203",
+      "size": 53378
+    },
+    "JSON_Quvest/Silver_77_Quests_BackUP.json": {
+      "sha256": "ae1c3cd3b74cf0d71930545d44b93c2011ed1a2a3db6a95171879a929f487203",
+      "size": 53378
+    },
+    "JSON_Quvest/Silver_77_Quests_import_description_aligned.json": {
+      "sha256": "97e992b54b1d725a686e2173aa609e899a5247edf7b9ff76d6e01cc54618b6e3",
+      "size": 33568
+    },
+    "JSON_Quvest/start-editor.cmd": {
+      "sha256": "eda06dd0d4a38687b144523d5ff60d2a969598fe31e25e80d96f1471aa0c31ee",
+      "size": 98
+    },
+    "JSON_Quvest/start-editor.ps1": {
+      "sha256": "602f5efa0f47ed92fbe5398b7078c728ccddc06375a523c0bd11a299b001e157",
+      "size": 8271
+    },
+    "JSON_Quvest/styles.css": {
+      "sha256": "dbed9c5956077da81601fc9d597e02c719919034ae8afe11658c587592b82f18",
+      "size": 26746
+    },
+    "JSON_Quvest/assets/maps/chernarusplus/map.png": {
+      "sha256": "803d15eb0204c3d0db66fee8342a7d5e12e302139d429c2e72cefa31ca5ef067",
+      "size": 6349393
+    },
+    "JSON_Quvest/assets/maps/chernarusplus/SOURCE.md": {
+      "sha256": "4a27e0c87818eda8cfb9748c5228577d0a3e5f3fc245499abbae896cbf55508b",
+      "size": 619
+    },
+    "key/README.txt": {
+      "sha256": "404deeb83af20dfd7159c56a149b780f66f779fe380e6a5ce3ae54404f35fd4f",
+      "size": 427
+    },
+    "scripts/3_Game/PlayerQuestData.c": {
+      "sha256": "b59df429f20ac27f630bd15606edb0163b854b1e02913c1ab6bc88385d3f3ac0",
+      "size": 1680
+    },
+    "scripts/3_Game/QuestData.c": {
+      "sha256": "7c0554cbc431377faf8767fd914c5c81b56bd8b01b04b579d0645b7437fc4cc7",
+      "size": 4254
+    },
+    "scripts/4_World/QuestManager.c": {
+      "sha256": "4536085972864d85caa237e1629fdfff3621ee62e95eaf4b3f94471a9b5e2f96",
+      "size": 52195
+    },
+    "scripts/4_World/QuestPlayerRPC.c": {
+      "sha256": "aef0f43997b58955b94a6d277354c9b9732e8296dfad00f31fe67a123e0f66f9",
+      "size": 5143
+    },
+    "scripts/5_Mission/QuestJournalUI.c": {
+      "sha256": "c22d5e1194fa13c5c7bba9013bf8b3b955756226514aa140bbe3644f37a63168",
+      "size": 10371
+    },
+    "scripts/5_Mission/QuestTrigger.c": {
+      "sha256": "7079237748421f58c4d3c3a3abdeaf36a10d10d86b89959b8dd6d4e1971c0239",
+      "size": 4365
+    },
+    "scripts/5_Mission/QuestUI.c": {
+      "sha256": "aa256f3ac1d82f8c786e349db50e2d3d426bcf50af60995145e862470440de46",
+      "size": 16402
+    },
+    "scripts/5_Mission/mission/MissionGameplay.c": {
+      "sha256": "49861a7451f4e2157f222729709a842736dce6b5c06685d81e77452eedc9401f",
+      "size": 12162
+    },
+    "scripts/5_Mission/mission/MissionServer.c": {
+      "sha256": "acc2d462316cb271141750ec3f3a4db5ffbb07c44f48b65014264184f15e978b",
+      "size": 537
+    },
+    "Silver_77_fix_Builds_Cooking/$PBOPREFIX$": {
+      "sha256": "39b09af69dcd2aabf4206f7b9882074be214a6f62b2d24f792fdab27b424c72d",
+      "size": 30
+    },
+    "Silver_77_fix_Builds_Cooking/config.cpp": {
+      "sha256": "ccf3a3ddc511e14d0f2647fd59e41c576cec08a76fb914d391b7f61550d3d03f",
+      "size": 7656
+    },
+    "Silver_77_fix_Builds_Cooking/scripts/4_world/silver_77_fix_builds_cooking.c": {
+      "sha256": "84ace71e05e5d1cee3f4485ca43b30285c1c8eb005c61fd0eac74fbfd2f87fb5",
+      "size": 4415
+    },
+    "Silver_77_fix_Builds_Cooking/scripts/5_mission/silver_77_fix_builds_cooking_diag.c": {
+      "sha256": "9e6bb7ec3339fbf7c259df4ce60edb47f6ba808ce1b0abc6142a928681c51190",
+      "size": 1869
+    },
+    "Silver_77_Migrate_server/$PBOPREFIX$": {
+      "sha256": "545b2760b4644baa717fa9868811de5387ad9e51ea30b165fc0ea2c60d9829a9",
+      "size": 25
+    },
+    "Silver_77_Migrate_server/config.cpp": {
+      "sha256": "efd9435f96e45d75f39de66480b1d8724f8a13caa99361cacd0462007e12b7fc",
+      "size": 1028
+    },
+    "Silver_77_Migrate_server/mod.cpp": {
+      "sha256": "0b68f38b95cf21e3297fc649404b0b642c25a161c7b3a3a8f49bfef7d7fa7ec1",
+      "size": 372
+    },
+    "Silver_77_Migrate_server/config/MigrationConfig.json": {
+      "sha256": "a5bd75868861f9cd50f2ca40acc4eb7af111e89a70cd89ea34f8db9945cb40cc",
+      "size": 7908
+    },
+    "Silver_77_Migrate_server/config/README_RU.md": {
+      "sha256": "506bbadda4a9d9572ae731246b9522802d71a6d75d48798f93f39d09ba78d865",
+      "size": 47755
+    },
+    "Silver_77_Migrate_server/scripts/4_World/S77MigrateAPI.c": {
+      "sha256": "72593a6c1967f2cf94f5cd6c990406db15f4c0f68519ab54f5f7937ed01c8df6",
+      "size": 371
+    },
+    "Silver_77_Migrate_server/scripts/4_World/S77MigrateConfig.c": {
+      "sha256": "c424c166fbfd85a7f8fb3ea8c4d68958d319bc3e57d174ae5cb2409ce1ad9a00",
+      "size": 41964
+    },
+    "Silver_77_Migrate_server/scripts/4_World/S77MigrateManager.c": {
+      "sha256": "0b7277783ab01343341b20d922acf3367c28d3d728d7bec58a945db446f2fe71",
+      "size": 127725
+    },
+    "Silver_77_Migrate_server/scripts/5_Mission/mission/MissionServer.c": {
+      "sha256": "3505083cfc3dd037da4a0c8e7742adc2caecf4fad231035648f3c4955ed2a944",
+      "size": 309
+    },
+    "Silver_77_Quests_Client/$PBOPREFIX$": {
+      "sha256": "07a845843ddefa928e25dfa3c1f3e5e58070d56c3cc55679c6a547e96ded09ec",
+      "size": 16
+    },
+    "Silver_77_Quests_Client/config.cpp": {
+      "sha256": "46f3e580e66e6ecd67f6e7685d35cad8e6a3907052e3da17e7885ee30da65d3b",
+      "size": 1239
+    },
+    "Silver_77_Quests_Client/mod.cpp": {
+      "sha256": "2e69b8602f27caea07cac2051a4ab1f1dc4f8fb509ca68fef806df6e4e6db59b",
+      "size": 367
+    },
+    "Silver_77_Quests_Client/PBOPREFIX": {
+      "sha256": "dfa24b2172f85e3f0bbcdaf017327c654dc3828aefbf3cc42dc9f89075293d0a",
+      "size": 23
+    },
+    "Silver_77_Quests_Client/README.md": {
+      "sha256": "bc7485dde82f593a0822f999a41c29292d13898f152764e9123bcec727270ab6",
+      "size": 354
+    },
+    "Silver_77_Quests_Client/gui/QuestJournal.layout": {
+      "sha256": "cf8ddb0fab6ef652da3ed0dbb8c8555bca2ec6b4587130f9101718269e65d155",
+      "size": 2524
+    },
+    "Silver_77_Quests_Client/gui/QuestMenu.layout": {
+      "sha256": "c8b6371c5ffc850ee912873e3d71e95463aea0c86dae64d2056728045b7aa343",
+      "size": 9175
+    },
+    "Silver_77_Quests_Client/gui/layouts/QuestHint.layout": {
+      "sha256": "79b32da17da8616f8a19ac81886e6bc23a4d62ad9a0b499356edc6865568a885",
+      "size": 879
+    },
+    "Silver_77_Quests_Client/key/README.txt": {
+      "sha256": "404deeb83af20dfd7159c56a149b780f66f779fe380e6a5ce3ae54404f35fd4f",
+      "size": 427
+    },
+    "Silver_77_Quests_Client/scripts/3_Game/PlayerQuestData.c": {
+      "sha256": "2985c82f895dcdc76259dd1da0afd902a86479fe97053c81b6d7d731b2bc1162",
+      "size": 3556
+    },
+    "Silver_77_Quests_Client/scripts/3_Game/QuestData.c": {
+      "sha256": "4e02af05d2429ed3422187ab85177790b3c59fbb2774330075a104b6a5a9228e",
+      "size": 6150
+    },
+    "Silver_77_Quests_Client/scripts/4_World/QuestClientManager.c": {
+      "sha256": "fa1271f7e1fe306ca42e9d36a0f4186a0965ffdf705a23bcfb6a2ed69b45350a",
+      "size": 39843
+    },
+    "Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c": {
+      "sha256": "4ef2704b2c05c4faf67a970f2f32e7f880f474d635cdb10565a80c64b56ebae0",
+      "size": 14177
+    },
+    "Silver_77_Quests_Client/scripts/5_Mission/QuestJournalUI.c": {
+      "sha256": "2800886967bd320452ac23e889cc968b59eb5562c1515b8a5db2dfc77fab49a0",
+      "size": 13097
+    },
+    "Silver_77_Quests_Client/scripts/5_Mission/QuestTrigger.c": {
+      "sha256": "dab8f7ddf58eb7204a3aa3e2956ebe7d2c4425ba474579c6cdbfe73a09c63f61",
+      "size": 6477
+    },
+    "Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c": {
+      "sha256": "ba4edb243f69507d13c11f3e8a7c7c72881e23cafa43da586d22892670c436a5",
+      "size": 43177
+    },
+    "Silver_77_Quests_Client/scripts/5_Mission/mission/MissionGameplay.c": {
+      "sha256": "eea0ed066779793110644291a00d7de673068e3b69822331a017df9942eff519",
+      "size": 13416
+    },
+    "Silver_77_Quests_Server/$PBOPREFIX$": {
+      "sha256": "add47410c7050e7773d1d16f7864970f41ae4f4b00029e3f05642005e78f94df",
+      "size": 23
+    },
+    "Silver_77_Quests_Server/config.cpp": {
+      "sha256": "9d5079dc9d4b3d519a1d6626eca5e669e6837b3b8cfe6299d5527d7510b095b1",
+      "size": 1279
+    },
+    "Silver_77_Quests_Server/mod.cpp": {
+      "sha256": "1fa3e3fc915d2de3e4d6f05fcc3e8052ede8e100b2b96b5dc344a42f205346a2",
+      "size": 415
+    },
+    "Silver_77_Quests_Server/README.md": {
+      "sha256": "4eac1eb926c2cb21b5371087507f274c08ae1c9a2e30b6293cc766744547228b",
+      "size": 469
+    },
+    "Silver_77_Quests_Server/key/README.txt": {
+      "sha256": "404deeb83af20dfd7159c56a149b780f66f779fe380e6a5ce3ae54404f35fd4f",
+      "size": 427
+    },
+    "Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c": {
+      "sha256": "2a51cfa36a7059b177e92601352688c26120482dd7fb525d5e5eb91945bf66f5",
+      "size": 136698
+    },
+    "Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c": {
+      "sha256": "0243db8c8aafae3d843162cacc37927866b9219e9e0cfb3ddf9ff0ad420abc9d",
+      "size": 4247
+    },
+    "Silver_77_Quests_Server/scripts/5_Mission/mission/MissionServer.c": {
+      "sha256": "59770277358c6a1aff06d72ca1aa5dc28ea1e5641c91bfcd7fd47e9d250be9f6",
+      "size": 467
+    },
+    "Silver_77_Zones/Silver_77_Zones_Client/config.cpp": {
+      "sha256": "037c523073de7d46931ed9703a2f0161844d752593215d967fa5ed36dc421b19",
+      "size": 669
+    },
+    "Silver_77_Zones/Silver_77_Zones_Client/scripts/5_Mission/S77Z_LightingPrototype.c": {
+      "sha256": "1d8a05a051e97756a105b5bec54a0cf9dc41bf226388f7662e0225638f81d630",
+      "size": 4963
+    },
+    "Source_Modes/zones/config.txt": {
+      "sha256": "151a5623f4d34a7b213f9f92f930284c26aa55ba42a49043e0dd92d8bfab71a0",
+      "size": 30031
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/CREDITS.txt": {
+      "sha256": "daa8da1e186709a31f230fcd1b5c6076573b54e52b16bde492fd67e47f899a3c",
+      "size": 169
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/meta.cpp": {
+      "sha256": "d0de0d7442490f9bc8be27d3b80e4537f129edabef11642576f07c3461de0268",
+      "size": 116
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/mod.cpp": {
+      "sha256": "a641e5961598fc5b65169166e7b55aecc8fc594290a65686681c995feb93d24e",
+      "size": 669
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/addons/0_core_preload.pbo": {
+      "sha256": "05a4d554e4e495919dd8ff54a558dca78e26a6216177f1e63d7d289c602dc4b0",
+      "size": 945
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/addons/0_core_preload.pbo.liquidrock.bisign": {
+      "sha256": "1c4c1860137e5be5341cc515aed3c4b566a2b300bc7e336f268c96d8e1c55fda",
+      "size": 563
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/addons/core.pbo": {
+      "sha256": "86813f569be53ed289df595d324b24d81767d36cb49881f7add10627b03449cc",
+      "size": 68810
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/addons/core.pbo.liquidrock.bisign": {
+      "sha256": "8d23d2f93686f1f519f17581560e17281cbc49d95c609fd180e44ebda82819b0",
+      "size": 563
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/addons/data.pbo": {
+      "sha256": "de10f702a3421230047887b3f7396de188948d10ad88ae2a271589ceca04d8b4",
+      "size": 1998143
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/addons/data.pbo.liquidrock.bisign": {
+      "sha256": "45628b9e51a495f245ba6fbcce1d9c3c3e96c18dee3ddba3185d2120d758a5ca",
+      "size": 563
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/Keys/liquidrock.bikey": {
+      "sha256": "318860579490a83f8806366c33d622fe24e53e36ae7437b999e9bb76bb8ccdad",
+      "size": 163
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-Core/ServerProfileFolder/MedicalAttention/config.txt": {
+      "sha256": "40c6a6e6f0db90bbbfcbb345480715349c76a166329868f90c2b7c35f27dcd7a",
+      "size": 2197
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-DepHelper-Vanilla/meta.cpp": {
+      "sha256": "66f3fa5fe79b974d3b10780da81d59d1325e4a7881ddb1e22f42efc91c14dc6d",
+      "size": 129
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-DepHelper-Vanilla/mod.cpp": {
+      "sha256": "d08f9c0870addac5e800a0772b06d9fa5a84a05dc79cf4ed0d97662bd365bb98",
+      "size": 692
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-DepHelper-Vanilla/Addons/DepHelper_Vanilla.pbo": {
+      "sha256": "e3d7fbd00f25da64e5bdd0a4a6215b8c62685ebcc7a225454fdb2368b92e0630",
+      "size": 330
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-DepHelper-Vanilla/Addons/DepHelper_Vanilla.pbo.liquidrock.bisign": {
+      "sha256": "0349352b950fac4a10ef6ec6fd0b5e191f7c3b4953562ad0f069066fbbb46354",
+      "size": 563
+    },
+    "Source_Modes/zones/@MedicalAttentionUpdated-DepHelper-Vanilla/Keys/liquidrock.bikey": {
+      "sha256": "318860579490a83f8806366c33d622fe24e53e36ae7437b999e9bb76bb8ccdad",
+      "size": 163
+    },
+    "Source_Modes/zones/@NightZoneMod/Config_NightZones.json": {
+      "sha256": "dbd418bcb3f4c19ff8c12c4121453f4ab36ddd440660da4581ba5b463b95ab89",
+      "size": 1435
+    },
+    "Source_Modes/zones/@NightZoneMod/info.txt": {
+      "sha256": "4c3215dc758b7cbcdfa7f31680ea2445d4bba169f41b900ed08184ff35aca7ef",
+      "size": 17661
+    },
+    "Source_Modes/zones/@NightZoneMod/meta.cpp": {
+      "sha256": "c31095d87ccc943ae518e5dedaa1635167fe0d5d9e5da020c60af5aebad54371",
+      "size": 100
+    },
+    "Source_Modes/zones/@NightZoneMod/Addons/NightZoneMod.pbo": {
+      "sha256": "e90253674698680c6296e7cc245984de4341c3232ea375bf276dfc7683d20525",
+      "size": 35707
+    },
+    "Source_Modes/zones/@NightZoneMod/Addons/NightZoneMod.pbo.123new.bisign": {
+      "sha256": "909d870ffd71b1c39396498e5c96f1ab90ffaf9495bd6bee8399425bcd1c5768",
+      "size": 559
+    },
+    "Source_Modes/zones/@NightZoneMod/Addons/NightZoneMod_Server.pbo": {
+      "sha256": "860049e7cdc119e909b6cd70d0cc7a2b3fb58052c664d177bfd7828bcd7eec3f",
+      "size": 27209
+    },
+    "Source_Modes/zones/@NightZoneMod/Addons/NightZoneMod_Server.pbo.123new.bisign": {
+      "sha256": "1e6fdea4598e2d62f85c8163cdb223f39a66cf3e289b3b87ea876b55efee300b",
+      "size": 559
+    },
+    "Source_Modes/zones/@NightZoneMod/keys/123new.bikey": {
+      "sha256": "e939c3182895498858e908c1f10373a01b7ff9f46b3e8db091813b6509c80525",
+      "size": 159
+    },
+    "Source_Modes/zones/@SoundZoneMod/Config_SoundZones.json": {
+      "sha256": "7ab64b6323c15aaeb5f42bf3a84f18d143f012cacc2c187e2396156f54f4a16e",
+      "size": 3947
+    },
+    "Source_Modes/zones/@SoundZoneMod/info.txt": {
+      "sha256": "8670d44bb0794cbc7a8c131989e3a06776db2f13aa17234459ccca3a47c5acd2",
+      "size": 13837
+    },
+    "Source_Modes/zones/@SoundZoneMod/meta.cpp": {
+      "sha256": "db9b1d0c69381d95bec3960b4b4d93bea0efb289598b20a48169455f37be4f97",
+      "size": 100
+    },
+    "Source_Modes/zones/@SoundZoneMod/Addons/SoundZoneMod.pbo": {
+      "sha256": "a45fc02f0438ac92da6adc9169eb5dd3ca0c6fe4d969448695242be5e2f8e316",
+      "size": 16931
+    },
+    "Source_Modes/zones/@SoundZoneMod/Addons/SoundZoneMod.pbo.123new.bisign": {
+      "sha256": "8e9717f46ac84af7459a04ac633bef73dba2604dcbd0d5c714afe9a1aff31f11",
+      "size": 559
+    },
+    "Source_Modes/zones/@SoundZoneMod/Addons/SoundZoneMod_Server.pbo": {
+      "sha256": "b497bd7ab540d9583692ec6897c99a87e1ab1ce32f6673588aba65e9fb8f5f97",
+      "size": 46427
+    },
+    "Source_Modes/zones/@SoundZoneMod/Addons/SoundZoneMod_Server.pbo.123new.bisign": {
+      "sha256": "d26d2a024076b437ea152900c0f72d6e64e54a0d89a9339d797963b65d384208",
+      "size": 559
+    },
+    "Source_Modes/zones/@SoundZoneMod/keys/123new.bikey": {
+      "sha256": "e939c3182895498858e908c1f10373a01b7ff9f46b3e8db091813b6509c80525",
+      "size": 159
+    },
+    "SplitMods/Silver_77_Quests_Client/$PBOPREFIX$": {
+      "sha256": "07a845843ddefa928e25dfa3c1f3e5e58070d56c3cc55679c6a547e96ded09ec",
+      "size": 16
+    },
+    "SplitMods/Silver_77_Quests_Client/config.cpp": {
+      "sha256": "46f3e580e66e6ecd67f6e7685d35cad8e6a3907052e3da17e7885ee30da65d3b",
+      "size": 1239
+    },
+    "SplitMods/Silver_77_Quests_Client/mod.cpp": {
+      "sha256": "2e69b8602f27caea07cac2051a4ab1f1dc4f8fb509ca68fef806df6e4e6db59b",
+      "size": 367
+    },
+    "SplitMods/Silver_77_Quests_Client/README.md": {
+      "sha256": "bc7485dde82f593a0822f999a41c29292d13898f152764e9123bcec727270ab6",
+      "size": 354
+    },
+    "SplitMods/Silver_77_Quests_Client/gui/QuestJournal.layout": {
+      "sha256": "bf8c41c7b0d9c3ca1b55a54ba9cfa743f9676fbc2916f07865e96c7d8fe8a17a",
+      "size": 2293
+    },
+    "SplitMods/Silver_77_Quests_Client/gui/QuestMenu.layout": {
+      "sha256": "03760049d2987d12cdbad0472506eebe428d589f3c241bf9bb9663c9044fdced",
+      "size": 3666
+    },
+    "SplitMods/Silver_77_Quests_Client/gui/layouts/QuestHint.layout": {
+      "sha256": "79b32da17da8616f8a19ac81886e6bc23a4d62ad9a0b499356edc6865568a885",
+      "size": 879
+    },
+    "SplitMods/Silver_77_Quests_Client/key/README.txt": {
+      "sha256": "404deeb83af20dfd7159c56a149b780f66f779fe380e6a5ce3ae54404f35fd4f",
+      "size": 427
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/3_Game/PlayerQuestData.c": {
+      "sha256": "94756c5c4bd7c6e486153595f22cbd3d4668d6e90ded1a5e2489a843f5d626dd",
+      "size": 1199
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/3_Game/QuestData.c": {
+      "sha256": "7c0554cbc431377faf8767fd914c5c81b56bd8b01b04b579d0645b7437fc4cc7",
+      "size": 4254
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/4_World/QuestClientManager.c": {
+      "sha256": "e9733eb312bb70b39895e8ef7390d0517dc7ee71ffd1a0b75f5b2e343e248e9e",
+      "size": 15892
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/4_World/QuestClientRPC.c": {
+      "sha256": "56028d9b0fb75020a026a94702cd30749af7fc19d4b974189b2ff9e907571722",
+      "size": 1670
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/5_Mission/QuestJournalUI.c": {
+      "sha256": "fdc7fb9df8867919b51f80258a15735c531eb831ceb3c3017911ac9ff305da62",
+      "size": 10436
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/5_Mission/QuestTrigger.c": {
+      "sha256": "5ad8ae01353624c484270505ce1ea9feda2450f207afdc5a9c33b2e6e0c91dcc",
+      "size": 4309
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/5_Mission/QuestUI.c": {
+      "sha256": "64ead7f30093df960e897192c4bb5afe9e087b8fbddc096717554bf3f3ba934f",
+      "size": 13371
+    },
+    "SplitMods/Silver_77_Quests_Client/scripts/5_Mission/mission/MissionGameplay.c": {
+      "sha256": "fad0bc987c30f7157c29127c8acb8e35547d1c5cc31819358f7147af0ad72fcf",
+      "size": 11911
+    },
+    "SplitMods/Silver_77_Quests_Server/$PBOPREFIX$": {
+      "sha256": "add47410c7050e7773d1d16f7864970f41ae4f4b00029e3f05642005e78f94df",
+      "size": 23
+    },
+    "SplitMods/Silver_77_Quests_Server/config.cpp": {
+      "sha256": "2bebc7d063568d455becbbb8cbca144d701700772ebee1c421fa82657387a72c",
+      "size": 1113
+    },
+    "SplitMods/Silver_77_Quests_Server/mod.cpp": {
+      "sha256": "1fa3e3fc915d2de3e4d6f05fcc3e8052ede8e100b2b96b5dc344a42f205346a2",
+      "size": 415
+    },
+    "SplitMods/Silver_77_Quests_Server/README.md": {
+      "sha256": "4eac1eb926c2cb21b5371087507f274c08ae1c9a2e30b6293cc766744547228b",
+      "size": 469
+    },
+    "SplitMods/Silver_77_Quests_Server/key/README.txt": {
+      "sha256": "404deeb83af20dfd7159c56a149b780f66f779fe380e6a5ce3ae54404f35fd4f",
+      "size": 427
+    },
+    "SplitMods/Silver_77_Quests_Server/scripts/4_World/QuestServerManager.c": {
+      "sha256": "815ad60197ac18cc90c914902a5eb8433eea02cb88fd0377500215bc46936f3f",
+      "size": 40688
+    },
+    "SplitMods/Silver_77_Quests_Server/scripts/4_World/QuestServerRPC.c": {
+      "sha256": "a2693c677d9b3ebbd6e0f6b090f07349e2fcf99de7f272693858110596274417",
+      "size": 3826
+    },
+    "SplitMods/Silver_77_Quests_Server/scripts/5_Mission/mission/MissionServer.c": {
+      "sha256": "258a03ba73cf32f933d4339817391ce8290ee5860aa6ef354c64983baa308980",
+      "size": 511
+    },
+    "Support/Migration.txt": {
+      "sha256": "70c73bdee900e48f49fb0dfeec14527d1290a8f2ccbcfb42065f193b50ad646e",
+      "size": 9929635
+    },
+    "Support/Arh_29042026/JSON_Quvest/.gitignore": {
+      "sha256": "08a710ea60dab3857049989caa0021ddcf8868ea039c51e63f42efde2ebd5927",
+      "size": 54
+    },
+    "Support/Arh_29042026/JSON_Quvest/app.js": {
+      "sha256": "96382a17920dbc53de3a03ab28bdb211f11efab5b893e0a09b8aaba8b3185038",
+      "size": 75852
+    },
+    "Support/Arh_29042026/JSON_Quvest/editor-config.json": {
+      "sha256": "3757ea8529aa9de0e8b3180b2e0d36a709432d14ce266af3d9d3b9365efcce2e",
+      "size": 94
+    },
+    "Support/Arh_29042026/JSON_Quvest/index.html": {
+      "sha256": "0a76ee778abfe8ab1c8c283d8d4065a6c9c1f4eef139e2700bdd40a1e4e04974",
+      "size": 6937
+    },
+    "Support/Arh_29042026/JSON_Quvest/item-stack-rules.json": {
+      "sha256": "7c6f608afe95e70e938298ea3b957915639af12907a6b3920a7377853d177b43",
+      "size": 38
+    },
+    "Support/Arh_29042026/JSON_Quvest/PROJECT_CONTEXT.md": {
+      "sha256": "94cb1328e1811e314831df12955823935df1d98af3d25f8d19735ec56c561afe",
+      "size": 29780
+    },
+    "Support/Arh_29042026/JSON_Quvest/README.md": {
+      "sha256": "cd45a8fa41927fbdb5aa990d4570d70aa5b7124a40b640ec4800a1e1d12b057f",
+      "size": 6669
+    },
+    "Support/Arh_29042026/JSON_Quvest/server.ps1": {
+      "sha256": "492afe9d5214b621586b287b0dfe910b86ce64f3b40e167245f5a30fb1bebe89",
+      "size": 382
+    },
+    "Support/Arh_29042026/JSON_Quvest/Silver_77_Quests.json": {
+      "sha256": "5041474930ad5cf21c7c8f87f632994d6fab11b8da8448de9d8dde7f0efa52e9",
+      "size": 18970
+    },
+    "Support/Arh_29042026/JSON_Quvest/Silver_77_Quests_BackUP.json": {
+      "sha256": "3d110b2108782a6c692066a9d524d627bd9be990fd38e196398e0a9f385d9efd",
+      "size": 7706
+    },
+    "Support/Arh_29042026/JSON_Quvest/start-editor.cmd": {
+      "sha256": "5b879f6775ea7351c73eb68a8c35c4f44f82bbd3b5c834082dbbe95c19d6ee6e",
+      "size": 121
+    },
+    "Support/Arh_29042026/JSON_Quvest/start-editor.ps1": {
+      "sha256": "e0628f7160b9ba1bd1d953656e90008c8b1759578fd90ab4bc0ac34b75fda8f5",
+      "size": 390
+    },
+    "Support/Arh_29042026/JSON_Quvest/styles.css": {
+      "sha256": "7ac9faa550a21d290b0799c6ced470928f3d1828f33cf14cbda4cadfb24409be",
+      "size": 12734
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/app.js": {
+      "sha256": "8935278e545d51ebd5ede39e366b2e00f150d06038466ca26febe625f2b327a6",
+      "size": 145160
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/editor-config.json": {
+      "sha256": "ca01c465e7f748fe08b0400a1c5c77e18046abac77fca7751c3f1acf6170b0e6",
+      "size": 192
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/editor-draft.json": {
+      "sha256": "b8ce9e54ea61bb0b6f8b2b66280de78611bf32772149e09c72d467d13ed1125c",
+      "size": 14111
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/index.html": {
+      "sha256": "8c3e2d78d5a04234d4c9684e2570a9b349c0cc8aa6f144a73d020079faa2e069",
+      "size": 8378
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md": {
+      "sha256": "360d166bac92dc01bc085b5e6881f55880a7fc92699dd6dead2e7c6122c4ff09",
+      "size": 31005
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md": {
+      "sha256": "ebe947c76e51c5fd65df91864a77d5015c5cd3487ca1cab1984e53139ff39fee",
+      "size": 11000
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/server.ps1": {
+      "sha256": "25d73e9b7a34770f7fb7104b0d77dedf04da94eac1edd213a4affd7fdcd7646f",
+      "size": 415
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/Silver_77_Quests.json": {
+      "sha256": "b328d626fd7e168cc8f190a0043a064be255d88343ccd0453b79bc450451b033",
+      "size": 19196
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/Silver_77_Quests_BackUP.json": {
+      "sha256": "b328d626fd7e168cc8f190a0043a064be255d88343ccd0453b79bc450451b033",
+      "size": 19196
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/start-editor.cmd": {
+      "sha256": "81721fdd044eacd3a10f56efe7700d408f85aa0a0eab704f20c50d6d942caab4",
+      "size": 116
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/start-editor.ps1": {
+      "sha256": "aa8040a7825e406363b07d06dceba9bb290f328fee235bbd5be1dc9e320d795f",
+      "size": 403
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/styles.css": {
+      "sha256": "984aafdd1c02413a5c0f2f1b28cc8b29f4114a286be2ca60689695e044274143",
+      "size": 19225
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/.local/editor-home.png": {
+      "sha256": "634f69be371b63f13c98634869d697b64667f97d51a3c5a679dbee34851107c0",
+      "size": 1150202
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/.local/Silver_77_Quests_BackUP.json": {
+      "sha256": "3c8c7ac450b0232b26d5ecf16f82484f3816b944ed52247dac2ecfb94c23fef8",
+      "size": 12194
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/app.js": {
+      "sha256": "96382a17920dbc53de3a03ab28bdb211f11efab5b893e0a09b8aaba8b3185038",
+      "size": 75852
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/index.html": {
+      "sha256": "0a76ee778abfe8ab1c8c283d8d4065a6c9c1f4eef139e2700bdd40a1e4e04974",
+      "size": 6937
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/server.ps1": {
+      "sha256": "492afe9d5214b621586b287b0dfe910b86ce64f3b40e167245f5a30fb1bebe89",
+      "size": 382
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/start-editor.cmd": {
+      "sha256": "5b879f6775ea7351c73eb68a8c35c4f44f82bbd3b5c834082dbbe95c19d6ee6e",
+      "size": 121
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/start-editor.ps1": {
+      "sha256": "e0628f7160b9ba1bd1d953656e90008c8b1759578fd90ab4bc0ac34b75fda8f5",
+      "size": 390
+    },
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/archive_disputed_versions/root-runtime-before-task075-2026-05-04/styles.css": {
+      "sha256": "7ac9faa550a21d290b0799c6ced470928f3d1828f33cf14cbda4cadfb24409be",
+      "size": 12734
+    },
+    "Support/Mashin/BP_Mashin.md": {
+      "sha256": "3d73596c67e2bd048c7c4d62c72a20f3b16c373f2a1005ad081ce9de39aba090",
+      "size": 27521
+    },
+    "Tools/restore_questmenu_text.py": {
+      "sha256": "90ca07a37a5d36959bb969182161eaedbc46fbe5d29c6c5788331ef3f0d7d00d",
+      "size": 7966
+    }
+  },
+  "references": [
+    {
+      "source": "README.md",
+      "line": 49,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md` - текущая задача и отчёт агента",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "README.md",
+      "line": 50,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md` - стартовые правила агента",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": ".obsidian/graph.json",
+      "line": 11,
+      "text": "      \"query\": \"path:\\\"Documentation_DayZ_Qwest/11_Задача_агенту.md\\\"\",",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": ".obsidian/graph.json",
+      "line": 18,
+      "text": "      \"query\": \"path:\\\"Documentation_DayZ_Qwest/10_Правила_агента.md\\\" OR path:\\\"Documentation_DayZ_Qwest/12_Старт_агента.md\\\" OR (path:\\\"Documentation_DayZ_Qwest/20_SplitDoc/\\\" -path:\\\"Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md\\\" -path:\\\"Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md\\\")\",",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": ".obsidian/workspace.json",
+      "line": 16,
+      "text": "                \"file\": \"Documentation_DayZ_Qwest/11_Задача_агенту.md\",",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": ".obsidian/workspace.json",
+      "line": 21,
+      "text": "              \"title\": \"11_Задача_агенту\"",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": ".obsidian/workspace.json",
+      "line": 191,
+      "text": "    \"Documentation_DayZ_Qwest/12_Старт_агента.md\",",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": ".obsidian/workspace.json",
+      "line": 192,
+      "text": "    \"Documentation_DayZ_Qwest/11_Задача_агенту.md\",",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/00_Главная.md",
+      "line": 17,
+      "text": "- [[11_Задача_агенту]]",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/00_Главная.md",
+      "line": 18,
+      "text": "- [[12_Старт_агента]]",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "line": 17,
+      "text": "- Главный стартовый документ: `Documentation_DayZ_Qwest/12_Старт_агента.md`.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "line": 18,
+      "text": "- Текущая задача для агента лежит в `Documentation_DayZ_Qwest/11_Задача_агенту.md`.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/04_Архитектура.md",
+      "line": 48,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/04_Архитектура.md",
+      "line": 49,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/04_Архитектура.md",
+      "line": 58,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md`;",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/04_Архитектура.md",
+      "line": 59,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md`;",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "line": 7,
+      "text": "- Активный loop: `Documentation_DayZ_Qwest/11_Задача_агенту.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "line": 8,
+      "text": "- Активный START: `Documentation_DayZ_Qwest/12_Старт_агента.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "line": 53,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 13,
+      "text": "- короткое обязательное ядро: `Documentation_DayZ_Qwest/12_Старт_агента.md`;",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 23,
+      "text": "- короткого `Documentation_DayZ_Qwest/12_Старт_агента.md`;",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 55,
+      "text": "Без потери исходных данных перейти от общего `11_Задача_агенту.md` к персональной рабочей карточке **Codex**, короткому **`12_Старт.md`**, реестру открытых продолжений в **№05**, постоянной проверяемой истории и тактическому контексту; внедрить локальную утилиту, **по запросу ChatGPT-координатора** механически переносящую точно сохранённую постановку из **БЛОКА 1** в **БЛОК 1.1**, освобождая БЛОК 1 для следующей задачи. Сохранить действующие тематические `20_SplitDoc`, правила DayZ и историю; ничего не переизобретать в виде большого нового регламента.",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 61,
+      "text": "1. **Переименовать стартовый документ** `Documentation_DayZ_Qwest/12_Старт_агента.md` → `Documentation_DayZ_Qwest/12_Старт.md`. Полностью обновить действующие ссылки, заголовки и маршруты; не переписывать исторические цитаты без необходимости. Сохранить короткий исполнительский старт, не возвращать туда правила ChatGPT, review и длинные примеры.",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 77,
+      "text": "|`Documentation_DayZ_Qwest/11_Задача_агенту.md`|оболочка, заголовки, БЛОКИ 1–3, служебные разделители|Точный исходный формат, текущие данные; перед перестройкой сделать readback/snapshot|",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 78,
+      "text": "|`Documentation_DayZ_Qwest/12_Старт_агента.md`|целиком (короткий документ)|Сохранить ядро исполнения при переименовании|",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 178,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md`",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 179,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md`",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 196,
+      "text": "- `12_Старт_агента.md` сокращён до обязательного agent-core; подготовка, lifecycle, проектная карта и подробный review больше не читаются исполнителем автоматически.",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 197,
+      "text": "- `11_Задача_агенту.md` оставлен shell-документом TASK / REPORT / REVIEW без тематической матрицы.",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "line": 211,
+      "text": "- `12_Старт_агента.md`: 4 926 символов, целевой диапазон 3–5 тыс. соблюдён.",
+      "action": "PRESERVE_SNAPSHOT"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "line": 11,
+      "text": "1. только текущий `БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА` из `Documentation_DayZ_Qwest/11_Задача_агенту.md`;",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md",
+      "line": 703,
+      "text": "Дополнительный архитектурный и процедурный контекст: `Documentation_DayZ_Qwest/04_Архитектура.md`; `11_Задача_агенту.md` и `12_Старт_агента.md`; `20_SplitDoc/DOCUMENTATION_RULES.md`, `ENCODING_RULES.md`, `GIT_REVIEW_RULES.md`, `TASK_HISTORY.md`. Эти документы определяют scope и совместимость, но не заменяют подтверждение текущего поведения исходниками.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 55,
+      "text": "12_Старт_агента.md",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 121,
+      "text": "Это нужная информация, но у неё разные потребители и моменты использования. [Источник: START](D:/Dayz/Silver_77_Quests/Documentation_DayZ_Qwest/12_Старт_агента.md).",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 207,
+      "text": "Прямые ссылки для проверки: [устаревшее имя loop (line 329)](D:/Dayz/Silver_77_Quests/Documentation_DayZ_Qwest/12_Старт_агента.md:329), [CODEX_START_HERE (line 12)](D:/Dayz/Silver_77_Quests/Documentation_DayZ_Qwest/21_Project_Docs/README.md:12), [старый REVIEW (line 301)](D:/Dayz/Silver_77_Quests/Documentation_DayZ_Qwest/11_Задача_агенту.md:301), [Migration placeholder (line 66)](D:/Dayz/Silver_77_Quests/JSON_Quvest/PROJECT_CONTEXT.md:66), [сценарий Migration](D:/Dayz/Silver_77_Quests/Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md).",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 278,
+      "text": "├── 11_Задача_агенту.md",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 279,
+      "text": "├── 12_Старт_агента.md",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 740,
+      "text": "11_Задача_агенту.md",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md",
+      "line": 748,
+      "text": "12_Старт_агента.md",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "line": 26,
+      "text": "`REQUIRED`: текущий БЛОК 1, короткий `12_Старт_агента.md`, явно назначенные документы и обязательные зависимости выбранной операции.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "line": 32,
+      "text": "БЛОК 1 документа `11_Задача_агенту.md` — единственный пользовательский источник текущей задачи. Поле `EXECUTOR` задаёт один из трёх режимов:",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "line": 128,
+      "text": "Полный `ENCODING_RULES.md` обязателен при реальном encoding-risk, восстановлении кириллицы, неясной кодировке, документационных файлах с кириллицей и при прямом требовании TASK. Для чистого ASCII-only изменения логики действует минимальная защита из `12_Старт_агента.md` без автоматического чтения аварийного протокола.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "line": 146,
+      "text": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "line": 156,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md`, только если правило относится к минимальному обязательному ядру исполнителя;",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "line": 162,
+      "text": "Не копировать полный текст правила в `12_Старт_агента.md` или документ 11, если есть профильный канонический владелец.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "line": 164,
+      "text": "`12_Старт_агента.md` должен оставаться коротким обязательным ядром, а документ 11 — рабочим shell TASK / REPORT / REVIEW.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "line": 25,
+      "text": "Чистая логическая правка ASCII-only файла не требует автоматически читать весь аварийный протокол. Для неё всё равно действуют минимальные запреты из `12_Старт_агента.md`: не перекодировать файл самовольно, сохранить текущий формат и остановиться при первых признаках повреждения текста.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "line": 153,
+      "text": "Если восстановление касалось `Documentation_DayZ_Qwest/11_Задача_агенту.md`, это указывать отдельно: этот файл содержит активную задачу, последний отчёт и review/status.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "line": 33,
+      "text": "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 79,
+      "text": "- `TASK 124` — выполнена ревизия документации и рабочего графа Obsidian. Подтверждено, что `P:\\Silver_77_Quests` разрешается в физический Git root `D:\\Dayz\\Silver_77_Quests`; действующий START переименован в `12_Старт_агента.md`, активные ссылки и индексы обновлены, шесть пустых/стандартных Obsidian-файлов удалены, модульные и уникальные документы сохранены, а граф ограничен рабочей базой без архива, legacy-аудита, `.trash` и внешних модулей. Конфликт канонического editor root между `JSON_Quvest` и `Support/JSON_Quvest` оставлен для решения пользователя.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 89,
+      "text": "- `TASK 130` — formation migration infected переведена с жёстких значений на отдельные JSON-настройки для spawn и target: spacing `2.5`, jitter `0.20`. Сохранена масштабируемая центрированная сетка, для spawn и target добавлены независимые случайные повороты и отдельный jitter каждого infected; PBO не собирался, результат ожидает runtime-проверки. В `12_Старт_агента.md` закреплена схема постановки задач «большой блок + малый блок».",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 105,
+      "text": "- `TASK 138` — закреплён единый канонический алгоритм очистки `БЛОКА 1` без duplicate heading. Подробный канон перенесён в `Documentation_DayZ_Qwest/12_Старт_агента.md`, раздел `3.2`: очищается только содержимое завершённой TASK между существующим заголовком `# БЛОК 1 — ТЕКУЩАЯ ЗАДАЧА` и разделителем перед `БЛОКОМ 2`, сам заголовок не удаляется и не создаётся повторно, после очистки остаются ровно три строки заглушки и выполняется self-check. В `Documentation_DayZ_Qwest/10_Правила_агента.md` оставлена короткая ссылка на канон без дублирования алгоритма. TASK 138 очищена из `БЛОКА 1` новым способом; результат проверки — `BLOCK 1 CLEANUP CHECK: PASS`.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 159,
+      "text": "- `TASK 164` — создан первый client-only prototype `Silver_77_Zones_Client`: минимальный `CfgMods` подключает только `5_Mission`, а `MissionGameplay` один раз загружает vanilla `dz\\data\\lighting\\lighting_underground.txt`, создаёт виртуальный центр в 25 метрах перед первым локальным `PlayerBase` и по X/Z-дистанции задаёт `LightingLerp` от 0 до 1 между радиусами 20 и 8 метров. Логи `[S77Z]` фиксируют initialization, центр и смены OUTSIDE / TRANSITION / INNER без покадрового спама; `OnMissionFinish` возвращает lerp к 0. Server, Eye Accommodation, PPE, NVG, audio, hazards и RPC не добавлялись. В `12_Старт_агента.md` дополнительно закреплено, что после старта TASK БЛОК 1 заморожен до AGENT REPORT, а любые уточнения передаются только отдельными сообщениями.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 167,
+      "text": "- `TASK 167 FIX` — подтверждено, что общее Python-правило `env/` в корневом `.gitignore` скрывало `DayZ_Server_Reference/Mission/env`. Добавлены узкие исключения для этого repository snapshot при сохранении обычного ignore для корневых и вложенных Python `env/`. Все 18 активных territory XML теперь видимы Git как untracked для будущего пользовательского commit; дополнительный `domestic_animals_territories.xml` также виден информационно. Содержимое XML не менялось, а БЛОК 1 после отчёта приведён к каноническим трём строкам из `12_Старт_агента.md`.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 169,
+      "text": "- `TASK 168` — создан короткий верхнеуровневый обзор единой системы проекта, связывающий четыре направления: Quest, `Silver_77_Migrate`, `Silver_77_Zones` и «Контроль событий сервера». Зафиксирован будущий единый Web Workshop с независимыми модулями и сохранением изолированных runtime-систем. Обзор подключён как обязательный короткий общий контекст из `12_Старт_агента.md`; существующие ветки документации, `.obsidian`, код, runtime и моды не менялись.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md",
+      "line": 193,
+      "text": "- `TASK 181` — управляющий контекст разделён по роли и стадии: созданы канонические владельцы подготовки TASK, маршрутизации чтения, lifecycle и project paths; `12_Старт_агента.md` сокращён до обязательного ядра, матрица удалена из shell-документа 11, а `30_Единая_система_проекта.md`, прошлые REPORT/REVIEW, история и аварийные инструкции исключены из автоматического старта. Тематические боевые документы сохранены владельцами предметных правил. Постоянная нагрузка обычного старта снижена с 35 415 до 4 926 символов (86,1%), сценария маленького Migration/Editor FIX — с 46 584 до 12 994 (72,1%). Код, JSON, runtime, PBO и документы 14–40 не менялись; моды обновлять не нужно.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "line": 28,
+      "text": "После успешной задачи записать новый отчёт в `БЛОК 2 — ПОСЛЕДНИЙ ОТЧЁТ АГЕНТА` документа `11_Задача_агенту.md`, заменив предыдущий отчёт, но не изменяя БЛОК 3 без прямого требования.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "line": 61,
+      "text": "В `11_Задача_агенту.md` найти единственный заголовок:",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "line": 61,
+      "text": "Постоянные запреты из `12_Старт_агента.md` не нужно полностью копировать в каждую TASK. Повторять следует только условия, критичные именно для текущего изменения.",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "line": 80,
+      "text": "1. большой — полный текст для `БЛОКА 1` в `11_Задача_агенту.md`;",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "line": 86,
+      "text": "- путь `Documentation_DayZ_Qwest/11_Задача_агенту.md`;",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "line": 9,
+      "text": "- Активная задача: `P:\\Silver_77_Quests\\Documentation_DayZ_Qwest\\11_Задача_агенту.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "line": 7,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "line": 8,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+      "line": 29,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md` — действующий стартовый документ агента.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+      "line": 38,
+      "text": "- `Documentation/AGENT_TASK_LOOP.md` — удалён после окончательного переключения на `Documentation_DayZ_Qwest/11_Задача_агенту.md` и `Documentation_DayZ_Qwest/12_Старт_агента.md`.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+      "line": 39,
+      "text": "- `Documentation/SplitDoc/START.md` — в текущей структуре отсутствует и не является действующим bridge; единственный действующий START находится в `Documentation_DayZ_Qwest/12_Старт_агента.md`.",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+      "line": 108,
+      "text": "- агентская система: `10_Правила_агента.md`, `11_Задача_агенту.md`, `12_Старт_агента.md`;",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+      "line": 121,
+      "text": "- `Documentation/AGENT_TASK_LOOP.md` ведёт к действующим `11_Задача_агенту.md` и `12_Старт_агента.md`;",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md",
+      "line": 158,
+      "text": "- единственный действующий `12_START_зеркало.md` переименован в `12_Старт_агента.md`;",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md",
+      "line": 122,
+      "text": "### `Documentation_DayZ_Qwest/12_Старт_агента.md`",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md",
+      "line": 408,
+      "text": "- `Documentation_DayZ_Qwest/12_Старт_агента.md`;",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md",
+      "line": 410,
+      "text": "- `Documentation_DayZ_Qwest/11_Задача_агенту.md`;",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "JSON_Quvest/README.md",
+      "line": 18,
+      "text": "- `P:\\Silver_77_Quests\\Documentation_DayZ_Qwest\\11_Задача_агенту.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "JSON_Quvest/README.md",
+      "line": 19,
+      "text": "- `P:\\Silver_77_Quests\\Documentation_DayZ_Qwest\\12_Старт_агента.md`",
+      "action": "UPDATE_ACTIVE"
+    },
+    {
+      "source": "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
+      "line": 19,
+      "text": "- `P:\\Silver_77_Quests\\Documentation_DayZ_Qwest\\11_Задача_агенту.md`",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    },
+    {
+      "source": "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md",
+      "line": 20,
+      "text": "- `P:\\Silver_77_Quests\\Documentation_DayZ_Qwest\\12_Старт_агента.md`",
+      "action": "PRESERVE_HISTORY_OR_SETTINGS"
+    }
+  ],
+  "task_sha256": "e44f2804cfdfa8263a4d2e625fa1c0df991bb54cf17e7f61bbd22499eac92aea"
+}

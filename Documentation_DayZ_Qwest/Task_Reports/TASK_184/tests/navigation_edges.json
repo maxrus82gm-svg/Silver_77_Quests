@@ -1,0 +1,1591 @@
+{
+  "before": {
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md": [],
+    "Documentation_DayZ_Qwest/39_Глобальный_план.md": [
+      [
+        "40_Выполненные_задачи_глобального_плана|Выполненные задачи глобального плана",
+        "Documentation_DayZ_Qwest/40_Выполненные_задачи_глобального_плана.md"
+      ]
+    ],
+    "JSON_Quvest/README.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md": [
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS|PROJECT_PATHS",
+        "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC|QUEST_LOGIC_SPEC",
+        "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING|RUSSIAN_ENCODING",
+        "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG|README_JSON_CONFIG",
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER|SPLIT_CLIENT_SERVER",
+        "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/BUILD|BUILD",
+        "Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION|README_INSTALLATION",
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/README|README",
+        "Documentation_DayZ_Qwest/21_Project_Docs/README.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG|CHANGELOG",
+        "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CHANGELOG.md": [],
+    "Documentation_DayZ_Qwest/31_Квестовая_система_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md": [],
+    "JSON_Quvest/assets/maps/chernarusplus/SOURCE.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTEXT_2026-04-20.md": [],
+    "Documentation_DayZ_Qwest/24_Silver_77_Zones_История_и_план.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/SERVER_PROFILE_RULES.md": [],
+    "Documentation_DayZ_Qwest/01_Текущее_состояние.md": [],
+    "Documentation_DayZ_Qwest/34_Silver_77_Medicine_Структура.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/REPORT_2026-04-18.md": [],
+    "Documentation_DayZ_Qwest/26_Silver_77_Zones_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md": [
+      [
+        "00_Главная",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "01_Старт_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md"
+      ],
+      [
+        "02_Правила_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/18_Идеи_Квестов.md": [],
+    "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md": [],
+    "Documentation_DayZ_Qwest/17_Реализация_Миграции.md": [
+      [
+        "14_Квест_Миграция",
+        "Documentation_DayZ_Qwest/14_Квест_Миграция.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-25.md": [],
+    "Support/Arh_29042026/JSON_Quvest/PROJECT_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/20_Silver_77_Zone_Освещение.md": [
+      [
+        "19_Silver_77_Zone|Silver_77_Zone",
+        "Documentation_DayZ_Qwest/19_Silver_77_Zone.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/04_Архитектура.md": [
+      [
+        "31_Квестовая_система_Приоритетная_задача|Приоритетная задача квестовой системы",
+        "Documentation_DayZ_Qwest/31_Квестовая_система_Приоритетная_задача.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/README.md": [],
+    "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_EMERGENCY_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md": [],
+    "Documentation_DayZ_Qwest/05_Очередь_задач.md": [],
+    "Silver_77_Quests_Server/README.md": [],
+    "Documentation_DayZ_Qwest/14_Квест_Миграция.md": [
+      [
+        "15_Сценарий_Миграции_001",
+        "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md"
+      ],
+      [
+        "16_Идеи_Квеста_Миграции",
+        "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md"
+      ],
+      [
+        "32_Silver_77_Migrate_Приоритетная_задача|Приоритетная задача Silver_77_Migrate",
+        "Documentation_DayZ_Qwest/32_Silver_77_Migrate_Приоритетная_задача.md"
+      ],
+      [
+        "15_Сценарий_Миграции_001|Сценарий миграции 001 — Первый маршрут",
+        "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md"
+      ],
+      [
+        "16_Идеи_Квеста_Миграции",
+        "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md"
+      ],
+      [
+        "17_Реализация_Миграции",
+        "Documentation_DayZ_Qwest/17_Реализация_Миграции.md"
+      ],
+      [
+        "16_Идеи_Квеста_Миграции",
+        "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/Ultra/00_Главная.md": [
+      [
+        "00_Главная",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "01_Старт_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md"
+      ],
+      [
+        "02_Правила_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "04_ULTRA_REPORT",
+        "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/30_Единая_система_проекта.md": [
+      [
+        "38_Интеграция_модов_на_карте|Интеграция модов на карте",
+        "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md"
+      ],
+      [
+        "39_Глобальный_план|Глобальный план",
+        "Documentation_DayZ_Qwest/39_Глобальный_план.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/35_Silver_77_Medicine_История_и_план.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/TASK_HISTORY.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/START.md": [],
+    "SplitMods/Silver_77_Quests_Client/README.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/RUSSIAN_ENCODING.md": [],
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/40_Выполненные_задачи_глобального_плана.md": [],
+    "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md": [],
+    "Silver_77_Quests_Client/README.md": [],
+    "Documentation_DayZ_Qwest/03_Открытые_вопросы.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-29.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/BUILD.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES.md": [],
+    "Documentation_DayZ_Qwest/00_Главная.md": [
+      [
+        "01_Текущее_состояние",
+        "Documentation_DayZ_Qwest/01_Текущее_состояние.md"
+      ],
+      [
+        "02_Решения",
+        "Documentation_DayZ_Qwest/02_Решения.md"
+      ],
+      [
+        "03_Открытые_вопросы",
+        "Documentation_DayZ_Qwest/03_Открытые_вопросы.md"
+      ],
+      [
+        "04_Архитектура",
+        "Documentation_DayZ_Qwest/04_Архитектура.md"
+      ],
+      [
+        "30_Единая_система_проекта|Единая система проекта",
+        "Documentation_DayZ_Qwest/30_Единая_система_проекта.md"
+      ],
+      [
+        "06_Идеи",
+        "Documentation_DayZ_Qwest/06_Идеи.md"
+      ],
+      [
+        "10_Правила_агента",
+        "Documentation_DayZ_Qwest/10_Правила_агента.md"
+      ],
+      [
+        "11_Задача_агенту",
+        "Documentation_DayZ_Qwest/11_Задача_агенту.md"
+      ],
+      [
+        "12_Старт_агента",
+        "Documentation_DayZ_Qwest/12_Старт_агента.md"
+      ],
+      [
+        "13_ЛОР",
+        "Documentation_DayZ_Qwest/13_ЛОР.md"
+      ],
+      [
+        "14_Квест_Миграция|Квест «Миграция заражённых»",
+        "Documentation_DayZ_Qwest/14_Квест_Миграция.md"
+      ],
+      [
+        "18_Идеи_Квестов|Идеи квестов",
+        "Documentation_DayZ_Qwest/18_Идеи_Квестов.md"
+      ],
+      [
+        "19_Silver_77_Zone|Silver_77_Zone",
+        "Documentation_DayZ_Qwest/19_Silver_77_Zone.md"
+      ],
+      [
+        "31_Silver_77_Medicine|Silver_77_Medicine",
+        "Documentation_DayZ_Qwest/31_Silver_77_Medicine.md"
+      ],
+      [
+        "Квесты, идеи описания классов.canvas|Квесты и идеи описания классов",
+        "Documentation_DayZ_Qwest/Квесты, идеи описания классов.canvas"
+      ],
+      [
+        "27_Контроль_событий_сервера|Контроль событий сервера",
+        "Documentation_DayZ_Qwest/27_Контроль_событий_сервера.md"
+      ],
+      [
+        "20_SplitDoc/00_INDEX|20_SplitDoc — активные правила",
+        "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md"
+      ],
+      [
+        "21_Project_Docs/00_INDEX|21_Project_Docs — активные проектные документы",
+        "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md"
+      ],
+      [
+        "41_ANALYSIS_REPORT_TASK 180|Полный анализ TASK 180",
+        "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md"
+      ],
+      [
+        "Ultra/00_Главная|Ultra — документационная основа",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "22_Legacy_Check/00_Проверка_хвостов_Documentation|Проверка хвостов старой Documentation",
+        "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md"
+      ],
+      [
+        "90_Legacy_Archive/00_INDEX|90_Legacy_Archive — архив старой Documentation",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/00_INDEX.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_START_HERE.md": [],
+    "Documentation_DayZ_Qwest/37_Silver_77_Medicine_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_JSON_CONFIG.md": [],
+    "README.md": [],
+    "Documentation_DayZ_Qwest/33_Контроль_событий_сервера_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/00_INDEX.md": [
+      [
+        "Documentation/AGENT_TASK_LOOP|AGENT_TASK_LOOP",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/AGENT_TASK_LOOP.md"
+      ],
+      [
+        "Documentation/BUILD|BUILD",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/BUILD.md"
+      ],
+      [
+        "Documentation/CHANGELOG|CHANGELOG",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CHANGELOG.md"
+      ],
+      [
+        "Documentation/CODEX_CONTEXT_2026-04-20|CODEX_CONTEXT_2026-04-20",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTEXT_2026-04-20.md"
+      ],
+      [
+        "Documentation/CODEX_CONTROL_CONTEXT|CODEX_CONTROL_CONTEXT",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTROL_CONTEXT.md"
+      ],
+      [
+        "Documentation/CODEX_EMERGENCY_CONTEXT|CODEX_EMERGENCY_CONTEXT",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_EMERGENCY_CONTEXT.md"
+      ],
+      [
+        "Documentation/CODEX_FAST_HANDOFF_2026-04-27|CODEX_FAST_HANDOFF_2026-04-27",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_FAST_HANDOFF_2026-04-27.md"
+      ],
+      [
+        "Documentation/CODEX_SESSION_HANDOFF_2026-04-25|CODEX_SESSION_HANDOFF_2026-04-25",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-25.md"
+      ],
+      [
+        "Documentation/CODEX_SESSION_HANDOFF_2026-04-26|CODEX_SESSION_HANDOFF_2026-04-26",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-26.md"
+      ],
+      [
+        "Documentation/CODEX_SESSION_HANDOFF_2026-04-29|CODEX_SESSION_HANDOFF_2026-04-29",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-29.md"
+      ],
+      [
+        "Documentation/CODEX_START_HERE|CODEX_START_HERE",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_START_HERE.md"
+      ],
+      [
+        "Documentation/CODEX_WORKLOG|CODEX_WORKLOG",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_WORKLOG.md"
+      ],
+      [
+        "Documentation/QUEST_LOGIC_SPEC|QUEST_LOGIC_SPEC",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md"
+      ],
+      [
+        "Documentation/README|README",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README.md"
+      ],
+      [
+        "Documentation/README_INSTALLATION|README_INSTALLATION",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_INSTALLATION.md"
+      ],
+      [
+        "Documentation/README_JSON_CONFIG|README_JSON_CONFIG",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_JSON_CONFIG.md"
+      ],
+      [
+        "Documentation/REPORT_2026-04-18|REPORT_2026-04-18",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/REPORT_2026-04-18.md"
+      ],
+      [
+        "Documentation/RUSSIAN_ENCODING|RUSSIAN_ENCODING",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/RUSSIAN_ENCODING.md"
+      ],
+      [
+        "Documentation/SPLIT_CLIENT_SERVER|SPLIT_CLIENT_SERVER",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/SPLIT_CLIENT_SERVER.md"
+      ],
+      [
+        "Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES|DAYZ_LAYOUT_VIEWER_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES|DAYZ_RPC_SYNC_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/ENCODING_RULES|ENCODING_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/ENCODING_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/GIT_REVIEW_RULES|GIT_REVIEW_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/GIT_REVIEW_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/QUEST_EDITOR_RULES|QUEST_EDITOR_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_EDITOR_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/QUEST_JSON_CONTRACT|QUEST_JSON_CONTRACT",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_JSON_CONTRACT.md"
+      ],
+      [
+        "Documentation_SplitDoc/QUEST_UI_RULES|QUEST_UI_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_UI_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/SERVER_PROFILE_RULES|SERVER_PROFILE_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/SERVER_PROFILE_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/START|START",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/START.md"
+      ],
+      [
+        "Documentation_SplitDoc/TASK_HISTORY|TASK_HISTORY",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/TASK_HISTORY.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/AGENT_TASK_LOOP.md": [],
+    "Documentation_DayZ_Qwest/25_Silver_77_Zones_Roadmap.md": [],
+    "Documentation_DayZ_Qwest/12_Старт_агента.md": [],
+    "Documentation_DayZ_Qwest/10_Правила_агента.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_JSON_CONTRACT.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/ENCODING_RULES.md": [],
+    "Documentation_DayZ_Qwest/06_Идеи.md": [],
+    "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_FAST_HANDOFF_2026-04-27.md": [],
+    "Documentation_DayZ_Qwest/31_Silver_77_Medicine.md": [
+      [
+        "32_Silver_77_Medicine_Аудит_DayZ|Аудит возможностей DayZ",
+        "Documentation_DayZ_Qwest/32_Silver_77_Medicine_Аудит_DayZ.md"
+      ],
+      [
+        "33_Silver_77_Medicine_Идеи|Идеи",
+        "Documentation_DayZ_Qwest/33_Silver_77_Medicine_Идеи.md"
+      ],
+      [
+        "34_Silver_77_Medicine_Структура|Структура проекта",
+        "Documentation_DayZ_Qwest/34_Silver_77_Medicine_Структура.md"
+      ],
+      [
+        "35_Silver_77_Medicine_История_и_план|История и план",
+        "Documentation_DayZ_Qwest/35_Silver_77_Medicine_История_и_план.md"
+      ],
+      [
+        "36_Silver_77_Medicine_Roadmap|Roadmap",
+        "Documentation_DayZ_Qwest/36_Silver_77_Medicine_Roadmap.md"
+      ],
+      [
+        "37_Silver_77_Medicine_Приоритетная_задача|Приоритетная задача",
+        "Documentation_DayZ_Qwest/37_Silver_77_Medicine_Приоритетная_задача.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md": [],
+    "Documentation_DayZ_Qwest/11_Задача_агенту.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG.md": [],
+    "Documentation_DayZ_Qwest/19_Silver_77_Zone.md": [
+      [
+        "20_Silver_77_Zone_Освещение|Освещение зоны",
+        "Documentation_DayZ_Qwest/20_Silver_77_Zone_Освещение.md"
+      ],
+      [
+        "23_Silver_77_Zones_Структура|Структура проекта",
+        "Documentation_DayZ_Qwest/23_Silver_77_Zones_Структура.md"
+      ],
+      [
+        "24_Silver_77_Zones_История_и_план|История и план",
+        "Documentation_DayZ_Qwest/24_Silver_77_Zones_История_и_план.md"
+      ],
+      [
+        "25_Silver_77_Zones_Roadmap|Roadmap",
+        "Documentation_DayZ_Qwest/25_Silver_77_Zones_Roadmap.md"
+      ],
+      [
+        "26_Silver_77_Zones_Приоритетная_задача|Приоритетная задача",
+        "Documentation_DayZ_Qwest/26_Silver_77_Zones_Приоритетная_задача.md"
+      ]
+    ],
+    "JSON_Quvest/PROJECT_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/GIT_REVIEW_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_UI_RULES.md": [],
+    "Documentation_DayZ_Qwest/23_Silver_77_Zones_Структура.md": [],
+    "Silver_77_Migrate_server/config/README_RU.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md": [],
+    "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md": [],
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md": [],
+    "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md": [
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "04_ULTRA_REPORT",
+        "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md": [
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES|TASK_PREPARATION_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING|CONTEXT_ROUTING",
+        "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES|TASK_LIFECYCLE_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES|GIT_REVIEW_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES|DOCUMENTATION_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES|ENCODING_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES|QUEST_UI_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT|QUEST_JSON_CONTRACT",
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES|QUEST_EDITOR_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES|SERVER_PROFILE_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES|TRADER_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES|TRIGGER_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES|DAYZ_ENFORCE_SCRIPT_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES|DAYZ_LAYOUT_VIEWER_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES|DAYZ_RPC_SYNC_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET|IMAGE_GENERATION_PRESET",
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY|IMAGE_SCENE_CONTINUITY",
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY|TASK_HISTORY",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES.md": [],
+    "Documentation_DayZ_Qwest/13_ЛОР.md": [
+      [
+        "Pasted image 20260615154517.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615154517.png"
+      ],
+      [
+        "Pasted image 20260615154630.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615154630.png"
+      ],
+      [
+        "Pasted image 20260615164847.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615164847.png"
+      ],
+      [
+        "Pasted image 20260615165138.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615165138.png"
+      ],
+      [
+        "Pasted image 20260615165417.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615165417.png"
+      ],
+      [
+        "Pasted image 20260615165812.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615165812.png"
+      ],
+      [
+        "Pasted image 20260615172553.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615172553.png"
+      ],
+      [
+        "Pasted image 20260615212110.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615212110.png"
+      ],
+      [
+        "Pasted image 20260615215633.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615215633.png"
+      ],
+      [
+        "Pasted image 20260615221218.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615221218.png"
+      ],
+      [
+        "ChatGPT Image 15 июн. 2026 г., 22_49_12.png",
+        "Documentation_DayZ_Qwest/ChatGPT Image 15 июн. 2026 г., 22_49_12.png"
+      ],
+      [
+        "Pasted image 20260615231225.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615231225.png"
+      ],
+      [
+        "Pasted image 20260615232916.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615232916.png"
+      ],
+      [
+        "Pasted image 20260615233907.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615233907.png"
+      ],
+      [
+        "Pasted image 20260615235523.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615235523.png"
+      ],
+      [
+        "Pasted image 20260616001608.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260616001608.png"
+      ],
+      [
+        "Pasted image 20260616003941.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260616003941.png"
+      ],
+      [
+        "Pasted image 20260617220820.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617220820.png"
+      ],
+      [
+        "Pasted image 20260617222832.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617222832.png"
+      ],
+      [
+        "Pasted image 20260617224259.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617224259.png"
+      ],
+      [
+        "Pasted image 20260619220344.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260619220344.png"
+      ],
+      [
+        "Pasted image 20260617232356.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617232356.png"
+      ],
+      [
+        "Pasted image 20260618002725.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260618002725.png"
+      ],
+      [
+        "Pasted image 20260618002749.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260618002749.png"
+      ],
+      [
+        "Pasted image 20260618001250.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260618001250.png"
+      ],
+      [
+        "Pasted image 20260617235207.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617235207.png"
+      ],
+      [
+        "Pasted image 20260617235131.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617235131.png"
+      ],
+      [
+        "Pasted image 20260617235319.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617235319.png"
+      ],
+      [
+        "Pasted image 20260619235956.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260619235956.png"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md": [],
+    "Documentation_DayZ_Qwest/33_Silver_77_Medicine_Идеи.md": [],
+    "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md": [
+      [
+        "00_Главная",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "01_Старт_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md"
+      ],
+      [
+        "02_Правила_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "04_ULTRA_REPORT",
+        "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_INSTALLATION.md": [],
+    "Documentation_DayZ_Qwest/36_Silver_77_Medicine_Roadmap.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_EDITOR_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/SPLIT_CLIENT_SERVER.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md": [],
+    "Documentation_DayZ_Qwest/27_Контроль_событий_сервера.md": [
+      [
+        "28_Источники_данных_сервера|Источники данных сервера",
+        "Documentation_DayZ_Qwest/28_Источники_данных_сервера.md"
+      ],
+      [
+        "29_Карта_мира_сервера|Карта мира сервера",
+        "Documentation_DayZ_Qwest/29_Карта_мира_сервера.md"
+      ],
+      [
+        "33_Контроль_событий_сервера_Приоритетная_задача|Приоритетная задача",
+        "Documentation_DayZ_Qwest/33_Контроль_событий_сервера_Приоритетная_задача.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/29_Карта_мира_сервера.md": [],
+    "Documentation_DayZ_Qwest/02_Решения.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTROL_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-26.md": [],
+    "возможности_Silver_77_Quests.md": [],
+    "Documentation_DayZ_Qwest/32_Silver_77_Migrate_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md": [],
+    "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md": [],
+    "Documentation_DayZ_Qwest/32_Silver_77_Medicine_Аудит_DayZ.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_WORKLOG.md": [],
+    "Documentation_DayZ_Qwest/28_Источники_данных_сервера.md": [],
+    "Support/Mashin/BP_Mashin.md": [],
+    "Support/Arh_29042026/JSON_Quvest/README.md": [],
+    "SplitMods/Silver_77_Quests_Server/README.md": []
+  },
+  "after": {
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md": [],
+    "Documentation_DayZ_Qwest/39_Глобальный_план.md": [
+      [
+        "40_Выполненные_задачи_глобального_плана|Выполненные задачи глобального плана",
+        "Documentation_DayZ_Qwest/40_Выполненные_задачи_глобального_плана.md"
+      ]
+    ],
+    "JSON_Quvest/README.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md": [
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS|PROJECT_PATHS",
+        "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC|QUEST_LOGIC_SPEC",
+        "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING|RUSSIAN_ENCODING",
+        "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG|README_JSON_CONFIG",
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER|SPLIT_CLIENT_SERVER",
+        "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/BUILD|BUILD",
+        "Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION|README_INSTALLATION",
+        "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/README|README",
+        "Documentation_DayZ_Qwest/21_Project_Docs/README.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG|CHANGELOG",
+        "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG.md"
+      ],
+      [
+        "12_Старт",
+        "Documentation_DayZ_Qwest/12_Старт.md"
+      ],
+      [
+        "11_Задачи_Codex",
+        "Documentation_DayZ_Qwest/11_Задачи_Codex.md"
+      ],
+      [
+        "42_TACTICAL_CONTEXT",
+        "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md"
+      ],
+      [
+        "05_Очередь_задач",
+        "Documentation_DayZ_Qwest/05_Очередь_задач.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/SPLIT_CLIENT_SERVER.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CHANGELOG.md": [],
+    "Documentation_DayZ_Qwest/31_Квестовая_система_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md": [],
+    "JSON_Quvest/assets/maps/chernarusplus/SOURCE.md": [],
+    "Documentation_DayZ_Qwest/12_Старт.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTEXT_2026-04-20.md": [],
+    "Documentation_DayZ_Qwest/24_Silver_77_Zones_История_и_план.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/SERVER_PROFILE_RULES.md": [],
+    "Documentation_DayZ_Qwest/01_Текущее_состояние.md": [],
+    "Documentation_DayZ_Qwest/34_Silver_77_Medicine_Структура.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/REPORT_2026-04-18.md": [],
+    "Documentation_DayZ_Qwest/26_Silver_77_Zones_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md": [
+      [
+        "00_Главная",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "01_Старт_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md"
+      ],
+      [
+        "02_Правила_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/18_Идеи_Квестов.md": [],
+    "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md": [],
+    "Documentation_DayZ_Qwest/17_Реализация_Миграции.md": [
+      [
+        "14_Квест_Миграция",
+        "Documentation_DayZ_Qwest/14_Квест_Миграция.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-25.md": [],
+    "Support/Arh_29042026/JSON_Quvest/PROJECT_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/20_Silver_77_Zone_Освещение.md": [
+      [
+        "19_Silver_77_Zone|Silver_77_Zone",
+        "Documentation_DayZ_Qwest/19_Silver_77_Zone.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/04_Архитектура.md": [
+      [
+        "31_Квестовая_система_Приоритетная_задача|Приоритетная задача квестовой системы",
+        "Documentation_DayZ_Qwest/31_Квестовая_система_Приоритетная_задача.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/README.md": [],
+    "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_EMERGENCY_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/BUILD.md": [],
+    "Documentation_DayZ_Qwest/05_Очередь_задач.md": [],
+    "Silver_77_Quests_Server/README.md": [],
+    "Documentation_DayZ_Qwest/14_Квест_Миграция.md": [
+      [
+        "15_Сценарий_Миграции_001",
+        "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md"
+      ],
+      [
+        "16_Идеи_Квеста_Миграции",
+        "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md"
+      ],
+      [
+        "32_Silver_77_Migrate_Приоритетная_задача|Приоритетная задача Silver_77_Migrate",
+        "Documentation_DayZ_Qwest/32_Silver_77_Migrate_Приоритетная_задача.md"
+      ],
+      [
+        "15_Сценарий_Миграции_001|Сценарий миграции 001 — Первый маршрут",
+        "Documentation_DayZ_Qwest/15_Сценарий_Миграции_001.md"
+      ],
+      [
+        "16_Идеи_Квеста_Миграции",
+        "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md"
+      ],
+      [
+        "17_Реализация_Миграции",
+        "Documentation_DayZ_Qwest/17_Реализация_Миграции.md"
+      ],
+      [
+        "16_Идеи_Квеста_Миграции",
+        "Documentation_DayZ_Qwest/16_Идеи_Квеста_Миграции.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/Ultra/00_Главная.md": [
+      [
+        "00_Главная",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "01_Старт_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md"
+      ],
+      [
+        "02_Правила_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "04_ULTRA_REPORT",
+        "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/30_Единая_система_проекта.md": [
+      [
+        "38_Интеграция_модов_на_карте|Интеграция модов на карте",
+        "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md"
+      ],
+      [
+        "39_Глобальный_план|Глобальный план",
+        "Documentation_DayZ_Qwest/39_Глобальный_план.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/35_Silver_77_Medicine_История_и_план.md": [],
+    "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md": [
+      [
+        "30_Единая_система_проекта",
+        "Documentation_DayZ_Qwest/30_Единая_система_проекта.md"
+      ],
+      [
+        "38_Интеграция_модов_на_карте",
+        "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md"
+      ],
+      [
+        "39_Глобальный_план",
+        "Documentation_DayZ_Qwest/39_Глобальный_план.md"
+      ],
+      [
+        "11_Задачи_Codex",
+        "Documentation_DayZ_Qwest/11_Задачи_Codex.md"
+      ],
+      [
+        "05_Очередь_задач",
+        "Documentation_DayZ_Qwest/05_Очередь_задач.md"
+      ],
+      [
+        "12_Старт",
+        "Documentation_DayZ_Qwest/12_Старт.md"
+      ],
+      [
+        "11_Задачи_Codex",
+        "Documentation_DayZ_Qwest/11_Задачи_Codex.md"
+      ],
+      [
+        "001_История_задач_Codex",
+        "Documentation_DayZ_Qwest/001_История_задач_Codex.md"
+      ],
+      [
+        "05_Очередь_задач",
+        "Documentation_DayZ_Qwest/05_Очередь_задач.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/QUEST_LOGIC_SPEC.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/TASK_HISTORY.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/START.md": [],
+    "SplitMods/Silver_77_Quests_Client/README.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/RUSSIAN_ENCODING.md": [],
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/PROJECT_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/40_Выполненные_задачи_глобального_плана.md": [],
+    "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md": [],
+    "Silver_77_Quests_Client/README.md": [],
+    "Documentation_DayZ_Qwest/03_Открытые_вопросы.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-29.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/BUILD.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES.md": [],
+    "Documentation_DayZ_Qwest/00_Главная.md": [
+      [
+        "01_Текущее_состояние",
+        "Documentation_DayZ_Qwest/01_Текущее_состояние.md"
+      ],
+      [
+        "02_Решения",
+        "Documentation_DayZ_Qwest/02_Решения.md"
+      ],
+      [
+        "03_Открытые_вопросы",
+        "Documentation_DayZ_Qwest/03_Открытые_вопросы.md"
+      ],
+      [
+        "04_Архитектура",
+        "Documentation_DayZ_Qwest/04_Архитектура.md"
+      ],
+      [
+        "30_Единая_система_проекта|Единая система проекта",
+        "Documentation_DayZ_Qwest/30_Единая_система_проекта.md"
+      ],
+      [
+        "06_Идеи",
+        "Documentation_DayZ_Qwest/06_Идеи.md"
+      ],
+      [
+        "10_Правила_агента",
+        "Documentation_DayZ_Qwest/10_Правила_агента.md"
+      ],
+      [
+        "11_Задачи_Codex",
+        "Documentation_DayZ_Qwest/11_Задачи_Codex.md"
+      ],
+      [
+        "12_Старт",
+        "Documentation_DayZ_Qwest/12_Старт.md"
+      ],
+      [
+        "001_История_задач_Codex|Постоянная история Codex",
+        "Documentation_DayZ_Qwest/001_История_задач_Codex.md"
+      ],
+      [
+        "05_Очередь_задач|Реестр TASK и FOLLOWUP",
+        "Documentation_DayZ_Qwest/05_Очередь_задач.md"
+      ],
+      [
+        "42_TACTICAL_CONTEXT|Тактический контекст",
+        "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md"
+      ],
+      [
+        "13_ЛОР",
+        "Documentation_DayZ_Qwest/13_ЛОР.md"
+      ],
+      [
+        "14_Квест_Миграция|Квест «Миграция заражённых»",
+        "Documentation_DayZ_Qwest/14_Квест_Миграция.md"
+      ],
+      [
+        "18_Идеи_Квестов|Идеи квестов",
+        "Documentation_DayZ_Qwest/18_Идеи_Квестов.md"
+      ],
+      [
+        "19_Silver_77_Zone|Silver_77_Zone",
+        "Documentation_DayZ_Qwest/19_Silver_77_Zone.md"
+      ],
+      [
+        "31_Silver_77_Medicine|Silver_77_Medicine",
+        "Documentation_DayZ_Qwest/31_Silver_77_Medicine.md"
+      ],
+      [
+        "Квесты, идеи описания классов.canvas|Квесты и идеи описания классов",
+        "Documentation_DayZ_Qwest/Квесты, идеи описания классов.canvas"
+      ],
+      [
+        "27_Контроль_событий_сервера|Контроль событий сервера",
+        "Documentation_DayZ_Qwest/27_Контроль_событий_сервера.md"
+      ],
+      [
+        "20_SplitDoc/00_INDEX|20_SplitDoc — активные правила",
+        "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md"
+      ],
+      [
+        "21_Project_Docs/00_INDEX|21_Project_Docs — активные проектные документы",
+        "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md"
+      ],
+      [
+        "41_ANALYSIS_REPORT_TASK 180|Полный анализ TASK 180",
+        "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md"
+      ],
+      [
+        "Ultra/00_Главная|Ultra — исторические материалы, не активный маршрут",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "22_Legacy_Check/00_Проверка_хвостов_Documentation|Проверка хвостов старой Documentation",
+        "Documentation_DayZ_Qwest/22_Legacy_Check/00_Проверка_хвостов_Documentation.md"
+      ],
+      [
+        "90_Legacy_Archive/00_INDEX|90_Legacy_Archive — архив старой Documentation",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/00_INDEX.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_START_HERE.md": [],
+    "Documentation_DayZ_Qwest/37_Silver_77_Medicine_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_JSON_CONFIG.md": [],
+    "README.md": [],
+    "Documentation_DayZ_Qwest/33_Контроль_событий_сервера_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/00_INDEX.md": [
+      [
+        "Documentation/AGENT_TASK_LOOP|AGENT_TASK_LOOP",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/AGENT_TASK_LOOP.md"
+      ],
+      [
+        "Documentation/BUILD|BUILD",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/BUILD.md"
+      ],
+      [
+        "Documentation/CHANGELOG|CHANGELOG",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CHANGELOG.md"
+      ],
+      [
+        "Documentation/CODEX_CONTEXT_2026-04-20|CODEX_CONTEXT_2026-04-20",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTEXT_2026-04-20.md"
+      ],
+      [
+        "Documentation/CODEX_CONTROL_CONTEXT|CODEX_CONTROL_CONTEXT",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTROL_CONTEXT.md"
+      ],
+      [
+        "Documentation/CODEX_EMERGENCY_CONTEXT|CODEX_EMERGENCY_CONTEXT",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_EMERGENCY_CONTEXT.md"
+      ],
+      [
+        "Documentation/CODEX_FAST_HANDOFF_2026-04-27|CODEX_FAST_HANDOFF_2026-04-27",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_FAST_HANDOFF_2026-04-27.md"
+      ],
+      [
+        "Documentation/CODEX_SESSION_HANDOFF_2026-04-25|CODEX_SESSION_HANDOFF_2026-04-25",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-25.md"
+      ],
+      [
+        "Documentation/CODEX_SESSION_HANDOFF_2026-04-26|CODEX_SESSION_HANDOFF_2026-04-26",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-26.md"
+      ],
+      [
+        "Documentation/CODEX_SESSION_HANDOFF_2026-04-29|CODEX_SESSION_HANDOFF_2026-04-29",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-29.md"
+      ],
+      [
+        "Documentation/CODEX_START_HERE|CODEX_START_HERE",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_START_HERE.md"
+      ],
+      [
+        "Documentation/CODEX_WORKLOG|CODEX_WORKLOG",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_WORKLOG.md"
+      ],
+      [
+        "Documentation/QUEST_LOGIC_SPEC|QUEST_LOGIC_SPEC",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/QUEST_LOGIC_SPEC.md"
+      ],
+      [
+        "Documentation/README|README",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README.md"
+      ],
+      [
+        "Documentation/README_INSTALLATION|README_INSTALLATION",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_INSTALLATION.md"
+      ],
+      [
+        "Documentation/README_JSON_CONFIG|README_JSON_CONFIG",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_JSON_CONFIG.md"
+      ],
+      [
+        "Documentation/REPORT_2026-04-18|REPORT_2026-04-18",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/REPORT_2026-04-18.md"
+      ],
+      [
+        "Documentation/RUSSIAN_ENCODING|RUSSIAN_ENCODING",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/RUSSIAN_ENCODING.md"
+      ],
+      [
+        "Documentation/SPLIT_CLIENT_SERVER|SPLIT_CLIENT_SERVER",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/SPLIT_CLIENT_SERVER.md"
+      ],
+      [
+        "Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES|DAYZ_LAYOUT_VIEWER_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES|DAYZ_RPC_SYNC_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_RPC_SYNC_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/ENCODING_RULES|ENCODING_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/ENCODING_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/GIT_REVIEW_RULES|GIT_REVIEW_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/GIT_REVIEW_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/QUEST_EDITOR_RULES|QUEST_EDITOR_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_EDITOR_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/QUEST_JSON_CONTRACT|QUEST_JSON_CONTRACT",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_JSON_CONTRACT.md"
+      ],
+      [
+        "Documentation_SplitDoc/QUEST_UI_RULES|QUEST_UI_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_UI_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/SERVER_PROFILE_RULES|SERVER_PROFILE_RULES",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/SERVER_PROFILE_RULES.md"
+      ],
+      [
+        "Documentation_SplitDoc/START|START",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/START.md"
+      ],
+      [
+        "Documentation_SplitDoc/TASK_HISTORY|TASK_HISTORY",
+        "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/TASK_HISTORY.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/AGENT_TASK_LOOP.md": [],
+    "Documentation_DayZ_Qwest/25_Silver_77_Zones_Roadmap.md": [],
+    "Documentation_DayZ_Qwest/12_Старт_агента.md": [
+      [
+        "12_Старт",
+        "Documentation_DayZ_Qwest/12_Старт.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/10_Правила_агента.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_JSON_CONTRACT.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/ENCODING_RULES.md": [],
+    "Documentation_DayZ_Qwest/06_Идеи.md": [],
+    "Documentation_DayZ_Qwest/38_Интеграция_модов_на_карте.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_FAST_HANDOFF_2026-04-27.md": [],
+    "Documentation_DayZ_Qwest/31_Silver_77_Medicine.md": [
+      [
+        "32_Silver_77_Medicine_Аудит_DayZ|Аудит возможностей DayZ",
+        "Documentation_DayZ_Qwest/32_Silver_77_Medicine_Аудит_DayZ.md"
+      ],
+      [
+        "33_Silver_77_Medicine_Идеи|Идеи",
+        "Documentation_DayZ_Qwest/33_Silver_77_Medicine_Идеи.md"
+      ],
+      [
+        "34_Silver_77_Medicine_Структура|Структура проекта",
+        "Documentation_DayZ_Qwest/34_Silver_77_Medicine_Структура.md"
+      ],
+      [
+        "35_Silver_77_Medicine_История_и_план|История и план",
+        "Documentation_DayZ_Qwest/35_Silver_77_Medicine_История_и_план.md"
+      ],
+      [
+        "36_Silver_77_Medicine_Roadmap|Roadmap",
+        "Documentation_DayZ_Qwest/36_Silver_77_Medicine_Roadmap.md"
+      ],
+      [
+        "37_Silver_77_Medicine_Приоритетная_задача|Приоритетная задача",
+        "Documentation_DayZ_Qwest/37_Silver_77_Medicine_Приоритетная_задача.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md": [],
+    "Documentation_DayZ_Qwest/11_Задача_агенту.md": [
+      [
+        "11_Задачи_Codex",
+        "Documentation_DayZ_Qwest/11_Задачи_Codex.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/README_JSON_CONFIG.md": [],
+    "Documentation_DayZ_Qwest/19_Silver_77_Zone.md": [
+      [
+        "20_Silver_77_Zone_Освещение|Освещение зоны",
+        "Documentation_DayZ_Qwest/20_Silver_77_Zone_Освещение.md"
+      ],
+      [
+        "23_Silver_77_Zones_Структура|Структура проекта",
+        "Documentation_DayZ_Qwest/23_Silver_77_Zones_Структура.md"
+      ],
+      [
+        "24_Silver_77_Zones_История_и_план|История и план",
+        "Documentation_DayZ_Qwest/24_Silver_77_Zones_История_и_план.md"
+      ],
+      [
+        "25_Silver_77_Zones_Roadmap|Roadmap",
+        "Documentation_DayZ_Qwest/25_Silver_77_Zones_Roadmap.md"
+      ],
+      [
+        "26_Silver_77_Zones_Приоритетная_задача|Приоритетная задача",
+        "Documentation_DayZ_Qwest/26_Silver_77_Zones_Приоритетная_задача.md"
+      ]
+    ],
+    "JSON_Quvest/PROJECT_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/GIT_REVIEW_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_UI_RULES.md": [],
+    "Documentation_DayZ_Qwest/23_Silver_77_Zones_Структура.md": [],
+    "Silver_77_Migrate_server/config/README_RU.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md": [],
+    "Documentation_DayZ_Qwest/41_ANALYSIS_REPORT_TASK 180.md": [],
+    "Support/Arh_29042026/JSON_Quvest_TASK125_support_snapshot/README.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md": [],
+    "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md": [
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "04_ULTRA_REPORT",
+        "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/CHANGELOG.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md": [
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES|TASK_PREPARATION_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING|CONTEXT_ROUTING",
+        "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES|TASK_LIFECYCLE_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES|GIT_REVIEW_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES|DOCUMENTATION_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES|ENCODING_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES|QUEST_UI_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT|QUEST_JSON_CONTRACT",
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES|QUEST_EDITOR_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES|SERVER_PROFILE_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES|TRADER_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRADER_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES|TRIGGER_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TRIGGER_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES|DAYZ_ENFORCE_SCRIPT_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_ENFORCE_SCRIPT_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES|DAYZ_LAYOUT_VIEWER_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES|DAYZ_RPC_SYNC_RULES",
+        "Documentation_DayZ_Qwest/20_SplitDoc/DAYZ_RPC_SYNC_RULES.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET|IMAGE_GENERATION_PRESET",
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY|IMAGE_SCENE_CONTINUITY",
+        "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_SCENE_CONTINUITY.md"
+      ],
+      [
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY|TASK_HISTORY",
+        "Documentation_DayZ_Qwest/20_SplitDoc/TASK_HISTORY.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_EDITOR_RULES.md": [],
+    "Documentation_DayZ_Qwest/13_ЛОР.md": [
+      [
+        "Pasted image 20260615154517.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615154517.png"
+      ],
+      [
+        "Pasted image 20260615154630.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615154630.png"
+      ],
+      [
+        "Pasted image 20260615164847.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615164847.png"
+      ],
+      [
+        "Pasted image 20260615165138.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615165138.png"
+      ],
+      [
+        "Pasted image 20260615165417.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615165417.png"
+      ],
+      [
+        "Pasted image 20260615165812.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615165812.png"
+      ],
+      [
+        "Pasted image 20260615172553.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615172553.png"
+      ],
+      [
+        "Pasted image 20260615212110.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615212110.png"
+      ],
+      [
+        "Pasted image 20260615215633.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615215633.png"
+      ],
+      [
+        "Pasted image 20260615221218.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615221218.png"
+      ],
+      [
+        "ChatGPT Image 15 июн. 2026 г., 22_49_12.png",
+        "Documentation_DayZ_Qwest/ChatGPT Image 15 июн. 2026 г., 22_49_12.png"
+      ],
+      [
+        "Pasted image 20260615231225.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615231225.png"
+      ],
+      [
+        "Pasted image 20260615232916.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615232916.png"
+      ],
+      [
+        "Pasted image 20260615233907.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615233907.png"
+      ],
+      [
+        "Pasted image 20260615235523.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260615235523.png"
+      ],
+      [
+        "Pasted image 20260616001608.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260616001608.png"
+      ],
+      [
+        "Pasted image 20260616003941.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260616003941.png"
+      ],
+      [
+        "Pasted image 20260617220820.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617220820.png"
+      ],
+      [
+        "Pasted image 20260617222832.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617222832.png"
+      ],
+      [
+        "Pasted image 20260617224259.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617224259.png"
+      ],
+      [
+        "Pasted image 20260619220344.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260619220344.png"
+      ],
+      [
+        "Pasted image 20260617232356.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617232356.png"
+      ],
+      [
+        "Pasted image 20260618002725.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260618002725.png"
+      ],
+      [
+        "Pasted image 20260618002749.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260618002749.png"
+      ],
+      [
+        "Pasted image 20260618001250.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260618001250.png"
+      ],
+      [
+        "Pasted image 20260617235207.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617235207.png"
+      ],
+      [
+        "Pasted image 20260617235131.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617235131.png"
+      ],
+      [
+        "Pasted image 20260617235319.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260617235319.png"
+      ],
+      [
+        "Pasted image 20260619235956.png",
+        "Documentation_DayZ_Qwest/Pasted image 20260619235956.png"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md": [],
+    "Documentation_DayZ_Qwest/33_Silver_77_Medicine_Идеи.md": [],
+    "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md": [
+      [
+        "00_Главная",
+        "Documentation_DayZ_Qwest/Ultra/00_Главная.md"
+      ],
+      [
+        "01_Старт_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/01_Старт_Ultra.md"
+      ],
+      [
+        "02_Правила_Ultra",
+        "Documentation_DayZ_Qwest/Ultra/02_Правила_Ultra.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "03_ULTRA_TASK",
+        "Documentation_DayZ_Qwest/Ultra/03_ULTRA_TASK.md"
+      ],
+      [
+        "04_ULTRA_REPORT",
+        "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/21_Project_Docs/RUSSIAN_ENCODING.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_JSON_CONTRACT.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/DAYZ_LAYOUT_VIEWER_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/README_INSTALLATION.md": [],
+    "Documentation_DayZ_Qwest/36_Silver_77_Medicine_Roadmap.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation_SplitDoc/QUEST_EDITOR_RULES.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/SPLIT_CLIENT_SERVER.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/SERVER_PROFILE_RULES.md": [],
+    "Documentation_DayZ_Qwest/001_История_задач_Codex.md": [
+      [
+        "11_Задачи_Codex|Персональная карточка Codex",
+        "Documentation_DayZ_Qwest/11_Задачи_Codex.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/27_Контроль_событий_сервера.md": [
+      [
+        "28_Источники_данных_сервера|Источники данных сервера",
+        "Documentation_DayZ_Qwest/28_Источники_данных_сервера.md"
+      ],
+      [
+        "29_Карта_мира_сервера|Карта мира сервера",
+        "Documentation_DayZ_Qwest/29_Карта_мира_сервера.md"
+      ],
+      [
+        "33_Контроль_событий_сервера_Приоритетная_задача|Приоритетная задача",
+        "Documentation_DayZ_Qwest/33_Контроль_событий_сервера_Приоритетная_задача.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/29_Карта_мира_сервера.md": [],
+    "Documentation_DayZ_Qwest/02_Решения.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_CONTROL_CONTEXT.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_SESSION_HANDOFF_2026-04-26.md": [],
+    "возможности_Silver_77_Quests.md": [],
+    "Documentation_DayZ_Qwest/11_Задачи_Codex.md": [
+      [
+        "12_Старт",
+        "Documentation_DayZ_Qwest/12_Старт.md"
+      ],
+      [
+        "001_История_задач_Codex",
+        "Documentation_DayZ_Qwest/001_История_задач_Codex.md"
+      ],
+      [
+        "42_TACTICAL_CONTEXT",
+        "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md"
+      ],
+      [
+        "05_Очередь_задач",
+        "Documentation_DayZ_Qwest/05_Очередь_задач.md"
+      ]
+    ],
+    "Documentation_DayZ_Qwest/32_Silver_77_Migrate_Приоритетная_задача.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/IMAGE_GENERATION_PRESET.md": [],
+    "Documentation_DayZ_Qwest/20_SplitDoc/QUEST_UI_RULES.md": [],
+    "Documentation_DayZ_Qwest/Ultra/04_ULTRA_REPORT.md": [],
+    "Documentation_DayZ_Qwest/32_Silver_77_Medicine_Аудит_DayZ.md": [],
+    "Documentation_DayZ_Qwest/21_Project_Docs/README_INSTALLATION.md": [],
+    "Documentation_DayZ_Qwest/90_Legacy_Archive/Documentation/CODEX_WORKLOG.md": [],
+    "Documentation_DayZ_Qwest/28_Источники_данных_сервера.md": [],
+    "Support/Mashin/BP_Mashin.md": [],
+    "Support/Arh_29042026/JSON_Quvest/README.md": [],
+    "SplitMods/Silver_77_Quests_Server/README.md": []
+  }
+}

@@ -1,0 +1,643 @@
+{
+  "passed": true,
+  "checks": 144,
+  "changed_existing": [
+    "README.md",
+    "Documentation_DayZ_Qwest/00_Главная.md",
+    "Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+    "Documentation_DayZ_Qwest/04_Архитектура.md",
+    "Documentation_DayZ_Qwest/05_Очередь_задач.md",
+    "Documentation_DayZ_Qwest/10_Правила_агента.md",
+    "Documentation_DayZ_Qwest/11_Задача_агенту.md",
+    "Documentation_DayZ_Qwest/12_Старт_агента.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+    "Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+    "Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+    "Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+    "Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+    "JSON_Quvest/README.md"
+  ],
+  "new_functional_files": [
+    "Documentation_DayZ_Qwest/001_История_задач_Codex.md",
+    "Documentation_DayZ_Qwest/11_Задачи_Codex.md",
+    "Documentation_DayZ_Qwest/12_Старт.md",
+    "Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md",
+    "Tools/task_slot_rotate.py"
+  ],
+  "protected_files_unchanged": 658,
+  "reference_occurrences": 77,
+  "updated_reference_occurrences": 34,
+  "wiki_edges_checked": 174,
+  "preexisting_unresolved": [],
+  "anchor_candidates": [],
+  "external_settings_changes": [
+    {
+      "path": ".obsidian/graph.json",
+      "before": {
+        "sha256": "2d3af7207c1883b2f6df0e35a89dca51fd5a81c5ad4793f86b0410bf5802eef7",
+        "size": 2790
+      },
+      "observed": {
+        "size": 2790,
+        "sha256": "921b1b1fc44433f59d415daa123b47b123605675290e30c689c15e64f73cfe73"
+      }
+    },
+    {
+      "path": ".obsidian/workspace.json",
+      "before": {
+        "sha256": "2e4083e52a4e43ca598f5339a76b4cfd8b0bf9219e99b076edfe6069e3c5e5df",
+        "size": 7822
+      },
+      "observed": {
+        "size": 9870,
+        "sha256": "9933d27b5e9b65db6a4f012497a681e67c4f14907d50df46611fb06d3cd4d85b"
+      }
+    }
+  ],
+  "live_graph_export": "NOT RUN",
+  "real_rotation": "NOT RUN / prohibited in TASK184",
+  "rollback_fixture_checks": 3,
+  "results": [
+    {
+      "check": "only approved pre-existing files changed",
+      "passed": true
+    },
+    {
+      "check": "new files limited to declared documents, utility and report package",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: README.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: JSON_Quvest/README.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/00_Главная.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/04_Архитектура.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "passed": true
+    },
+    {
+      "check": "snapshot byte-exact: Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "passed": true
+    },
+    {
+      "check": "all protected source/config/history files unchanged; observed external settings reported separately",
+      "passed": true
+    },
+    {
+      "check": "legacy backlog retained byte-exact",
+      "passed": true
+    },
+    {
+      "check": "real TASK184 exact and active",
+      "passed": true
+    },
+    {
+      "check": "real B1.1 remains uninitialized",
+      "passed": true
+    },
+    {
+      "check": "previous full report181 exact",
+      "passed": true
+    },
+    {
+      "check": "previous full review101 exact",
+      "passed": true
+    },
+    {
+      "check": "independent slot remains unfilled",
+      "passed": true
+    },
+    {
+      "check": "no self-closeout in permanent history",
+      "passed": true
+    },
+    {
+      "check": "no invented accepted archive entries",
+      "passed": true
+    },
+    {
+      "check": "old entrypoints are noncompeting locators",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/11_Задачи_Codex.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/11_Задачи_Codex.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/11_Задачи_Codex.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/12_Старт.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/12_Старт.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/12_Старт.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/11_Задача_агенту.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/12_Старт_агента.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/001_История_задач_Codex.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/001_История_задач_Codex.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/001_История_задач_Codex.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/05_Очередь_задач.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/10_Правила_агента.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/01_Текущее_состояние.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/04_Архитектура.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/04_Архитектура.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/04_Архитектура.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/21_Project_Docs/README.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/00_Главная.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/00_Главная.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/00_Главная.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/20_SplitDoc/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/21_Project_Docs/00_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: README.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: README.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): README.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: JSON_Quvest/README.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: JSON_Quvest/README.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): JSON_Quvest/README.md",
+      "passed": true
+    },
+    {
+      "check": "UTF8/no BOM/NUL: Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md",
+      "passed": true
+    },
+    {
+      "check": "consistent new EOL / byte-exact legacy suffix: Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md",
+      "passed": true
+    },
+    {
+      "check": "no new replacement characters (literal encoding examples retained): Documentation_DayZ_Qwest/42_TACTICAL_CONTEXT.md",
+      "passed": true
+    },
+    {
+      "check": "no old Ultra task imported into active registry",
+      "passed": true
+    },
+    {
+      "check": "107/108 disagreements remain OPEN",
+      "passed": true
+    },
+    {
+      "check": "no active Ultra bridge dispatch",
+      "passed": true
+    },
+    {
+      "check": "Python source syntax",
+      "passed": true
+    },
+    {
+      "check": "new active document paths unique ignoring case",
+      "passed": true
+    },
+    {
+      "check": "no new unresolved wiki edges in active documents",
+      "passed": true
+    },
+    {
+      "check": "all old 11/12 path references still resolve through compatibility nodes",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: README.md:49",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: README.md:50",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/00_Главная.md:17",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/00_Главная.md:18",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/01_Текущее_состояние.md:17",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/01_Текущее_состояние.md:18",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/04_Архитектура.md:48",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/04_Архитектура.md:49",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/04_Архитектура.md:58",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/04_Архитектура.md:59",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/10_Правила_агента.md:7",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/10_Правила_агента.md:8",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/10_Правила_агента.md:53",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/12_Старт_агента.md:11",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md:26",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md:32",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/CONTEXT_ROUTING.md:128",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md:146",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md:156",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md:162",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/DOCUMENTATION_RULES.md:164",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md:25",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/ENCODING_RULES.md:153",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/GIT_REVIEW_RULES.md:33",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md:28",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/TASK_LIFECYCLE_RULES.md:61",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md:61",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md:80",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/20_SplitDoc/TASK_PREPARATION_RULES.md:86",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/21_Project_Docs/PROJECT_PATHS.md:9",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/21_Project_Docs/README.md:7",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: Documentation_DayZ_Qwest/21_Project_Docs/README.md:8",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: JSON_Quvest/README.md:18",
+      "passed": true
+    },
+    {
+      "check": "active reference updated: JSON_Quvest/README.md:19",
+      "passed": true
+    },
+    {
+      "check": "rollback dry-run zero writes",
+      "passed": true
+    },
+    {
+      "check": "rollback rejects user changes without modifying new file",
+      "passed": true
+    },
+    {
+      "check": "rollback restores exact source/removes only saved candidate",
+      "passed": true
+    }
+  ]
+}

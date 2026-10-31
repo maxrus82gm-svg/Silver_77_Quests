@@ -1,0 +1,15 @@
+{
+  "result": "ROTATED",
+  "schema_version": 1,
+  "task_id": "TASK-TEST",
+  "status": "SUBMITTED / REVIEW PENDING",
+  "card_before_sha256": "312479b8dd938f14d9dcc12a416e4dad2264f318fb33769dbd79a74aca900ceb",
+  "card_after_sha256": "b1bdc66a433de64ab5fd96ff4e24db0f0e99563100543d923b4bcc12c0933cd7",
+  "task_sha256": "ace22e6f59f4b5660c899929204de02a39175dfe6fcc71ad9b26849b9f10956c",
+  "previous_slot_sha256": "d52d57048729fe8f901c3d6bf3ca18778261826561eeea0caf4a497dde270ff3",
+  "copied_exact": true,
+  "outside_slots_unchanged": true,
+  "amendments": [],
+  "independent_verdict": "NOT PROVIDED BY ROTATION",
+  "output_dir": "P:\\Silver_77_Quests\\Documentation_DayZ_Qwest\\Task_Reports\\TASK_184\\tests\\fixture-o_9j7afm\\проект с пробелами\\пакет\\handoff"
+}
